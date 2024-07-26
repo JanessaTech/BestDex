@@ -11,14 +11,13 @@ const MainMenu = () => {
     if (isMin) {
       setAnimation('animate-arrow-flip-left') 
     } else {
-      console.log('animate-arrow-flip-to-right')
       setAnimation('animate-arrow-flip-right')
     }
     setIsMin(isMin => !isMin)
   }
 
   return (
-    <div className={`h-screen bg-zinc-800 relative border-r border-zinc-500 group`}>
+    <div className={`h-screen bg-zinc-800 relative border-r border-zinc-500 group max-md:hidden`}>
         <div className='absolute w-6 h-6 rounded-md 
             border border-zinc-500 -right-3 top-5 
             bg-black cursor-pointer

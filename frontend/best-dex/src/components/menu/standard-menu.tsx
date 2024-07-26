@@ -6,7 +6,7 @@ type StandardMenuProps = {
 
 const StandardMenu: React.FC<StandardMenuProps>  = ({hidden}) => {
   return (
-    <div className={`w-[300px] ${hidden ? 'hidden' : ''} text-red-500`}>
+    <div className={`w-[200px] ${hidden ? 'hidden' : ''} text-red-500`}>
             StandardMenu
     </div>
   )
