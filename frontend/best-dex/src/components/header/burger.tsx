@@ -14,9 +14,10 @@ const Burger: React.FC<BurgerProps> = () => {
   return (
     <div>
         <div className='cursor-pointer w-[32px] h-[32px] 
-            rounded-full flex justify-center items-center hover:bg-zinc-500 active:bg-zinc-400'>
+            rounded-full justify-center items-center hover:bg-zinc-500 active:bg-zinc-400
+            hidden max-md:flex'>
             <div className='w-[20px] h-[15px] flex-col 
-            justify-between hidden max-md:flex'
+            justify-between flex'
             onClick={handleClick}>
                 <span className='w-[20px] h-[2px] bg-zinc-300 block'></span>
                 <span className='w-[20px] h-[2px] bg-zinc-300 block'></span>
