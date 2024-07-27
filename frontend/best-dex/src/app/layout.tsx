@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className}`}>
+      <body className={`${inter.className} text-white bg-black`}>
         {/* <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -28,7 +28,7 @@ export default function RootLayout({
           > */}
             <div className="flex w-full">
               <MainMenu/>
-              <div className="grow bg-black">
+              <div className="grow">
                 <div className="padding-y">
                   <Header/>
                   <main>
