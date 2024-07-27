@@ -13,7 +13,7 @@ const Burger: React.FC<BurgerProps> = () => {
 
   return (
     <div>
-        <div className='cursor-pointer w-[32px] h-[32px] 
+        <div className='ml-3 2 cursor-pointer w-[32px] h-[32px] 
             rounded-full justify-center items-center hover:bg-zinc-500 active:bg-zinc-400
             hidden max-md:flex'>
             <div className='w-[20px] h-[15px] flex-col 
