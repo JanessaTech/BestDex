@@ -17,6 +17,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import useOutsideClick from '@/hooks/useOutsideClick'
 
 const mediaQuery = '(max-width: 768px)';
 const mediaQueryList = window.matchMedia(mediaQuery);
@@ -26,16 +27,6 @@ type HeaderProps = {}
 const Header:React.FC<HeaderProps> = () => {
   const [openPopover, setOpenPopover] = useState(false)
   const [openDrawer, setOpendrawer] = useState(false)
-  const ref = useRef<HTMLDivElement>(null);
-
-  const onOpenChange = (open: boolean) => {
-    console.log('onOpenChange is triggered. open=', open)
-    setOpenPopover(open)
-  }
-
-  const handleClick = () => {
-    updatePopover(true)
-  }
 
   const updatePopover = (status: boolean) => {
     setOpenPopover(status)
@@ -47,6 +38,18 @@ const Header:React.FC<HeaderProps> = () => {
     localStorage.setItem('drawer', status.toString())
   }
 
+  const ref = useOutsideClick(updatePopover)
+
+  const onOpenChange = (open: boolean) => {
+    console.log('onOpenChange is triggered. open=', open)
+    setOpenPopover(open)
+  }
+
+  const handleClick = () => {
+    updatePopover(true)
+  }
+
+  
   useEffect(() => {
     const handleChange = (event:any) => {
       console.log('handleChange...')
@@ -69,25 +72,23 @@ const Header:React.FC<HeaderProps> = () => {
       }
     }
 
-    const handleOutSideClick = (event:any) => {
-      console.log('handleOutSideClick')
-      console.log(event)
-      console.log(ref)
+    // const handleOutSideClick = (event:MouseEvent) => {
+    //   console.log('handleOutSideClick')
+    //   console.log(event)
+    //   console.log(ref)
 
-      console.log(ref.current?.contains(event.target))
-      if (!ref.current?.contains(event.target)) {
-        updatePopover(false)
-        // setOpenPopover(false)
-        // localStorage.setItem('popover', 'false')
-      }
-    };
+    //   console.log(ref.current?.contains(event.target as Node))
+    //   if (!ref.current?.contains(event.target as Node)) {
+    //     updatePopover(false)
+    //   }
+    // };
 
-    window.addEventListener("mousedown", handleOutSideClick); 
+    //document.addEventListener("mousedown", handleOutSideClick); 
     mediaQueryList.addEventListener('change', handleChange)
     console.log('addEventListener ')
     return () => {
       mediaQueryList.removeEventListener('change', handleChange)
-      window.removeEventListener("mousedown", handleOutSideClick);
+      //document.removeEventListener("mousedown", handleOutSideClick);
     }
   }, [])
 
