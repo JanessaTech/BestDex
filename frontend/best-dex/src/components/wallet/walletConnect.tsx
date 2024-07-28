@@ -22,7 +22,7 @@ const WalletConnect: React.FC<WalletConnectProps> = () => {
                             alt="metamask wallet" 
                             width={25} height={25}/>
                     </div>
-                    <span className="ml-2">MetaMask</span>
+                    <span className="ml-2">WalletCollect</span>
                 </li>
                 <li className="h-[100px] flex items-center hover:bg-zinc-200 px-5 border-b-[2px]">
                     <div className="w-[40px] h-[40px] border border-zinc-300 rounded-lg 

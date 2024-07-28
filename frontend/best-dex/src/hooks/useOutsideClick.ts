@@ -19,7 +19,7 @@ const useOutsideClick = (callback : UseOutsideClickCallbackType) => {
             document.removeEventListener("mousedown", handleOutSideClick)
             console.log('remove mousedown event listener')
         })
-    }, [])
+    }, [ref])
     
     return ref
 }
