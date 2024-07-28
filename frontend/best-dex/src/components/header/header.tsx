@@ -9,16 +9,12 @@ import {
 } from "@/components/ui/popover"
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import useOutsideClick from '@/hooks/useOutsideClick'
 import useMediaQuery from '@/hooks/useMediaQuery'
+import WalletConnect from '../wallet/walletConnect'
 
 type HeaderProps = {}
 
@@ -91,8 +87,10 @@ const Header:React.FC<HeaderProps> = () => {
               <PopoverTrigger>
                 <div className='bg-sky-700 px-5 py-1.5 rounded-full 
                           hover:bg-sky-600 active:bg-sky-500' onClick={handlePopoverClick}>Connect wallet</div>
-              </PopoverTrigger>
-              <PopoverContent className='' align='end' ref={ref}>Place content for the popover here.</PopoverContent>
+              </PopoverTrigger>     
+              <PopoverContent align='end' ref={ref}>
+                <WalletConnect />
+              </PopoverContent>
             </Popover>
           </div>
           <div className='md:hidden'>
@@ -102,17 +100,8 @@ const Header:React.FC<HeaderProps> = () => {
                             hover:bg-sky-600 active:bg-sky-500' onClick={handleDrawerClick}>Connect wallet</div>
               </DrawerTrigger>
               <DrawerContent ref={ref}>
-                <DrawerHeader>
-                  <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-                  <DrawerDescription>This action cannot be undone.</DrawerDescription>
-                </DrawerHeader>
-                <DrawerFooter>
-                  <div>Submit</div>
-                  <DrawerClose>
-                    <div>Cancel</div>
-                  </DrawerClose>
-                </DrawerFooter>
-              </DrawerContent>
+                  <WalletConnect />
+                </DrawerContent>
             </Drawer>
           </div>
           <Burger/>   
