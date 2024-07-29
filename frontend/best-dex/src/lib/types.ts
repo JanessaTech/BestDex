@@ -6,3 +6,9 @@ export type NetworkType = {
 export type SvgProps = {
     className?: string
 }
+
+export enum MenuType {
+    MinMenu,
+    StandarMenu,
+    MobileMenu
+}

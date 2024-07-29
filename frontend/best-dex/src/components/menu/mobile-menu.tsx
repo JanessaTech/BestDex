@@ -13,6 +13,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({show, setShow}) => {
                 hover:bg-zinc-500 active:bg-zinc-400
                 flex justify-center items-center cursor-pointer' onClick={() => setShow(false)}>
                     <img src="/imgs/close.svg" alt="close" />
+                </div>
+                <div className='bg-lime-200 h-20'>
                 </div>               
             </div>
         </div>

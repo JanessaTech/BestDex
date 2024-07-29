@@ -3,12 +3,13 @@ import Explore from "@/lib/svgs/explore"
 import Pool from "@/lib/svgs/pool"
 import Swap from "@/lib/svgs/swap"
 import Link from "next/link"
+import { MenuType } from "@/lib/types"
 
 type MenuProps = {
-    isMin: boolean
+    menuType: MenuType
 }
 
-const Menu: React.FC<MenuProps> = ({isMin}) => {
+const Menu: React.FC<MenuProps> = ({menuType}) => {
     return (
         <>
         <div className='flex flex-col w-full'>
@@ -18,25 +19,25 @@ const Menu: React.FC<MenuProps> = ({isMin}) => {
               height={50}
               className='absolute top-6 left-3 '
             />
-            <span className={`absolute top-14 left-11 text-2xl font-extrabold italic ${isMin ? 'hidden' : ''}`}>BEST DEX</span>
+            <span className={`absolute top-14 left-11 text-2xl font-extrabold italic ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>BEST DEX</span>
           </div>
           <div className='flex-grow'>
             <ul className='ml-5 cursor-pointer'>
               <li className='group/li flex items-center h-[30px] my-[10px] hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500'>
                 <Swap className='h-[30px] w-[30px] text-zinc-300 group-hover/li:text-sky-500'/>
-                <div className={`ml-3 text-xl font-medium ${isMin ? 'hidden' : ''}`}>Swap</div>
+                <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Swap</div>
               </li>
               <li className='group/li flex items-center h-[30px] my-[10px] hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500'>
                 <Pool className='h-[30px] w-[30px] text-zinc-300 group-hover/li:text-sky-500'/>
-                <div className={`ml-3 text-xl font-medium ${isMin ? 'hidden' : ''}`}>Pool</div>
+                <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Pool</div>
               </li>
               <li className='group/li flex items-center h-[30px] my-[10px] hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500'>
                 <Explore className='h-[30px] w-[30px] text-zinc-300 group-hover/li:text-sky-500'/>
-                <div className={`ml-3 text-xl font-medium ${isMin ? 'hidden' : ''}`}>Explore</div>
+                <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Explore</div>
               </li>
               <li className='group/li flex items-center h-[30px] my-[10px] hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500'>
                 <Balance className='h-[30px] w-[30px] text-zinc-300 group-hover/li:text-sky-500'/>
-                <div className={`ml-3 text-xl font-medium ${isMin ? 'hidden' : ''}`}>Balance</div>
+                <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Balance</div>
               </li>
             </ul>
   
