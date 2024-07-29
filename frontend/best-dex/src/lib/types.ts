@@ -1,7 +1,8 @@
-type NetworkType = {
+export type NetworkType = {
     chainId: number
     name: string
     label: string
 }
-
-export type {NetworkType}
+export type SvgProps = {
+    className?: string
+}
