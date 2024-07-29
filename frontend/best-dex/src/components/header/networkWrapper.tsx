@@ -5,13 +5,18 @@ import {
   } from "@/components/ui/popover"
   import {
     Drawer,
+    DrawerDescription,
+    DrawerTitle,
     DrawerContent,
     DrawerTrigger,
   } from "@/components/ui/drawer"
 import { useState } from "react"
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import useOutsideClick from "@/hooks/useOutsideClick"
 import useMediaQuery from "@/hooks/useMediaQuery"
 import NetworkConnect from "../network/networkConnect"
+import { NetworkType } from "@/lib/types";
+import { defaultNetwork } from "@/lib/constants";
 
 type NetworkWrapperProps = {}
 
@@ -28,6 +33,13 @@ const NetworkWrapper : React.FC<NetworkWrapperProps> = () => {
         }
         return false
       })
+      const [network, setNetwork] = useState<NetworkType>(defaultNetwork)
+
+      const handleNetworkChange = (network: NetworkType) => {
+        console.log('handleNetworkChange')
+        console.log(network)
+        setNetwork(network)
+      }
 
       const updatePopover = (status: boolean) => {
         setOpenPopover(status)
@@ -82,20 +94,24 @@ const NetworkWrapper : React.FC<NetworkWrapperProps> = () => {
             <div className='flex items-center mr-3 max-md:hidden'>
                 <Popover onOpenChange={onOpenChange} open={openNetworkPopover}>
                 <PopoverTrigger>
-                    <img src="/imgs/networks/ethereum.png" width={25}  height={25} alt="" onClick={handlePopoverClick}/>
+                    <img src={`/imgs/networks/${network.name}.png`} width={25}  height={25} alt="" onClick={handlePopoverClick}/>
                 </PopoverTrigger>
                 <PopoverContent align='center' sideOffset={10}>
-                    <NetworkConnect/>
+                    <NetworkConnect network={network} handleNetworkChange={handleNetworkChange}/>
                 </PopoverContent>
                 </Popover>
             </div>
             <div className='flex items-center mr-3 md:hidden'>
                 <Drawer open={openNetworkDrawer}>
                 <DrawerTrigger>
-                    <img src="/imgs/networks/ethereum.png" width={25}  height={25} alt="" onClick={handleDrawerClick}/>
+                    <img src={`/imgs/networks/${network.name}.png`} width={25}  height={25} alt="" onClick={handleDrawerClick}/>
                 </DrawerTrigger>
-                <DrawerContent ref={ref} className="text-red-700">
-                    <NetworkConnect/>
+                <DrawerContent ref={ref}>
+                    <VisuallyHidden.Root>
+                      <DrawerTitle/>
+                      <DrawerDescription/>
+                    </VisuallyHidden.Root>
+                    <NetworkConnect network={network} handleNetworkChange={handleNetworkChange}/>
                 </DrawerContent>
                 </Drawer>
             </div>
