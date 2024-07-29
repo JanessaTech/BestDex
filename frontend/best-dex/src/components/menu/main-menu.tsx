@@ -18,17 +18,16 @@ const MainMenu = () => {
 
   return (
     <div className={`h-screen bg-zinc-800 relative border-r border-zinc-500 group max-md:hidden`}>
-        <div className='absolute w-6 h-6 rounded-md 
+        <div className='absolute w-6 h-14 rounded-md 
             border border-zinc-500 -right-3 top-5 
             bg-black cursor-pointer
             flex items-center justify-center
             hover:border-zinc-300 invisible
             group-hover:visible'
-            onClick={onClick}
             >
-              <img className={`${animation} ${isMin ? 'rotate-180' : ''}`}
+              <img className={`${animation} ${isMin ? 'rotate-180' : ''} cursor-pointer`}
                 src="/imgs/left-arrow.svg" 
-                alt="toggle menu"/>
+                alt="toggle menu" onClick={onClick}/>
         </div>
         <StandardMenu hidden={isMin}/>
         <MinMenu hidden={!isMin}/>

@@ -1,4 +1,5 @@
 import React from 'react'
+import Menu from './menu'
 
 type MinMenuProps = {
     hidden: boolean
@@ -6,8 +7,8 @@ type MinMenuProps = {
 
 const MinMenu: React.FC<MinMenuProps> = ({hidden}) => {
   return (
-    <div className={`w-[80px] ${hidden ? 'hidden' : ''} text-red-500`}>
-        MinMenu
+    <div className={`w-[80px] ${hidden ? 'hidden' : ''} flex min-h-screen`}>
+       <Menu isMin={true} />
     </div>
   )
 }
