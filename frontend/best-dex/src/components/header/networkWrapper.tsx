@@ -14,9 +14,9 @@ import { useState } from "react"
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import useOutsideClick from "@/hooks/useOutsideClick"
 import useMediaQuery from "@/hooks/useMediaQuery"
-import NetworkConnect from "../network/networkConnect"
 import { NetworkType } from "@/lib/types";
 import { defaultNetwork } from "@/lib/constants";
+import NetworkConnect from "../network/NetworkConnect";
 
 type NetworkWrapperProps = {}
 

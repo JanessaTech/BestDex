@@ -1,10 +1,10 @@
-import Balance from "@/lib/svgs/balance"
-import Explore from "@/lib/svgs/explore"
-import Pool from "@/lib/svgs/pool"
-import Swap from "@/lib/svgs/swap"
 import Link from "next/link"
 import { MenuType } from "@/lib/types"
 import { usePathname } from 'next/navigation'
+import Swap from "@/lib/svgs/Swap"
+import Pool from "@/lib/svgs/Pool"
+import Explore from "@/lib/svgs/Explore"
+import Balance from "@/lib/svgs/Balance"
 
 type MenuProps = {
     menuType: MenuType,

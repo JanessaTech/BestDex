@@ -4,7 +4,8 @@ export type NetworkType = {
     label: string
 }
 export type SvgProps = {
-    className?: string
+    className?: string,
+    onClick?: () => void
 }
 
 export enum MenuType {
