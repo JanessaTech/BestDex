@@ -74,7 +74,10 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
             mx-auto min-w-[400px] h-[500px] rounded-3xl border border-zinc-500
             bg-zinc-800 p-6">
                 <div className="h-full">
-                    <img src="/imgs/setting.svg" alt="setting" className="ml-auto cursor-pointer"/>
+                    <div className="flex justify-end items-center">
+                        <span className="cursor-pointer">Clear</span>
+                        <img src="/imgs/setting.svg" alt="setting" className="ml-3 cursor-pointer"/>
+                    </div>
                     <div className="border border-white h-[60px] mt-5 rounded-full px-5 flex items-center justify-between mb-8">
                         <div className="flex items-center">
                             <img src={`/imgs/networks/${network.name}.png`} alt={network.name} className="mr-4"/>
@@ -93,7 +96,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
                         <div>
                             <div>From</div>
                             <div className="flex">
-                                <div className="group/from bg-white h-[60px] w-[150px] 
+                                <div className="group/from bg-white h-[60px] w-[180px] 
                                     rounded-s-lg border-2 border-zinc-500 border-e-0
                                     flex justify-between items-center cursor-pointer px-2"  onClick={handleTokenFrom}>
                                         <div className="flex items-center">
@@ -125,7 +128,13 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
                         <div>
                             <div>To</div>
                                 <div className="flex">
-                                    <div className="bg-white h-[60px] w-[150px] rounded-s-lg border-2 border-zinc-500 border-e-0"></div>
+                                    <div className="bg-sky-700 hover:bg-sky-600 active:bg-sky-500
+                                    h-[60px] w-[180px] rounded-s-lg 
+                                    border-2 border-zinc-500 border-e-0 cursor-pointer
+                                    flex items-center justify-between px-2">
+                                        <span className="font-semibold">Select token</span>
+                                        <Arrow className="h-[15px] w-[15px] text-white"/>
+                                    </div>
                                     <div className="w-full">
                                         <input 
                                             className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
@@ -141,6 +150,10 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
                                     </div>
                                 </div>
                                 <div className="ml-[130px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
+                        </div>
+                        <div>
+                            <div className="h-[45px] w-[200px] bg-sky-700 rounded-full m-auto 
+                                cursor-pointer hover:bg-sky-600 active:bg-sky-700">Collect wallet</div>
                         </div>
                     </div>
                 </div>
