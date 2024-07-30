@@ -1,5 +1,5 @@
 import React from 'react'
-import Menu from './menu'
+import Menu from './Menu'
 import { MenuType } from '@/lib/types'
 
 type StandardMenuProps = {

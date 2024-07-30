@@ -19,7 +19,7 @@ const NetworkConnect : React.FC<NetworkConnectProps> = ({network, handleNetworkC
             <ul className="cursor-pointer font-medium">
                 {
                     networks.map((net) => (
-                        <li className="h-[50px] hover:bg-zinc-200 rounded-lg 
+                        <li key={net.chainId} className="h-[50px] hover:bg-zinc-200 rounded-lg 
                         flex items-center justify-between px-2"
                         onClick={(e) => networkChange(net.chainId)}>
                             <div className="flex items-center">

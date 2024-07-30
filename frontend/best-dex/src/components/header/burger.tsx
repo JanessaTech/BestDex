@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import MobileMenu from '../menu/mobile-menu'
+import MobileMenu from '../menu/MobileMenu'
 
 type BurgerProps = {}
 const Burger: React.FC<BurgerProps> = () => {

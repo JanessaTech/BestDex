@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react'
-import StandardMenu from './standard-menu'
-import MinMenu from './min-menu'
+import StandardMenu from './StandardMenu'
+import MinMenu from './MinMenu'
 
 const MainMenu = () => {
   const [isMin, setIsMin] = useState<boolean>(false)
