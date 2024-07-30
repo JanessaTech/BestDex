@@ -8,6 +8,7 @@ type MobileMenuProps = {
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({show, setShow}) => {
+
     return (
         <div className={`fixed top-0 left-0 w-full h-screen bg-black ${show ? '': 'hidden'}`}>
             <div className='m-8 flex flex-col'>
@@ -18,7 +19,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({show, setShow}) => {
                         <img src="/imgs/close.svg" alt="close" />
                     </div>
                 </div>
-                <Menu menuType={MenuType.MobileMenu} />             
+                <Menu menuType={MenuType.MobileMenu} setShow={setShow}/>             
             </div>
         </div>
     )
