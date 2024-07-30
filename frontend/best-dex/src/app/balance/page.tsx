@@ -1,9 +1,9 @@
-type BalanceHomeProps = {}
+type BalancePageProps = {}
 
-const BalanceHome: React.FC<BalanceHomeProps> = () => {
+const BalancePage: React.FC<BalancePageProps> = () => {
     return (
-        <div>Balance home</div>
+        <div>Balance Page</div>
     )
 }
 
-export default BalanceHome
+export default BalancePage

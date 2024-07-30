@@ -1,9 +1,9 @@
 "use client"
 
 import React from 'react'
-import Burger from './burger'
-import NetworkWrapper from './networkWrapper'
-import WalletWrapper from './walletWrapper'
+import NetworkWrapper from './NetworkWrapper'
+import WalletWrapper from './WalletWrapper'
+import Burger from './Burger'
 
 type HeaderProps = {}
 

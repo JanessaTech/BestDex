@@ -1,11 +1,11 @@
-type ExploreHomeProps = {}
+type ExplorePageProps = {}
 
-const ExploreHome: React.FC<ExploreHomeProps> = () => {
+const ExplorePage: React.FC<ExplorePageProps> = () => {
     return (
         <div>
-            Explore Home
+            Explore Page
         </div>
     )
 }
 
-export default ExploreHome
+export default ExplorePage

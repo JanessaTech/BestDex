@@ -1,11 +1,11 @@
-type PoolHomeProps = {}
+type PoolPageProps = {}
 
-const PoolHome:React.FC<PoolHomeProps> = () => {
+const PoolPage:React.FC<PoolPageProps> = () => {
     return (
         <div>
-            Pool home
+            Pool Page
         </div>
     )
 }
 
-export default PoolHome
+export default PoolPage
