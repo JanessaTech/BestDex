@@ -7,13 +7,19 @@ import NetworkConnect from "../network/NetworkConnect"
 import type { NetworkType } from "@/lib/types"
 
 type NetworkSelectProps = {
+    open: boolean,
     network: NetworkType,
+    handleNetworkOpen: (open: boolean) => void,
     handleNetworkChange: (network: NetworkType) => void
 }
 
-const NetworkSelect: React.FC<NetworkSelectProps> = ({network, handleNetworkChange}) => {
+const NetworkSelect: React.FC<NetworkSelectProps> = ({open, network, handleNetworkOpen, handleNetworkChange}) => {
+    const onOpenChange = (open: boolean) => {
+        handleNetworkOpen(open)
+    }
+
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger className="w-full">
                 <div className="border border-white h-[60px] rounded-full px-5 flex items-center justify-between mb-8">
                     <div className="flex items-center">

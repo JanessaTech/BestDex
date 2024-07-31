@@ -17,6 +17,7 @@ type SwapHomeProps = {}
 
 const SwapHome: React.FC<SwapHomeProps> = () => {
     const [network, setNetwork] = useState<NetworkType>(defaultNetwork)
+    const [isNetworkOpen, setIsNetworkOpen] = useState<boolean>(false)
     const [fromFontSize, setFromFontSize] = useState('base')
     const [toFontSize, setToFontSize] = useState('base')
     const [valueFrom, setValueFrom] = useState<number | ''>(0)
@@ -28,7 +29,12 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
 
     const handleNetworkChange = (network: NetworkType) => {
         setNetwork(network)
-      }
+        setIsNetworkOpen(false)
+    }
+
+    const handleNetworkOpen = (open: boolean) => {
+        setIsNetworkOpen(open)
+    }
 
     const handleInputFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
@@ -96,7 +102,11 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
                         <span className="cursor-pointer" onClick={handleClear}>Clear</span>
                         <img src="/imgs/setting.svg" alt="setting" className="ml-3 cursor-pointer"/>
                     </div>
-                    <NetworkSelect network={network} handleNetworkChange={handleNetworkChange}/>
+                    <NetworkSelect 
+                        open={isNetworkOpen} 
+                        network={network} 
+                        handleNetworkOpen={handleNetworkOpen} 
+                        handleNetworkChange={handleNetworkChange}/>
                     <div>
                         <div>
                             <div>From</div>
