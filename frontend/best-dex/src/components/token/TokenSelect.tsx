@@ -102,9 +102,65 @@ const TokenSelect: React.FC<TokenSelectProps> = () => {
                 </div>
             </div>
             <div className="border-t border-zinc-300 w-full my-3"></div>
-            <div>
-                <div className="text-zinc-400">Popular Token</div>
+            <div className="h-[500px] overflow-auto">
+                <div className="text-zinc-400 my-2">Popular Token</div>
                 <ul>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
+                    <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
+                        <img src="/imgs/tokens/0x.png" alt="eth" />
+                        <div className="ml-3">
+                            <div className="text-black">0x Protocal</div>
+                            <div className="text-zinc-400 text-xs">ZRX</div>
+                        </div>
+                    </li>
                     <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
                         <img src="/imgs/tokens/0x.png" alt="eth" />
                         <div className="ml-3">
