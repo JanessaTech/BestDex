@@ -6,10 +6,12 @@ import {
     PopoverTrigger,
   } from "@/components/ui/popover"
 import { useState } from "react"
-import NetworkConnect from "../network/NetworkConnect"
 import { defaultNetwork } from "@/lib/constants"
-import { NetworkType } from "@/lib/types"
+import type { NetworkType, TokenType } from "@/lib/types"
 import Arrow from "@/lib/svgs/Arrow"
+import NetworkSelect from "./NetworkSelect"
+import TokenSelect from "../token/TokenSelect"
+import TokenSelection from "./TokenSelection"
 
 type SwapHomeProps = {}
 
@@ -17,10 +19,12 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
     const [network, setNetwork] = useState<NetworkType>(defaultNetwork)
     const [fromFontSize, setFromFontSize] = useState('base')
     const [toFontSize, setToFontSize] = useState('base')
-    const [valueFrom, setValueFrom] = useState<number>(0)
+    const [valueFrom, setValueFrom] = useState<number | ''>(0)
     const [estimatedValueFrom, setEstimatedValueFrom] = useState<number>(123.3)
-    const [valueTo, setValueTo] = useState<number>(0)
+    const [valueTo, setValueTo] = useState<number | ''>(0)
     const [estimatedValueTo, setEstimatedValueTo] = useState<number>(7823.14)
+    const [fromToken, setFromToken] = useState<TokenType | undefined>({chainId: 1, name: 'eth', label: 'ETH', address: '1234'})
+    const [toToken, setToToken] = useState<TokenType | undefined>(undefined)
 
     const handleNetworkChange = (network: NetworkType) => {
         setNetwork(network)
@@ -37,89 +41,87 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
     }
 
     const updateFrom = (value: string) => {
-        if (!value) return
         if (value.length >= 20) {
             setFromFontSize('xs')
         } else {
             setFromFontSize('base')
         }
-        setValueFrom(Number(value))
+        setValueFrom(value === '' || value === undefined ? '' : Number(value))
     }
 
     const updateTo = (value: string) => {
-        if (!value) return
         if (value.length >= 20) {
             setToFontSize('xs')
         } else {
             setToFontSize('base')
         }
-        setValueTo(Number(value))
+        setValueTo(value === '' || value === undefined ? '' : Number(value))
     }
 
     const handleExchange = () => {
-        const _from = valueFrom
-        const _to = valueTo
-        updateFrom(_to.toString()) 
-        updateTo(_from.toString())
+        if (valueFrom !== '' && valueTo !== '') {
+            updateFrom(valueTo?.toString()) 
+            updateTo(valueFrom?.toString())
+        }
     }
 
-    const handleTokenFrom = () => {
-        console.log('handleTokenFrom')
+    const changeFromToken = () => {
+        console.log('changeFromToken')
+    }
+
+    const changeToToken = () => {
+        console.log('changeToToken')
+    }
+
+    const handleClear = () => {
+        setNetwork(defaultNetwork)
+        setFromFontSize('base')
+        setToFontSize('base')
+        setValueFrom(0)
+        setEstimatedValueFrom(0)
+        setValueTo(0)
+        setEstimatedValueTo(0)
+        setFromToken(undefined)
+        setToToken(undefined)
     }
 
     return (
         <div>
             <div className="font-semibold text-2xl">Swap</div>
             <div className="mt-4 w-4/5 md:w-1/2 
-            mx-auto min-w-[400px] h-[500px] rounded-3xl border border-zinc-500
+            mx-auto min-w-[400px] rounded-3xl border border-zinc-500
             bg-zinc-800 p-6">
                 <div className="h-full">
-                    <div className="flex justify-end items-center">
-                        <span className="cursor-pointer">Clear</span>
+                    <div className="flex justify-end items-center mb-8">
+                        <span className="cursor-pointer" onClick={handleClear}>Clear</span>
                         <img src="/imgs/setting.svg" alt="setting" className="ml-3 cursor-pointer"/>
                     </div>
-                    <div className="border border-white h-[60px] mt-5 rounded-full px-5 flex items-center justify-between mb-8">
-                        <div className="flex items-center">
-                            <img src={`/imgs/networks/${network.name}.png`} alt={network.name} className="mr-4"/>
-                            <span className="text-xl">{network.label}</span>
-                        </div>
-                        <Popover>
-                            <PopoverTrigger>
-                                <img src="/imgs/down_arrow.svg" alt="select network" className="mr-3 cursor-pointer"/>
-                            </PopoverTrigger>     
-                            <PopoverContent align='end' sideOffset={18}>
-                                <NetworkConnect network={network} handleNetworkChange={handleNetworkChange}/>
-                            </PopoverContent>
-                        </Popover>   
-                    </div>
+                    <NetworkSelect network={network} handleNetworkChange={handleNetworkChange}/>
                     <div>
                         <div>
                             <div>From</div>
                             <div className="flex">
-                                <div className="group/from bg-white h-[60px] w-[180px] 
-                                    rounded-s-lg border-2 border-zinc-500 border-e-0
-                                    flex justify-between items-center cursor-pointer px-2"  onClick={handleTokenFrom}>
-                                        <div className="flex items-center">
-                                            <img src="/imgs/tokens/eth.png" width={25} height={25} alt="eth"/>
-                                            <span className="text-zinc-600 font-semibold ml-2">ETH</span>
-                                        </div>
-                                        <Arrow className="h-[15px] w-[15px] text-black group-hover/from:text-sky-700"/>
-                                </div>
+                                <TokenSelection handleTokenChange={changeFromToken} token={fromToken}/>
                                 <div className="w-full">
-                                    <input 
-                                        className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
-                                        pl-3 focus:border-2 focus:border-sky-500 text-${fromFontSize} text-black`}
-                                        onChange={handleInputFromChange}
+                                    <input
                                         id='swapFrom'
                                         name='swapFrom'
                                         type="number" 
                                         value={valueFrom}
                                         placeholder="0" 
                                         min="0"
+                                        className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
+                                        pl-3 focus:border-2 focus:border-sky-500 text-${fromFontSize} text-black`}
+                                        onChange={handleInputFromChange}
+                                        onKeyDown={(event) => {
+                                            if (event?.key === '-' || event?.key === '+') {
+                                              event.preventDefault();
+                                            }
+                                        }}
                                         />
                                 </div>
                             </div>
-                            <div className="ml-[130px] text-zinc-300 text-sm">≈${estimatedValueFrom}</div>
+                            <div className="ml-[150px] text-zinc-300 text-sm">≈${estimatedValueFrom}</div>
                         </div>
                         <img 
                             src="/imgs/double-arrow.svg" 
@@ -128,32 +130,33 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
                         <div>
                             <div>To</div>
                                 <div className="flex">
-                                    <div className="bg-sky-700 hover:bg-sky-600 active:bg-sky-500
-                                    h-[60px] w-[180px] rounded-s-lg 
-                                    border-2 border-zinc-500 border-e-0 cursor-pointer
-                                    flex items-center justify-between px-2">
-                                        <span className="font-semibold">Select token</span>
-                                        <Arrow className="h-[15px] w-[15px] text-white"/>
-                                    </div>
+                                    <TokenSelection handleTokenChange={changeToToken} token={toToken}/>
                                     <div className="w-full">
                                         <input 
-                                            className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
-                                            pl-3 focus:border-2 focus:border-sky-500 text-${toFontSize} text-black`}
-                                            onChange={handleInputToChange}
                                             id='swapTo'
                                             name='swapTo'
                                             type="number" 
                                             value={valueTo}
                                             placeholder="0" 
                                             min="0"
+                                            className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
+                                            pl-3 focus:border-2 focus:border-sky-500 text-${toFontSize} text-black`}
+                                            onChange={handleInputToChange}
+                                            onKeyDown={(event) => {
+                                                if (event?.key === '-' || event?.key === '+') {
+                                                  event.preventDefault();
+                                                }
+                                            }}
                                             />
                                     </div>
                                 </div>
-                                <div className="ml-[130px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
+                                <div className="ml-[150px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
                         </div>
-                        <div>
-                            <div className="h-[45px] w-[200px] bg-sky-700 rounded-full m-auto 
-                                cursor-pointer hover:bg-sky-600 active:bg-sky-700">Collect wallet</div>
+                        <div className="my-2">1 DAI = 0.00029 WETH</div>
+                        <div className="h-[45px] w-[200px] bg-sky-700 rounded-full my-8
+                                        mx-auto grid place-items-center
+                                cursor-pointer hover:bg-sky-600 active:bg-sky-500">
+                                    Collect wallet     
                         </div>
                     </div>
                 </div>

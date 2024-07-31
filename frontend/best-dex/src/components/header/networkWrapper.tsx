@@ -39,6 +39,8 @@ const NetworkWrapper : React.FC<NetworkWrapperProps> = () => {
         console.log('handleNetworkChange')
         console.log(network)
         setNetwork(network)
+        updatePopover(false)
+        updateDrawer(false)
       }
 
       const updatePopover = (status: boolean) => {
