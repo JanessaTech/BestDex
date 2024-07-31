@@ -12,7 +12,7 @@ import {
   } from "@/components/ui/drawer"
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useState } from "react"
-import WalletConnect from "../wallet/WalletConnect"
+import WalletConnect from "./WalletConnect"
 import useOutsideClick from "@/hooks/useOutsideClick"
 import useMediaQuery from "@/hooks/useMediaQuery"
 

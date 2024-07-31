@@ -16,7 +16,7 @@ import useOutsideClick from "@/hooks/useOutsideClick"
 import useMediaQuery from "@/hooks/useMediaQuery"
 import { NetworkType } from "@/lib/types";
 import { defaultNetwork } from "@/lib/constants";
-import NetworkConnect from "../network/NetworkConnect";
+import NetworkConnect from "./NetworkConnect";
 
 type NetworkWrapperProps = {}
 

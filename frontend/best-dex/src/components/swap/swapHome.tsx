@@ -1,17 +1,10 @@
 "use client"
 
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-  } from "@/components/ui/popover"
 import { useState } from "react"
 import { defaultNetwork } from "@/lib/constants"
 import type { NetworkType, TokenType } from "@/lib/types"
-import Arrow from "@/lib/svgs/Arrow"
-import NetworkSelect from "./NetworkSelect"
-import TokenSelect from "../token/TokenSelect"
-import TokenSelection from "./TokenSelection"
+import TokenSelection from "../token/TokenSelection"
+import NetworkPopover from "./NetworkPopover"
 
 type SwapHomeProps = {}
 
@@ -102,7 +95,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
                         <span className="cursor-pointer" onClick={handleClear}>Clear</span>
                         <img src="/imgs/setting.svg" alt="setting" className="ml-3 cursor-pointer"/>
                     </div>
-                    <NetworkSelect 
+                    <NetworkPopover 
                         open={isNetworkOpen} 
                         network={network} 
                         handleNetworkOpen={handleNetworkOpen} 

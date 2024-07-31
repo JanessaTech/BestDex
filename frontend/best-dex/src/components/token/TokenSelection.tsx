@@ -8,7 +8,7 @@ import {
   } from "@/components/ui/dialog"
 import Arrow from "@/lib/svgs/Arrow"
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import TokenSelect from "../token/TokenSelect"
+import TokenSelect from "./TokenSelect"
 import type { TokenType } from "@/lib/types"
 
 type TokenProps = {
@@ -37,13 +37,9 @@ const TokenSelection: React.FC<TokenProps> = ({token, handleTokenChange}) => {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="text-black">Edit profile</DialogTitle>
-                    <DialogDescription>
-                        Make changes to your profile here. Click save when you're done.
-                    </DialogDescription>
+                    <DialogTitle className="text-black">Select a token</DialogTitle>
                 </DialogHeader>
                 <VisuallyHidden.Root>
-                    <DialogTitle/>
                     <DialogDescription/>
                 </VisuallyHidden.Root>
                 <TokenSelect />

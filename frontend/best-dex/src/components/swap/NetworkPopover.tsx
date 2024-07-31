@@ -3,8 +3,8 @@ import {
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover"
-import NetworkConnect from "../network/NetworkConnect"
 import type { NetworkType } from "@/lib/types"
+import NetworkConnect from "../network/NetworkConnect"
 
 type NetworkSelectProps = {
     open: boolean,
@@ -13,7 +13,7 @@ type NetworkSelectProps = {
     handleNetworkChange: (network: NetworkType) => void
 }
 
-const NetworkSelect: React.FC<NetworkSelectProps> = ({open, network, handleNetworkOpen, handleNetworkChange}) => {
+const NetworkPopover: React.FC<NetworkSelectProps> = ({open, network, handleNetworkOpen, handleNetworkChange}) => {
     const onOpenChange = (open: boolean) => {
         handleNetworkOpen(open)
     }
@@ -36,4 +36,4 @@ const NetworkSelect: React.FC<NetworkSelectProps> = ({open, network, handleNetwo
     )
 }
 
-export default NetworkSelect
+export default NetworkPopover
