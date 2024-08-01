@@ -4,15 +4,17 @@ import {
     PopoverTrigger,
   } from "@/components/ui/popover"
 import NetworkConnect from "../network/NetworkConnect"
-import type { NetworkType } from "@/lib/types"
+import type { NetworkType, TokenType } from "@/lib/types"
 import { useState } from "react"
 import { TokenListData, defaultNetwork } from "@/lib/constants"
 import Search from "@/lib/svgs/Search"
 import TokenList from "./TokenList"
 
-type TokenSelectProps = {}
+type TokenSelectProps = {
+    handleTokenChange: (newToken: TokenType) => void
+}
 
-const TokenSelect: React.FC<TokenSelectProps> = () => {
+const TokenSelect: React.FC<TokenSelectProps> = ({handleTokenChange}) => {
     const [network, setNetwork] = useState<NetworkType>(defaultNetwork)
     const [isNetworkOpen, setIsNetworkOpen] = useState<boolean>(false)
     const [searchToken, setSearchToken] = useState<string>('')
@@ -59,7 +61,8 @@ const TokenSelect: React.FC<TokenSelectProps> = () => {
                 {
                     TokenListData.recommended?.map((token) => (
                         <div key={token.name} className="border border-zinc-300 rounded-full p-1 
-                        w-fit flex items-center cursor-pointer hover:bg-zinc-100 mb-3 mr-3">
+                        w-fit flex items-center cursor-pointer hover:bg-zinc-100 mb-3 mr-3"
+                        onClick={() => handleTokenChange(token)}>
                             <img src={`/imgs/tokens/${token.name}.png`} alt={token.name} width={25} height={25}/>
                             <span className="mx-2 text-black">{token.symbol}</span>
                         </div>
@@ -67,7 +70,7 @@ const TokenSelect: React.FC<TokenSelectProps> = () => {
                 }
             </div>
             <div className="border-t border-zinc-300 w-full my-3"></div>
-            <TokenList searchToken={searchToken} chainId={network.chainId}/>
+            <TokenList searchToken={searchToken} chainId={network.chainId} handleTokenChange={handleTokenChange}/>
         </div>
     )
 }

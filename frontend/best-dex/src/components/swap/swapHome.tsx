@@ -19,6 +19,8 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     const [estimatedValueTo, setEstimatedValueTo] = useState<number>(7823.14)
     const [fromToken, setFromToken] = useState<TokenType | undefined>({chainId: 1, name: 'eth', symbol: 'ETH', address: '1234', company:'Ethereum'})
     const [toToken, setToToken] = useState<TokenType | undefined>(undefined)
+    const [isFromOpen, setIsFromOpen] = useState<boolean>(false)
+    const [isToOpen, setIsToOpen] = useState<boolean>(false)
 
     const handleNetworkChange = (network: NetworkType) => {
         setNetwork(network)
@@ -57,6 +59,13 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         setValueTo(value === '' || value === undefined ? '' : Number(value))
     }
 
+    const onFromOpenChange = (open: boolean) => {
+        setIsFromOpen(open)
+    }
+    const onToOpenChange = (open: boolean) => {
+        setIsToOpen(open)
+    }
+
     const handleExchange = () => {
         if (valueFrom !== '' && valueTo !== '') {
             updateFrom(valueTo?.toString()) 
@@ -64,12 +73,17 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         }
     }
 
-    const changeFromToken = () => {
-        console.log('changeFromToken')
+    const changeFromTokenChange = (newToken: TokenType) => {
+        console.log('changeFromTokenChange')
+        console.log('newToken', newToken)
+        setFromToken(newToken)
+        setIsFromOpen(false)
     }
 
-    const changeToToken = () => {
-        console.log('changeToToken')
+    const changeToTokenChange = (newToken: TokenType) => {
+        console.log('changeToTokenChange')
+        setToToken(newToken)
+        setIsToOpen(false)
     }
 
     const handleClear = () => {
@@ -104,7 +118,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                         <div>
                             <div>From</div>
                             <div className="flex">
-                                <TokenSelection handleTokenChange={changeFromToken} token={fromToken}/>
+                                <TokenSelection open={isFromOpen} token={fromToken} handleTokenChange={changeFromTokenChange} onOpenChange={onFromOpenChange}/>
                                 <div className="w-full">
                                     <input
                                         id='swapFrom'
@@ -133,7 +147,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                         <div>
                             <div>To</div>
                                 <div className="flex">
-                                    <TokenSelection handleTokenChange={changeToToken} token={toToken}/>
+                                    <TokenSelection open={isToOpen}  token={toToken} handleTokenChange={changeToTokenChange} onOpenChange={onToOpenChange}/>
                                     <div className="w-full">
                                         <input 
                                             id='swapTo'

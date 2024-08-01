@@ -12,22 +12,24 @@ import TokenSelect from "./TokenSelect"
 import type { TokenType } from "@/lib/types"
 
 type TokenProps = {
+    open: boolean,
     token?: TokenType,
-    handleTokenChange: () => void
+    onOpenChange: (open: boolean) => void
+    handleTokenChange: (newToken: TokenType) => void
 }
 
-const TokenSelection: React.FC<TokenProps> = ({token, handleTokenChange}) => {
+const TokenSelection: React.FC<TokenProps> = ({open, token, onOpenChange, handleTokenChange}) => {
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger>
                 <div className={`h-[60px] w-[150px] rounded-s-lg border-2 border-zinc-500 
                                 flex items-center justify-between cursor-pointer px-2
                                 border-e-0
-                                ${token ? 'bg-white': 'bg-sky-700 hover:bg-sky-600 active:bg-sky-500'}`} onClick={handleTokenChange}>
+                                ${token ? 'bg-white': 'bg-sky-700 hover:bg-sky-600 active:bg-sky-500'}`}>
                     {
                         token ? <div className="flex items-center">
-                                    <img src="/imgs/tokens/eth.png" width={25} height={25} alt="eth"/>
-                                    <span className="text-zinc-600 font-semibold ml-2">ETH</span>
+                                    <img src={`/imgs/tokens/${token.name}.png`} width={25} height={25} alt={token.name}/>
+                                    <span className="text-zinc-600 font-semibold ml-2">{token.symbol}</span>
                                 </div>
                             : <span className="font-semibold">Select token</span>
                     }
@@ -42,7 +44,7 @@ const TokenSelection: React.FC<TokenProps> = ({token, handleTokenChange}) => {
                 <VisuallyHidden.Root>
                     <DialogDescription/>
                 </VisuallyHidden.Root>
-                <TokenSelect/>
+                <TokenSelect handleTokenChange={handleTokenChange}/>
             </DialogContent>
         </Dialog>
     )
