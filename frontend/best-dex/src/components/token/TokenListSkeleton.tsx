@@ -8,7 +8,6 @@ const TokenListSkeleton = () => {
             <div className="ml-3 w-full">
                 <Skeleton className="h-[40px] w-1/2" />
             </div>
-
         </li>
     )
 

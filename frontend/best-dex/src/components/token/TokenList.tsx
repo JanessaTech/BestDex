@@ -2,6 +2,7 @@ import useQueryTokenList from "@/hooks/useQueryTokenList"
 import { TokenListData } from "@/lib/constants"
 import { useState } from "react"
 import TokenListSkeleton from "./TokenListSkeleton"
+import { Divide } from "lucide-react"
 
 type TokenListprops = {
     chainId: number,
@@ -16,7 +17,7 @@ const TokenList: React.FC<TokenListprops>=  ({chainId, searchToken}) => {
         <div className="h-[500px] overflow-auto">
                 <div className="text-zinc-400 my-2 sticky top-0 bg-white">{searchToken ? 'Search results': 'Popular Tokens'}</div>
                 <ul>
-                    {loadingTokens ? <TokenListSkeleton/> :
+                    {loadingTokens ? new Array<number>(10).fill(0).map(() => <TokenListSkeleton/>) :
                         tokenList.length === 0 ? <div className="text-zinc-600 text-center">No token found</div> :
                         tokenList.map((token) => (
                             <li className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg">
