@@ -8,7 +8,7 @@ import NetworkPopover from "./NetworkPopover"
 
 type SwapHomeProps = {}
 
-const SwapHome: React.FC<SwapHomeProps> = () => {
+const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     const [network, setNetwork] = useState<NetworkType>(defaultNetwork)
     const [isNetworkOpen, setIsNetworkOpen] = useState<boolean>(false)
     const [fromFontSize, setFromFontSize] = useState('base')
@@ -17,7 +17,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {
     const [estimatedValueFrom, setEstimatedValueFrom] = useState<number>(123.3)
     const [valueTo, setValueTo] = useState<number | ''>(0)
     const [estimatedValueTo, setEstimatedValueTo] = useState<number>(7823.14)
-    const [fromToken, setFromToken] = useState<TokenType | undefined>({chainId: 1, name: 'eth', label: 'ETH', address: '1234'})
+    const [fromToken, setFromToken] = useState<TokenType | undefined>({chainId: 1, name: 'eth', symbol: 'ETH', address: '1234', company:'Ethereum'})
     const [toToken, setToToken] = useState<TokenType | undefined>(undefined)
 
     const handleNetworkChange = (network: NetworkType) => {

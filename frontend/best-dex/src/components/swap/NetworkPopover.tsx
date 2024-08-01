@@ -5,6 +5,7 @@ import {
   } from "@/components/ui/popover"
 import type { NetworkType } from "@/lib/types"
 import NetworkConnect from "../network/NetworkConnect"
+import Arrow from "@/lib/svgs/Arrow"
 
 type NetworkSelectProps = {
     open: boolean,
@@ -26,7 +27,7 @@ const NetworkPopover: React.FC<NetworkSelectProps> = ({open, network, handleNetw
                         <img src={`/imgs/networks/${network.name}.png`} alt={network.name} className="mr-4"/>
                         <span className="text-xl">{network.label}</span>
                     </div>
-                    <img src="/imgs/down_arrow.svg" alt="select network" className="mr-3 cursor-pointer"/>
+                    <Arrow className="mr-3 cursor-pointer hover:text-sky-500"/>
                 </div>
             </PopoverTrigger>     
             <PopoverContent align='end' sideOffset={-30}>

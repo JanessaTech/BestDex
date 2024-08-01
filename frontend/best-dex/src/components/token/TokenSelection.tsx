@@ -42,7 +42,7 @@ const TokenSelection: React.FC<TokenProps> = ({token, handleTokenChange}) => {
                 <VisuallyHidden.Root>
                     <DialogDescription/>
                 </VisuallyHidden.Root>
-                <TokenSelect />
+                <TokenSelect/>
             </DialogContent>
         </Dialog>
     )

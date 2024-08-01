@@ -6,8 +6,9 @@ export type NetworkType = {
 export type TokenType = {
     chainId: number,
     name: string,
-    label: string,
-    address: string
+    symbol: string,
+    address: string,
+    company: string
 }
 
 export type SvgProps = {
