@@ -14,6 +14,8 @@ export type TokenType = {
 export type SvgProps = {
     className?: string,
     onClick?: () => void
+    onMouseEnter?: () => void
+    onMouseLeave?: () => void
 }
 
 export enum MenuType {

@@ -6,6 +6,7 @@ import type { NetworkType, TokenType } from "@/lib/types"
 import TokenSelection from "../token/TokenSelection"
 import NetworkPopover from "./NetworkPopover"
 import { isTokenSame } from "@/lib/utils" 
+import SettingPopover from "../setting/SettingPopover"
 
 type SwapHomeProps = {}
 
@@ -22,6 +23,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     const [toToken, setToToken] = useState<TokenType | undefined>(undefined)
     const [isFromOpen, setIsFromOpen] = useState<boolean>(false)
     const [isToOpen, setIsToOpen] = useState<boolean>(false)
+    const [isSettingOpen, setIsSettingOpen] = useState<boolean>(false)
 
     const handleNetworkChange = (network: NetworkType) => {
         setNetwork(network)
@@ -65,6 +67,10 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     }
     const onToOpenChange = (open: boolean) => {
         setIsToOpen(open)
+    }
+    
+    const onSettingOpenChange = (open: boolean) => {
+        setIsSettingOpen(open)
     }
 
     const handleExchange = () => {
@@ -118,7 +124,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                 <div className="h-full">
                     <div className="flex justify-end items-center mb-8">
                         <span className="cursor-pointer" onClick={handleClear}>Clear</span>
-                        <img src="/imgs/setting.svg" alt="setting" className="ml-3 cursor-pointer"/>
+                        <SettingPopover open={isSettingOpen} onOpenChange={onSettingOpenChange}/>
                     </div>
                     <NetworkPopover 
                         open={isNetworkOpen} 
@@ -137,7 +143,6 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                         type="text" 
                                         value={valueFrom}
                                         placeholder="0" 
-                                        min="0"
                                         className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
                                         pl-3 focus:border-2 focus:border-sky-500 text-${fromFontSize} text-black`}
                                         onChange={handleInputFromChange}
@@ -167,13 +172,13 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                             type="text" 
                                             value={valueTo}
                                             placeholder="0" 
-                                            min="0"
                                             className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
                                             pl-3 focus:border-2 focus:border-sky-500 text-${toFontSize} text-black`}
                                             onChange={handleInputToChange}
                                             onKeyDown={(event) => {
-                                                if (event?.key === '-' || event?.key === '+') {
-                                                  event.preventDefault();
+                                                const allow = (event?.key === 'Backspace' || event?.key === 'Delete') || typeof event?.key === 'string' && event?.key.length === 1 && event?.key >= '0' && event?.key <= '9'
+                                                if (!allow) {
+                                                    event.preventDefault(); 
                                                 }
                                             }}
                                             />
