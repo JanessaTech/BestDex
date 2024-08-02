@@ -72,6 +72,9 @@
   .padding-y {
     @apply px-4 md:px-8;
   }
+  .buttonEffect {
+    @apply bg-sky-700 hover:bg-sky-600 active:bg-sky-500
+  }
 }
 
 textarea:focus, input:focus{

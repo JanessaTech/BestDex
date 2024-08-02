@@ -24,8 +24,8 @@ const TokenSelection: React.FC<TokenProps> = ({open, token, onOpenChange, handle
             <DialogTrigger>
                 <div className={`group h-[60px] w-[150px] rounded-s-lg border-2 border-zinc-500 
                                 flex items-center justify-between cursor-pointer px-2
-                                border-e-0 hover:border-sky-700
-                                ${token ? 'bg-white': 'bg-sky-700 hover:bg-sky-600 active:bg-sky-500'}`}>
+                                border-e-0 hover:border-sky-500
+                                ${token ? 'bg-white': 'buttonEffect'}`}>
                     {
                         token ? <div className="flex items-center">
                                     <img src={`/imgs/tokens/${token.name}.png`} width={25} height={25} alt={token.name}/>
@@ -34,7 +34,7 @@ const TokenSelection: React.FC<TokenProps> = ({open, token, onOpenChange, handle
                             : <span className="font-semibold">Select token</span>
                     }
                     <Arrow className={`h-[15px] w-[15px]
-                                    ${token ? 'text-black group-hover:text-sky-700' : 'text-white'}`}/>
+                                    ${token ? 'text-black group-hover:text-sky-500' : 'text-white'}`}/>
                 </div> 
             </DialogTrigger>
             <DialogContent>

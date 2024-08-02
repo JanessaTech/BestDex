@@ -13,10 +13,10 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     const [isNetworkOpen, setIsNetworkOpen] = useState<boolean>(false)
     const [fromFontSize, setFromFontSize] = useState('base')
     const [toFontSize, setToFontSize] = useState('base')
-    const [valueFrom, setValueFrom] = useState<number | ''>(0)
-    const [estimatedValueFrom, setEstimatedValueFrom] = useState<number>(123.3)
-    const [valueTo, setValueTo] = useState<number | ''>(0)
-    const [estimatedValueTo, setEstimatedValueTo] = useState<number>(7823.14)
+    const [valueFrom, setValueFrom] = useState<string>('0')
+    const [valueTo, setValueTo] = useState<string>('0')
+    const [estimatedValueFrom, setEstimatedValueFrom] = useState<string>('123.3')
+    const [estimatedValueTo, setEstimatedValueTo] = useState<string>('7823.14')
     const [fromToken, setFromToken] = useState<TokenType | undefined>({chainId: 1, name: 'eth', symbol: 'ETH', address: '1234', company:'Ethereum'})
     const [toToken, setToToken] = useState<TokenType | undefined>(undefined)
     const [isFromOpen, setIsFromOpen] = useState<boolean>(false)
@@ -47,7 +47,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         } else {
             setFromFontSize('base')
         }
-        setValueFrom(value === '' || value === undefined ? '' : Number(value))
+        setValueFrom(value)
     }
 
     const updateTo = (value: string) => {
@@ -56,7 +56,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         } else {
             setToFontSize('base')
         }
-        setValueTo(value === '' || value === undefined ? '' : Number(value))
+        setValueTo(value)
     }
 
     const onFromOpenChange = (open: boolean) => {
@@ -67,10 +67,12 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     }
 
     const handleExchange = () => {
-        if (valueFrom !== '' && valueTo !== '') {
-            updateFrom(valueTo?.toString()) 
-            updateTo(valueFrom?.toString())
-        }
+        setFromToken(toToken)
+        setToToken(fromToken)
+        setFromFontSize(toFontSize)
+        setToFontSize(fromFontSize)
+        updateFrom(valueTo.replace(/^0+/, ''))
+        updateTo(valueFrom.replace(/^0+/, ''))
     }
 
     const changeFromTokenChange = (newToken: TokenType) => {
@@ -90,10 +92,10 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         setNetwork(defaultNetwork)
         setFromFontSize('base')
         setToFontSize('base')
-        setValueFrom(0)
-        setEstimatedValueFrom(0)
-        setValueTo(0)
-        setEstimatedValueTo(0)
+        setValueFrom('0')
+        setEstimatedValueFrom('0')
+        setValueTo('0')
+        setEstimatedValueTo('0')
         setFromToken(undefined)
         setToToken(undefined)
     }
@@ -123,7 +125,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                     <input
                                         id='swapFrom'
                                         name='swapFrom'
-                                        type="number" 
+                                        type="text" 
                                         value={valueFrom}
                                         placeholder="0" 
                                         min="0"
@@ -131,8 +133,9 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                         pl-3 focus:border-2 focus:border-sky-500 text-${fromFontSize} text-black`}
                                         onChange={handleInputFromChange}
                                         onKeyDown={(event) => {
-                                            if (event?.key === '-' || event?.key === '+') {
-                                              event.preventDefault();
+                                            const allow = (event?.key === 'Backspace' || event?.key === 'Delete') || typeof event?.key === 'string' && event?.key.length === 1 && event?.key >= '0' && event?.key <= '9'
+                                            if (!allow) {
+                                                event.preventDefault(); 
                                             }
                                         }}
                                         />
@@ -152,7 +155,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                         <input 
                                             id='swapTo'
                                             name='swapTo'
-                                            type="number" 
+                                            type="text" 
                                             value={valueTo}
                                             placeholder="0" 
                                             min="0"
@@ -169,10 +172,11 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                 </div>
                                 <div className="ml-[150px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
                         </div>
-                        <div className="my-2">1 DAI = 0.00029 WETH</div>
-                        <div className="h-[45px] w-[200px] bg-sky-700 rounded-full my-8
-                                        mx-auto grid place-items-center
-                                cursor-pointer hover:bg-sky-600 active:bg-sky-500">
+                        {
+                            toToken && fromToken && <div className="my-2">1 {toToken.symbol} = 0.00029 {fromToken.symbol}</div>
+                        }
+                        <div className="h-[45px] w-[200px] buttonEffect rounded-full my-8
+                                        mx-auto grid place-items-center cursor-pointer">
                                     Collect wallet     
                         </div>
                     </div>

@@ -41,12 +41,6 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
         localStorage.setItem('wallet_drawer', status.toString())
       }
 
-      
-      const outSideClickCallback = () => {
-        console.log('handle outSideClickCallback...')
-        updateDrawer(false)
-      }
-
       const mediaQueryCallback = () => {
         console.log('handle mediaQueryCallback...')
         if (window.innerWidth <= 768) {
@@ -87,8 +81,8 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
         <div className='max-md:hidden'>
             <Popover onOpenChange={onOpenChange} open={openWalletPopover}>
               <PopoverTrigger>
-                <div className='bg-sky-700 px-5 py-1.5 rounded-full 
-                          hover:bg-sky-600 active:bg-sky-500' onClick={handlePopoverClick}>Connect wallet</div>
+                <div className='buttonEffect px-5 py-1.5 rounded-full' 
+                     onClick={handlePopoverClick}>Connect wallet</div>
               </PopoverTrigger>     
               <PopoverContent align='end'>
                 <WalletConnect />

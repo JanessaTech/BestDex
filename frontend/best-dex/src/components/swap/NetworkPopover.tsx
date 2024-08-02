@@ -22,12 +22,13 @@ const NetworkPopover: React.FC<NetworkSelectProps> = ({open, network, handleNetw
     return (
         <Popover open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger className="w-full">
-                <div className="border border-white h-[60px] rounded-full px-5 flex items-center justify-between mb-8">
+                <div className=" group border border-white h-[60px] hover:border-sky-500
+                rounded-full px-5 flex items-center justify-between mb-8">
                     <div className="flex items-center">
                         <img src={`/imgs/networks/${network.name}.png`} alt={network.name} className="mr-4"/>
                         <span className="text-xl">{network.label}</span>
                     </div>
-                    <Arrow className="mr-3 cursor-pointer hover:text-sky-500"/>
+                    <Arrow className="mr-3 cursor-pointer group-hover:text-sky-500"/>
                 </div>
             </PopoverTrigger>     
             <PopoverContent align='end' sideOffset={-30}>
