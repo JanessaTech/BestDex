@@ -13,7 +13,6 @@ import {
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useState } from "react"
 import WalletConnect from "./WalletConnect"
-import useOutsideClick from "@/hooks/useOutsideClick"
 import useMediaQuery from "@/hooks/useMediaQuery"
 
 type WalletWrapperProps = {}
@@ -47,8 +46,6 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
         console.log('handle outSideClickCallback...')
         updateDrawer(false)
       }
-    
-      const ref = useOutsideClick(outSideClickCallback)  // custom outsideClick hook
 
       const mediaQueryCallback = () => {
         console.log('handle mediaQueryCallback...')
@@ -77,6 +74,10 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
         updatePopover(open)
       }
 
+      const onDrawerOpenChange = (open: boolean) => {
+        updateDrawer(open)
+      }
+
       const handleDrawerClick = () => {
         updateDrawer(true)
       }
@@ -89,18 +90,18 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
                 <div className='bg-sky-700 px-5 py-1.5 rounded-full 
                           hover:bg-sky-600 active:bg-sky-500' onClick={handlePopoverClick}>Connect wallet</div>
               </PopoverTrigger>     
-              <PopoverContent align='end' ref={ref}>
+              <PopoverContent align='end'>
                 <WalletConnect />
               </PopoverContent>
             </Popover>
           </div>
           <div className='md:hidden'>
-            <Drawer open={openWalletDrawer}>
+            <Drawer open={openWalletDrawer} onOpenChange={onDrawerOpenChange}>
               <DrawerTrigger>
                 <div className='bg-sky-700 px-5 py-1.5 rounded-full 
                             hover:bg-sky-600 active:bg-sky-500' onClick={handleDrawerClick}>Connect wallet</div>
               </DrawerTrigger>
-              <DrawerContent ref={ref}>
+              <DrawerContent >
                   <VisuallyHidden.Root>
                     <DrawerTitle/>
                     <DrawerDescription/>

@@ -12,7 +12,6 @@ import {
   } from "@/components/ui/drawer"
 import { useState } from "react"
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import useOutsideClick from "@/hooks/useOutsideClick"
 import useMediaQuery from "@/hooks/useMediaQuery"
 import { NetworkType } from "@/lib/types";
 import { defaultNetwork } from "@/lib/constants";
@@ -53,14 +52,6 @@ const NetworkWrapper : React.FC<NetworkWrapperProps> = () => {
         localStorage.setItem('network_drawer', status.toString())
       }
 
-      
-      const outSideClickCallback = () => {
-        console.log('handle network outSideClickCallback...')
-        updateDrawer(false)
-      }
-    
-      const ref = useOutsideClick(outSideClickCallback)  // custom outsideClick hook
-
       const mediaQueryCallback = () => {
         console.log('handle network mediaQueryCallback...')
         if (window.innerWidth <= 768) {
@@ -88,6 +79,10 @@ const NetworkWrapper : React.FC<NetworkWrapperProps> = () => {
         updatePopover(open)
       }
 
+      const onDrawerOpenChange = (open: boolean) => {
+        updateDrawer(open)
+      }
+
       const handleDrawerClick = () => {
         updateDrawer(true)
       }
@@ -96,7 +91,10 @@ const NetworkWrapper : React.FC<NetworkWrapperProps> = () => {
             <div className='flex items-center mr-3 max-md:hidden'>
                 <Popover onOpenChange={onOpenChange} open={openNetworkPopover}>
                 <PopoverTrigger>
-                    <img src={`/imgs/networks/${network.name}.png`} width={25}  height={25} alt="" onClick={handlePopoverClick}/>
+                    <img src={`/imgs/networks/${network.name}.png`} 
+                          width={25}  height={25} 
+                          alt={network.name} 
+                          onClick={handlePopoverClick}/>
                 </PopoverTrigger>
                 <PopoverContent align='center' sideOffset={10}>
                     <NetworkConnect network={network} handleNetworkChange={handleNetworkChange}/>
@@ -104,11 +102,13 @@ const NetworkWrapper : React.FC<NetworkWrapperProps> = () => {
                 </Popover>
             </div>
             <div className='flex items-center mr-3 md:hidden'>
-                <Drawer open={openNetworkDrawer}>
+                <Drawer open={openNetworkDrawer} onOpenChange={onDrawerOpenChange}>
                 <DrawerTrigger>
-                    <img src={`/imgs/networks/${network.name}.png`} width={25}  height={25} alt="" onClick={handleDrawerClick}/>
+                    <img src={`/imgs/networks/${network.name}.png`} 
+                          width={25}  height={25} alt={network.name} 
+                          onClick={handleDrawerClick}/>
                 </DrawerTrigger>
-                <DrawerContent ref={ref}>
+                <DrawerContent>
                     <VisuallyHidden.Root>
                       <DrawerTitle/>
                       <DrawerDescription/>
