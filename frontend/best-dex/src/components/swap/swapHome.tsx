@@ -5,6 +5,7 @@ import { defaultNetwork } from "@/lib/constants"
 import type { NetworkType, TokenType } from "@/lib/types"
 import TokenSelection from "../token/TokenSelection"
 import NetworkPopover from "./NetworkPopover"
+import { isTokenSame } from "@/lib/utils" 
 
 type SwapHomeProps = {}
 
@@ -76,15 +77,23 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     }
 
     const changeFromTokenChange = (newToken: TokenType) => {
-        console.log('changeFromTokenChange')
         console.log('newToken', newToken)
-        setFromToken(newToken)
+        if (isTokenSame(newToken, toToken)) {
+            handleExchange()
+        } else {
+            setFromToken(newToken)
+        }
+        
         setIsFromOpen(false)
     }
 
     const changeToTokenChange = (newToken: TokenType) => {
         console.log('changeToTokenChange')
-        setToToken(newToken)
+        if (isTokenSame(newToken, fromToken)) {
+            handleExchange()
+        } else {
+            setToToken(newToken)
+        }
         setIsToOpen(false)
     }
 
