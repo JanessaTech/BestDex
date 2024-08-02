@@ -13,8 +13,7 @@ type MenuProps = {
 
 const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
   const pathname = usePathname()
-console.log(`h-[30px] w-[30px] text-zinc-300 ${pathname.startsWith('/balance') ? 'text-sky-500' : 'text-amber-500'}
-                    group-hover/li:text-sky-500`)
+
     return (
         <>
         <div className='flex flex-col w-full'>
