@@ -13,7 +13,8 @@ type MenuProps = {
 
 const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
   const pathname = usePathname()
-
+console.log(`h-[30px] w-[30px] text-zinc-300 ${pathname.startsWith('/balance') ? 'text-sky-500' : 'text-amber-500'}
+                    group-hover/li:text-sky-500`)
     return (
         <>
         <div className='flex flex-col w-full'>
@@ -31,8 +32,8 @@ const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
                 <li className={`group/li flex items-center h-[30px] my-[10px] 
                 ${pathname === '/' ? 'border-r-2 border-r-sky-500 text-sky-500' : ''}
                     hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500`}>
-                  <Swap className={`h-[30px] w-[30px] text-zinc-300 
-                  ${pathname === '/' ? 'text-sky-500' : ''}
+                  <Swap className={`h-[30px] w-[30px] 
+                  ${pathname === '/' ? 'text-sky-500' : 'text-zinc-300'}
                     group-hover/li:text-sky-500`}/>
                   <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Swap</div>
                 </li>
@@ -41,8 +42,8 @@ const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
                 <li className={`group/li flex items-center h-[30px] my-[10px] 
                 ${pathname.startsWith('/pool') ? 'border-r-2 border-r-sky-500 text-sky-500': ''}
                     hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500`}>
-                  <Pool className={`h-[30px] w-[30px] text-zinc-300
-                  ${pathname.startsWith('/pool') ? 'text-sky-500' : ''}
+                  <Pool className={`h-[30px] w-[30px] 
+                  ${pathname.startsWith('/pool') ? 'text-sky-500' : 'text-zinc-300'}
                     group-hover/li:text-sky-500`}/>
                   <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Pool</div>
                 </li>
@@ -51,8 +52,8 @@ const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
                 <li className={`group/li flex items-center h-[30px] my-[10px] 
                 ${pathname.startsWith('/explore') ? 'border-r-2 border-r-sky-500 text-sky-500': ''}
                     hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500`}>
-                  <Explore className={`h-[30px] w-[30px] text-zinc-300 
-                  ${pathname.startsWith('/explore') ? 'text-sky-500' : ''}
+                  <Explore className={`h-[30px] w-[30px]  
+                  ${pathname.startsWith('/explore') ? 'text-sky-500' : 'text-zinc-300'}
                     group-hover/li:text-sky-500`}/>
                   <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Explore</div>
                 </li>
@@ -61,8 +62,7 @@ const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
                 <li className={`group/li flex items-center h-[30px] my-[10px] 
                 ${pathname.startsWith('/balance') ? 'border-r-2 border-r-sky-500 text-sky-500': ''}
                   hover:border-r-2 hover:border-r-sky-500 hover:text-sky-500`}>
-                  <Balance className={`h-[30px] w-[30px] text-zinc-300 
-                  ${pathname.startsWith('/balance') ? 'text-sky-500' : ''}
+                  <Balance className={`h-[30px] w-[30px] ${pathname.startsWith('/balance') ? 'text-sky-500' : 'text-zinc-300'}
                     group-hover/li:text-sky-500`}/>
                   <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Balance</div>
                 </li>
