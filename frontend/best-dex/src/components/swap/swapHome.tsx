@@ -118,8 +118,8 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     return (
         <div>
             <div className="font-semibold text-2xl">Swap</div>
-            <div className="mt-4 w-4/5 md:w-1/2 
-            mx-auto min-w-[400px] rounded-3xl border border-zinc-500
+            <div className="mt-4 w-4/5 md:w-2/3 
+            mx-auto min-w-[300px] max-w-[600px] rounded-3xl border border-zinc-500
             bg-zinc-800 p-6">
                 <div className="h-full">
                     <div className="flex justify-end items-center mb-8">
@@ -188,9 +188,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                 </div>
                                 <div className="ml-[150px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
                         </div>
-                        {
-                            toToken && fromToken && <div className="my-2">1 {toToken.symbol} = 0.00029 {fromToken.symbol}</div>
-                        }
+                        <div className={`my-2 ${fromToken && toToken ? '' : 'invisible'}`}>1 {toToken?.symbol} = 0.00029 {fromToken?.symbol}</div>
                         <div className="h-[45px] w-[200px] buttonEffect rounded-full my-8
                                         mx-auto grid place-items-center cursor-pointer">
                                     Collect wallet     

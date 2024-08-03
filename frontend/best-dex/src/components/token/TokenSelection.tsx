@@ -22,7 +22,7 @@ const TokenSelection: React.FC<TokenProps> = ({open, token, onOpenChange, handle
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger>
-                <div className={`group h-[60px] w-[150px] rounded-s-lg border-2 border-zinc-500 
+                <div className={`group h-[60px] w-[120px] rounded-s-lg border-2 border-zinc-500 
                                 flex items-center justify-between cursor-pointer px-2
                                 border-e-0 hover:border-sky-500
                                 ${token ? 'bg-white': 'buttonEffect'}`}>

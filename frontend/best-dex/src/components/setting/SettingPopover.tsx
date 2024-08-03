@@ -59,7 +59,7 @@ const SettingPopover: React.FC<SettingPopover> = ({open, onOpenChange}) => {
              <PopoverTrigger>
                 <img src="/imgs/setting.svg" alt="setting" className="ml-3 cursor-pointer"/>
              </PopoverTrigger>
-             <PopoverContent align="end" className="w-[400px] py-4">
+             <PopoverContent align="end" className="w-[300px] md:w-[400px] py-4">
                 <div className="flex justify-end">
                     <PopoverClose>
                         <Close className="text-zinc-500 hover:text-zinc-700 active:text-zinc-900 w-[20px] h-[20px]"/> 
@@ -74,7 +74,7 @@ const SettingPopover: React.FC<SettingPopover> = ({open, onOpenChange}) => {
                             <div className="w-[200px] text-xs">Your transaction will revert if the price changes unfavorably by more than this percentage</div>
                         </CustomTooltip>
                     </div>
-                    <div className="flex justify-between my-3 items-center">
+                    <div className="flex justify-between my-3 items-center flex-wrap space-y-[2px]">
                         <div className={`rounded-full text-sm ${selected === 0 ? 'bg-sky-500' : 'hover:bg-zinc-100'}
                                         border border-zinc-300 px-2
                                         cursor-pointer`} onClick={() => setSelected(0)}>0.01%</div>
