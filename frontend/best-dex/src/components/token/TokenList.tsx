@@ -17,7 +17,7 @@ const TokenList: React.FC<TokenListprops>=  ({chainId, searchToken, handleTokenC
         <div className="h-[500px] overflow-auto">
                 <div className="text-zinc-400 my-2 sticky top-0 bg-white">{searchToken ? 'Search results': 'Popular Tokens'}</div>
                 <ul>
-                    {loadingTokens ? new Array<number>(10).fill(1).map((v,i) => <TokenListSkeleton key={i}/>) :
+                    {loadingTokens ? new Array<number>(10).fill(1).map((v,i) => <TokenListSkeleton index={i}/>) :
                         tokenList.length === 0 ? <div className="text-zinc-600 text-center">No token found</div> :
                         tokenList.map((token) => (
                             <li key={`${token.chainId}_${token.symbol}`} className="flex items-center p-2 cursor-pointer hover:bg-zinc-100 rounded-lg"

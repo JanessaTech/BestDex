@@ -19,7 +19,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     const [valueTo, setValueTo] = useState<string>('0')
     const [estimatedValueFrom, setEstimatedValueFrom] = useState<string>('123.3')
     const [estimatedValueTo, setEstimatedValueTo] = useState<string>('7823.14')
-    const [fromToken, setFromToken] = useState<TokenType | undefined>({chainId: 1, name: 'eth', symbol: 'ETH', address: '1234', company:'Ethereum'})
+    const [fromToken, setFromToken] = useState<TokenType | undefined>({chainId: 1, name: 'eth', symbol: 'ETH', company: 'Ethereum', address: '0x000'})
     const [toToken, setToToken] = useState<TokenType | undefined>(undefined)
     const [isFromOpen, setIsFromOpen] = useState<boolean>(false)
     const [isToOpen, setIsToOpen] = useState<boolean>(false)
@@ -143,6 +143,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                         type="text" 
                                         value={valueFrom}
                                         placeholder="0" 
+                                        disabled={fromToken === undefined}
                                         className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
                                         pl-3 focus:border-2 focus:border-sky-500 text-${fromFontSize} text-black`}
                                         onChange={handleInputFromChange}
@@ -172,6 +173,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                             type="text" 
                                             value={valueTo}
                                             placeholder="0" 
+                                            disabled={toToken === undefined}
                                             className={`h-[60px] w-full rounded-e-lg box-border border-2 border-zinc-500
                                             pl-3 focus:border-2 focus:border-sky-500 text-${toFontSize} text-black`}
                                             onChange={handleInputToChange}
