@@ -12,6 +12,7 @@ const FeeTier: React.FC<FeeTierProps> = ({content, tier, isSelected, select, han
 
     return (
         <div className={`border border-zinc-300 text-sm rounded-lg p-2 
+            flex flex-col justify-between
             cursor-pointer hover:border-sky-500 ${isSelected ? 'border-sky-500' : ''}`}
             onClick={ () => handleTierChoose(tier)}>
             <div className='flex justify-between'>
