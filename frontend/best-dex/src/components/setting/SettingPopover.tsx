@@ -11,12 +11,13 @@ import Close from "@/lib/svgs/Close"
 
 type SettingPopover = {
     open: boolean,
+    showCustom?: boolean
     onOpenChange: (open: boolean) => void
 }
 
-const SettingPopover: React.FC<SettingPopover> = ({open, onOpenChange}) => {
+const SettingPopover: React.FC<SettingPopover> = ({open, showCustom, onOpenChange}) => {
     const [custom, setCustom] = useState<string>('custom')
-    const [selected, setSelected] = useState<number>(3)
+    const [selected, setSelected] = useState<number>(2)
     const [deadline, setDeadline] = useState<number | ''>(10)
 
     const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +60,7 @@ const SettingPopover: React.FC<SettingPopover> = ({open, onOpenChange}) => {
              <PopoverTrigger>
                 <img src="/imgs/setting.svg" alt="setting" className="ml-3 cursor-pointer"/>
              </PopoverTrigger>
-             <PopoverContent align="end" className="w-[300px] md:w-[400px] py-4">
+             <PopoverContent align="end" className="w-[250px] md:w-[400px] py-4">
                 <div className="flex justify-end">
                     <PopoverClose>
                         <Close className="text-zinc-500 hover:text-zinc-700 active:text-zinc-900 w-[20px] h-[20px]"/> 
@@ -74,7 +75,7 @@ const SettingPopover: React.FC<SettingPopover> = ({open, onOpenChange}) => {
                             <div className="w-[200px] text-xs">Your transaction will revert if the price changes unfavorably by more than this percentage</div>
                         </CustomTooltip>
                     </div>
-                    <div className="flex justify-between my-3 items-center flex-wrap space-y-[2px]">
+                    <div className="flex my-3 items-center md:justify-between flex-wrap space-y-[2px] space-x-[10px]">
                         <div className={`rounded-full text-sm ${selected === 0 ? 'bg-sky-500' : 'hover:bg-zinc-100'}
                                         border border-zinc-300 px-2
                                         cursor-pointer`} onClick={() => setSelected(0)}>0.01%</div>
@@ -83,11 +84,12 @@ const SettingPopover: React.FC<SettingPopover> = ({open, onOpenChange}) => {
                                         cursor-pointer`} onClick={() => setSelected(1)}>0.05%</div>
                         <div className={`rounded-full text-sm ${selected === 2 ? 'bg-sky-500' : 'hover:bg-zinc-100'}
                                         border border-zinc-300 px-2
-                                        cursor-pointer`} onClick={() => setSelected(2)}>0.1%</div>
+                                        cursor-pointer`} onClick={() => setSelected(2)}>0.30%</div>
                         <div className={`rounded-full text-sm ${selected === 3 ? 'bg-sky-500' : 'hover:bg-zinc-100'}
                                         border border-zinc-300 px-2
-                                        cursor-pointer`} onClick={() => setSelected(3)}>0.3%</div>
-                        <div className="relative">
+                                        cursor-pointer`} onClick={() => setSelected(3)}>1.00%</div>
+                        {
+                            showCustom && <div className="relative">
                             <input type="text"
                                     className={`rounded-full text-sm ${selected === 4 ? 'bg-sky-500' : 'hover:bg-zinc-100'}
                                             border border-zinc-300 px-2
@@ -110,6 +112,7 @@ const SettingPopover: React.FC<SettingPopover> = ({open, onOpenChange}) => {
                                     />
                             <span className="absolute text-sm right-[6px] top-[2px]">{custom === 'custom' ? '' : '%'}</span>
                         </div>
+                        } 
                     </div>
                     <div className="flex mt-5">
                         <div className="font-semibold mr-2 text-sm">Transaction Deadline</div>

@@ -82,8 +82,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         updateTo(valueFrom.replace(/^0+/, ''))
     }
 
-    const changeFromTokenChange = (newToken: TokenType) => {
-        console.log('newToken', newToken)
+    const handleFromTokenChange = (newToken: TokenType) => {
         if (isTokenSame(newToken, toToken)) {
             handleExchange()
         } else {
@@ -93,7 +92,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         setIsFromOpen(false)
     }
 
-    const changeToTokenChange = (newToken: TokenType) => {
+    const handleToTokenChange = (newToken: TokenType) => {
         console.log('changeToTokenChange')
         if (isTokenSame(newToken, fromToken)) {
             handleExchange()
@@ -121,10 +120,13 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
             <div className="mt-4 w-4/5 md:w-2/3 
             mx-auto min-w-[300px] max-w-[600px] rounded-3xl border border-zinc-500
             bg-zinc-800 p-6">
-                <div className="h-full">
+                <div>
                     <div className="flex justify-end items-center mb-8">
                         <span className="cursor-pointer" onClick={handleClear}>Clear</span>
-                        <SettingPopover open={isSettingOpen} onOpenChange={onSettingOpenChange}/>
+                        <SettingPopover 
+                            open={isSettingOpen} 
+                            showCustom={true} 
+                            onOpenChange={onSettingOpenChange}/>
                     </div>
                     <NetworkPopover 
                         open={isNetworkOpen} 
@@ -135,7 +137,12 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                         <div>
                             <div>From</div>
                             <div className="flex">
-                                <TokenSelection open={isFromOpen} token={fromToken} handleTokenChange={changeFromTokenChange} onOpenChange={onFromOpenChange}/>
+                                <TokenSelection 
+                                    isSwap={true} 
+                                    open={isFromOpen} 
+                                    token={fromToken} 
+                                    handleTokenChange={handleFromTokenChange} 
+                                    onOpenChange={onFromOpenChange}/>
                                 <div className="w-full">
                                     <input
                                         id='swapFrom'
@@ -156,7 +163,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                         />
                                 </div>
                             </div>
-                            <div className="ml-[150px] text-zinc-300 text-sm">≈${estimatedValueFrom}</div>
+                            <div className="ml-[120px] text-zinc-300 text-sm">≈${estimatedValueFrom}</div>
                         </div>
                         <img 
                             src="/imgs/double-arrow.svg" 
@@ -165,7 +172,12 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                         <div>
                             <div>To</div>
                                 <div className="flex">
-                                    <TokenSelection open={isToOpen}  token={toToken} handleTokenChange={changeToTokenChange} onOpenChange={onToOpenChange}/>
+                                    <TokenSelection 
+                                        isSwap={true} 
+                                        open={isToOpen}  
+                                        token={toToken} 
+                                        handleTokenChange={handleToTokenChange} 
+                                        onOpenChange={onToOpenChange}/>
                                     <div className="w-full">
                                         <input 
                                             id='swapTo'
@@ -186,7 +198,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                             />
                                     </div>
                                 </div>
-                                <div className="ml-[150px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
+                                <div className="ml-[120px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
                         </div>
                         <div className={`my-2 ${fromToken && toToken ? '' : 'invisible'}`}>1 {toToken?.symbol} = 0.00029 {fromToken?.symbol}</div>
                         <div className="h-[45px] w-[200px] buttonEffect rounded-full my-8

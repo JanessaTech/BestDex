@@ -12,19 +12,20 @@ import TokenSelect from "./TokenSelect"
 import type { TokenType } from "@/lib/types"
 
 type TokenProps = {
+    isSwap: boolean
     open: boolean,
     token?: TokenType,
     onOpenChange: (open: boolean) => void
     handleTokenChange: (newToken: TokenType) => void
 }
 
-const TokenSelection: React.FC<TokenProps> = ({open, token, onOpenChange, handleTokenChange}) => {
+const TokenSelection: React.FC<TokenProps> = ({isSwap, open, token, onOpenChange, handleTokenChange}) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger>
-                <div className={`group h-[60px] w-[120px] rounded-s-lg border-2 border-zinc-500 
+                <div className={`group h-[60px] border-2 border-zinc-500 
                                 flex items-center justify-between cursor-pointer px-2
-                                border-e-0 hover:border-sky-500
+                                ${isSwap ? 'w-[120px] border-e-0 rounded-s-lg': 'rounded-lg'} hover:border-sky-500
                                 ${token ? 'bg-white': 'buttonEffect'}`}>
                     {
                         token ? <div className="flex items-center">
