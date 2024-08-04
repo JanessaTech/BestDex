@@ -10,7 +10,7 @@ type HeaderProps = {}
 const Header:React.FC<HeaderProps> = () => {
 
   return (
-    <div className='w-full'>
+    <div className='w-full sticky top-0 bg-black z-50 shadow-gray-300'>
       <div className='h-16 flex justify-end items-center'>
           <NetworkWrapper/>
           <WalletWrapper/>

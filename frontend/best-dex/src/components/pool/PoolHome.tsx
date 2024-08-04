@@ -99,9 +99,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     const onToken1DepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value !== '') {
-            setToken0Deposit(Number(e.target.value))
+            setToken1Deposit(Number(e.target.value))
         } else {
-            setToken0Deposit('')
+            setToken1Deposit('')
         }
     }
 
@@ -112,7 +112,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
             mx-auto min-w-[300px] max-w-[600px] rounded-3xl border border-zinc-500
             bg-zinc-800 p-6">
                 <div>
-                    <div className="flex justify-end items-center mb-4">
+                    <div className="flex justify-end items-center mb-4 relative">
                         <span className="cursor-pointer" onClick={handleClear}>Clear</span>
                         <SettingPopover open={isSettingOpen} onOpenChange={onSettingOpenChange}/>
                     </div>
@@ -224,7 +224,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                         id='token0Deposit'
                                         name='token0Deposit'
                                         type="number"
-                                        className="w-[calc(100%-100px)] my-2"
+                                        className="w-[calc(100%-120px)] my-2"
                                         value={token0Depoist}
                                         placeholder="0"
                                         onChange={onToken0DepositChange}
@@ -235,16 +235,16 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                         }}
                                     />
                                 <span className="text-zinc-400 text-sm absolute left-3 bottom-1">≈$332</span>
-                                <div className={`w-[90px] h-[40px] 
+                                <div className={`w-[110px] h-[40px] 
                                     absolute right-3 top-[12px] rounded-full
                                     flex items-center px-2
-                                    ${token0 ? 'bg-zinc-200' : 'bg-sky-500 text-xs text-white'}`}>
+                                    ${token0 ? 'bg-zinc-200' : 'bg-sky-500 text-sm text-white'}`}>
                                         {
                                             token0 ? 
                                             <>
                                                 <img src={`/imgs/tokens/${token0?.name}.png`} width={25} height={25} alt={token0?.name}/>
                                                 <span className="font-semibold ml-2 text-sm">{token0?.symbol}</span>
-                                            </> : <span>Select token</span>
+                                            </> : <span className="mx-auto">Select token</span>
                                         }
                                 </div>
                             </div>
@@ -255,7 +255,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                         id='token1Deposit'
                                         name='token1Deposit'
                                         type="number"
-                                        className="w-[calc(100%-100px)] my-2"
+                                        className="w-[calc(100%-120px)] my-2"
                                         value={token1Depoist}
                                         placeholder="0"
                                         onChange={onToken1DepositChange}
@@ -266,16 +266,16 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                         }}
                                     />
                                 <span className="text-zinc-400 text-sm absolute left-3 bottom-1">≈$332</span>
-                                <div className={`w-[90px] h-[40px] 
+                                <div className={`w-[110px] h-[40px] 
                                     absolute right-3 top-[12px] rounded-full
                                     flex items-center px-2 
-                                    ${token1 ? 'bg-zinc-200' : 'bg-sky-500 text-xs text-white'}`}>
+                                    ${token1 ? 'bg-zinc-200' : 'bg-sky-500 text-sm text-white'}`}>
                                         {
                                             token1 ? 
                                             <>
                                                 <img src={`/imgs/tokens/${token1?.name}.png`} width={25} height={25} alt={token1?.name}/>
                                                 <span className="font-semibold ml-2 text-sm">{token1?.symbol}</span>
-                                            </> : <span>Select token</span>
+                                            </> : <span className="mx-auto">Select token</span>
                                         }
                                      
                                 </div>

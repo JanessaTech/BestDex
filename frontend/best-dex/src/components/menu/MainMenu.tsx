@@ -17,7 +17,7 @@ const MainMenu = () => {
   }
 
   return (
-    <div className={`h-screen bg-zinc-800 relative border-r border-zinc-500 group max-md:hidden`}>
+    <div className={`h-screen bg-zinc-800 border-r border-zinc-500 group max-md:hidden sticky top-0`}>
         <div className='absolute w-6 h-14 rounded-md 
             border border-zinc-500 -right-3 top-5 
             bg-black cursor-pointer
