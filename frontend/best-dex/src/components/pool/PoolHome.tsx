@@ -6,7 +6,11 @@ import type { TokenType } from "@/lib/types"
 import TokenSelection from "../token/TokenSelection"
 import { isTokenSame } from "@/lib/utils"
 import FeeTier from "./FeelTier"
-import Warning from "@/lib/svgs/Warning"
+import Slider from "./Slider"
+import DepositInput from "./DepositInput"
+import CurrentPrice from "./CurrentPrice"
+import PriceRange from "./PriceRange"
+import PossibleWarning from "./PossibleWarning"
 
 type PoolHomeProps = {}
 
@@ -20,6 +24,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [tier, setTier] = useState<number>(0.30)
     const [lowPrice, setLowPrice] = useState<number | ''>(0)
     const [highPrice, setHighPrice] = useState<number | ''>(0)
+    const [showWarning, setShowWarning] = useState<boolean>(true)
     const [currentPrice, setCurrentPrice] = useState<number>(0.997)
     const [token0Depoist, setToken0Deposit] = useState<number | ''>(0)
     const [token1Depoist, setToken1Deposit] = useState<number | ''>(0)
@@ -112,9 +117,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
             mx-auto min-w-[300px] max-w-[600px] rounded-3xl border border-zinc-500
             bg-zinc-800 p-6">
                 <div>
-                    <div className="flex justify-end items-center mb-4 relative">
-                        <span className="cursor-pointer" onClick={handleClear}>Clear</span>
-                        <SettingPopover open={isSettingOpen} onOpenChange={onSettingOpenChange}/>
+                    <div className="mb-4 flex justify-center items-center relative">
+                        <span className="text-xl">Add position</span>
+                        <div className="flex items-center absolute right-0">
+                            <span className="cursor-pointer" onClick={handleClear}>Clear</span>
+                            <SettingPopover open={isSettingOpen} onOpenChange={onSettingOpenChange}/>
+                        </div>
                     </div>
                     <div>
                         <div className="mb-1">Select pair</div>
@@ -159,131 +167,39 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             isSelected={tier === 1.00} 
                             handleTierChoose={handleTierChoose}/>
                     </div>
-                    <div>
-                        <div className="mb-1">Set price range</div>   
-                        <div className="relative mb-2">
-                            <input 
-                                id='lowPrice'
-                                name='lowPrice'
-                                type="number" 
-                                className="rounded-md h-20 w-full border border-zinc-300 
-                                text-black text-lg px-3"
-                                value={lowPrice}
-                                onChange={onLowPriceChange}
-                                placeholder="0"
-                                onKeyDown={(event) => {
-                                    if (event?.key === '+' || event?.key === '-') {
-                                        event.preventDefault()
-                                    }
-                                }}
-                            />
-                            <span className="text-xs text-zinc-400 absolute top-1 left-3">Low price</span>
-                            <span className="text-xs text-zinc-400 absolute bottom-1 left-3">
-                                {token0 && token1 ? 
-                                    `${token1?.symbol} per ${token0?.symbol}`: token0 ?  `per ${token0?.symbol}`: ''}
-                            </span>
-                        </div>
-                        <div className="relative mb-2">
-                            <input
-                                id='highPrice'
-                                name='highPrice'
-                                type="number" 
-                                className="rounded-md h-20 w-full border border-zinc-300 
-                                text-black text-lg px-3"
-                                value={highPrice}
-                                onChange={onHighPriceChange}
-                                placeholder="0"
-                                onKeyDown={(event) => {
-                                    if (event?.key === '+' || event?.key === '-') {
-                                        event.preventDefault()
-                                    }
-                                }}
-                            />
-                            <span className="text-xs text-zinc-400 absolute top-1 left-3">Low price</span>
-                            <span className="text-xs text-zinc-400 absolute bottom-1 left-3">
-                                {token0 && token1 ? 
-                                    `${token1?.symbol} per ${token0?.symbol}`: token0 ?  `per ${token0?.symbol}`: ''}
-                            </span>
-                        </div>
-                        <div className="text-xs px-2 pl-10 text-orange-800 bg-orange-200 rounded-md relative">
-                            <Warning className="absolute left-2 top-1 w-[20px] h-[20px]"/>
-                            <span>Your position will not earn fees or be used in trades until the market price moves into your range.</span>
-                        </div>
+                    <div className="my-8">
+                        <div className="mb-1">Set price range</div>
+                        <PriceRange 
+                            label="lowPrice" 
+                            price={lowPrice} 
+                            onPriceChange={onLowPriceChange} 
+                            token0={token0} 
+                            token1={token1}/>
+                        <PriceRange 
+                            label="highPrice" 
+                            price={highPrice} 
+                            onPriceChange={onHighPriceChange} 
+                            token0={token0} 
+                            token1={token1}/>
+                        <PossibleWarning show={showWarning}/>
                     </div>
-                    <div className="text-xs mt-3">
-                        <div>Current price</div>
-                        <div className="text-xl text-sky-500">{currentPrice}</div>
-                        <div>{token0 && token1 ? 
-                                    `${token1?.symbol} per ${token0?.symbol}`: token0 ?  `per ${token0?.symbol}`: ''}</div>
+                    <div className="text-xs my-8">
+                        <CurrentPrice currentPrice={currentPrice} token0={token0} token1={token1}/>
                     </div>
-                    <div>Show slider here</div>
-                    <div>
+                    <div className="my-8">
+                        <Slider/>
+                    </div>
+                    <div className="my-8">
                         <div className="mb-1">Deposit amounts</div>
                         <div>
-                            <div
-                                className="rounded-md h-16 w-full border border-zinc-300
-                                text-black text-lg px-3 bg-white relative mb-2">
-                                    <input 
-                                        id='token0Deposit'
-                                        name='token0Deposit'
-                                        type="number"
-                                        className="w-[calc(100%-120px)] my-2"
-                                        value={token0Depoist}
-                                        placeholder="0"
-                                        onChange={onToken0DepositChange}
-                                        onKeyDown={(event) => {
-                                            if (event?.key === '+' || event?.key === '-') {
-                                                event.preventDefault()
-                                            }
-                                        }}
-                                    />
-                                <span className="text-zinc-400 text-sm absolute left-3 bottom-1">≈$332</span>
-                                <div className={`w-[110px] h-[40px] 
-                                    absolute right-3 top-[12px] rounded-full
-                                    flex items-center px-2
-                                    ${token0 ? 'bg-zinc-200' : 'bg-sky-500 text-sm text-white'}`}>
-                                        {
-                                            token0 ? 
-                                            <>
-                                                <img src={`/imgs/tokens/${token0?.name}.png`} width={25} height={25} alt={token0?.name}/>
-                                                <span className="font-semibold ml-2 text-sm">{token0?.symbol}</span>
-                                            </> : <span className="mx-auto">Select token</span>
-                                        }
-                                </div>
-                            </div>
-                            <div
-                                className="rounded-md h-16 w-full border border-zinc-300
-                                text-black text-lg px-3 bg-white relative">
-                                    <input 
-                                        id='token1Deposit'
-                                        name='token1Deposit'
-                                        type="number"
-                                        className="w-[calc(100%-120px)] my-2"
-                                        value={token1Depoist}
-                                        placeholder="0"
-                                        onChange={onToken1DepositChange}
-                                        onKeyDown={(event) => {
-                                            if (event?.key === '+' || event?.key === '-') {
-                                                event.preventDefault()
-                                            }
-                                        }}
-                                    />
-                                <span className="text-zinc-400 text-sm absolute left-3 bottom-1">≈$332</span>
-                                <div className={`w-[110px] h-[40px] 
-                                    absolute right-3 top-[12px] rounded-full
-                                    flex items-center px-2 
-                                    ${token1 ? 'bg-zinc-200' : 'bg-sky-500 text-sm text-white'}`}>
-                                        {
-                                            token1 ? 
-                                            <>
-                                                <img src={`/imgs/tokens/${token1?.name}.png`} width={25} height={25} alt={token1?.name}/>
-                                                <span className="font-semibold ml-2 text-sm">{token1?.symbol}</span>
-                                            </> : <span className="mx-auto">Select token</span>
-                                        }
-                                     
-                                </div>
-                            </div>
-                            
+                            <DepositInput 
+                                token={token0} 
+                                tokenDepoist={token0Depoist} 
+                                onTokenDepositChange={onToken0DepositChange}/>
+                            <DepositInput 
+                                token={token1} 
+                                tokenDepoist={token1Depoist} 
+                                onTokenDepositChange={onToken1DepositChange}/>   
                         </div>
 
                     </div>
