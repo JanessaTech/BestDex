@@ -179,7 +179,8 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             />
                             <span className="text-xs text-zinc-400 absolute top-1 left-3">Low price</span>
                             <span className="text-xs text-zinc-400 absolute bottom-1 left-3">
-                                {token0 && token1 ? `${token1?.symbol} per ${token0?.symbol}`: `per ${token0?.symbol}`}
+                                {token0 && token1 ? 
+                                    `${token1?.symbol} per ${token0?.symbol}`: token0 ?  `per ${token0?.symbol}`: ''}
                             </span>
                         </div>
                         <div className="relative mb-2">
@@ -200,7 +201,8 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             />
                             <span className="text-xs text-zinc-400 absolute top-1 left-3">Low price</span>
                             <span className="text-xs text-zinc-400 absolute bottom-1 left-3">
-                                {token0 && token1 ? `${token1?.symbol} per ${token0?.symbol}`: `per ${token0?.symbol}`}
+                                {token0 && token1 ? 
+                                    `${token1?.symbol} per ${token0?.symbol}`: token0 ?  `per ${token0?.symbol}`: ''}
                             </span>
                         </div>
                         <div className="text-xs px-2 pl-10 text-orange-800 bg-orange-200 rounded-md relative">
@@ -211,7 +213,8 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                     <div className="text-xs mt-3">
                         <div>Current price</div>
                         <div className="text-xl text-sky-500">{currentPrice}</div>
-                        <div>{token0 && token1 ? `${token1?.symbol} per ${token0?.symbol}`: `per ${token0?.symbol}`}</div>
+                        <div>{token0 && token1 ? 
+                                    `${token1?.symbol} per ${token0?.symbol}`: token0 ?  `per ${token0?.symbol}`: ''}</div>
                     </div>
                     <div>Show slider here</div>
                     <div>
