@@ -45,24 +45,27 @@ const PositionHome: React.FC<PositionHomeProps> = () => {
                             <TableRow className="border-zinc-400/40 hover:bg-muted/20">
                                 <TableCell className="font-medium ">{position.id}</TableCell>
                                 <TableCell>
-                                    <div>
-                                        <div className="flex items-center my-1">
-                                            <img 
-                                                src={`/imgs/tokens/${position.token0.name}.png`} 
-                                                alt={position.token0.name}
-                                                width={25}
-                                                height={25} />
-                                            <div className="ml-1">{position.token0.symbol}</div>
-                                        </div>
-                                        <div className="flex items-center my-1">
-                                            <img 
-                                                src={`/imgs/tokens/${position.token1.name}.png`} 
-                                                alt={position.token1.name}
-                                                width={25}
-                                                height={25} />
-                                            <div className="ml-1">{position.token1.symbol}</div>
-                                        </div>
-                                        
+                                    <div className="flex flex-col">
+                                        <ToolTipUtil content={position.token0.address}>
+                                            <div className="flex items-center my-1">
+                                                <img 
+                                                    src={`/imgs/tokens/${position.token0.name}.png`} 
+                                                    alt={position.token0.name}
+                                                    width={25}
+                                                    height={25} />
+                                                <div className="ml-1">{position.token0.symbol}</div>
+                                            </div>   
+                                        </ToolTipUtil>
+                                        <ToolTipUtil content={position.token1.address}>
+                                            <div className="flex items-center my-1">
+                                                <img 
+                                                    src={`/imgs/tokens/${position.token1.name}.png`} 
+                                                    alt={position.token1.name}
+                                                    width={25}
+                                                    height={25} />
+                                                <div className="ml-1">{position.token1.symbol}</div>
+                                            </div>
+                                        </ToolTipUtil>
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -76,8 +79,11 @@ const PositionHome: React.FC<PositionHomeProps> = () => {
                                         <div className="w-[100px] truncate">{position.liquidity}</div>
                                     </ToolTipUtil>
                                 </TableCell>
-                                <TableCell>                                   
-                                    <div className={`w-3 h-3 rounded-full ${position.status ? 'bg-lime-500' : 'bg-red-500'}`}/>
+                                <TableCell>   
+                                    <ToolTipUtil content={`${position.status ? 'In range': 'Out of range'}`}>
+                                        <div className={`w-3 h-3 rounded-full ${position.status ? 'bg-lime-500' : 'bg-red-500'}`}/>
+                                    </ToolTipUtil>                                
+                                    
                                 </TableCell>
                                 <TableCell>{position.fee}%</TableCell>
                                 <TableCell>
