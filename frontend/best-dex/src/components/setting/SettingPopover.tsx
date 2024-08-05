@@ -3,10 +3,11 @@ import {
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover"
-import CustomTooltip from "../common/CustomTooltip"
+import CustomTooltip from "../common/QuestionMarkToolTip"
 import { useState } from "react"
 import { PopoverClose } from "@radix-ui/react-popover"
 import Close from "@/lib/svgs/Close"
+import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
 
 
 type SettingPopover = {
@@ -71,9 +72,9 @@ const SettingPopover: React.FC<SettingPopover> = ({open, showCustom, onOpenChang
                     <div className="mb-5">SWAP & LIQUIDITY</div>
                     <div className="flex">
                         <div className="font-semibold mr-2 text-sm">Slippage Tolerance</div>
-                        <CustomTooltip>
+                        <QuestionMarkToolTip>
                             <div className="w-[200px] text-xs">Your transaction will revert if the price changes unfavorably by more than this percentage</div>
-                        </CustomTooltip>
+                        </QuestionMarkToolTip>
                     </div>
                     <div className="flex my-3 items-center md:justify-between flex-wrap space-y-[2px] space-x-[10px]">
                         <div className={`rounded-full text-sm ${selected === 0 ? 'bg-sky-500' : 'hover:bg-zinc-100'}
@@ -116,9 +117,9 @@ const SettingPopover: React.FC<SettingPopover> = ({open, showCustom, onOpenChang
                     </div>
                     <div className="flex mt-5">
                         <div className="font-semibold mr-2 text-sm">Transaction Deadline</div>
-                        <CustomTooltip>
+                        <QuestionMarkToolTip>
                             <div className="w-[200px] text-xs">Your transaction will revert if it is pending for more than this period of time</div>
-                        </CustomTooltip>
+                        </QuestionMarkToolTip>
                     </div>
                     <div className="my-3">
                         <input

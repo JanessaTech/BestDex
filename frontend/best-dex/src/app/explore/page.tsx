@@ -1,10 +1,10 @@
+import ExploreHome from "@/components/explore/ExploreHome"
+
 type ExplorePageProps = {}
 
 const ExplorePage: React.FC<ExplorePageProps> = () => {
     return (
-        <div>
-            Explore Page
-        </div>
+        <ExploreHome/>
     )
 }
 

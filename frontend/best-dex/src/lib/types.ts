@@ -8,7 +8,7 @@ export type TokenType = {
     name: string,
     symbol: string,
     address: string,
-    company: string
+    company?: string
 }
 
 export type SvgProps = {

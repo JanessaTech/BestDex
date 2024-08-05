@@ -8,11 +8,11 @@ import {
 import QuestionMark from "@/lib/svgs/QuestionMark"
 import { useState } from "react"
 
-type CustomTooltipProps = {
+type QuestionMarkToolTipProps = {
     children: React.ReactNode
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({children}) => {
+const QuestionMarkToolTip: React.FC<QuestionMarkToolTipProps> = ({children}) => {
     const [open, setOpen] = useState<boolean>(false)
     const onMouseEnter = () => {
         setOpen(true)
@@ -38,4 +38,4 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({children}) => {
     )
 }
 
-export default CustomTooltip
+export default QuestionMarkToolTip

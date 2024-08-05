@@ -35,4 +35,129 @@ export const TokenListData: TokenListProps = {
     ]
 }
 
+type PositionProps = {
+    id: number,
+    token0: TokenType,
+    token1: TokenType,
+    lowTick: number,
+    highTick: number,
+    liquidity: number,
+    status: boolean,
+    fee: number,
+    wallet: string
+}
+
+export const PositionListData: PositionProps[] = [
+    {
+        id: 11111111, 
+        token0:{chainId: 1, name: 'eth', symbol: 'ETH', company: 'ethereum', address:'111'},
+        token1: {chainId: 1, name: 'usdt', symbol: 'USDT', company: 'USDT', address:'222'},
+        lowTick: 12456,
+        highTick: 456787,
+        liquidity: 758845612347588,
+        status: true,
+        fee: 0.03,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 222222, 
+        token0:{chainId: 1, name: 'wbtc', symbol: 'WBTC', company: 'WBTC', address:'111'},
+        token1: {chainId: 1, name: 'weth', symbol: 'WETH', company: 'WETH', address:'222'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: true,
+        fee: 0.03,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 222222, 
+        token0:{chainId: 1, name: '0x', symbol: 'ZRX', company: 'ZRX', address:'1111'},
+        token1: {chainId: 1, name: 'aave', symbol: 'AIOZ', company: 'AIOZ', address:'2222'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: false,
+        fee: 1.0,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 3333333, 
+        token0:{chainId: 1, name: '0x', symbol: 'ZRX', company: 'ZRX', address:'111'},
+        token1: {chainId: 1, name: 'aave', symbol: 'AIOZ', company: 'AIOZ', address:'222'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: false,
+        fee: 1.0,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 44444444, 
+        token0:{chainId: 1, name: '0x', symbol: 'ZRX', company: 'ZRX', address:'111'},
+        token1: {chainId: 1, name: 'aave', symbol: 'AIOZ', company: 'AIOZ', address:'222'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: false,
+        fee: 1.0,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 11111111, 
+        token0:{chainId: 1, name: 'eth', symbol: 'ETH', company: 'ethereum', address:'111'},
+        token1: {chainId: 1, name: 'usdt', symbol: 'USDT', company: 'USDT', address:'2222'},
+        lowTick: 12456,
+        highTick: 456787,
+        liquidity: 758845612347588,
+        status: true,
+        fee: 0.03,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 222222, 
+        token0:{chainId: 1, name: 'wbtc', symbol: 'WBTC', company: 'WBTC', address:'111'},
+        token1: {chainId: 1, name: 'weth', symbol: 'WETH', company: 'WETH', address:'222'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: true,
+        fee: 0.03,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 222222, 
+        token0:{chainId: 1, name: '0x', symbol: 'ZRX', company: 'ZRX', address:'33'},
+        token1: {chainId: 1, name: 'aave', symbol: 'AIOZ', company: 'AIOZ', address:'444'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: false,
+        fee: 1.0,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 3333333, 
+        token0:{chainId: 1, name: '0x', symbol: 'ZRX', company: 'ZRX', address:'222'},
+        token1: {chainId: 1, name: 'aave', symbol: 'AIOZ', company: 'AIOZ', address:'3333'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: false,
+        fee: 1.0,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        id: 44444444, 
+        token0:{chainId: 1, name: '0x', symbol: 'ZRX', company: 'ZRX', address:'222'},
+        token1: {chainId: 1, name: 'aave', symbol: 'AIOZ', company: 'AIOZ', address:'3333'},
+        lowTick: 45661,
+        highTick: 986564,
+        liquidity: 8956471235467,
+        status: false,
+        fee: 1.0,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    }
+]
+
 
