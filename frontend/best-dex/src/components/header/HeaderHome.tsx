@@ -7,7 +7,7 @@ import Burger from './Burger'
 
 type HeaderProps = {}
 
-const Header:React.FC<HeaderProps> = () => {
+const HeaderHome:React.FC<HeaderProps> = () => {
 
   return (
     <div className='w-full sticky top-0 bg-black z-50 shadow-gray-300'>
@@ -20,4 +20,4 @@ const Header:React.FC<HeaderProps> = () => {
   )
 }
 
-export default Header
+export default HeaderHome

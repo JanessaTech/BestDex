@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import StandardMenu from './StandardMenu'
 import MinMenu from './MinMenu'
 
-const MainMenu = () => {
+type MenuHomeProps = {}
+const MenuHome: React.FC<MenuHomeProps> = () => {
   const [isMin, setIsMin] = useState<boolean>(false)
   const [animation, setAnimation] = useState<string>('')
 
@@ -35,4 +36,4 @@ const MainMenu = () => {
   )
 }
 
-export default MainMenu
+export default MenuHome

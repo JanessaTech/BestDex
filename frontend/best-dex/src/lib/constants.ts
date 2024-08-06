@@ -215,4 +215,38 @@ export const TransactionListData: TransactionProps[] = [
     }
 ]
 
+type BalanceProps = {
+    token: TokenType,
+    balance: number,
+    price: number,
+    total: number
+}
+
+export const BalanceListData: BalanceProps[] = [
+    { 
+        token: {chainId: 1, name: 'eth', symbol: 'ETH', company: 'ethereum', address:'111'},
+        balance: 123,
+        price: 23,
+        total:23155
+    },
+    { 
+        token: {chainId: 1, name: 'dai', symbol: 'DAI', company: 'DAI', address:'222'},
+        balance: 123,
+        price: 23,
+        total:23155
+    },
+    { 
+        token:{chainId: 1, name: 'usdt', symbol: 'USDT', company: 'USDT', address:'2222'},
+        balance: 123,
+        price: 23,
+        total:23155
+    },
+    { 
+        token:{chainId: 1, name: 'usdc', symbol: 'USDC', company: 'USDC', address:'2222'},
+        balance: 123,
+        price: 23,
+        total:23155
+    }
+]
+
 
