@@ -113,7 +113,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     return (
         <div>
             <div className="font-semibold text-2xl">Pool</div>
-            <div className="mt-4 w-4/5 md:w-2/3
+            <div className="my-8 w-4/5 md:w-2/3
             mx-auto min-w-[300px] max-w-[600px] rounded-3xl border border-zinc-500
             bg-zinc-800 p-6">
                 <div>
