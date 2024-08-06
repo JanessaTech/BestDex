@@ -8,7 +8,7 @@ import {
 type ToolTipSimpleToolProps = {
     children: React.ReactNode,
     align?: undefined | 'start' | 'center' | 'end',
-    content: string
+    content: React.ReactNode
 
 }
 
@@ -20,7 +20,7 @@ const ToolTipUtil: React.FC<ToolTipSimpleToolProps> = ({children, align, content
                     {children}
                 </TooltipTrigger>
                 <TooltipContent align={align ? align : "end"}>
-                    <p>{content}</p>
+                    {content}
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider> 

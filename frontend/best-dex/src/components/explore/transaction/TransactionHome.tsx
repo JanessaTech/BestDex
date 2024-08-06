@@ -46,7 +46,7 @@ const TransactionHome: React.FC<TransactionHomeProps> = () => {
                                     </ToolTipUtil>
                                 </TableCell>
                                 <TableCell>
-                                    <div className="flex flex-col items-center">
+                                    <div className="flex flex-col items-center min-w-44">
                                         <span>{TransactionType[transaction.type]}</span>
                                         <div className="flex items-center">
                                             <span>(</span>
