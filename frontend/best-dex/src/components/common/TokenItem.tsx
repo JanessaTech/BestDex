@@ -8,11 +8,11 @@ type TokenItemProps = {
 
 const TokenItem: React.FC<TokenItemProps> = ({token}) => {
     const content = <div>
-                        <p><span>Symbol:</span>{token.symbol}</p>
-                        <p><span>Address:</span>{token.address}</p>
+                        <p><strong>Symbol:</strong>{token.symbol}</p>
+                        <p><strong>Address:</strong>{token.address}</p>
                     </div>
     return (
-        <ToolTipUtil content={<div><p>Symbol:{token.symbol}</p><p>Address: {token.address}</p></div>} align="start">
+        <ToolTipUtil content={content} align="start">
             <div className="flex items-center my-1">
                 <img 
                     src={`/imgs/tokens/${token.name}.png`} 

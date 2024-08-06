@@ -66,7 +66,7 @@ const PositionHome: React.FC<PositionHomeProps> = () => {
                                 </TableCell>
                                 <TableCell>{position.fee}%</TableCell>
                                 <TableCell>
-                                    <ToolTipUtil content={`Address: ${position.wallet}`}>
+                                    <ToolTipUtil content={<p><strong>Address:</strong>{position.wallet}</p>}>
                                         <>
                                             <div className="w-[100px] truncate">{position.wallet}</div>
                                             <div className="text-sky-500 font-semibold">me</div>
