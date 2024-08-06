@@ -24,6 +24,9 @@ const DepositInput: React.FC<DepositInputProps> = ({token, tokenDepoist, onToken
                             event.preventDefault()
                         }
                     }}
+                    onWheelCapture={(e) => { // disable the changing when scrolling mouse
+                        e.currentTarget.blur()
+                    }}
                 />
                 <span className="text-zinc-400 text-sm absolute left-3 bottom-1">≈$332</span>
                 <div className={`w-[110px] h-[40px] 

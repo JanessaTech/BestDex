@@ -12,8 +12,8 @@ const PriceRange: React.FC<PriceRangeProps> = ({label, price, onPriceChange, tok
     return (
         <div className="relative mb-2">
             <input 
-                id='lowPrice'
-                name='lowPrice'
+                id={label}
+                name={label}
                 type="number" 
                 className="rounded-md h-20 w-full border border-zinc-300 
                 text-black text-lg px-3"
@@ -24,6 +24,9 @@ const PriceRange: React.FC<PriceRangeProps> = ({label, price, onPriceChange, tok
                     if (event?.key === '+' || event?.key === '-') {
                         event.preventDefault()
                     }
+                }}
+                onWheelCapture={(e) => {
+                    e.currentTarget.blur()
                 }}
             />
             <span className="text-xs text-zinc-400 absolute top-1 left-3">Low price</span>
