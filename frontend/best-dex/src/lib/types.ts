@@ -23,3 +23,10 @@ export enum MenuType {
     StandarMenu,
     MobileMenu
 }
+
+export enum TransactionType {
+    Swap,
+    BurnPosition,
+    AddLiquidity,
+    MintPosition
+}

@@ -14,30 +14,27 @@ import Add from "@/lib/svgs/Add"
 import Withdraw from "@/lib/svgs/Withdraw"
 import Delete from "@/lib/svgs/Delete"
 import ToolTipUtil from "@/components/common/ToolTipUtil"
+import TokenItem from "@/components/common/TokenItem"
 
 type PositionHomeProps = {}
 
 const PositionHome: React.FC<PositionHomeProps> = () => {
     return (
     <TabsContent value="positions">
-        <div className="sticky top-16 z-10">
-            <Table>
-                <TableHeader className="bg-zinc-700">
-                    <TableRow>
-                        <TableHead className="text-white font-bold">Position ID</TableHead>
-                        <TableHead className="text-white font-bold">Token0<br/>Token1</TableHead>
-                        <TableHead className="text-white font-bold">Ticks</TableHead>
-                        <TableHead className="text-white font-bold w-[50px]">Liquidity</TableHead>
-                        <TableHead className="text-white font-bold text-right">Status</TableHead>
-                        <TableHead className="text-white font-bold text-center">Fee</TableHead>
-                        <TableHead className="text-white font-bold text-center">Wallet</TableHead>
-                        <TableHead className="text-right text-white">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-            </Table>
-        </div>
         <Table>
             <TableCaption>A list of recent positions.</TableCaption>
+            <TableHeader className="bg-zinc-700 sticky top-16">
+                <TableRow>
+                    <TableHead className="text-white font-bold">Position ID</TableHead>
+                    <TableHead className="text-white font-bold">Token0<br/>Token1</TableHead>
+                    <TableHead className="text-white font-bold">Ticks</TableHead>
+                    <TableHead className="text-white font-bold">Liquidity</TableHead>
+                    <TableHead className="text-white font-bold">Status</TableHead>
+                    <TableHead className="text-white font-bold">Fee</TableHead>
+                    <TableHead className="text-white font-bold">Wallet</TableHead>
+                    <TableHead className="text-center text-white">Actions</TableHead>
+                </TableRow>
+            </TableHeader>
             <TableBody>
                 {
                     PositionListData.map((position) => (
@@ -46,26 +43,8 @@ const PositionHome: React.FC<PositionHomeProps> = () => {
                                 <TableCell className="font-medium ">{position.id}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-col">
-                                        <ToolTipUtil content={position.token0.address}>
-                                            <div className="flex items-center my-1">
-                                                <img 
-                                                    src={`/imgs/tokens/${position.token0.name}.png`} 
-                                                    alt={position.token0.name}
-                                                    width={25}
-                                                    height={25} />
-                                                <div className="ml-1">{position.token0.symbol}</div>
-                                            </div>   
-                                        </ToolTipUtil>
-                                        <ToolTipUtil content={position.token1.address}>
-                                            <div className="flex items-center my-1">
-                                                <img 
-                                                    src={`/imgs/tokens/${position.token1.name}.png`} 
-                                                    alt={position.token1.name}
-                                                    width={25}
-                                                    height={25} />
-                                                <div className="ml-1">{position.token1.symbol}</div>
-                                            </div>
-                                        </ToolTipUtil>
+                                        <TokenItem token={position.token0}/>
+                                        <TokenItem token={position.token1}/>
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -87,14 +66,14 @@ const PositionHome: React.FC<PositionHomeProps> = () => {
                                 </TableCell>
                                 <TableCell>{position.fee}%</TableCell>
                                 <TableCell>
-                                    <ToolTipUtil content={position.wallet}>
+                                    <ToolTipUtil content={`Address: ${position.wallet}`}>
                                         <>
                                             <div className="w-[100px] truncate">{position.wallet}</div>
                                             <div className="text-sky-500 font-semibold">me</div>
                                         </>
                                     </ToolTipUtil>
                                 </TableCell>
-                                <TableCell className="text-right">
+                                <TableCell className="text-center">
                                     <div>
                                         <div>
                                             <ToolTipUtil content="Increase liquidlity">

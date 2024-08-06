@@ -1,4 +1,5 @@
 import type { NetworkType, TokenType} from "./types"
+import {TransactionType} from "./types"
 
 
 export const defaultNetwork: NetworkType =  {chainId: 1, name: 'ethereum', label: 'Ethereum'}
@@ -156,6 +157,60 @@ export const PositionListData: PositionProps[] = [
         liquidity: 8956471235467,
         status: false,
         fee: 1.0,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    }
+]
+
+type TransactionProps = {
+    time: string,
+    tx: string,
+    type: TransactionType,
+    token0: TokenType,
+    token1: TokenType,
+    token0Amount: number,
+    token1Amount: number,
+    wallet: string
+}
+
+export const TransactionListData: TransactionProps[] = [
+    {
+        time: '6s ago', 
+        tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
+        type: TransactionType.Swap, 
+        token0:{chainId: 1, name: 'wbtc', symbol: 'WBTC', company: 'WBTC', address:'111'},
+        token1: {chainId: 1, name: 'weth', symbol: 'WETH', company: 'WETH', address:'222'},
+        token0Amount: 0.44,
+        token1Amount: 12.78,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        time: '1 day ago', 
+        tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
+        type: TransactionType.BurnPosition, 
+        token0:{chainId: 1, name: 'eth', symbol: 'ETH', company: 'ethereum', address:'111'},
+        token1: {chainId: 1, name: 'usdt', symbol: 'USDT', company: 'USDT', address:'2222'},
+        token0Amount: 0.44,
+        token1Amount: 12.78,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        time: '2 days ago', 
+        tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
+        type: TransactionType.AddLiquidity, 
+        token0:{chainId: 1, name: 'eth', symbol: 'ETH', company: 'ethereum', address:'111'},
+        token1: {chainId: 1, name: 'usdt', symbol: 'USDT', company: 'USDT', address:'2222'},
+        token0Amount: 0.44,
+        token1Amount: 12.78,
+        wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
+    },
+    {
+        time: '3 days ago', 
+        tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
+        type: TransactionType.MintPosition, 
+        token0:{chainId: 1, name: 'eth', symbol: 'ETH', company: 'ethereum', address:'111'},
+        token1: {chainId: 1, name: 'usdt', symbol: 'USDT', company: 'USDT', address:'2222'},
+        token0Amount: 0.44,
+        token1Amount: 12.78,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     }
 ]
