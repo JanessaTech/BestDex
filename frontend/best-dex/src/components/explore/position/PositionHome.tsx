@@ -37,9 +37,9 @@ const PositionHome: React.FC<PositionHomeProps> = () => {
             </TableHeader>
             <TableBody>
                 {
-                    PositionListData.map((position) => (
+                    PositionListData.map((position, index) => (
                         <>
-                            <TableRow className="border-zinc-400/40 hover:bg-muted/20">
+                            <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
                                 <TableCell className="font-medium ">{position.id}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-col">

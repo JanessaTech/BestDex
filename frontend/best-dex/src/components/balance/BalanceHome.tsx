@@ -35,8 +35,8 @@ const BalanceHome: React.FC<BalanceHomeProps> = () => {
                 </TableHeader>
                 <TableBody>
                     {
-                        BalanceListData.map((balance) => (
-                        <TableRow className="border-zinc-400/40 hover:bg-muted/20">
+                        BalanceListData.map((balance, index) => (
+                        <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
                             <TableCell>
                                 <TokenItem token={balance.token}/>
                             </TableCell>

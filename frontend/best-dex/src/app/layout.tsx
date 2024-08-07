@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import MenuHome from "@/components/menu/MenuHome";
 import HeaderHome from "@/components/header/HeaderHome";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} text-white bg-black`}>
+        <Toaster richColors closeButton/>
+      
         {/* <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -32,6 +35,7 @@ export default function RootLayout({
                 <div className="padding-y">
                   <HeaderHome/>
                   <main>
+                    
                     {children}
                   </main>
                 </div> 

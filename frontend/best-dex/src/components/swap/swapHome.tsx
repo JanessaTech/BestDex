@@ -7,6 +7,7 @@ import TokenSelection from "../token/TokenSelection"
 import NetworkPopover from "./NetworkPopover"
 import { isTokenSame } from "@/lib/utils" 
 import SettingPopover from "../setting/SettingPopover"
+import { toast } from 'sonner'
 
 type SwapHomeProps = {}
 
@@ -198,13 +199,19 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                                             />
                                     </div>
                                 </div>
-                                <div className="ml-[120px] text-zinc-300 text-sm">≈${estimatedValueTo}</div>
+                                <div className="ml-[120px] text-zinc-300 text-sm z-50">≈${estimatedValueTo}</div>
                         </div>
                         <div className={`my-2 ${fromToken && toToken ? '' : 'invisible'}`}>1 {toToken?.symbol} = 0.00029 {fromToken?.symbol}</div>
-                        <div className="h-[45px] w-[200px] buttonEffect rounded-full my-8
-                                        mx-auto grid place-items-center cursor-pointer">
+                        <button className="h-[45px] w-[200px] buttonEffect rounded-full my-8
+                                        mx-auto grid place-items-center cursor-pointer"
+                                        onClick={() => {
+                                                //toast.info("This is info message")
+                                                toast.warning("This is warning message")
+                                                //toast.error("This is error message")
+                                                }
+                                          }>
                                     Collect wallet     
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>

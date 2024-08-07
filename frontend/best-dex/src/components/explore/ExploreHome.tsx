@@ -11,7 +11,7 @@ import { useState } from "react"
 type ExploreHomeProps = {}
 
 const ExploreHome: React.FC<ExploreHomeProps> = () => {
-    const [onlyMe, setOnlyMe] = useState<boolean>(true)
+    const [onlyMe, setOnlyMe] = useState<boolean>(false)
 
     const toggleOnlyMe = () => {
         setOnlyMe((pre) => !pre)
@@ -34,7 +34,7 @@ const ExploreHome: React.FC<ExploreHomeProps> = () => {
                             type="checkbox" 
                             checked={onlyMe} 
                             className="accent-red-600"
-                            onClick={toggleOnlyMe}/>
+                            onChange={toggleOnlyMe}/>
                         <span className="text-sm ml-1 font-semibold">Only me</span>
                     </div>
                 </div>

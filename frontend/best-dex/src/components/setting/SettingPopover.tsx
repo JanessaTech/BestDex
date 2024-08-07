@@ -64,7 +64,7 @@ const SettingPopover: React.FC<SettingPopover> = ({open, showCustom, onOpenChang
              <PopoverContent align="end" className="w-[250px] md:w-[400px] py-4">
                 <div className="flex justify-end">
                     <PopoverClose>
-                        <Close className="text-zinc-500 hover:text-zinc-700 active:text-zinc-900 w-[20px] h-[20px]"/> 
+                        <Close className="closeEffect w-[20px] h-[20px]"/> 
                     </PopoverClose>
                 </div>
                 

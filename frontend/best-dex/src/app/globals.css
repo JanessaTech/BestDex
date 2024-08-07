@@ -75,6 +75,9 @@
   .buttonEffect {
     @apply bg-sky-700 hover:bg-sky-600 active:bg-sky-500
   }
+  .closeEffect {
+    @apply text-zinc-500 hover:text-zinc-700 active:text-zinc-900
+  }
 }
 
 textarea:focus, input:focus{

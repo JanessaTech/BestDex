@@ -35,8 +35,8 @@ const TransactionHome: React.FC<TransactionHomeProps> = () => {
                 </TableHeader>
                 <TableBody>
                     {
-                        TransactionListData.map((transaction) => (
-                            <TableRow className="border-zinc-400/40 hover:bg-muted/20">
+                        TransactionListData.map((transaction, index) => (
+                            <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
                                 <TableCell>{transaction.time}</TableCell>
                                 <TableCell>
                                     <ToolTipUtil content={transaction.tx}>
