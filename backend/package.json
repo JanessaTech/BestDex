@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "npm run build && node .\\dist\\bin\\boostrap.js",
-    "dev": "npx ts-node bin/boostrap.ts",
+    "ts-start": "npx ts-node bin/boostrap.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

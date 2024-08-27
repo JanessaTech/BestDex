@@ -5,12 +5,12 @@ import getConfig from '../config/configuration';
 
 dotenv.config();
 
-const env = process.env.PLATFORM || 'local'
-console.log('process.env.PORT = ', process.env.PORT)
+const platform = process.env.PLATFORM || 'mainnet'
+console.log('process.env.PLATFORM = ', platform)
 
 const server = http.createServer(app)
 console.log('Server is created')
-console.log(`Environment type: ${getConfig(env as 'local' | 'testnet' | 'mainnet')?.env}`)
+console.log(`Environment type: ${getConfig(platform as 'local' | 'testnet' | 'mainnet')?.env}`)
 
 const onListening = () => {
     const address = server.address()
