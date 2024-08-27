@@ -4,6 +4,7 @@ type ConfigType = {
     env: Env_Align
     port: number
     apiPrefix: string
+    jwt_secret: string
 }
 
 export default ConfigType

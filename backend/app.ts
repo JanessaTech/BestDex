@@ -2,8 +2,9 @@ import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import initRoutes from './routes'
-const app = express()
+import initGlobalErrorHandlers from "./routes/base_errors/GlobleErrorHandlers"
 
+const app = express()
 //const config = require('./config/configuration')
 
 //define where to upload profile file to. we could access to these files under the dir by http://localhost:3100/file.png (file.png is the file under the dir)
@@ -19,6 +20,6 @@ app.use(cors())
 
 //app.use('/', routes);
 initRoutes(app);
-//initGlobalErrorHandlers(app)
+initGlobalErrorHandlers(app)
 
 export default app

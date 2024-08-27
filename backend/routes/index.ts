@@ -1,13 +1,16 @@
-import { Request, Response } from "express";
-import express from 'express';
-const app = express()
+import type { AppType } from "../types/Types";
+import accountRouter  from './account'
+import getConfig from "../config/configuration";
 
-type AppType = typeof app
+const platform = process.env.PLATFORM || 'mainnet'
+const config = getConfig(platform as 'local' | 'testnet' | 'mainnet')
+const apiPrefix = config.apiPrefix
 
-const router = (app: AppType) => {
-    app.get("/", (req: Request, res: Response) => {
-            res.send("Express + TypeScript Server!!!");
-    });
+const initRoutes = (app: AppType) => {
+    // app.get("/", (req: Request, res: Response) => {
+    //         res.send("Express + TypeScript Server!!!");
+    // });
+    app.use(apiPrefix + '/accounts', accountRouter)
 }
 
-export default router
+export default initRoutes

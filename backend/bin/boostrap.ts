@@ -3,6 +3,7 @@ import app from '../app'
 import dotenv from "dotenv"
 import getConfig from '../config/configuration'
 import logger from '../helpers/logger'
+import banner from '../helpers/banner'
 
 dotenv.config();
 
@@ -42,4 +43,5 @@ const start = (port: number) => {
 }
 
 start(port)
+logger.info(banner)
 

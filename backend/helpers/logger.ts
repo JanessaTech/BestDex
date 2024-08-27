@@ -28,7 +28,6 @@ const convert = (obj: any): any => {
     return obj
 }
 
-
 const customFormat = {
     transform(info: any) {
         const { timestamp, message } = info;
