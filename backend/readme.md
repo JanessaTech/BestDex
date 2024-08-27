@@ -8,6 +8,6 @@ npm install
 
 ```
 npm run build
-npm run dev
+npm run ts-start
 npm run start
 ```
