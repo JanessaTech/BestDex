@@ -2,7 +2,7 @@ import {AccountError} from './AccountErrors'
 import logger from "../../helpers/logger"
 import { sendError } from "../ReponseHandler"
 import { Request, Response, NextFunction } from "express";
-import { RouterType } from '../../types/Types';
+import { RouterType } from '../../helpers/types/Types';
 
 const initAccountErrorHandlers = (router: RouterType) => {
     function handleAccountError() {

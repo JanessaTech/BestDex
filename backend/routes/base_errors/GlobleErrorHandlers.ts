@@ -1,6 +1,6 @@
 import {UnSupportedAuthError, UnauthorizedError, UnmatchedTokenError, GlobalDemoError} from "./GlobalErrors"
 import {sendError} from "../ReponseHandler"
-import type { AppType } from "../../types/Types"
+import type { AppType } from "../../helpers/types/Types"
 import {ValidationError} from 'yup'
 import {JsonWebTokenError,TokenExpiredError} from "jsonwebtoken"
 import {MulterError} from "multer"

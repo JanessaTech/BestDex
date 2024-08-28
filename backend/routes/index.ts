@@ -1,4 +1,4 @@
-import type { AppType } from "../types/Types";
+import type { AppType } from "../helpers/types/Types";
 import accountRouter  from './account'
 import getConfig from "../config/configuration";
 
