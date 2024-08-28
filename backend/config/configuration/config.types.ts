@@ -5,6 +5,15 @@ type ConfigType = {
     port: number
     apiPrefix: string
     jwt_secret: string
+    staticDirs: {
+        profiles: string
+    }
+    multer: {
+        profileSize: number,
+        fileTypes: RegExp
+        acceptedImageTypes: string[]
+        profileFieldPrefix: string
+    }
 }
 
 export default ConfigType

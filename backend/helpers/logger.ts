@@ -1,7 +1,7 @@
 import winston from 'winston'
 import {format} from 'winston'
 
-const logLevel = getLogLevel(process.env.NODE_ENV)
+const logLevel = getLogLevel(process.env.PLATFORM)
 
 const isJson = (obj: any) => {
     return obj !== undefined && obj !== null && obj.constructor === Object;

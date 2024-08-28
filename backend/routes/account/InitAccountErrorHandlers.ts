@@ -4,7 +4,7 @@ import { sendError } from "../ReponseHandler"
 import { Request, Response, NextFunction } from "express";
 import { RouterType } from '../../types/Types';
 
-const accountErrorHandlers = (router: RouterType) => {
+const initAccountErrorHandlers = (router: RouterType) => {
     function handleAccountError() {
         return (error: Error, req: Request, res: Response, next: NextFunction) => {
             if (error instanceof AccountError) {
@@ -19,4 +19,4 @@ const accountErrorHandlers = (router: RouterType) => {
     router.use(handleAccountError())
 }
 
-export default accountErrorHandlers
+export default initAccountErrorHandlers

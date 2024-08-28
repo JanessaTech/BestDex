@@ -8,6 +8,8 @@ npm install
 
 ```
 npm run build
-npm run ts-start
+npm run ts-start-local
+npm run ts-start-testnet
+npm run ts-start-mainnet
 npm run start
 ```

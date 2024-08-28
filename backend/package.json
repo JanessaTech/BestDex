@@ -6,13 +6,16 @@
   "scripts": {
     "build": "npx tsc",
     "start": "npm run build && node .\\dist\\bin\\boostrap.js",
-    "ts-start": "npx ts-node bin/boostrap.ts",
+    "ts-start-local": "set PLATFORM=local&&npx ts-node bin/boostrap.ts",
+    "ts-start-testnet": "set PLATFORM=testnet&&npx ts-node bin/boostrap.ts",
+    "ts-start-mainnet": "set PLATFORM=mainnet&&npx ts-node bin/boostrap.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.5",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

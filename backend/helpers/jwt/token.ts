@@ -1,10 +1,9 @@
 import jwt from "jsonwebtoken"
 import getConfig from "../../config/configuration"
-import { TokenGeneratedParams } from "../../types/Types"
+import type { AccountInfoType } from "../../controllers/types/TypesInController"
 
-const generateToken = (params: TokenGeneratedParams) => {
-    const platform = process.env.PLATFORM || 'mainnet'
-    const config = getConfig(platform as 'local' | 'testnet' | 'mainnet')
+const generateToken = (params: AccountInfoType) => {
+    const config = getConfig()
     const jwt_secret = config.jwt_secret
     return jwt.sign({
         id: params.id,
@@ -14,4 +13,7 @@ const generateToken = (params: TokenGeneratedParams) => {
     }, jwt_secret, {expiresIn: '18000s'})
 }
 
-export default generateToken
+export default {
+    generateToken: generateToken
+}
+    

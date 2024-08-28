@@ -1,23 +1,15 @@
 import http from 'http'
 import app from '../app'
 import dotenv from "dotenv"
+dotenv.config();
 import getConfig from '../config/configuration'
 import logger from '../helpers/logger'
 import banner from '../helpers/banner'
 
-dotenv.config();
-
-const platform = process.env.PLATFORM || 'mainnet'
-logger.info('process.env.PLATFORM = ', platform)
-
-const config = getConfig(platform as 'local' | 'testnet' | 'mainnet')
-if (!config) {
-    logger.error('config is empty.The valid values for PLATFORM in .env should be local, testnet, mainnet')
-    process.exit()
-}
+const config = getConfig()
+logger.info(`Environment type: ${config?.env}`)
 
 const server = http.createServer(app)
-logger.info(`Environment type: ${config?.env}`)
 
 const onListening = () => {
     const address = server.address()
