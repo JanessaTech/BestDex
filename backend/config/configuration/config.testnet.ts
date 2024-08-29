@@ -1,7 +1,7 @@
 import config  from "./config.defaut"
 
-const testnetConfig = {...config}
+const testnetConfig = structuredClone(config) //deep clone
 testnetConfig.env = 'testnet'
-testnetConfig.database.dataBaseName = config.env
+testnetConfig.database.dataBaseName = 'testnet'
 
 export default testnetConfig

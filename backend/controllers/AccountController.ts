@@ -69,6 +69,16 @@ class AccountController {
             next(e)
         }
     }
+
+    async deleteAccountById(req: Request, res: Response, next: NextFunction){
+        logger.info('AccountController.deleteUserById')
+        try{
+            await accountService.deleteAccountById(req.params.id)
+            sendSuccess(res, messageHelper.getMessage('account_deleteById', req.params.id))
+        } catch (e) {
+            next(e)
+        }
+    }
 }
 
 const accountController = new AccountController()

@@ -12,3 +12,18 @@ export type AccountInfoType = {
     token?: string
 }
 
+//For user
+export type UserRegisterInputType = {
+    name: string,
+    profile?: string,
+    address: string,
+    intro?: string
+}
+
+export type UserUpdateInputType = {
+    id?: number,
+    name?: string,
+    profile?: string,
+    intro?: string
+}
+

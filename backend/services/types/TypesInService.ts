@@ -9,3 +9,8 @@ export interface AccountService {
     updateAccount: (acc: AccountInfoType) => Promise<AccountInfoType>
     deleteAccountById: (id: string) => Promise<void>
 }
+
+export interface UserService {
+    
+    
+}
