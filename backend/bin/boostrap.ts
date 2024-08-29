@@ -5,6 +5,7 @@ dotenv.config();
 import getConfig from '../config/configuration'
 import logger from '../helpers/logger'
 import banner from '../helpers/banner'
+import '../db/initDB'
 
 const config = getConfig()
 logger.info(`Environment type: ${config?.env}`)

@@ -13,6 +13,15 @@ type ConfigType = {
         fileTypes: RegExp
         acceptedImageTypes: string[]
         profileFieldPrefix: string
+    },
+    database: {
+        host: string,
+        port: number,
+        dataBaseName: string,
+        minPoolSize: number,
+        maxPoolSize: number,
+        connectTimeoutMS: number,
+        socketTimeoutMS: number
     }
 }
 
