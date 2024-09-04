@@ -1,5 +1,5 @@
 
-const WalletCollect = () => {
+const WalletCollectWallet = () => {
     return (
     <li className="h-[100px] flex items-center hover:bg-zinc-200 px-5 border-b-[2px] border-b-white">
         <div className="w-[40px] h-[40px] border border-zinc-300 rounded-lg 
@@ -13,4 +13,4 @@ const WalletCollect = () => {
     )
 }
 
-export default WalletCollect
+export default WalletCollectWallet

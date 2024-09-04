@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import MenuHome from "@/components/menu/MenuHome";
 import HeaderHome from "@/components/header/HeaderHome";
 import { Toaster } from "sonner";
+import RecoilProvider from "@/components/RecoilProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,18 +30,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
           > */}
+          <RecoilProvider>
             <div className="flex w-full">
-              <MenuHome/>
-              <div className="grow">
-                <div className="padding-y">
-                  <HeaderHome/>
-                  <main>
-                    
-                    {children}
-                  </main>
-                </div> 
-              </div>
-            </div>     
+                <MenuHome/>
+                <div className="grow">
+                  <div className="padding-y">
+                    <HeaderHome/>
+                    <main>
+                      {children}
+                    </main>
+                  </div> 
+                </div>
+              </div>     
+          </RecoilProvider>
         {/* </ThemeProvider>  */}
       </body>
     </html>
