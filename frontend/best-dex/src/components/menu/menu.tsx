@@ -70,7 +70,6 @@ const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
               </Link>
               <LogoutInMenu menuType={menuType}/>
             </ul>
-  
           </div>
           <div className='h-[80px] flex items-center justify-center cursor-pointer border-t border-zinc-500'>
             <Link href='https://consensys.io/terms-of-use' 

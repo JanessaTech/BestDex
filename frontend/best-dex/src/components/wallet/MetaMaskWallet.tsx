@@ -8,7 +8,7 @@ import getConfig from '@/config'
 import messageHelper from '@/lib/messages/messageHelper'
 import {user as userClient} from '../../lib/client'
 import { UserType } from '@/lib/client/user'
-import { AuthState, authState } from '@/lib/atoms'
+import { AuthState, SignupState, authState, signupState } from '@/lib/atoms'
 import { useRecoilState } from 'recoil'
 
 const config = getConfig()
@@ -37,6 +37,7 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
     const [signIn, setSignIn] = useState<boolean>(false)
     const [address, setAddress] = useState<string>('')
     const [auth, setAuth] = useRecoilState<AuthState>(authState)
+    const [signUpstate, setSignUpstate] = useRecoilState<SignupState>(signupState)
 
     useEffect(() => {
         logger.debug('[MetaMaskWallet] useEffect. Call signInWithEthereum')
@@ -86,8 +87,10 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
                     logger.debug(messageHelper.getMessage('metamask_user_not_found', 'MetaMaskWallet', address))
                     ///const login = {'walletType' : 'metamask', address: address}
                     //localStorage.setItem('login', JSON.stringify(login))
-                    //onClose()
+                    onClose(false)
                     //openSignup()
+                    toast.warning(`'There is no user registered for address ${address}. Please signup`)
+                    setSignUpstate({open: true})
                 } else {
                     logger.error('Failed to login by address ', address)
                     logger.error(err)

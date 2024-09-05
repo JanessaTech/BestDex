@@ -15,3 +15,14 @@ export const authState = atom<AuthState>({
     key: 'authState',
     default: initAuthState
 })
+
+export type SignupState = {
+    open: boolean
+}
+const initSignupState: SignupState = {
+    open: false
+}
+export const signupState = atom<SignupState>({
+    key: 'signupState',
+    default: initSignupState
+})
