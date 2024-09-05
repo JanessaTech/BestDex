@@ -33,6 +33,11 @@ const message: MessageType = {
     //http helper
     httpHelper_failed_getData: 'Failed to get data from url {0} due to {1}',
 
+    // siwe
+    siwe_none: 'Generate a random none successfully',
+    siwe_verify_success: 'Verify siwe signature successfully',
+    siwe_verify_failed: 'Failed to verify siwe signature',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',

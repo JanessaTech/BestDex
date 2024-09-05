@@ -34,9 +34,6 @@ class BaseErrorImp implements BaseError {
      * @param props see above
      */
     constructor(props: ErrorPropType = {}) {
-        // if (props === undefined) { //fix bug: we cannot get key if we new AccountError like this: error = new AccountError()
-        //     props = {}
-        // }
         this.name = this.constructor.name
         this.key = props && props?.key ? props.key : this.constructor.name
         this.errors = props?.errors
