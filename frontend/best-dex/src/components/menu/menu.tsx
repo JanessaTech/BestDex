@@ -5,6 +5,8 @@ import Swap from "@/lib/svgs/Swap"
 import Pool from "@/lib/svgs/Pool"
 import Explore from "@/lib/svgs/Explore"
 import Balance from "@/lib/svgs/Balance"
+import Logout from "@/lib/svgs/Logout"
+import LogoutInMenu from "./LogoutInMenu"
 
 type MenuProps = {
     menuType: MenuType,
@@ -66,7 +68,7 @@ const Menu: React.FC<MenuProps> = ({menuType, setShow}) => {
                   <div className={`ml-3 text-xl font-medium ${menuType as MenuType === MenuType.MinMenu ? 'hidden' : ''}`}>Balance</div>
                 </li>
               </Link>
-              
+              <LogoutInMenu menuType={menuType}/>
             </ul>
   
           </div>

@@ -7,9 +7,11 @@ import MetaMaskWallet from "./MetaMaskWallet"
 import WalletCollectWallet from "./WalletCollectWallet"
 import CoinbaseWallet from "./CoinbaseWallet"
 
-type WalletConnectProps = {}
+type WalletConnectProps = {
+    onClose: (open: boolean) => void
+}
 
-const WalletConnect: React.FC<WalletConnectProps> = (wallet: any) => {
+const WalletConnect: React.FC<WalletConnectProps> = ({onClose}) => {
     const [walletProvider, setWalletProvider] = useState(undefined)
     const [auth, setAuth] = useRecoilState<AuthState>(authState)
 
@@ -18,7 +20,7 @@ const WalletConnect: React.FC<WalletConnectProps> = (wallet: any) => {
             logger.debug('[WalletConnect] add handleWalletAddressChanged to monitor the change of wallet address')
             window.ethereum.on('accountsChanged', handleWalletAddressChanged)
         }
-        if (wallet) {
+        if (true) {
             const provider = GetCurrentWalletProvider()
             if (provider) {
                 logger.debug('[WalletConnect] useEffect. setWalletProvider in case signup or refresh page')
@@ -33,8 +35,8 @@ const WalletConnect: React.FC<WalletConnectProps> = (wallet: any) => {
         }
     })
     const handleWalletAddressChanged = (accounts: any) => { 
-        logger.debug('[WalletConnect] handleWalletAddressChanged. wallet=', wallet)
-        if (wallet) { 
+        logger.debug('[WalletConnect] handleWalletAddressChanged. wallet=', true)
+        if (true) { 
             //notifyWalletAddressChange()
         }
     }
@@ -42,7 +44,7 @@ const WalletConnect: React.FC<WalletConnectProps> = (wallet: any) => {
         <div className="max-md:m-4 text-zinc-600">
             <div className="font-semibold">Collect a wallet</div>
             <ul className="bg-zinc-100 rounded-lg font-semibold my-4 cursor-pointer overflow-hidden text-black">
-                <MetaMaskWallet/>
+                <MetaMaskWallet onClose={onClose}/>
                 <WalletCollectWallet/>
                 <CoinbaseWallet/>
             </ul>

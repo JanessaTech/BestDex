@@ -5,6 +5,11 @@ import logger from "@/lib/logger"
 import { toast } from 'sonner'
 import { useEffect, useState } from 'react'
 import getConfig from '@/config'
+import messageHelper from '@/lib/messages/messageHelper'
+import {user as userClient} from '../../lib/client'
+import { UserType } from '@/lib/client/user'
+import { AuthState, authState } from '@/lib/atoms'
+import { useRecoilState } from 'recoil'
 
 const config = getConfig()
 
@@ -22,18 +27,80 @@ class JsonError extends Error {
     }
 }
 
-const MetaMaskWallet = () => {
+type MetaMaskWalletProps = {
+    onClose: (open: boolean) => void
+}
+
+const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
     const [isWalletLogin, setIsWalletLogin] = useState<boolean>(false)
     const [provider, setProvider] = useState<BrowserProvider | undefined>(undefined)
     const [signIn, setSignIn] = useState<boolean>(false)
+    const [address, setAddress] = useState<string>('')
+    const [auth, setAuth] = useRecoilState<AuthState>(authState)
 
     useEffect(() => {
         logger.debug('[MetaMaskWallet] useEffect. Call signInWithEthereum')
         if (provider && isWalletLogin && !signIn) {
-
+            signInWithEthereum()
+            .then((response) => {
+                const {verified, signature, addr} = response
+                if (!verified) {
+                    toast.error('Failed to Sign in, Please sign in again')
+                } else {
+                    setSignIn(true)
+                    setAddress(addr)
+                    logger.debug('[MetaMaskWallet]  setWalletProvider')
+                    //setWalletProvider(provider)
+                } 
+            })
+            .catch((e) => {
+                logger.debug('[MetaMaskWallet] failed to sigin due to ', e)
+                if (e?.info?.error?.code === 4001) {
+                    toast.error('Please click Sign in')
+                } else if (e instanceof NetworkError || e instanceof JsonError) {
+                    toast.error(e?.message)
+                } else {
+                    toast.error('Refresh page and try again')
+                }
+            })
 
         }
         if (signIn) {
+            logger.debug('[MetaMaskWallet] call restful api to check if there is an account associated with the current wallet address=', address)
+            userClient.loginByAddress(address)
+            .then((loginedUser: UserType) => {
+                // get logined user by login using wallet address
+                logger.debug(messageHelper.getMessage('metamask_get_logined_user_success', 'MetaMaskWallet', address, loginedUser))
+                //const newWallet = {address: address, user: loginedUser}
+                //const login = {'walletType' : 'metamask', user: loginedUser, address: address}
+                //localStorage.setItem('login', JSON.stringify(login)) 
+                //onClose()
+                //notifyWalletUpdate(newWallet)
+                setAuth({walletType: 'metamask', loginedUser: loginedUser})
+                onClose(false)
+                toast.success('Login successfully')
+            })
+            .catch((err: any) => {
+                if (err?.response?.data?.code === 404) {
+                    // we hit here in case there is no user associated with the address
+                    logger.debug(messageHelper.getMessage('metamask_user_not_found', 'MetaMaskWallet', address))
+                    ///const login = {'walletType' : 'metamask', address: address}
+                    //localStorage.setItem('login', JSON.stringify(login))
+                    //onClose()
+                    //openSignup()
+                } else {
+                    logger.error('Failed to login by address ', address)
+                    logger.error(err)
+                    let errMsg = ''
+                    if (err?.response?.data?.message) {
+                        errMsg = err?.response?.data?.message
+                    } else {
+                        errMsg = err?.message
+                    }
+                    toast.error(errMsg)
+                }
+            })
+            
         }
     }, [provider, isWalletLogin, signIn])
 
@@ -101,7 +168,7 @@ const MetaMaskWallet = () => {
         return siweMessage.prepareMessage()
     }
 
-    const signInWithEthereum = async (): Promise<{'verified': boolean, 'signature': string, 'addr': string} | undefined> => {
+    const signInWithEthereum = async (): Promise<{'verified': boolean, 'signature': string, 'addr': string}> => {
         if (provider) {
             const domain = window.location.host
             const origin = window.location.origin
@@ -124,7 +191,7 @@ const MetaMaskWallet = () => {
             logger.debug('[MetaMaskWallet] signInWithEthereu. verified:', verified)
             return {'verified': verified, 'signature': signature, 'addr': normalizedAddress}
         }
-        return undefined 
+        throw new Error('Cannot find provider') 
     }
 
     const isMetaMaskAvailable = (): boolean => {

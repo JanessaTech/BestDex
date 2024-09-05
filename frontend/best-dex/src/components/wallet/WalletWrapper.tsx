@@ -14,6 +14,7 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useState } from "react"
 import WalletConnect from "./WalletConnect"
 import useMediaQuery from "@/hooks/useMediaQuery"
+import logger from "@/lib/logger";
 
 type WalletWrapperProps = {}
 
@@ -42,7 +43,7 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
       }
 
       const mediaQueryCallback = () => {
-        console.log('handle mediaQueryCallback...')
+        logger.debug('handle mediaQueryCallback...')
         if (window.innerWidth <= 768) {
           const _openPopover = localStorage.getItem('wallet_popover') === 'true'
           if (_openPopover) {
@@ -63,12 +64,12 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
         updatePopover(true)
       }
 
-      const onOpenChange = (open: boolean) => {
-        console.log('onOpenChange is triggered. open=', open)
+      const onWalletOpenChange = (open: boolean) => {
+        logger.debug('onOpenChange is triggered. open=', open)
         updatePopover(open)
       }
 
-      const onDrawerOpenChange = (open: boolean) => {
+      const onWalletDrawerOpenChange = (open: boolean) => {
         updateDrawer(open)
       }
 
@@ -79,18 +80,18 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
     return (
         <>
         <div className='max-md:hidden'>
-            <Popover onOpenChange={onOpenChange} open={openWalletPopover}>
+            <Popover onOpenChange={onWalletOpenChange} open={openWalletPopover}>
               <PopoverTrigger>
                 <div className='buttonEffect px-5 py-1.5 rounded-full' 
                      onClick={handlePopoverClick}>Connect wallet</div>
               </PopoverTrigger>     
               <PopoverContent align='end'>
-                <WalletConnect />
+                <WalletConnect onClose={onWalletOpenChange}/>
               </PopoverContent>
             </Popover>
           </div>
           <div className='md:hidden'>
-            <Drawer open={openWalletDrawer} onOpenChange={onDrawerOpenChange}>
+            <Drawer open={openWalletDrawer} onOpenChange={onWalletDrawerOpenChange}>
               <DrawerTrigger>
                 <div className='bg-sky-700 px-5 py-1.5 rounded-full 
                             hover:bg-sky-600 active:bg-sky-500' onClick={handleDrawerClick}>Connect wallet</div>
@@ -100,7 +101,7 @@ const WalletWrapper : React.FC<WalletWrapperProps> = () => {
                     <DrawerTitle/>
                     <DrawerDescription/>
                   </VisuallyHidden.Root>
-                  <WalletConnect />
+                  <WalletConnect onClose={onWalletDrawerOpenChange}/>
               </DrawerContent>
             </Drawer>
           </div>

@@ -1,15 +1,14 @@
 import { atom } from "recoil"
-export type AuthUser = {
-    address: string  //todo: how to valdiate by regex?
-}
+import type { UserType } from "./client/user"
+
 export type AuthState = {
     walletType?: 'metamask' | 'wallet-collect' | 'coinbase' | undefined
-    user?: AuthUser | undefined
+    loginedUser?: UserType | undefined
 }
 
 const initAuthState: AuthState = {
     walletType: undefined,
-    user: undefined
+    loginedUser: undefined
 }
 
 export const authState = atom<AuthState>({
