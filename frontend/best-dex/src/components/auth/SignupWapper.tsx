@@ -29,8 +29,8 @@ const SignupWapper: React.FC<SignupWapperProps> = () => {
                 <DialogContent className="w-4/5 md:w-2/3 min-w-[300px] max-w-[400px]">
                     <DialogHeader>
                         <DialogTitle className="text-black">Create a new account</DialogTitle>
-                        <DialogDescription>
-                        Provide your personal information
+                        <DialogDescription className="text-xs">
+                            Provide your personal information
                         </DialogDescription>
                     </DialogHeader>
                     <Signup/>
