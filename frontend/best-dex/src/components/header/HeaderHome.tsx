@@ -8,7 +8,7 @@ import { AuthState, authState } from '@/lib/atoms'
 import { useRecoilState } from 'recoil'
 import Profile from './Profile'
 import useWalletAddressMonitor from '@/hooks/useWalletAddressMonitor'
-import Signup from '../auth/Signup'
+import SignupWapper from '../auth/SignupWapper'
 
 type HeaderProps = {}
 
@@ -19,7 +19,7 @@ const HeaderHome:React.FC<HeaderProps> = () => {
   return (
     <div className='w-full sticky top-0 bg-black z-50 shadow-gray-300'>
       <div className='h-16 flex justify-end items-center'>
-          <Signup/>
+          <SignupWapper/>
           <NetworkWrapper/>
           {!auth?.loginedUser && <WalletWrapper/>}
           {!!auth?.loginedUser && <Profile loginedUser={auth.loginedUser}/>}

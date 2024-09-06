@@ -32,7 +32,6 @@ type MetaMaskWalletProps = {
 }
 
 const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
-    const [isWalletLogin, setIsWalletLogin] = useState<boolean>(false)
     const [provider, setProvider] = useState<BrowserProvider | undefined>(undefined)
     const [signIn, setSignIn] = useState<boolean>(false)
     const [address, setAddress] = useState<string>('')
@@ -41,7 +40,7 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
 
     useEffect(() => {
         logger.debug('[MetaMaskWallet] useEffect. Call signInWithEthereum')
-        if (provider && isWalletLogin && !signIn) {
+        if (provider && !signIn) {
             signInWithEthereum()
             .then((response) => {
                 const {verified, signature, addr} = response
@@ -50,8 +49,6 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
                 } else {
                     setSignIn(true)
                     setAddress(addr)
-                    logger.debug('[MetaMaskWallet]  setWalletProvider')
-                    //setWalletProvider(provider)
                 } 
             })
             .catch((e) => {
@@ -64,7 +61,6 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
                     toast.error('Refresh page and try again')
                 }
             })
-
         }
         if (signIn) {
             logger.debug('[MetaMaskWallet] call restful api to check if there is an account associated with the current wallet address=', address)
@@ -72,11 +68,6 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
             .then((loginedUser: UserType) => {
                 // get logined user by login using wallet address
                 logger.debug(messageHelper.getMessage('metamask_get_logined_user_success', 'MetaMaskWallet', address, loginedUser))
-                //const newWallet = {address: address, user: loginedUser}
-                //const login = {'walletType' : 'metamask', user: loginedUser, address: address}
-                //localStorage.setItem('login', JSON.stringify(login)) 
-                //onClose()
-                //notifyWalletUpdate(newWallet)
                 setAuth({walletType: 'metamask', loginedUser: loginedUser})
                 onClose(false)
                 toast.success('Login successfully')
@@ -85,10 +76,7 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
                 if (err?.response?.data?.code === 404) {
                     // we hit here in case there is no user associated with the address
                     logger.debug(messageHelper.getMessage('metamask_user_not_found', 'MetaMaskWallet', address))
-                    ///const login = {'walletType' : 'metamask', address: address}
-                    //localStorage.setItem('login', JSON.stringify(login))
                     onClose(false)
-                    //openSignup()
                     toast.warning(`'There is no user registered for address ${address}. Please signup`)
                     setSignUpstate({open: true})
                 } else {
@@ -105,7 +93,7 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
             })
             
         }
-    }, [provider, isWalletLogin, signIn])
+    }, [provider, signIn])
 
     const getNonce = async () => {
         try {
@@ -219,7 +207,6 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
             newProvider.send('eth_requestAccounts', [])
             .then((response: any) => {
                 logger.debug('[MetaMaskWallet] handleMetaMask response=', response)
-                setIsWalletLogin(true)
                 setProvider(newProvider)
             })
             .catch((e) => {
