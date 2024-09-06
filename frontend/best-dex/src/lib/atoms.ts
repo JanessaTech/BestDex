@@ -1,8 +1,10 @@
 import { atom } from "recoil"
 import type { UserType } from "./client/user"
 
+type WalletType = 'metamask' | 'wallet-collect' | 'coinbase' | undefined
+
 export type AuthState = {
-    walletType?: 'metamask' | 'wallet-collect' | 'coinbase' | undefined
+    walletType?: WalletType
     loginedUser?: UserType | undefined
 }
 
@@ -17,10 +19,13 @@ export const authState = atom<AuthState>({
 })
 
 export type SignupState = {
-    open: boolean
+    open: boolean,
+    address?: string,
+    walletType?: WalletType
 }
 const initSignupState: SignupState = {
-    open: false
+    open: false,
+    address: ''
 }
 export const signupState = atom<SignupState>({
     key: 'signupState',

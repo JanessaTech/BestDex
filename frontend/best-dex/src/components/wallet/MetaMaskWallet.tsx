@@ -78,7 +78,7 @@ const MetaMaskWallet: React.FC<MetaMaskWalletProps> = ({onClose}) => {
                     logger.debug(messageHelper.getMessage('metamask_user_not_found', 'MetaMaskWallet', address))
                     onClose(false)
                     toast.warning(`'There is no user registered for address ${address}. Please signup`)
-                    setSignUpstate({open: true})
+                    setSignUpstate({open: true, address: address, walletType: 'metamask'})
                 } else {
                     logger.error('Failed to login by address ', address)
                     logger.error(err)

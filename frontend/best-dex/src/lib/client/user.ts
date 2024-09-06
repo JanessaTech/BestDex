@@ -17,7 +17,7 @@ export type UserType = {
 
 const config = getConfig()
 
-export const loginByAddress = async (address: string):Promise<UserType> => {
+export const loginByAddress = async (address: string): Promise<UserType> => {
     logger.debug('[client.user] loginByAddress. address =', address)
     try {
         const response = await axios.post(`${config.BACKEND_ADDR}/apis/v1/users/login`,{
@@ -28,6 +28,20 @@ export const loginByAddress = async (address: string):Promise<UserType> => {
     } catch (err: any) {
         const reason = err?.response?.data?.message || err?.message || err
         logger.error('[client.user] loginByAddress.', messageHelper.getMessage('user_failed_login', address, reason))
+        logger.error(err)
+        throw err
+    }
+}
+
+export const register = async (formData: FormData): Promise<UserType> => {
+    logger.debug('[client.user] register')
+    try {
+        const response = await axios.post(`${config.BACKEND_ADDR}/apis/v1/users/register`, formData, {
+        headers: {'Content-Type': 'multipart/form-data'}})
+        return response?.data?.data?.user
+    } catch (err: any) {
+        const reason = err?.response?.data?.message || err?.message || err
+        logger.error('[serverClient.user] register.', messageHelper.getMessage('user_failed_register', formData.get('name'), reason))
         logger.error(err)
         throw err
     }

@@ -11,6 +11,9 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { isFileImage } from "@/lib/utils/fileUtil"
 import getConfig from "@/config"
+import { AuthState, SignupState, authState, signupState } from "@/lib/atoms"
+import { useRecoilState } from "recoil"
+import {user as UserClient} from '../../lib/client'
 
 const config = getConfig()
 
@@ -26,6 +29,9 @@ type SignupStateProps = {
 }
 //todo: enhance schema to support validating file
 const Signup: React.FC<SignupProps> = () => {
+    const [auth, setAuth] = useRecoilState<AuthState>(authState)
+    const [signUpstate, setSignUpstate] = useRecoilState<SignupState>(signupState)
+
     const { register, handleSubmit, formState: { errors }, reset } = useForm<SignupFormData>({
         resolver: yupResolver(SignupSchema)
       });
@@ -38,7 +44,7 @@ const Signup: React.FC<SignupProps> = () => {
     })
 
     useEffect(() => {
-        console.log(errors)
+        //console.log(errors)
     })
 
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -77,13 +83,45 @@ const Signup: React.FC<SignupProps> = () => {
         setState({...state, selectedFile: file, fileError: ''})
     }
 
-    const onSignup = (data: SignupFormData) => {
+    const onSignup = async (data: SignupFormData) => {
         logger.debug(data)
         try {
             validateFile(state.selectedFile)
+            await callRegister(data)
         } catch (e: any) {
             setState({...state, fileError: e.message})
         }
+    }
+
+    const callRegister = async (data: SignupFormData) => {
+        const formData = new FormData()
+        if (signUpstate.address  && data?.intro && state.selectedFile) {
+            logger.debug('name', data.name)
+            logger.debug('address', signUpstate.address)
+            logger.debug('intro', data?.intro)
+            logger.debug('profile', state.selectedFile)
+
+            formData.append('name', data.name)
+            formData.append('address', signUpstate.address)
+            formData.append('intro', data?.intro)
+            formData.append('profile', state.selectedFile)
+            logger.debug(formData)
+            
+            try {
+                const registeredUser = await UserClient.register(formData)
+                setAuth({walletType: signUpstate.walletType, loginedUser: registeredUser})
+                setSignUpstate({open: false, address: '', walletType: undefined})
+                toast.success(`User ${registeredUser.name} is created successfully`)
+            } catch (err: any) {
+                let errMsg = ''
+                if (err?.response?.data?.message) {
+                    errMsg = err?.response?.data?.message
+                } else {
+                    errMsg = err?.message
+                }
+                toast.error(errMsg)
+            }
+        }  
     }
 
     const handleClear = () => {
