@@ -25,7 +25,8 @@ export type SignupState = {
 }
 const initSignupState: SignupState = {
     open: false,
-    address: ''
+    address: '',
+    walletType: undefined
 }
 export const signupState = atom<SignupState>({
     key: 'signupState',
