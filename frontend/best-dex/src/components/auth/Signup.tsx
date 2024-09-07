@@ -43,10 +43,6 @@ const Signup: React.FC<SignupProps> = () => {
         fileError: ''
     })
 
-    useEffect(() => {
-        //console.log(errors)
-    })
-
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         e.preventDefault()
         setState({...state, [e.target.name]: e.target.value})
@@ -105,7 +101,6 @@ const Signup: React.FC<SignupProps> = () => {
             formData.append('address', signUpstate.address)
             formData.append('intro', data?.intro)
             formData.append('profile', state.selectedFile)
-            logger.debug(formData)
             
             try {
                 const registeredUser = await UserClient.register(formData)

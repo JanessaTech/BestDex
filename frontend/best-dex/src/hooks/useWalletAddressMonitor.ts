@@ -1,11 +1,21 @@
+import { AuthState, WalletAddressChangeState, authState, walletAddressChangeState } from "@/lib/atoms"
 import logger from "@/lib/logger"
 import { useEffect } from "react"
+import { useRecoilState } from "recoil"
 
 //todo: failed to monitor accountsChanged event
 const useWalletAddressMonitor = () => {
+    const [auth, setAuth] = useRecoilState<AuthState>(authState)
+    const [walletState, setWalletState] = useRecoilState<WalletAddressChangeState>(walletAddressChangeState)
+
     const handleWalletAddressChanged = (accounts: any) => { 
-        logger.debug('[useWalletAddressMonitor] handleWalletAddressChanged. wallet=', true)
+        logger.debug('[useWalletAddressMonitor] handleWalletAddressChanged.')
+        logger.debug('auth: ', auth)
+        if (auth.loginedUser) {
+            setWalletState({changed: true})
+        }
     }
+    //console.log('[useWalletAddressMonitor]auth =', auth)
 
     useEffect(() => {
         if (window.ethereum) {
@@ -18,7 +28,7 @@ const useWalletAddressMonitor = () => {
                 window.ethereum.removeListener('accountsChanged', handleWalletAddressChanged);
             }
         }
-    }, [])
+    })
 }
 
 export default useWalletAddressMonitor

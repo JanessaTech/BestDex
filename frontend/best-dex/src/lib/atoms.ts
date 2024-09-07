@@ -31,3 +31,15 @@ export const signupState = atom<SignupState>({
     key: 'signupState',
     default: initSignupState
 })
+
+
+export type WalletAddressChangeState = {
+    changed: boolean
+}
+const initWalletAddressChangeState: WalletAddressChangeState = {
+    changed: false
+}
+export const walletAddressChangeState  = atom<WalletAddressChangeState>({
+    key: 'walletAddressChangeState',
+    default: initWalletAddressChangeState
+})
