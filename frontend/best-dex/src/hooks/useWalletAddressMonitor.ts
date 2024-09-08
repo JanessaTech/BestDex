@@ -15,7 +15,6 @@ const useWalletAddressMonitor = () => {
             setWalletState({changed: true})
         }
     }
-    //console.log('[useWalletAddressMonitor]auth =', auth)
 
     useEffect(() => {
         if (window.ethereum) {
