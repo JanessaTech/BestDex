@@ -5,8 +5,7 @@ import Swap from "@/lib/svgs/Swap"
 import Pool from "@/lib/svgs/Pool"
 import Explore from "@/lib/svgs/Explore"
 import Balance from "@/lib/svgs/Balance"
-import Logout from "@/lib/svgs/Logout"
-import LogoutInMenu from "./LogoutInMenu"
+import LogoutInMenu from "../auth/LogoutInMenu"
 
 type MenuProps = {
     menuType: MenuType,

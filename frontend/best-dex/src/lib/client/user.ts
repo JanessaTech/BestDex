@@ -41,7 +41,23 @@ export const register = async (formData: FormData): Promise<UserType> => {
         return response?.data?.data?.user
     } catch (err: any) {
         const reason = err?.response?.data?.message || err?.message || err
-        logger.error('[serverClient.user] register.', messageHelper.getMessage('user_failed_register', formData.get('name'), reason))
+        logger.error('[client.user] register.', messageHelper.getMessage('user_failed_register', formData.get('name'), reason))
+        logger.error(err)
+        throw err
+    }
+}
+
+export const logoutByAddress = async (address: string): Promise<UserType> => {
+    logger.debug('[client.user] logoutByAddress. address =', address)
+    try {
+        const response = await axios.post(`${config.BACKEND_ADDR}/apis/v1/users/logout`,{
+            address: address
+        })
+        logger.debug('response =', response)
+        return response?.data?.data?.user
+    } catch (err: any) {
+        const reason = err?.response?.data?.message || err?.message || err
+        logger.error('[client.user] logoutByAddress', messageHelper.getMessage('user_failed_logout', address, reason))
         logger.error(err)
         throw err
     }

@@ -3,7 +3,7 @@ import logger from "@/lib/logger"
 import { useEffect } from "react"
 import { useRecoilState } from "recoil"
 
-//todo: failed to monitor accountsChanged event
+//todo: failed to monitor accountsChanged event sometimes
 const useWalletAddressMonitor = () => {
     const [auth, setAuth] = useRecoilState<AuthState>(authState)
     const [walletState, setWalletState] = useRecoilState<WalletAddressChangeState>(walletAddressChangeState)

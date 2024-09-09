@@ -1,6 +1,18 @@
 import { atom } from "recoil"
 import type { UserType } from "./client/user"
 
+const localStorageEffect = (key: string) => ({setSelf, onSet}: {setSelf: Function, onSet: Function}) => {
+    if (typeof window !== 'undefined') {
+        const savedValue = localStorage.getItem(key)
+        if (savedValue != null) {
+          setSelf(JSON.parse(savedValue))
+        }
+        onSet((newValue: any) => {
+          localStorage.setItem(key, JSON.stringify(newValue))
+        })
+    }
+  }
+
 type WalletType = 'metamask' | 'wallet-collect' | 'coinbase' | undefined
 
 export type AuthState = {
@@ -15,7 +27,10 @@ const initAuthState: AuthState = {
 
 export const authState = atom<AuthState>({
     key: 'authState',
-    default: initAuthState
+    default: initAuthState,
+    effects_UNSTABLE: [
+        localStorageEffect('current_user'),
+      ]
 })
 
 export type SignupState = {

@@ -16,23 +16,22 @@ type ProfileProps = {
 
 const Profile: React.FC<ProfileProps> = ({loginedUser}) => {
     return (
-        <div>
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Avatar className="w-7 h-7 cursor-pointer">
-                            <AvatarImage src={`${config.BACKEND_ADDR}/${loginedUser.profile}`}/>
-                            <AvatarFallback>ME</AvatarFallback>
-                        </Avatar>
-                    </TooltipTrigger>
-                    <TooltipContent align="end">
-                    <p>{loginedUser.name}</p>
-                    <p>{loginedUser.address}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-            
-        </div>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Avatar className="w-7 h-7 cursor-pointer">
+                        <AvatarImage src={`${config.BACKEND_ADDR}/${loginedUser.profile}`}/>
+                        <AvatarFallback>ME</AvatarFallback>
+                    </Avatar>
+                </TooltipTrigger>
+                <TooltipContent align="end">
+                    <div>
+                        <div>{loginedUser.name}</div>
+                        <div>{loginedUser.address}</div>
+                    </div>
+                </TooltipContent>
+            </Tooltip>
+    </TooltipProvider>
     )
 }
 
