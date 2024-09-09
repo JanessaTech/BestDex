@@ -1,8 +1,7 @@
-import type { NetworkType, TokenType} from "./types"
+import type {TokenType} from "./types"
 import {TransactionType} from "./types"
+import { NetworkType } from "./atoms"
 
-
-export const defaultNetwork: NetworkType =  {chainId: 1, name: 'ethereum', label: 'Ethereum'}
 export const networks: readonly NetworkType[] = [
     {chainId: 1, name: 'ethereum', label: 'Ethereum'},
     {chainId: 42161, name: 'arbitrum', label: 'Arbitrum'},

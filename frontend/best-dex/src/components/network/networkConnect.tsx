@@ -1,5 +1,7 @@
-import { defaultNetwork, networks } from "@/lib/constants"
-import { NetworkType } from "@/lib/types"
+import { networks } from "@/lib/constants"
+import { defaultNetwork } from "@/lib/atoms"
+import { networkState, type NetworkType } from "@/lib/atoms" 
+import { useRecoilState } from "recoil"
 
 type NetworkConnectProps = {
     network: NetworkType,
@@ -7,11 +9,13 @@ type NetworkConnectProps = {
 }
 
 const NetworkConnect : React.FC<NetworkConnectProps> = ({network, handleNetworkChange}) => {
+    const [networkCurState, setNetworkCurState] = useRecoilState<NetworkType>(networkState)
 
     const networkChange = (chainId: number) => {
         let network = networks.find((network) => network.chainId === chainId)
         network = network || defaultNetwork
         handleNetworkChange(network)
+        setNetworkCurState({...network})
     }
 
     return (

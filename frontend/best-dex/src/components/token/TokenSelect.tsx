@@ -4,11 +4,13 @@ import {
     PopoverTrigger,
   } from "@/components/ui/popover"
 import NetworkConnect from "../network/NetworkConnect"
-import type { NetworkType, TokenType } from "@/lib/types"
+import type {TokenType } from "@/lib/types"
+import {type  NetworkType, defaultNetwork, networkState } from "@/lib/atoms"
 import { useState } from "react"
-import { TokenListData, defaultNetwork } from "@/lib/constants"
+import { TokenListData} from "@/lib/constants"
 import Search from "@/lib/svgs/Search"
 import TokenList from "./TokenList"
+import { useRecoilState } from "recoil"
 
 type TokenSelectProps = {
     handleTokenChange: (newToken: TokenType) => void
@@ -16,11 +18,12 @@ type TokenSelectProps = {
 
 const TokenSelect: React.FC<TokenSelectProps> = ({handleTokenChange}) => {
     const [network, setNetwork] = useState<NetworkType>(defaultNetwork)
+    const [networkCurState, setNetworkCurState] = useRecoilState<NetworkType>(networkState)
     const [isNetworkOpen, setIsNetworkOpen] = useState<boolean>(false)
     const [searchToken, setSearchToken] = useState<string>('')
 
     const handleNetworkChange = (network: NetworkType) => {
-        setNetwork(network)
+        setNetworkCurState(network)
         setIsNetworkOpen(false)
     }
     
@@ -50,10 +53,10 @@ const TokenSelect: React.FC<TokenSelectProps> = ({handleTokenChange}) => {
                 <Search className="text-zinc-300 w-[25px] h-[25px] absolute left-2"/>
                 <Popover onOpenChange={onOpenChange} open={isNetworkOpen}>
                     <PopoverTrigger>
-                        <img src={`/imgs/networks/${network.name}.png`}  alt={network.name} className="cursor-pointer"/>
+                        <img src={`/imgs/networks/${networkCurState.name}.png`}  alt={networkCurState.name} className="cursor-pointer"/>
                     </PopoverTrigger>
                     <PopoverContent align='end'>
-                        <NetworkConnect network={network} handleNetworkChange={handleNetworkChange}/>
+                        <NetworkConnect network={networkCurState} handleNetworkChange={handleNetworkChange}/>
                     </PopoverContent>
                 </Popover> 
             </div>

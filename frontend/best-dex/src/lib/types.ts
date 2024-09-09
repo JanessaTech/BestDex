@@ -1,8 +1,4 @@
-export type NetworkType = {
-    chainId: number
-    name: string
-    label: string
-}
+
 export type TokenType = {
     chainId: number,
     name: string,

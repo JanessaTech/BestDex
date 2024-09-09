@@ -59,3 +59,15 @@ export const walletAddressChangeState  = atom<WalletAddressChangeState>({
     key: 'walletAddressChangeState',
     default: initWalletAddressChangeState
 })
+
+export type NetworkType = {
+    chainId: number
+    name: string
+    label: string
+}
+export const defaultNetwork: NetworkType =  {chainId: 1, name: 'ethereum', label: 'Ethereum'}
+
+export const networkState = atom<NetworkType>({
+    key: 'networkState',
+    default: defaultNetwork
+})

@@ -3,7 +3,7 @@ import {
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover"
-import type { NetworkType } from "@/lib/types"
+import type { NetworkType } from "@/lib/atoms" 
 import NetworkConnect from "../network/NetworkConnect"
 import Arrow from "@/lib/svgs/Arrow"
 

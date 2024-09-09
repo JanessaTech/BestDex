@@ -1,18 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import { defaultNetwork } from "@/lib/constants"
-import type { NetworkType, TokenType } from "@/lib/types"
+import { defaultNetwork, networkState } from "@/lib/atoms" 
+import type {TokenType } from "@/lib/types"
+import type { NetworkType } from "@/lib/atoms"
 import TokenSelection from "../token/TokenSelection"
 import NetworkPopover from "./NetworkPopover"
 import { isTokenSame } from "@/lib/utils" 
 import SettingPopover from "../setting/SettingPopover"
 import { toast } from 'sonner'
+import { useRecoilState } from "recoil"
 
 type SwapHomeProps = {}
 
 const SwapHome: React.FC<SwapHomeProps> = ({}) => {
-    const [network, setNetwork] = useState<NetworkType>(defaultNetwork)
+    const [networkCurState, setNetworkCurState] = useRecoilState<NetworkType>(networkState)
     const [isNetworkOpen, setIsNetworkOpen] = useState<boolean>(false)
     const [fromFontSize, setFromFontSize] = useState('base')
     const [toFontSize, setToFontSize] = useState('base')
@@ -27,7 +29,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     const [isSettingOpen, setIsSettingOpen] = useState<boolean>(false)
 
     const handleNetworkChange = (network: NetworkType) => {
-        setNetwork(network)
+        setNetworkCurState(network)
         setIsNetworkOpen(false)
     }
 
@@ -89,7 +91,6 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
         } else {
             setFromToken(newToken)
         }
-        
         setIsFromOpen(false)
     }
 
@@ -104,7 +105,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
     }
 
     const handleClear = () => {
-        setNetwork(defaultNetwork)
+        setNetworkCurState(defaultNetwork)
         setFromFontSize('base')
         setToFontSize('base')
         setValueFrom('0')
@@ -131,7 +132,7 @@ const SwapHome: React.FC<SwapHomeProps> = ({}) => {
                     </div>
                     <NetworkPopover 
                         open={isNetworkOpen} 
-                        network={network} 
+                        network={networkCurState} 
                         handleNetworkOpen={handleNetworkOpen} 
                         handleNetworkChange={handleNetworkChange}/>
                     <div>
