@@ -1,8 +1,13 @@
 ## How to create the project from scratch
 
 ```
-
+npm init
+npm add --save-dev hardhat
+npx hardhat init
+npm add @uniswap/v3-periphery @uniswap/v3-core
 ```
+
+See more at: https://docs.uniswap.org/contracts/v3/guides/local-environment
 
 ## How to compile and test
 
