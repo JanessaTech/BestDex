@@ -30,7 +30,7 @@ describe("CoreSwap", function () {
   }
 
   describe('swapExactInputSingle', function () {
-    it.skip('should success when call swapExactInputSingle', async function () {
+    it('should success when call swapExactInputSingle', async function () {
       const {coreSwap, signers, WETH, DAI} = await loadFixture(sharedContractFixture)
       const deposit = await WETH.connect(signers[0]).deposit({value: ethers.utils.parseEther('10')})
       await deposit.wait()
@@ -67,7 +67,7 @@ describe("CoreSwap", function () {
     })
   })
 
-  it("swapExactInputSingle", async function () {
+  it.skip("swapExactInputSingle", async function () {
     
     /* Deploy the SimpleSwap contract */
     const coreSwapFactory = await ethers.getContractFactory("CoreSwap");
