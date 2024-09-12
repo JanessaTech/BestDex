@@ -20,3 +20,10 @@ test:
     npx hardhat test --network localhost .\test\SimpleSwap.test.js
     npx hardhat test --network localhost .\test\CoreSwap.test.js
 ```
+
+## How to run scripts
+
+```
+npx hardhat run .\scripts\convert-abi.js
+npx hardhat run .\scripts\price-feed.js
+```
