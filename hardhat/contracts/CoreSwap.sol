@@ -17,16 +17,14 @@ contract CoreSwap {
 	constructor(ISwapRouter _swapRouter) {
         swapRouter = _swapRouter;
     }
-    
-    function swapExactInputSingle(uint amountIn) external returns (uint256 amountOut) {
-	    // Transfer the specified amount of WETH9 to this contract.
-        TransferHelper.safeTransferFrom(WETH9, msg.sender, address(this), amountIn);
-        // Approve the router to spend WETH9.
-        TransferHelper.safeApprove(WETH9, address(swapRouter), amountIn);
+
+    function swapExactInput(address token0, address token1, uint amountIn) external returns (uint256 amountOut) {
+        TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountIn);
+        TransferHelper.safeApprove(token0, address(swapRouter), amountIn);
         ISwapRouter.ExactInputSingleParams memory params =
         ISwapRouter.ExactInputSingleParams({
-          tokenIn: WETH9,
-          tokenOut: DAI,
+          tokenIn: token0,
+          tokenOut: token1,
           fee: feeTier,
           recipient: msg.sender,
           deadline: block.timestamp,
@@ -37,29 +35,29 @@ contract CoreSwap {
         // The call to `exactInputSingle` executes the swap.
         amountOut = swapRouter.exactInputSingle(params);
         return amountOut;
-	}
-
-  function swapExactOutputSingle(uint256 amountOut, uint256 amountInMaximum) external returns (uint256 amountIn) {
-    TransferHelper.safeTransferFrom(DAI, msg.sender, address(this), amountInMaximum);
-    TransferHelper.safeApprove(DAI, address(swapRouter), amountInMaximum);
-    ISwapRouter.ExactOutputSingleParams memory params =
-            ISwapRouter.ExactOutputSingleParams({
-                tokenIn: DAI,
-                tokenOut: WETH9,
-                fee: feeTier,
-                recipient: msg.sender,
-                deadline: block.timestamp,
-                amountOut: amountOut,
-                amountInMaximum: amountInMaximum,
-                sqrtPriceLimitX96: 0
-            });
-    amountIn = swapRouter.exactOutputSingle(params);
-    console.log('amountIn = ', amountIn);
-    if (amountIn < amountInMaximum) {
-            TransferHelper.safeApprove(DAI, address(swapRouter), 0);
-            TransferHelper.safeTransfer(DAI, msg.sender, amountInMaximum - amountIn);
     }
-  }
+
+    function swapExactOutput(address token0, address token1, uint256 amountOut, uint256 amountInMaximum) external returns (uint256 amountIn) {
+        TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountInMaximum);
+        TransferHelper.safeApprove(token0, address(swapRouter), amountInMaximum);
+        ISwapRouter.ExactOutputSingleParams memory params =
+                ISwapRouter.ExactOutputSingleParams({
+                    tokenIn: token0,
+                    tokenOut: token1,
+                    fee: feeTier,
+                    recipient: msg.sender,
+                    deadline: block.timestamp,
+                    amountOut: amountOut,
+                    amountInMaximum: amountInMaximum,
+                    sqrtPriceLimitX96: 0
+                });
+        amountIn = swapRouter.exactOutputSingle(params);
+        console.log('amountIn = ', amountIn);
+        if (amountIn < amountInMaximum) {
+                TransferHelper.safeApprove(token0, address(swapRouter), 0);
+                TransferHelper.safeTransfer(token0, msg.sender, amountInMaximum - amountIn);
+        }
+    }
   
   function getPool(address _tokenA, address _tokenB, uint24 _fee) external view returns (address pool) {
         address _pool = uniswapV3Factory.getPool(_tokenA, _tokenB, _fee);
