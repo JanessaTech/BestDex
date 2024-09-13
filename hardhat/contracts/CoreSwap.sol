@@ -18,7 +18,7 @@ contract CoreSwap {
         swapRouter = _swapRouter;
     }
 
-    function swapExactInput(address token0, address token1, uint amountIn) external returns (uint256 amountOut) {
+    function swapExactInput(address token0, address token1, uint amountIn, uint256 mins) external returns (uint256 amountOut) {
         TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountIn);
         TransferHelper.safeApprove(token0, address(swapRouter), amountIn);
         ISwapRouter.ExactInputSingleParams memory params =
@@ -27,7 +27,7 @@ contract CoreSwap {
           tokenOut: token1,
           fee: feeTier,
           recipient: msg.sender,
-          deadline: block.timestamp,
+          deadline: block.timestamp + mins * 60,
           amountIn: amountIn,
           amountOutMinimum: 0,
           sqrtPriceLimitX96: 0
@@ -37,7 +37,7 @@ contract CoreSwap {
         return amountOut;
     }
 
-    function swapExactOutput(address token0, address token1, uint256 amountOut, uint256 amountInMaximum) external returns (uint256 amountIn) {
+    function swapExactOutput(address token0, address token1, uint256 amountOut, uint256 amountInMaximum, uint256 mins) external returns (uint256 amountIn) {
         TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountInMaximum);
         TransferHelper.safeApprove(token0, address(swapRouter), amountInMaximum);
         ISwapRouter.ExactOutputSingleParams memory params =
@@ -46,7 +46,7 @@ contract CoreSwap {
                     tokenOut: token1,
                     fee: feeTier,
                     recipient: msg.sender,
-                    deadline: block.timestamp,
+                    deadline: block.timestamp + mins * 60,
                     amountOut: amountOut,
                     amountInMaximum: amountInMaximum,
                     sqrtPriceLimitX96: 0

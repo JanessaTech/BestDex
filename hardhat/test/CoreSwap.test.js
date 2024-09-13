@@ -1,7 +1,6 @@
 const { expect } = require("chai");
 const { loadFixture } = require("ethereum-waffle");
 const { ethers } = require("hardhat");
-const { arrayBuffer } = require("stream/consumers");
 
 const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
@@ -15,12 +14,13 @@ describe("CoreSwap", function () {
     const coreSwap = await coreSwapFactory.deploy(SwapRouterAddress)
     await coreSwap.deployed()
     const signers = await ethers.getSigners()
-    return {coreSwap, signers}
+    const mins = 30
+    return {coreSwap, signers, mins}
   }
 
   describe('swapExactInput', function () {
     it('swapExactInput from WETH9 to DAI', async function () {
-      const {coreSwap, signers} = await loadFixture(sharedContractFixture)
+      const {coreSwap, signers, mins} = await loadFixture(sharedContractFixture)
       const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
 
       const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
@@ -44,7 +44,7 @@ describe("CoreSwap", function () {
 
       await WETH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WETH_DECIMALS))
       const amountIn = ethers.utils.parseUnits("0.1", WETH_DECIMALS); 
-      const swap = await coreSwap.swapExactInput(WETH_ADDRESS, DAI_ADDRESS, amountIn, { gasLimit: 300000 })
+      const swap = await coreSwap.swapExactInput(WETH_ADDRESS, DAI_ADDRESS, amountIn, mins, { gasLimit: 300000 })
       await swap.wait()
 
       const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
@@ -57,7 +57,7 @@ describe("CoreSwap", function () {
     })
 
     it.skip('swapExactOutput from DAI to WETH9', async function () {
-      const {coreSwap, signers} = await loadFixture(sharedContractFixture)
+      const {coreSwap, signers, mins} = await loadFixture(sharedContractFixture)
       const DAI_WHALE = "0xdDb108893104dE4E1C6d0E47c42237dB4E617ACc";// it has 3.62token in dai
       /* Connect to DAI and mint some tokens  */
       const DAI = await ethers.getContractAt("IERC20", DAI_ADDRESS)
@@ -86,7 +86,7 @@ describe("CoreSwap", function () {
       /* Execute the swap */
       const amountOut = hre.ethers.utils.parseUnits("0.0001", WETH_DECIMALS); 
       const amountInMaximum = hre.ethers.utils.parseUnits("1", DAI_DECIMALS); 
-      const swap = await coreSwap.swapExactOutput(DAI_ADDRESS, WETH_ADDRESS, amountOut, amountInMaximum, { gasLimit: 300000 });
+      const swap = await coreSwap.swapExactOutput(DAI_ADDRESS, WETH_ADDRESS, amountOut, amountInMaximum, mins, { gasLimit: 300000 });
       swap.wait(); 
   
       /* Check DAI end balance */

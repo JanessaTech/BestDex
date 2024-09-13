@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^1.2.0",
+    "@uniswap/sdk": "^3.0.3",
     "@uniswap/v3-core": "^1.0.1",
-    "@uniswap/v3-periphery": "^1.4.1"
+    "@uniswap/v3-periphery": "^1.4.1",
+    "jsbi": "^4.3.0"
   }
 }
