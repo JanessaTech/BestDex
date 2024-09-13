@@ -25,3 +25,6 @@ GetPrice()
 // run: npx hardhat run .\scripts\GetPrice.js\
 // see references:
 // 1. https://blog.uniswap.org/uniswap-v3-math-primer#how-do-i-calculate-the-current-exchange-rate
+// 2. https://ethereum.stackexchange.com/questions/139311/uniswap-v3-estimate-ammount-out
+// 3. https://ethereum.stackexchange.com/questions/139809/how-to-get-the-virtual-and-real-reserves-from-a-uniswap-v3-pair
+// 4. https://github.com/atiselsts/uniswap-v3-liquidity-math/blob/master/subgraph-liquidity-positions-example.py
