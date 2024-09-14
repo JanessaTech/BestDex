@@ -57,7 +57,7 @@ const aggregatorV3InterfaceABI = [
   },
 ]
 //const addr = "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43"
-const addr = "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c"
+const addr = "0x773616E4d11A78F511299002da57A0a94577F1f4"
 
 const priceFeed = new ethers.Contract(addr, aggregatorV3InterfaceABI, provider)
 priceFeed.latestRoundData().then((roundData) => {
@@ -67,3 +67,5 @@ priceFeed.latestRoundData().then((roundData) => {
 priceFeed.decimals().then((decimal) => {
   console.log('decimal = ', decimal)
 })
+
+// npx hardhat run .\scripts\price-feed.js

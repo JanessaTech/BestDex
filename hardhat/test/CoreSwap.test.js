@@ -15,12 +15,48 @@ describe("CoreSwap", function () {
     await coreSwap.deployed()
     const signers = await ethers.getSigners()
     const mins = 30
-    return {coreSwap, signers, mins}
+    const feeTier = 3000; // For simplicity, choose 0.3% for all of token pairs
+    return {coreSwap, signers, mins, feeTier}
   }
 
   describe('swapExactInput', function () {
-    it('swapExactInput from WETH9 to DAI', async function () {
-      const {coreSwap, signers, mins} = await loadFixture(sharedContractFixture)
+    /// for DAI
+    it('swapExactInput from DAI to USDC', async function () {
+
+    })
+    it('swapExactInput from DAI to WETH', async function () {
+
+    })
+    it('swapExactInput from DAI to WBTC', async function () {
+
+    })
+    it('swapExactInput from DAI to ZRX', async function () {
+
+    })
+    it('swapExactInput from DAI to 1INCH', async function () {
+
+    })
+
+    /// for USDC
+    it('swapExactInput from USDC to DAI', async function () {
+
+    })
+    it('swapExactInput from USDC to WETH', async function () {
+
+    })
+    it('swapExactInput from USDC to WBTC', async function () {
+
+    })
+    it('swapExactInput from USDC to ZRX', async function () {
+
+    })
+    it('swapExactInput from USDC to 1INCH', async function () {
+
+    })
+
+    /// for WETH
+    it('swapExactInput from WETH to DAI', async function () {
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
 
       const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
@@ -44,7 +80,7 @@ describe("CoreSwap", function () {
 
       await WETH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WETH_DECIMALS))
       const amountIn = ethers.utils.parseUnits("0.1", WETH_DECIMALS); 
-      const swap = await coreSwap.swapExactInput(WETH_ADDRESS, DAI_ADDRESS, amountIn, mins, { gasLimit: 300000 })
+      const swap = await coreSwap.swapExactInput(WETH_ADDRESS, DAI_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
       await swap.wait()
 
       const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
@@ -56,8 +92,76 @@ describe("CoreSwap", function () {
       console.log('weiBlanceAfter = ', weiBlanceAfter)
     })
 
-    it.skip('swapExactOutput from DAI to WETH9', async function () {
-      const {coreSwap, signers, mins} = await loadFixture(sharedContractFixture)
+    it('swapExactInput from WETH to USDC', async function () {
+
+    })
+  
+    it('swapExactInput from WETH to WBTC', async function () {
+  
+    })
+    it('swapExactInput from WETH to ZRX', async function () {
+  
+    })
+    it('swapExactInput from WETH to 1INCH', async function () {
+  
+    })
+
+    /// for WBTC
+    it('swapExactInput from WBTC to DAI', async function () {
+  
+    })
+    it('swapExactInput from WBTC to USDC', async function () {
+  
+    })
+    it('swapExactInput from WBTC to WETH', async function () {
+  
+    })
+    it('swapExactInput from WBTC to ZRX', async function () {
+  
+    })
+    it('swapExactInput from WBTC to 1INCH', async function () {
+  
+    })
+
+
+    /// for ZRX
+    it('swapExactInput from ZRX to DAI', async function () {
+
+    })
+    it('swapExactInput from ZRX to USDC', async function () {
+
+    })
+    it('swapExactInput from ZRX to WETH', async function () {
+
+    })
+    it('swapExactInput from ZRX to WBTC', async function () {
+
+    })
+    it('swapExactInput from ZRX to 1INCH', async function () {
+
+    })
+
+    /// for 1INCH
+    it('swapExactInput from 1INCH to DAI', async function () {
+
+    })
+    it('swapExactInput from 1INCH to USDC', async function () {
+
+    })
+    it('swapExactInput from 1INCH to WETH', async function () {
+
+    })
+    it('swapExactInput from 1INCH to WBTC', async function () {
+
+    })
+    it('swapExactInput from 1INCH to ZRX', async function () {
+
+    })
+  })
+
+  describe('swapExactOutput', function () {
+    it.skip('swapExactOutput from DAI to WETH', async function () {
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_WHALE = "0xdDb108893104dE4E1C6d0E47c42237dB4E617ACc";// it has 3.62token in dai
       /* Connect to DAI and mint some tokens  */
       const DAI = await ethers.getContractAt("IERC20", DAI_ADDRESS)
@@ -86,7 +190,7 @@ describe("CoreSwap", function () {
       /* Execute the swap */
       const amountOut = hre.ethers.utils.parseUnits("0.0001", WETH_DECIMALS); 
       const amountInMaximum = hre.ethers.utils.parseUnits("1", DAI_DECIMALS); 
-      const swap = await coreSwap.swapExactOutput(DAI_ADDRESS, WETH_ADDRESS, amountOut, amountInMaximum, mins, { gasLimit: 300000 });
+      const swap = await coreSwap.swapExactOutput(DAI_ADDRESS, WETH_ADDRESS, amountOut, amountInMaximum, mins, feeTier, { gasLimit: 300000 });
       swap.wait(); 
   
       /* Check DAI end balance */
