@@ -35,8 +35,3 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-## hardhat
-/hardhat/node_modules
-/hardhat/artifacts
-/hardhat/cache
-/hardhat/ignition
