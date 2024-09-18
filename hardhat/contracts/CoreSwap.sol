@@ -52,6 +52,26 @@ contract CoreSwap {
         return amountOut;
     }
 
+    function swapExactOutputMultihop(address token0, address token1, address token2, uint256 amountOut, uint256 amountInMaximum, uint256 mins, uint24 feeTier01, uint24 feeTier12) external returns (uint256 amountIn) {
+        TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountInMaximum);
+        TransferHelper.safeApprove(token0, address(swapRouter), amountInMaximum);
+        ISwapRouter.ExactOutputParams memory params =
+            ISwapRouter.ExactOutputParams({
+                path: abi.encodePacked(token0, feeTier01, token1, feeTier12, token2),
+                recipient: msg.sender,
+                deadline: block.timestamp + mins * 60,
+                amountOut: amountOut,
+                amountInMaximum: amountInMaximum
+            });
+        amountIn = swapRouter.exactOutput(params);
+        console.log('amountIn = ', amountIn);
+        // If the swap did not require the full amountInMaximum to achieve the exact amountOut then we refund msg.sender and approve the router to spend 0.
+        if (amountIn < amountInMaximum) {
+            TransferHelper.safeApprove(token0, address(swapRouter), 0);
+            TransferHelper.safeTransferFrom(token0, address(this), msg.sender, amountInMaximum - amountIn);
+        }
+    }
+
     function swapExactOutput(address token0, address token1, uint256 amountOut, uint256 amountInMaximum, uint256 mins, uint24 feeTier) 
         external returns (uint256 amountIn) {
         TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountInMaximum);
