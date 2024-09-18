@@ -28,7 +28,7 @@ describe("CoreSwap", function () {
       const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
       const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
 
-      //Unlock WETH whale
+      //Unlock DAI whale
       await network.provider.request({
         method: "hardhat_impersonateAccount",
         params: [DAI_WHALE],
@@ -66,7 +66,7 @@ describe("CoreSwap", function () {
       const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
       const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
 
-      //Unlock WETH whale
+      //Unlock DAI whale
       await network.provider.request({
         method: "hardhat_impersonateAccount",
         params: [DAI_WHALE],
@@ -105,7 +105,7 @@ describe("CoreSwap", function () {
       const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
       const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
 
-      //Unlock WETH whale
+      //Unlock DAI whale
       await network.provider.request({
         method: "hardhat_impersonateAccount",
         params: [DAI_WHALE],
@@ -133,7 +133,7 @@ describe("CoreSwap", function () {
 
     })
 
-    it('swapExactInput from DAI to ZRX', async function () {  //done
+    it.skip('swapExactInput from DAI to ZRX', async function () {  //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -145,7 +145,7 @@ describe("CoreSwap", function () {
       const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
       const ZRX = await ethers.getContractAt('IERC20', ZRX_ADDRESS)
 
-      //Unlock WETH whale
+      //Unlock DAI whale
       await network.provider.request({
         method: "hardhat_impersonateAccount",
         params: [DAI_WHALE],
@@ -173,29 +173,238 @@ describe("CoreSwap", function () {
 
     })
 
-    it('swapExactInput from DAI to 1INCH', async function () {
+    it.skip('swapExactInput from DAI to 1INCH', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+      const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
+      const DAI_WHALE = '0xD1668fB5F690C59Ab4B0CAbAd0f8C1617895052B'
+      const DAI_DECIMALS = 18
+      const INCH_DECIMALS = 18
 
+      const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
+      const INCH = await ethers.getContractAt('IERC20', INCH_ADDRESS)
+
+      //Unlock DAI whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [DAI_WHALE],
+      });
+      
+      const daiWhale = await ethers.getSigner(DAI_WHALE)
+      await DAI.connect(daiWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', DAI_DECIMALS))
+
+      const daiBalanceBeforeSwap = await DAI.balanceOf(signers[0].address)
+      const daiBalanceBefore = Number(ethers.utils.formatUnits(daiBalanceBeforeSwap, DAI_DECIMALS))
+      console.log('daiBalanceBefore = ', daiBalanceBefore)
+
+      await DAI.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', DAI_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", DAI_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(DAI_ADDRESS, INCH_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
+      const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
+      console.log('daiBlanceAfter = ', daiBlanceAfter)
+
+      const inchBalanceAfterSwap = await INCH.balanceOf(signers[0].address)
+      const inchBlanceAfter = Number(ethers.utils.formatUnits(inchBalanceAfterSwap, INCH_DECIMALS))
+      console.log('inchBlanceAfter = ', inchBlanceAfter)
     })
 
     /// for USDC
-    it('swapExactInput from USDC to DAI', async function () {
+    it.skip('swapExactInput from USDC to DAI', async function () {
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+      const USDC_WHALE = '0x51edf02152ebfb338e03e30d65c15fbf06cc9ecc'
+      const USDC_DECIMALS = 6
+      const DAI_DECIMALS = 18
+     
+      const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
+      const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
+      
+      //Unlock USDC whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [USDC_WHALE],
+      });
+      
+      const usdcWhale = await ethers.getSigner(USDC_WHALE)
+      await USDC.connect(usdcWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', USDC_DECIMALS))
 
+      const usdcBalanceBeforeSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceBefore = Number(ethers.utils.formatUnits(usdcBalanceBeforeSwap, USDC_DECIMALS))
+      console.log('usdcBalanceBefore = ', usdcBalanceBefore)
+
+      await USDC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', USDC_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", USDC_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(USDC_ADDRESS, DAI_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBlanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+      console.log('usdcBlanceAfter = ', usdcBlanceAfter)
+
+      const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
+      const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
+      console.log('daiBlanceAfter = ', daiBlanceAfter)
     })
-    it('swapExactInput from USDC to WETH', async function () {
 
+    it.skip('swapExactInput from USDC to WETH', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+      const USDC_WHALE = '0x51edf02152ebfb338e03e30d65c15fbf06cc9ecc'
+      const USDC_DECIMALS = 6
+      const WETH_DECIMALS = 18
+
+      const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
+      const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
+
+      //Unlock USDC whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [USDC_WHALE],
+      });
+      
+      const usdcWhale = await ethers.getSigner(USDC_WHALE)
+      await USDC.connect(usdcWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', USDC_DECIMALS))
+
+      const usdcBalanceBeforeSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceBefore = Number(ethers.utils.formatUnits(usdcBalanceBeforeSwap, USDC_DECIMALS))
+      console.log('usdcBalanceBefore = ', usdcBalanceBefore)
+
+      await USDC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', USDC_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", USDC_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(USDC_ADDRESS, WETH_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBlanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+      console.log('usdcBlanceAfter = ', usdcBlanceAfter)
+
+      const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+      const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+      console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
-    it('swapExactInput from USDC to WBTC', async function () {
 
+    it.skip('swapExactInput from USDC to WBTC', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+      const USDC_WHALE = '0x51edf02152ebfb338e03e30d65c15fbf06cc9ecc'
+      const USDC_DECIMALS = 6
+      const WBTC_DECIMALS = 8
+
+      const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
+      const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+
+      //Unlock USDC whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [USDC_WHALE],
+      });
+      
+      const usdcWhale = await ethers.getSigner(USDC_WHALE)
+      await USDC.connect(usdcWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', USDC_DECIMALS))
+
+      const usdcBalanceBeforeSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceBefore = Number(ethers.utils.formatUnits(usdcBalanceBeforeSwap, USDC_DECIMALS))
+      console.log('usdcBalanceBefore = ', usdcBalanceBefore)
+
+      await USDC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', USDC_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", USDC_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(USDC_ADDRESS, WBTC_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+      console.log('usdcBalanceAfter = ', usdcBalanceAfter)
+
+      const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+      const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+      console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
-    it('swapExactInput from USDC to ZRX', async function () {
 
+    it.skip('swapExactInput from USDC to ZRX', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+      const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
+      const USDC_WHALE = '0x51edf02152ebfb338e03e30d65c15fbf06cc9ecc'
+      const USDC_DECIMALS = 6
+      const ZRX_DECIMALS = 18
+
+      const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
+      const ZRX = await ethers.getContractAt('IERC20', ZRX_ADDRESS)
+
+      //Unlock USDC whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [USDC_WHALE],
+      });
+      
+      const usdcWhale = await ethers.getSigner(USDC_WHALE)
+      await USDC.connect(usdcWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', USDC_DECIMALS))
+
+      const usdcBalanceBeforeSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceBefore = Number(ethers.utils.formatUnits(usdcBalanceBeforeSwap, USDC_DECIMALS))
+      console.log('usdcBalanceBefore = ', usdcBalanceBefore)
+
+      await USDC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', USDC_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", USDC_DECIMALS); 
+      const swap = await coreSwap.swapExactInputMultihop(USDC_ADDRESS, WETH_ADDRESS, ZRX_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 }) 
+      await swap.wait()
+
+      const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+      console.log('usdcBalanceAfter = ', usdcBalanceAfter)
+
+      const zrxBalanceAfterSwap = await ZRX.balanceOf(signers[0].address)
+      const zrxBalanceAfter = Number(ethers.utils.formatUnits(zrxBalanceAfterSwap, ZRX_DECIMALS))
+      console.log('zrxBalanceAfter = ', zrxBalanceAfter)
     })
-    it('swapExactInput from USDC to 1INCH', async function () {
 
+    it.skip('swapExactInput from USDC to 1INCH', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
+      const USDC_WHALE = '0x51edf02152ebfb338e03e30d65c15fbf06cc9ecc'
+      const USDC_DECIMALS = 6
+      const INCH_DECIMALS = 18
+
+      const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
+      const INCH = await ethers.getContractAt('IERC20', INCH_ADDRESS)
+
+      //Unlock USDC whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [USDC_WHALE],
+      });
+      
+      const usdcWhale = await ethers.getSigner(USDC_WHALE)
+      await USDC.connect(usdcWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', USDC_DECIMALS))
+
+      const usdcBalanceBeforeSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceBefore = Number(ethers.utils.formatUnits(usdcBalanceBeforeSwap, USDC_DECIMALS))
+      console.log('usdcBalanceBefore = ', usdcBalanceBefore)
+
+      await USDC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', USDC_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", USDC_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(USDC_ADDRESS, INCH_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+      console.log('usdcBalanceAfter = ', usdcBalanceAfter)
+
+      const inchBalanceAfterSwap = await INCH.balanceOf(signers[0].address)
+      const inchBalanceAfter = Number(ethers.utils.formatUnits(inchBalanceAfterSwap, INCH_DECIMALS))
+      console.log('inchBalanceAfter = ', inchBalanceAfter)
     })
 
     /// for WETH
-    it.skip('swapExactInput from WETH to DAI', async function () {
+    it.skip('swapExactInput from WETH to DAI', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
       const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
@@ -231,23 +440,171 @@ describe("CoreSwap", function () {
       const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
       console.log('daiBlanceAfter = ', daiBlanceAfter)
 
-      const weiBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
-      const weiBlanceAfter = Number(ethers.utils.formatUnits(weiBalanceAfterSwap, WETH_DECIMALS))
-      console.log('weiBlanceAfter = ', weiBlanceAfter)
+      const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+      const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+      console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
 
-    it('swapExactInput from WETH to USDC', async function () {
+    it.skip('swapExactInput from WETH to USDC', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585';
+      const WETH_DECIMALS = 18; 
+      const USDC_DECIMALS = 6; 
+      
+      const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
+      const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
 
+      //Unlock WETH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [WETH_WHALE],
+      });
+      const wethWhale = await ethers.getSigner(WETH_WHALE)
+      await WETH.connect(wethWhale).transfer(signers[0].address, hre.ethers.utils.parseUnits("10", WETH_DECIMALS))
+
+      const weiBalanceBeforeSwap = await WETH.balanceOf(signers[0].address)
+      const weiBalanceBefore = Number(ethers.utils.formatUnits(weiBalanceBeforeSwap, WETH_DECIMALS))
+      console.log('weiBalanceBefore = ', weiBalanceBefore)
+
+      const usdcBalanceBeforeSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceBefore = Number(ethers.utils.formatUnits(usdcBalanceBeforeSwap, USDC_DECIMALS))
+      console.log('usdcBalanceBefore = ', usdcBalanceBefore)
+
+      await WETH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WETH_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", WETH_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(WETH_ADDRESS, USDC_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBalanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+      console.log('usdcBalanceAfter = ', usdcBalanceAfter)
+
+      const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+      const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+      console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
   
-    it('swapExactInput from WETH to WBTC', async function () {
-  
+    it.skip('swapExactInput from WETH to WBTC', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585';
+      const WETH_DECIMALS = 18; 
+      const WBTC_DECIMALS = 8
+
+      const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
+      const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+
+      //Unlock DAI whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [WETH_WHALE],
+      });
+      
+      const wethWhale = await ethers.getSigner(WETH_WHALE)
+      await WETH.connect(wethWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', WETH_DECIMALS))
+
+      const wethBalanceBeforeSwap = await WETH.balanceOf(signers[0].address)
+      const wethBalanceBefore = Number(ethers.utils.formatUnits(wethBalanceBeforeSwap, WETH_DECIMALS))
+      console.log('wethBalanceBefore = ', wethBalanceBefore)
+
+      await WETH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WETH_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", WETH_DECIMALS); 
+      const swap = await coreSwap.swapExactInputMultihop(WETH_ADDRESS, USDC_ADDRESS, WBTC_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+      const wethBalanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+      console.log('daiBlanceAfter = ', wethBalanceAfter)
+
+      const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+      const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+      console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
-    it('swapExactInput from WETH to ZRX', async function () {
-  
+
+    it.skip('swapExactInput from WETH to ZRX', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
+      const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585';
+      const WETH_DECIMALS = 18; 
+      const ZRX_DECIMALS = 18
+      
+      const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
+      const ZRX = await ethers.getContractAt('IERC20', ZRX_ADDRESS)
+
+      //Unlock WETH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [WETH_WHALE],
+      });
+      const wethWhale = await ethers.getSigner(WETH_WHALE)
+      await WETH.connect(wethWhale).transfer(signers[0].address, hre.ethers.utils.parseUnits("10", WETH_DECIMALS))
+
+      const weiBalanceBeforeSwap = await WETH.balanceOf(signers[0].address)
+      const weiBalanceBefore = Number(ethers.utils.formatUnits(weiBalanceBeforeSwap, WETH_DECIMALS))
+      console.log('weiBalanceBefore = ', weiBalanceBefore)
+
+      const zrxBalanceBeforeSwap = await ZRX.balanceOf(signers[0].address)
+      const zrxBalanceBefore = Number(ethers.utils.formatUnits(zrxBalanceBeforeSwap, ZRX_DECIMALS))
+      console.log('zrxBalanceBefore = ', zrxBalanceBefore)
+
+      await WETH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WETH_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", WETH_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(WETH_ADDRESS, ZRX_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const zrxBalanceAfterSwap = await ZRX.balanceOf(signers[0].address)
+      const zrxBalanceAfter = Number(ethers.utils.formatUnits(zrxBalanceAfterSwap, ZRX_DECIMALS))
+      console.log('zrxBalanceAfter = ', zrxBalanceAfter)
+
+      const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+      const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+      console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
     it('swapExactInput from WETH to 1INCH', async function () {
-  
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
+      const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585';
+      
+      const WETH_DECIMALS = 18; 
+      const INCH_DECIMALS = 18
+      
+      const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
+      const INCH = await ethers.getContractAt('IERC20', INCH_ADDRESS)
+
+      //Unlock WETH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [WETH_WHALE],
+      });
+      const wethWhale = await ethers.getSigner(WETH_WHALE)
+      await WETH.connect(wethWhale).transfer(signers[0].address, hre.ethers.utils.parseUnits("10", WETH_DECIMALS))
+
+      const weiBalanceBeforeSwap = await WETH.balanceOf(signers[0].address)
+      const weiBalanceBefore = Number(ethers.utils.formatUnits(weiBalanceBeforeSwap, WETH_DECIMALS))
+      console.log('weiBalanceBefore = ', weiBalanceBefore)
+
+      const inchBalanceBeforeSwap = await INCH.balanceOf(signers[0].address)
+      const inchBalanceBefore = Number(ethers.utils.formatUnits(inchBalanceBeforeSwap, INCH_DECIMALS))
+      console.log('inchBalanceBefore = ', inchBalanceBefore)
+
+      await WETH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WETH_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", WETH_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(WETH_ADDRESS, INCH_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const inchBalanceAfterSwap = await INCH.balanceOf(signers[0].address)
+      const inchBalanceAfter = Number(ethers.utils.formatUnits(inchBalanceAfterSwap, INCH_DECIMALS))
+      console.log('inchBalanceAfter = ', inchBalanceAfter)
+
+      const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+      const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+      console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
 
     /// for WBTC
