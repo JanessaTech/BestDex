@@ -36,6 +36,22 @@ contract CoreSwap {
         return amountOut;
     }
 
+    function swapExactInputMultihop(address token0, address token1, address token2, uint256 amountIn, uint256 mins, uint24 feeTier01, uint24 feeTier12) external returns (uint256 amountOut) {
+        TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountIn);
+        TransferHelper.safeApprove(token0, address(swapRouter), amountIn);
+        ISwapRouter.ExactInputParams memory params =
+            ISwapRouter.ExactInputParams({
+                path: abi.encodePacked(token0, feeTier01, token1, feeTier12, token2),
+                recipient: msg.sender,
+                deadline: block.timestamp + mins * 60,
+                amountIn: amountIn,
+                amountOutMinimum: 0
+            });
+        amountOut = swapRouter.exactInput(params);
+        console.log('amountOut = ', amountOut);
+        return amountOut;
+    }
+
     function swapExactOutput(address token0, address token1, uint256 amountOut, uint256 amountInMaximum, uint256 mins, uint24 feeTier) 
         external returns (uint256 amountIn) {
         TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountInMaximum);

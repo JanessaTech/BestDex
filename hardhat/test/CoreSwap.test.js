@@ -1,11 +1,7 @@
 const { expect } = require("chai");
 const { loadFixture } = require("ethereum-waffle");
-const { ethers } = require("hardhat");
+const { ethers, network } = require("hardhat");
 
-const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
-const DAI_DECIMALS = 18; 
-const WETH_DECIMALS = 18; 
 const SwapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564"; 
 
 describe("CoreSwap", function () {
@@ -21,18 +17,162 @@ describe("CoreSwap", function () {
 
   describe('swapExactInput', function () {
     /// for DAI
-    it('swapExactInput from DAI to USDC', async function () {
+    it.skip('swapExactInput from DAI to USDC', async function () {  //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const DAI_WHALE = '0xD1668fB5F690C59Ab4B0CAbAd0f8C1617895052B'
+      const DAI_DECIMALS = 18
+      const USDC_DECIMALS = 6
+
+      const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
+      const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
+
+      //Unlock WETH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [DAI_WHALE],
+      });
+      
+      const daiWhale = await ethers.getSigner(DAI_WHALE)
+      await DAI.connect(daiWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', DAI_DECIMALS))
+
+      const daiBalanceBeforeSwap = await DAI.balanceOf(signers[0].address)
+      const daiBalanceBefore = Number(ethers.utils.formatUnits(daiBalanceBeforeSwap, DAI_DECIMALS))
+      console.log('daiBalanceBefore = ', daiBalanceBefore)
+
+      await DAI.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', DAI_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", DAI_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(DAI_ADDRESS, USDC_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
+      const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
+      console.log('daiBlanceAfter = ', daiBlanceAfter)
+
+      const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+      const usdcBlanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+      console.log('usdcBlanceAfter = ', usdcBlanceAfter)
+    })
+
+    it.skip('swapExactInput from DAI to WETH', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+      const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+      const DAI_WHALE = '0xD1668fB5F690C59Ab4B0CAbAd0f8C1617895052B'
+      const DAI_DECIMALS = 18
+      const WETH_DECIMALS = 18
+
+      const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
+      const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
+
+      //Unlock WETH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [DAI_WHALE],
+      });
+      
+      const daiWhale = await ethers.getSigner(DAI_WHALE)
+      await DAI.connect(daiWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', DAI_DECIMALS))
+
+      const daiBalanceBeforeSwap = await DAI.balanceOf(signers[0].address)
+      const daiBalanceBefore = Number(ethers.utils.formatUnits(daiBalanceBeforeSwap, DAI_DECIMALS))
+      console.log('daiBalanceBefore = ', daiBalanceBefore)
+
+      await DAI.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', DAI_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", DAI_DECIMALS); 
+      const swap = await coreSwap.swapExactInput(DAI_ADDRESS, WETH_ADDRESS, amountIn, mins, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
+      const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
+      console.log('daiBlanceAfter = ', daiBlanceAfter)
+
+      const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+      const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+      console.log('wethBlanceAfter = ', wethBlanceAfter)
+    })
+
+    it.skip('swapExactInput from DAI to WBTC', async function () { //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+      const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const DAI_WHALE = '0xD1668fB5F690C59Ab4B0CAbAd0f8C1617895052B'
+      const DAI_DECIMALS = 18
+      const WBTC_DECIMALS = 8
+
+      const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
+      const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+
+      //Unlock WETH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [DAI_WHALE],
+      });
+      
+      const daiWhale = await ethers.getSigner(DAI_WHALE)
+      await DAI.connect(daiWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', DAI_DECIMALS))
+
+      const daiBalanceBeforeSwap = await DAI.balanceOf(signers[0].address)
+      const daiBalanceBefore = Number(ethers.utils.formatUnits(daiBalanceBeforeSwap, DAI_DECIMALS))
+      console.log('daiBalanceBefore = ', daiBalanceBefore)
+
+      await DAI.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', DAI_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", DAI_DECIMALS); 
+      const swap = await coreSwap.swapExactInputMultihop(DAI_ADDRESS, USDC_ADDRESS, WBTC_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 })
+      await swap.wait()
+
+      const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
+      const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
+      console.log('daiBlanceAfter = ', daiBlanceAfter)
+
+      const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+      const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+      console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
 
     })
-    it('swapExactInput from DAI to WETH', async function () {
+
+    it('swapExactInput from DAI to ZRX', async function () {  //done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+      const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+      const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
+      const DAI_WHALE = '0xD1668fB5F690C59Ab4B0CAbAd0f8C1617895052B'
+      const DAI_DECIMALS = 18
+      const ZRX_DECIMALS = 18
+
+      const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
+      const ZRX = await ethers.getContractAt('IERC20', ZRX_ADDRESS)
+
+      //Unlock WETH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [DAI_WHALE],
+      });
+      
+      const daiWhale = await ethers.getSigner(DAI_WHALE)
+      await DAI.connect(daiWhale).transfer(signers[0].address, ethers.utils.parseUnits('10', DAI_DECIMALS))
+
+      const daiBalanceBeforeSwap = await DAI.balanceOf(signers[0].address)
+      const daiBalanceBefore = Number(ethers.utils.formatUnits(daiBalanceBeforeSwap, DAI_DECIMALS))
+      console.log('daiBalanceBefore = ', daiBalanceBefore)
+
+      await DAI.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', DAI_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", DAI_DECIMALS);
+      const swap = await coreSwap.swapExactInputMultihop(DAI_ADDRESS, WETH_ADDRESS, ZRX_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 }) 
+      await swap.wait()
+
+      const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
+      const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
+      console.log('daiBlanceAfter = ', daiBlanceAfter)
+
+      const zrxcBalanceAfterSwap = await ZRX.balanceOf(signers[0].address)
+      const zrxcBalanceAfter = Number(ethers.utils.formatUnits(zrxcBalanceAfterSwap, ZRX_DECIMALS))
+      console.log('zrxcBalanceAfter = ', zrxcBalanceAfter)
 
     })
-    it('swapExactInput from DAI to WBTC', async function () {
 
-    })
-    it('swapExactInput from DAI to ZRX', async function () {
-
-    })
     it('swapExactInput from DAI to 1INCH', async function () {
 
     })
@@ -55,10 +195,14 @@ describe("CoreSwap", function () {
     })
 
     /// for WETH
-    it('swapExactInput from WETH to DAI', async function () {
+    it.skip('swapExactInput from WETH to DAI', async function () {
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
-      const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
-
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+      const WETH_WHALE='0x3ee18B2214AFF97000D974cf647E7C347E8fa585';
+      const DAI_DECIMALS = 18; 
+      const WETH_DECIMALS = 18; 
+      
       const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
       const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
 
@@ -209,12 +353,142 @@ describe("CoreSwap", function () {
   })
 
   describe('getPool', function () {
-    it.skip('Check if pool exists', async function () {
+    it('Check if pool exists for DAI and USDC', async function () {
+      const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+      const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
       const {coreSwap} = await loadFixture(sharedContractFixture)
 
-      const exist = await coreSwap.getPool(WETH_ADDRESS, DAI_ADDRESS, 100)
+      const exist = await coreSwap.getPool(DAI_ADDRESS, USDC_ADDRESS, 3000)
       console.log('exist = ', exist)
     } )
+
+    it('Check if pool exists for DAI and WETH', async function () {
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(DAI_ADDRESS, WETH_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for DAI and WBTC', async function () {
+      const WBTC_ADDRESS = "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f";
+      const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(DAI_ADDRESS, WBTC_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for DAI and ZRX', async function () {
+      const ZRX_ADDRESS = "0xe41d2489571d322189246dafa5ebde1f4699f498";
+      const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(DAI_ADDRESS, ZRX_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for DAI and 1INCH', async function () {
+      const INCH_ADDRESS = "0x111111111117dc0aa78b770fa6a738034120c302";
+      const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(DAI_ADDRESS, INCH_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for USDC and WETH', async function () {
+      const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(USDC_ADDRESS, WETH_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } ) 
+
+    it('Check if pool exists for USDC and WBTC', async function () {
+      const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+      const WBTC_ADDRESS = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(USDC_ADDRESS, WBTC_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for USDC and ZRX', async function () {
+      const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+      const ZRX_ADDRESS = "0xe41d2489571d322189246dafa5ebde1f4699f498";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(USDC_ADDRESS, ZRX_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for USDC and 1INCH', async function () {
+      const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+      const INCH_ADDRESS = "0x111111111117dc0aa78b770fa6a738034120c302";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(USDC_ADDRESS, INCH_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for WETH and WBTC', async function () {
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const WBTC_ADDRESS = "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(WETH_ADDRESS, WBTC_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for WETH and ZRX', async function () {
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const ZRX_ADDRESS = "0xe41d2489571d322189246dafa5ebde1f4699f498";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(WETH_ADDRESS, ZRX_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for WETH and 1INCH', async function () {
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const INCH_ADDRESS = "0x111111111117dc0aa78b770fa6a738034120c302";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(WETH_ADDRESS, INCH_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for WBTC and ZRX', async function () {
+      const WBTC_ADDRESS = "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f";
+      const ZRX_ADDRESS = "0xe41d2489571d322189246dafa5ebde1f4699f498";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(WBTC_ADDRESS, ZRX_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for WBTC and 1INCH', async function () {
+      const WBTC_ADDRESS = "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f";
+      const INCH_ADDRESS = "0x111111111117dc0aa78b770fa6a738034120c302";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(WBTC_ADDRESS, INCH_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+    it('Check if pool exists for ZRX and 1INCH', async function () {
+      const ZRX_ADDRESS = "0xe41d2489571d322189246dafa5ebde1f4699f498";
+      const INCH_ADDRESS = "0x111111111117dc0aa78b770fa6a738034120c302";
+      const {coreSwap} = await loadFixture(sharedContractFixture)
+
+      const exist = await coreSwap.getPool(ZRX_ADDRESS, INCH_ADDRESS, 3000)
+      console.log('exist = ', exist)
+    } )
+
+
   })
 
 });

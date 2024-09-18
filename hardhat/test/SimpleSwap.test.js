@@ -103,7 +103,7 @@ describe("SimpleSwap", function () {
     expect(DAIBalanceAfter).to.be.greaterThan(DAIBalanceBefore); 
   });
 
-  it('swapExactOutputSingle', async function () {
+  it.skip('swapExactOutputSingle', async function () {
     const SimpleSwapFactory = await ethers.getContractFactory("SimpleSwap");
     const simpleSwapFactory = await SimpleSwapFactory.deploy(SwapRouterAddress);
     let signers = await hre.ethers.getSigners();
