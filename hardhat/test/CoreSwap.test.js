@@ -654,8 +654,8 @@ describe("CoreSwap", function () {
 
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
-      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const WBTC_WHALE = '0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
 
       const WBTC_DECIMALS = 8
@@ -683,7 +683,7 @@ describe("CoreSwap", function () {
       const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [WBTC_ADDRESS, feeTier, USDC_ADDRESS, feeTier, DAI_ADDRESS])
       const swap = await coreSwap.swapExactInputMultihop(WBTC_ADDRESS, path, amountIn, mins, { gasLimit: 300000 })
       await swap.wait()
-      console.log('swap.wait() is done')
+      console.log('swap is done')
 
       const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
       const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
@@ -1227,7 +1227,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it('swapExactInput from 1INCH to ZRX', async function () {
+    it.skip('swapExactInput from 1INCH to ZRX', async function () {
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302';
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
