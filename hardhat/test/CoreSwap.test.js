@@ -1105,7 +1105,7 @@ describe("CoreSwap", function () {
       console.log('inchBlanceAfter = ', inchBlanceAfter)
     })
 
-    it('swapExactInput from 1INCH to USDC', async function () {
+    it.skip('swapExactInput from 1INCH to USDC', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -1185,11 +1185,87 @@ describe("CoreSwap", function () {
       const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
-    it('swapExactInput from 1INCH to WBTC', async function () {
 
+    it.skip('swapExactInput from 1INCH to WBTC', async function () {//done
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+      const INCH_WHALE = '0x6630444cdbd42a024da079615f3bbce8edd5a7ba'
+
+      const INCH_DECIMALS = 18
+      const WBTC_DECIMALS = 8;
+      
+      const INCH = await ethers.getContractAt('IERC20', INCH_ADDRESS)
+      const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+      
+      //Unlock INCH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [INCH_WHALE],
+      });
+      
+      const inchWhale = await ethers.getSigner(INCH_WHALE)
+      await INCH.connect(inchWhale).transfer(signers[0].address, ethers.utils.parseUnits('100', INCH_DECIMALS))
+
+      const inchBalanceBeforeSwap = await INCH.balanceOf(signers[0].address)
+      const inchBalanceBefore = Number(ethers.utils.formatUnits(inchBalanceBeforeSwap, INCH_DECIMALS))
+      console.log('inchBalanceBefore = ', inchBalanceBefore)
+
+      await INCH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('100', INCH_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("100", INCH_DECIMALS); 
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [INCH_ADDRESS, feeTier, USDC_ADDRESS, feeTier, WBTC_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(INCH_ADDRESS, path, amountIn, mins, { gasLimit: 30000000 })
+      await swap.wait()
+
+      const inchBalanceAfterSwap = await INCH.balanceOf(signers[0].address)
+      const inchBalanceAfter = Number(ethers.utils.formatUnits(inchBalanceAfterSwap, INCH_DECIMALS))
+      console.log('inchBalanceAfter = ', inchBalanceAfter)
+
+      const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+      const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+      console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
-    it('swapExactInput from 1INCH to ZRX', async function () {
 
+    it('swapExactInput from 1INCH to ZRX', async function () {
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302';
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498';
+      const INCH_WHALE = '0x6630444cdbd42a024da079615f3bbce8edd5a7ba';
+
+      const INCH_DECIMALS = 18
+      const ZRX_DECIMALS = 18; 
+      
+      const INCH = await ethers.getContractAt('IERC20', INCH_ADDRESS) 
+      const ZRX = await ethers.getContractAt('IERC20', ZRX_ADDRESS)
+      
+      //Unlock INCH whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [INCH_WHALE],
+      });
+      
+      const inchWhale = await ethers.getSigner(INCH_WHALE)
+      await INCH.connect(inchWhale).transfer(signers[0].address, ethers.utils.parseUnits('0.1', INCH_DECIMALS))
+
+      const inchBalanceBeforeSwap = await INCH.balanceOf(signers[0].address)
+      const inchBalanceBefore = Number(ethers.utils.formatUnits(inchBalanceBeforeSwap, INCH_DECIMALS))
+      console.log('inchBalanceBefore = ', inchBalanceBefore)
+
+      await INCH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('0.1', INCH_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", INCH_DECIMALS); 
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [INCH_ADDRESS, feeTier, WETH_ADDRESS, feeTier, ZRX_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(INCH_ADDRESS, path, amountIn, mins, { gasLimit: 30000000 })
+      await swap.wait()
+
+      const zrxBalanceAfterSwap = await ZRX.balanceOf(signers[0].address)
+      const zrxBalanceAfter = Number(ethers.utils.formatUnits(zrxBalanceAfterSwap, ZRX_DECIMALS))
+      console.log('zrxBalanceAfter = ', zrxBalanceAfter)
+
+      const inchBalanceAfterSwap = await INCH.balanceOf(signers[0].address)
+      const inchBalanceAfter = Number(ethers.utils.formatUnits(inchBalanceAfterSwap, INCH_DECIMALS))
+      console.log('inchBalanceAfter = ', inchBalanceAfter)
     })
   })
 
