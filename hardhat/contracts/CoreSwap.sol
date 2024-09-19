@@ -36,12 +36,12 @@ contract CoreSwap {
         return amountOut;
     }
 
-    function swapExactInputMultihop(address token0, address token1, address token2, uint256 amountIn, uint256 mins, uint24 feeTier01, uint24 feeTier12) external returns (uint256 amountOut) {
+    function swapExactInputMultihop(address token0, bytes memory path, uint256 amountIn, uint256 mins) external returns (uint256 amountOut) {
         TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountIn);
         TransferHelper.safeApprove(token0, address(swapRouter), amountIn);
         ISwapRouter.ExactInputParams memory params =
             ISwapRouter.ExactInputParams({
-                path: abi.encodePacked(token0, feeTier01, token1, feeTier12, token2),
+                path: path,
                 recipient: msg.sender,
                 deadline: block.timestamp + mins * 60,
                 amountIn: amountIn,

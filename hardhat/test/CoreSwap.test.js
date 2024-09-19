@@ -120,7 +120,8 @@ describe("CoreSwap", function () {
 
       await DAI.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', DAI_DECIMALS))
       const amountIn = ethers.utils.parseUnits("0.1", DAI_DECIMALS); 
-      const swap = await coreSwap.swapExactInputMultihop(DAI_ADDRESS, USDC_ADDRESS, WBTC_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 })
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [DAI_ADDRESS, feeTier, USDC_ADDRESS, feeTier, WBTC_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(DAI_ADDRESS, path, amountIn, mins, { gasLimit: 300000 })
       await swap.wait()
 
       const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
@@ -160,7 +161,8 @@ describe("CoreSwap", function () {
 
       await DAI.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', DAI_DECIMALS))
       const amountIn = ethers.utils.parseUnits("0.1", DAI_DECIMALS);
-      const swap = await coreSwap.swapExactInputMultihop(DAI_ADDRESS, WETH_ADDRESS, ZRX_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 }) 
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [DAI_ADDRESS, feeTier, WETH_ADDRESS, feeTier, ZRX_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(DAI_ADDRESS, path, amountIn, mins, { gasLimit: 300000 }) 
       await swap.wait()
 
       const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
@@ -353,7 +355,8 @@ describe("CoreSwap", function () {
 
       await USDC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', USDC_DECIMALS))
       const amountIn = ethers.utils.parseUnits("0.1", USDC_DECIMALS); 
-      const swap = await coreSwap.swapExactInputMultihop(USDC_ADDRESS, WETH_ADDRESS, ZRX_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 }) 
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [USDC_ADDRESS, feeTier, WETH_ADDRESS, feeTier, ZRX_ADDRESS]) 
+      const swap = await coreSwap.swapExactInputMultihop(USDC_ADDRESS, path, amountIn, mins, { gasLimit: 300000 }) 
       await swap.wait()
 
       const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
@@ -513,12 +516,13 @@ describe("CoreSwap", function () {
 
       await WETH.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WETH_DECIMALS))
       const amountIn = ethers.utils.parseUnits("0.1", WETH_DECIMALS); 
-      const swap = await coreSwap.swapExactInputMultihop(WETH_ADDRESS, USDC_ADDRESS, WBTC_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 })
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [WETH_ADDRESS, feeTier, USDC_ADDRESS, feeTier, WBTC_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(WETH_ADDRESS, path, amountIn, mins, { gasLimit: 300000 })
       await swap.wait()
 
       const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
       const wethBalanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
-      console.log('daiBlanceAfter = ', wethBalanceAfter)
+      console.log('wethBalanceAfter = ', wethBalanceAfter)
 
       const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
       const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
@@ -676,9 +680,10 @@ describe("CoreSwap", function () {
       await WBTC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
       console.log('approved')
       const amountIn = ethers.utils.parseUnits("0.1", WBTC_DECIMALS); 
-      const swap = await coreSwap.swapExactInputMultihop(WBTC_ADDRESS, USDC_ADDRESS, DAI_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 })
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [WBTC_ADDRESS, feeTier, USDC_ADDRESS, feeTier, DAI_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(WBTC_ADDRESS, path, amountIn, mins, { gasLimit: 300000 })
       await swap.wait()
-      console.log('swapExactInputMultihop is done')
+      console.log('swap.wait() is done')
 
       const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
       const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
@@ -754,7 +759,8 @@ describe("CoreSwap", function () {
 
       await WBTC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
       const amountIn = ethers.utils.parseUnits("0.1", WBTC_DECIMALS); 
-      const swap = await coreSwap.swapExactInputMultihop(WBTC_ADDRESS, USDC_ADDRESS, WETH_ADDRESS, amountIn, mins, feeTier, feeTier, { gasLimit: 300000 })
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [WBTC_ADDRESS, feeTier, USDC_ADDRESS, feeTier, WETH_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(WBTC_ADDRESS, path, amountIn, mins, { gasLimit: 300000 })
       await swap.wait()
 
       const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
