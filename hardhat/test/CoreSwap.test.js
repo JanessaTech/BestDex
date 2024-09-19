@@ -773,7 +773,45 @@ describe("CoreSwap", function () {
     })
 
     it('swapExactInput from WBTC to ZRX', async function () {
-  
+      const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+      const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+      const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+      const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+      const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
+      const WBTC_WHALE = '0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
+      
+      const WBTC_DECIMALS = 8;
+      const ZRX_DECIMALS = 18;  
+      
+      const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+      const ZRX = await ethers.getContractAt('IERC20', ZRX_ADDRESS)
+
+      //Unlock WBTC whale
+      await network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [WBTC_WHALE],
+      });
+      
+      const wbtcWhale = await ethers.getSigner(WBTC_WHALE)
+      await WBTC.connect(wbtcWhale).transfer(signers[0].address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
+
+      const wbtcBalanceBeforeSwap = await WBTC.balanceOf(signers[0].address)
+      const wbtcBalanceBefore = Number(ethers.utils.formatUnits(wbtcBalanceBeforeSwap, WBTC_DECIMALS))
+      console.log('wbtcBalanceBefore = ', wbtcBalanceBefore)
+
+      await WBTC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
+      const amountIn = ethers.utils.parseUnits("0.1", WBTC_DECIMALS); 
+      const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address", "uint24", "address"], [WBTC_ADDRESS, feeTier, USDC_ADDRESS, feeTier, WETH_ADDRESS, feeTier, ZRX_ADDRESS])
+      const swap = await coreSwap.swapExactInputMultihop(WBTC_ADDRESS, path, amountIn, mins, { gasLimit: 30000000 })
+      await swap.wait()
+
+      const zrxBalanceAfterSwap = await ZRX.balanceOf(signers[0].address)
+      const zrxBalanceAfter = Number(ethers.utils.formatUnits(zrxBalanceAfterSwap, ZRX_DECIMALS))
+      console.log('zrxBalanceAfter = ', zrxBalanceAfter)
+
+      const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+      const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+      console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
     it('swapExactInput from WBTC to 1INCH', async function () {
