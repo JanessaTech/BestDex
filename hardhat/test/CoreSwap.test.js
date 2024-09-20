@@ -15,9 +15,9 @@ describe("CoreSwap", function () {
     return {coreSwap, signers, mins, feeTier}
   }
 
-  describe('swapExactInput', function () {
+  describe('buy', function () {
     /// for DAI
-    it.skip('swapExactInput from DAI to USDC', async function () {  //done
+    it.skip('buy from DAI to USDC', async function () {  //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -55,7 +55,7 @@ describe("CoreSwap", function () {
       console.log('usdcBlanceAfter = ', usdcBlanceAfter)
     })
 
-    it.skip('swapExactInput from DAI to WETH', async function () { //done
+    it.skip('buy from DAI to WETH', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -93,7 +93,7 @@ describe("CoreSwap", function () {
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
 
-    it.skip('swapExactInput from DAI to WBTC', async function () { //done
+    it.skip('buy from DAI to WBTC', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
@@ -134,7 +134,7 @@ describe("CoreSwap", function () {
 
     })
 
-    it.skip('swapExactInput from DAI to ZRX', async function () {  //done
+    it.skip('buy from DAI to ZRX', async function () {  //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -175,7 +175,7 @@ describe("CoreSwap", function () {
 
     })
 
-    it.skip('swapExactInput from DAI to 1INCH', async function () { //done
+    it.skip('buy from DAI to 1INCH', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
@@ -214,7 +214,7 @@ describe("CoreSwap", function () {
     })
 
     /// for USDC
-    it.skip('swapExactInput from USDC to DAI', async function () {
+    it.skip('buy from USDC to DAI', async function () {
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
@@ -252,7 +252,7 @@ describe("CoreSwap", function () {
       console.log('daiBlanceAfter = ', daiBlanceAfter)
     })
 
-    it.skip('swapExactInput from USDC to WETH', async function () { //done
+    it.skip('buy from USDC to WETH', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -290,7 +290,7 @@ describe("CoreSwap", function () {
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
 
-    it.skip('swapExactInput from USDC to WBTC', async function () { //done
+    it.skip('buy from USDC to WBTC', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
@@ -328,7 +328,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from USDC to ZRX', async function () { //done
+    it.skip('buy from USDC to ZRX', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -368,7 +368,7 @@ describe("CoreSwap", function () {
       console.log('zrxBalanceAfter = ', zrxBalanceAfter)
     })
 
-    it.skip('swapExactInput from USDC to 1INCH', async function () { //done
+    it.skip('buy from USDC to 1INCH', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
@@ -407,7 +407,7 @@ describe("CoreSwap", function () {
     })
 
     /// for WETH
-    it.skip('swapExactInput from WETH to DAI', async function () { //done
+    it.skip('buy from WETH to DAI', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
       const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
@@ -448,7 +448,7 @@ describe("CoreSwap", function () {
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
 
-    it.skip('swapExactInput from WETH to USDC', async function () { //done
+    it.skip('buy from WETH to USDC', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -489,7 +489,7 @@ describe("CoreSwap", function () {
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
   
-    it.skip('swapExactInput from WETH to WBTC', async function () { //done
+    it.skip('buy from WETH to WBTC', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
@@ -529,7 +529,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from WETH to ZRX', async function () { //done
+    it.skip('buy from WETH to ZRX', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
       const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
@@ -569,7 +569,7 @@ describe("CoreSwap", function () {
       const wethBlanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
-    it.skip('swapExactInput from WETH to 1INCH', async function () {//done
+    it.skip('buy from WETH to 1INCH', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
@@ -612,7 +612,7 @@ describe("CoreSwap", function () {
     })
 
     /// for WBTC
-    it.skip('swapExactInput from WBTC to DAI', async function () { //error
+    it.skip('buy from WBTC to DAI', async function () { //error
       // const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       // const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
       // const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
@@ -694,7 +694,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from WBTC to USDC', async function () {//done
+    it.skip('buy from WBTC to USDC', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -732,7 +732,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from WBTC to WETH', async function () {//done
+    it.skip('buy from WBTC to WETH', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -773,7 +773,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from WBTC to ZRX', async function () { //done
+    it.skip('buy from WBTC to ZRX', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -815,7 +815,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from WBTC to 1INCH', async function () { //error, timeout, why?
+    it.skip('buy from WBTC to 1INCH', async function () { //error, timeout, why?
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -857,7 +857,7 @@ describe("CoreSwap", function () {
     })
 
     /// for ZRX
-    it.skip('swapExactInput from ZRX to DAI', async function () {//done
+    it.skip('buy from ZRX to DAI', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -899,7 +899,7 @@ describe("CoreSwap", function () {
       console.log('daiBlanceAfter = ', daiBlanceAfter)
     })
 
-    it.skip('swapExactInput from ZRX to USDC', async function () { //done
+    it.skip('buy from ZRX to USDC', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -940,7 +940,7 @@ describe("CoreSwap", function () {
       console.log('zrxBalanceAfter = ', zrxBalanceAfter)
     })
 
-    it.skip('swapExactInput from ZRX to WETH', async function () {  //done
+    it.skip('buy from ZRX to WETH', async function () {  //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -982,7 +982,7 @@ describe("CoreSwap", function () {
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
 
-    it.skip('swapExactInput from ZRX to WBTC', async function () {//done
+    it.skip('buy from ZRX to WBTC', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -1024,7 +1024,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from ZRX to 1INCH', async function () {//done
+    it.skip('buy from ZRX to 1INCH', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const ZRX_ADDRESS = '0xe41d2489571d322189246dafa5ebde1f4699f498'
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -1066,7 +1066,7 @@ describe("CoreSwap", function () {
     })
 
     /// for 1INCH
-    it.skip('swapExactInput from 1INCH to DAI', async function () {//done
+    it.skip('buy from 1INCH to DAI', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
       const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
@@ -1105,7 +1105,7 @@ describe("CoreSwap", function () {
       console.log('inchBlanceAfter = ', inchBlanceAfter)
     })
 
-    it.skip('swapExactInput from 1INCH to USDC', async function () {//done
+    it.skip('buy from 1INCH to USDC', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -1144,7 +1144,7 @@ describe("CoreSwap", function () {
       console.log('inchBalanceAfter = ', inchBalanceAfter)
     })
 
-    it.skip('swapExactInput from 1INCH to WETH', async function () { //done
+    it.skip('buy from 1INCH to WETH', async function () { //done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302';
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -1186,7 +1186,7 @@ describe("CoreSwap", function () {
       console.log('wethBlanceAfter = ', wethBlanceAfter)
     })
 
-    it.skip('swapExactInput from 1INCH to WBTC', async function () {//done
+    it.skip('buy from 1INCH to WBTC', async function () {//done
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302'
       const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
@@ -1227,7 +1227,7 @@ describe("CoreSwap", function () {
       console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
     })
 
-    it.skip('swapExactInput from 1INCH to ZRX', async function () {
+    it.skip('buy from 1INCH to ZRX', async function () {
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const INCH_ADDRESS = '0x111111111117dc0aa78b770fa6a738034120c302';
       const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -1269,8 +1269,8 @@ describe("CoreSwap", function () {
     })
   })
 
-  describe('swapExactOutput', function () {
-    it.skip('swapExactOutput from DAI to WETH', async function () {
+  describe('sell', function () {
+    it.skip('sell from DAI to WETH', async function () {
       const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
       const DAI_WHALE = "0xdDb108893104dE4E1C6d0E47c42237dB4E617ACc";// it has 3.62token in dai
       /* Connect to DAI and mint some tokens  */
