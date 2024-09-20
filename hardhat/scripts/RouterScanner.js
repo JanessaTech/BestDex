@@ -125,7 +125,53 @@ findPaths('1INCH', 'WETH')
 findPaths('1INCH', 'WBTC')
 findPaths('1INCH', 'ZRX')
 
+// the the script directly
 
 
 
+// The following are token pairs which have pool defined
+// DAI <-> USDC
+// DAI <-> WETH
+// DAI <-> 1INCH
+// USDC <-> WETH
+// USDC <-> WBTC
+// USDC <-> 1INCH
+// WETH <-> ZRX
+// WETH <-> 1INCH
 
+// The following are the route path for the token pairs
+// DAI - USDC  signleSwap
+// DAI - WETH  signleSwap
+// DAI - WBTC  hop -> DAI: USDC : WBTC
+// DAI - ZRX  hop -> DAI: WETH: ZRX
+// DAI - 1INCH  signleSwap
+
+// USDC - DAI    signleSwap
+// USDC - WETH   signleSwap
+// USDC - WBTC   signleSwap
+// USDC - ZRX    hop -> USDC: WETH: ZRX
+// USDC - 1INCH  signleSwap
+
+// WETH - DAI    signleSwap
+// WETH - USDC   signleSwap
+// WETH - WBTC   hop -> WETH:USDC:WBTC
+// WETH - ZRX    signleSwap 
+// WETH - 1INCH  signleSwap
+
+// WBTC - DAI error: hop ->WBTC:USDC:DAI
+// WBTC - USDC  signleSwap
+// WBTC - WETH  hop -> WBTC:USDC:WETH
+// WBTC - ZRX   hop -> WBTC:USDC:WETH:ZRX
+// WBTC - 1INCH  error hop ->WBTC:USDC:INCH
+
+// ZRX - DAI     hop -> ZRX:WETH:DAI
+// ZRX - USDC    hop -> ZRX:WETH:USDC
+// ZRX - WETH    signleSwap
+// ZRX - WBTC    hop -> ZRX:WETH:USDC:WBTC
+// ZRX - 1INCH   hop -> ZRX:WETH:INCH
+
+// 1INCH - DAI   signleSwap
+// 1INCH - USDC  signleSwap
+// 1INCH - WETH  signleSwap
+// 1INCH - WBTC  hop -> INCH:USDC:WBTC
+// 1INCH - ZRX   hop -> INCH:WETH:ZRX
