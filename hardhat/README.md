@@ -18,7 +18,8 @@ test:
     npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk
     npx hardhat test --network localhost .\test\liquidity.test.js
     npx hardhat test --network localhost .\test\SimpleSwap.test.js
-    npx hardhat test --network localhost .\test\CoreSwap.test.js
+    npx hardhat test --network localhost .\test\CoreSwap.sell.test.js
+    npx hardhat test --network localhost .\test\CoreSwap.buy.test.js
 ```
 
 ## How to run scripts
