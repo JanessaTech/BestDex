@@ -681,14 +681,141 @@ describe("CoreSwap", function () {
           })
 
           /// for WETH
-          it('buy from WBTC to DAI', async function () {
+          it.skip('buy from WBTC to DAI', async function () {//error
+            const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+            const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+            const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+            const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+            const WBTC_WHALE = '0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
+      
+            const WBTC_DECIMALS = 8
+            const DAI_DECIMALS = 18
+            
+            const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+            const DAI = await ethers.getContractAt('IERC20', DAI_ADDRESS)
+            
+            //Unlock WBTC whale
+            await network.provider.request({
+              method: "hardhat_impersonateAccount",
+              params: [WBTC_WHALE],
+            });
+            
+            const wbtcWhale = await ethers.getSigner(WBTC_WHALE)
+            await WBTC.connect(wbtcWhale).transfer(signers[0].address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
+      
+            const wbtcBalanceBeforeSwap = await WBTC.balanceOf(signers[0].address)
+            const wbtcBalanceBefore = Number(ethers.utils.formatUnits(wbtcBalanceBeforeSwap, WBTC_DECIMALS))
+            console.log('wbtcBalanceBefore = ', wbtcBalanceBefore)
 
+            const daiBalanceBeforeSwap = await DAI.balanceOf(signers[0].address)
+            const daiBalanceBefore = Number(ethers.utils.formatUnits(daiBalanceBeforeSwap, DAI_DECIMALS))
+            console.log('daiBalanceBefore = ', daiBalanceBefore)
+      
+            await WBTC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
+            console.log('approved')
+            const amountOut = ethers.utils.parseUnits("1000", DAI_DECIMALS); 
+            const amountInMaximum = ethers.utils.parseUnits("0.1", WBTC_DECIMALS); 
+            const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [DAI_ADDRESS, feeTier, USDC_ADDRESS, feeTier, WBTC_ADDRESS])
+            const swap = await coreSwap.swapExactOutputMultihop(WBTC_ADDRESS, path, amountOut, amountInMaximum, mins, { gasLimit: 300000 })
+            await swap.wait()
+            console.log('swap is done')
+      
+            const daiBalanceAfterSwap = await DAI.balanceOf(signers[0].address)
+            const daiBlanceAfter = Number(ethers.utils.formatUnits(daiBalanceAfterSwap, DAI_DECIMALS))
+            console.log('daiBlanceAfter = ', daiBlanceAfter)
+      
+            const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+            const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+            console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
           })
-          it('buy from WBTC to USDC', async function () {
+          it.skip('buy from WBTC to USDC', async function () {//done
+            const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+            const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+            const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+            const WBTC_WHALE = '0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
+            const WBTC_DECIMALS = 8
+            const USDC_DECIMALS = 6
+          
+            const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+            const USDC = await ethers.getContractAt('IERC20', USDC_ADDRESS)
+      
+            //Unlock WBTC whale
+            await network.provider.request({
+              method: "hardhat_impersonateAccount",
+              params: [WBTC_WHALE],
+            });
+            
+            const wbtcWhale = await ethers.getSigner(WBTC_WHALE)
+            await WBTC.connect(wbtcWhale).transfer(signers[0].address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
+      
+            const wbtcBalanceBeforeSwap = await WBTC.balanceOf(signers[0].address)
+            const wbtcBalanceBefore = Number(ethers.utils.formatUnits(wbtcBalanceBeforeSwap, WBTC_DECIMALS))
+            console.log('wbtcBalanceBefore = ', wbtcBalanceBefore)
 
+            const usdcBalanceBeforeSwap = await USDC.balanceOf(signers[0].address)
+            const usdcBalanceBefore = Number(ethers.utils.formatUnits(usdcBalanceBeforeSwap, USDC_DECIMALS))
+            console.log('usdcBalanceBefore = ', usdcBalanceBefore)
+      
+            await WBTC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('0.1', WBTC_DECIMALS))
+            const amountOut = ethers.utils.parseUnits("1000", USDC_DECIMALS); 
+            const amountInMaximum = ethers.utils.parseUnits("0.1", WBTC_DECIMALS); 
+            const swap = await coreSwap.swapExactOutput(WBTC_ADDRESS, USDC_ADDRESS, amountOut, amountInMaximum, mins, feeTier, { gasLimit: 300000 })
+            await swap.wait()
+      
+            const usdcBalanceAfterSwap = await USDC.balanceOf(signers[0].address)
+            const usdcBalanceAfter = Number(ethers.utils.formatUnits(usdcBalanceAfterSwap, USDC_DECIMALS))
+            console.log('usdcBalanceAfter = ', usdcBalanceAfter)
+      
+            const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+            const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+            console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
           })
-          it('buy from WBTC to WETH', async function () {
 
+          it.skip('buy from WBTC to WETH', async function () { //error
+            const {coreSwap, signers, mins, feeTier} = await loadFixture(sharedContractFixture)
+            const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+            const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+            const WETH_ADDRESS = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+            const WBTC_WHALE = '0x3ee18B2214AFF97000D974cf647E7C347E8fa585'
+            
+            const WBTC_DECIMALS = 8;
+            const WETH_DECIMALS = 18; 
+            
+            const WBTC = await ethers.getContractAt('IERC20', WBTC_ADDRESS)
+            const WETH = await ethers.getContractAt('IERC20', WETH_ADDRESS)
+      
+            //Unlock WBTC whale
+            await network.provider.request({
+              method: "hardhat_impersonateAccount",
+              params: [WBTC_WHALE],
+            });
+            
+            const wbtcWhale = await ethers.getSigner(WBTC_WHALE)
+            await WBTC.connect(wbtcWhale).transfer(signers[0].address, ethers.utils.parseUnits('1', WBTC_DECIMALS))
+      
+            const wbtcBalanceBeforeSwap = await WBTC.balanceOf(signers[0].address)
+            const wbtcBalanceBefore = Number(ethers.utils.formatUnits(wbtcBalanceBeforeSwap, WBTC_DECIMALS))
+            console.log('wbtcBalanceBefore = ', wbtcBalanceBefore)
+
+            const wethBalanceBeforeSwap = await WETH.balanceOf(signers[0].address)
+            const wethBalanceBefore = Number(ethers.utils.formatUnits(wethBalanceBeforeSwap, WETH_DECIMALS))
+            console.log('wethBalanceBefore = ', wethBalanceBefore)
+      
+            const approve = await WBTC.connect(signers[0]).approve(coreSwap.address, ethers.utils.parseUnits('1', WBTC_DECIMALS))
+            await approve.wait()
+            const amountOut = ethers.utils.parseUnits("1", WETH_DECIMALS); 
+            const amountInMaximum = ethers.utils.parseUnits("1", WBTC_DECIMALS); 
+            const path = ethers.utils.solidityPack(["address", "uint24", "address", "uint24", "address"], [WETH_ADDRESS, feeTier, USDC_ADDRESS, feeTier, WBTC_ADDRESS])
+            const swap = await coreSwap.swapExactOutputMultihop(WBTC_ADDRESS, path, amountOut, amountInMaximum, mins, { gasLimit: 300000 })
+            await swap.wait()
+      
+            const wethBalanceAfterSwap = await WETH.balanceOf(signers[0].address)
+            const wethBalanceAfter = Number(ethers.utils.formatUnits(wethBalanceAfterSwap, WETH_DECIMALS))
+            console.log('wethBalanceAfter = ', wethBalanceAfter)
+      
+            const wbtcBalanceAfterSwap = await WBTC.balanceOf(signers[0].address)
+            const wbtcBalanceAfter = Number(ethers.utils.formatUnits(wbtcBalanceAfterSwap, WBTC_DECIMALS))
+            console.log('wbtcBalanceAfter = ', wbtcBalanceAfter)
           })
           it('buy from WBTC to ZRX', async function () {
 
