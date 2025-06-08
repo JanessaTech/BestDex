@@ -3,6 +3,7 @@
 import type React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
+import { setCookie, deleteCookie } from 'cookies-next'
 import { 
     RainbowKitProvider, 
     darkTheme,
@@ -40,7 +41,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       },
 
       verify: async ({ message, signature }) => {
-        console.log('verify .................')
         try {
           const response = await fetch('/api/verify', {
             method: 'POST',
@@ -52,7 +52,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
           if(authenticated) {
             setState('authenticated')
-            console.log('setState(authenticated)')
+            let token = 'fake-jwt-token'
+            setCookie('token', token, { maxAge: 60 * 60 * 24 })
           }
 
           return authenticated;
@@ -65,6 +66,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       signOut: async () => {
         await fetch('/api/logout');
         setState('unauthenticated')
+        deleteCookie('token')
       },
     });
   }, []);
