@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function  GET(request: Request) {
   console.log('handler nonce ...')
-  let nonce = generateNonce();
+  const nonce = generateNonce();
   console.log('new Nonce: ', nonce)
   return new NextResponse(nonce, {
     headers: {'Content-Type': 'text/plain'}
