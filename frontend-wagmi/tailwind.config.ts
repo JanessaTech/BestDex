@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -9,6 +10,9 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			title:["Montserrat"]
+		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -59,10 +63,10 @@ const config: Config = {
 		keyframes: {
 		"go-left": {
 			from: {width: "200px"},
-			to: {width: "100px"}
+			to: {width: "70px"}
 		},
 		"go-right": {
-			from: {width: "100px"},
+			from: {width: "70px"},
 			to: {width: "200px"}
 		},
 		},

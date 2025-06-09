@@ -1,26 +1,13 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import Menu from "@/components/menu/Menu";
 import Header from "@/components/header/Header";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
 export const metadata: Metadata = {
   title: "The Best DEX in the world",
   description: "Powered by JanessaTech",
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,12 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`font-title antialiased text-white bg-black`}
       >
         <Providers>
           <div className="flex w-full">
             <Menu/>
-            <div className="grow bg-zinc-400">
+            <div className="grow">
               <Header/>
               <main className="main-margin">
                 {children}
