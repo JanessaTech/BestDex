@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Menu from "@/components/menu/Menu";
 import Header from "@/components/header/Header";
 
@@ -37,7 +36,7 @@ export default function RootLayout({
             <Menu/>
             <div className="grow bg-zinc-400">
               <Header/>
-              <main className="mx-4 md:mx-8">
+              <main className="main-margin">
                 {children}
               </main>
             </div>

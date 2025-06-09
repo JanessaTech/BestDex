@@ -55,7 +55,21 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		keyframes: {
+		"go-left": {
+			from: {width: "200px"},
+			to: {width: "100px"}
+		},
+		"go-right": {
+			from: {width: "100px"},
+			to: {width: "200px"}
+		},
+		},
+		animation: {
+		"move-left": "go-left 1s ease-in-out both",
+		"move-right": "go-right 1s ease-in-out both",
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
