@@ -1,6 +1,6 @@
 import '@rainbow-me/rainbowkit/styles.css';
 
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { getDefaultConfig , Chain} from '@rainbow-me/rainbowkit';
 import {
     mainnet,
     polygon,
@@ -23,6 +23,23 @@ import {
     throw new Error('Project ID is not defined')
   }
 
+  // define chains with custom icons
+  const chains: readonly [Chain, ...Chain[]] = [
+    {
+      ...mainnet,
+      iconUrl: '/imgs/networks/ethereum.png',
+    },
+    {
+      ...polygon,
+      iconUrl: '/imgs/networks/polygon.png',
+    },
+    {
+      ...arbitrum,
+      iconUrl: '/imgs/networks/arbitrum.png',
+    },
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [{...sepolia, iconUrl: '/imgs/networks/polygon.png'}, {...hardhat, iconUrl: '/imgs/networks/hardhat.png'}] : [])
+  ]
+
 export const config = getDefaultConfig({
   appName: 'RainbowKit demo',
   projectId: projectId,
@@ -30,13 +47,7 @@ export const config = getDefaultConfig({
     groupName: 'Recommended',
     wallets: [walletConnectWallet,okxWallet,uniswapWallet,trustWallet],
   }],
-  chains: [
-    mainnet,
-    polygon,
-    arbitrum,
-    base,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia, hardhat] : []),
-  ],
+  chains,
   transports: {
     // RPC URL for each chain
     [mainnet.id]: http(

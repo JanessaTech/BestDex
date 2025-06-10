@@ -10,7 +10,7 @@ import {
     Theme,
     RainbowKitAuthenticationProvider} from '@rainbow-me/rainbowkit';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createAuthenticationAdapter } from '@rainbow-me/rainbowkit';
 import { createSiweMessage } from 'viem/siwe';
 import useAuthState from '@/config/store';
@@ -79,7 +79,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       },
     });
   }, []);
-  
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
