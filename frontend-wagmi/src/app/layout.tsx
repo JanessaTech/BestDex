@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import Menu from "@/components/menu/Menu";
 import Header from "@/components/header/Header";
+import WebMenu from "@/components/menu/WebMenu";
 
 export const metadata: Metadata = {
   title: "The Best DEX in the world",
@@ -20,7 +20,7 @@ export default function RootLayout({
       >
         <Providers>
           <div className="flex w-full">
-            <Menu/>
+            <WebMenu/>
             <div className="grow">
               <Header/>
               <main className="main-margin">

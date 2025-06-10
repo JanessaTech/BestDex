@@ -1,49 +1,21 @@
-'use client'
-
 import Link from "next/link"
-import { useState } from "react"
+import { usePathname } from "next/navigation"
 
-const Menu: React.FC<{}> = () => {
-    const [isMin, setIsMin] = useState<boolean>(false)
-    const [animation, setAnimation] = useState<string>('')
-    const [select, setSelect] = useState(0)
+type MenuProps = {
+    isMin: boolean;
+    setShow?: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-    const onClick = () => {
-        if (isMin) {
-        setAnimation('animate-move-right') 
-        } else {
-        setAnimation('animate-move-left')
-        }
-        setIsMin(isMin => !isMin)
-    }
+const Menu:React.FC<MenuProps> = ({isMin, setShow}) => {
+    const pathname = usePathname()
 
     return (
-        <div className={`bg-zinc-800 h-screen w-[200px] border-r border-zinc-500 sticky top-0 text-sm max-md:hidden group ${animation}`} >
-            <div className="flex flex-col h-full relative">
-                <div className='absolute w-6 h-7 rounded-md 
-                        border border-zinc-300 -right-3 top-20 
-                        bg-black cursor-pointer
-                        flex items-center justify-center invisible
-                        group-hover:visible'>
-                    <img className={`cursor-pointer ${isMin ? 'rotate-180' : ''}`}
-                        src="/imgs/left-arrow.svg" 
-                        alt="toggle menu" onClick={onClick}/>
-                        </div>
-                <div className="h-[120px] relative">
-                    <img src="/imgs/logo.svg" alt="best DEX" 
-                    width={50}
-                    height={50}
-                    className='absolute top-6 left-3 '
-                    />
-                    <span className={`absolute top-14 left-11 text-2xl font-extrabold italic ${isMin ? 'hidden' : ''}`}>BEST DEX</span>
-                </div>
-                <div className="grow">
                     <ul className='cursor-pointer '>
-                        <Link href='/'>
-                            <li className="group/li" onClick={() => setSelect(0)}>
+                        <Link href='/' onClick={setShow ? () => setShow(false): () => {}}>
+                            <li className="group/li">
                                 <div className="group-hover/li:bg-zinc-700 py-2">
                                     <div className={`flex items-center ml-3 border-r-2  
-                                        ${select === 0 ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
+                                        ${pathname === '/' ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
                                         <svg 
                                             className="w-6 h-6"
                                             xmlns="http://www.w3.org/2000/svg" 
@@ -57,10 +29,10 @@ const Menu: React.FC<{}> = () => {
                             </li>
                         </Link>
                         <Link href='/pool'>
-                            <li className="group/li" onClick={() => setSelect(1)}>
+                            <li className="group/li"  onClick={setShow ? () => setShow(false): () => {}}>
                                 <div className="group-hover/li:bg-zinc-700 py-2">
                                     <div className={`flex items-center ml-3 border-r-2  
-                                        ${select === 1 ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
+                                        ${pathname.startsWith('/pool') ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
                                         <svg 
                                             className="w-6 h-6"
                                             xmlns="http://www.w3.org/2000/svg" 
@@ -74,10 +46,10 @@ const Menu: React.FC<{}> = () => {
                             </li>
                         </Link>
                         <Link href='/explore'>
-                            <li className="group/li" onClick={() => setSelect(2)}>
+                            <li className="group/li"  onClick={setShow ? () => setShow(false): () => {}}>
                                 <div className="group-hover/li:bg-zinc-700 py-2">
                                     <div className={`flex items-center ml-3 border-r-2  
-                                        ${select === 2 ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
+                                        ${pathname.startsWith('/explore') ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
                                         <svg 
                                             className="w-6 h-6"
                                             xmlns="http://www.w3.org/2000/svg" 
@@ -92,10 +64,10 @@ const Menu: React.FC<{}> = () => {
                             </li>
                         </Link>
                         <Link href='/balance'>
-                            <li className="group/li" onClick={() => setSelect(3)}>
+                            <li className="group/li"  onClick={setShow ? () => setShow(false): () => {}}>
                                 <div className="group-hover/li:bg-zinc-700 py-2">
                                     <div className={`flex items-center ml-3 border-r-2  
-                                        ${select === 3 ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
+                                        ${pathname.startsWith('/balance') ? 'text-pink-600 border-pink-600' : 'border-zinc-800'}`}>
                                         <svg 
                                             className="w-6 h-6"
                                             xmlns="http://www.w3.org/2000/svg" 
@@ -110,14 +82,6 @@ const Menu: React.FC<{}> = () => {
                         </Link>
                         
                     </ul>
-                </div>
-                <div className='h-[80px] flex items-center justify-center cursor-pointer border-t border-zinc-500'>
-                <Link href='https://consensys.io/terms-of-use' 
-                     target='_blank' 
-                        rel="noopener noreferrer" className='mx-2'>Term of use</Link>
-                </div>
-            </div>
-        </div>
     )
 }
 
