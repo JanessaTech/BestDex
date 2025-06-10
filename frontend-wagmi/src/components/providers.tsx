@@ -7,6 +7,7 @@ import { setCookie, deleteCookie } from 'cookies-next'
 import { 
     RainbowKitProvider, 
     darkTheme,
+    Theme,
     RainbowKitAuthenticationProvider} from '@rainbow-me/rainbowkit';
 
 import { useMemo } from 'react';
@@ -14,6 +15,14 @@ import { createAuthenticationAdapter } from '@rainbow-me/rainbowkit';
 import { createSiweMessage } from 'viem/siwe';
 import useAuthState from '@/config/store';
 import { config } from '@/config/wagmi';
+import merge from 'lodash.merge';
+
+const myTheme =  merge(darkTheme(), {
+  colors: {
+    accentColor: '#db2777',
+    connectButtonBackground: '#db2777'
+  },
+} as Theme);
 
 
 const queryClient = new QueryClient();
@@ -70,7 +79,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       },
     });
   }, []);
-
+  
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -79,7 +88,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         status={isDone? connected: 'loading'}
         >
           <RainbowKitProvider 
-            theme={darkTheme()} 
+            theme={myTheme} 
             modalSize="compact">
             {children}
           </RainbowKitProvider>
