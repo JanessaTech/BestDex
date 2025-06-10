@@ -18,7 +18,7 @@ const WebMenu: React.FC<{}> = () => {
     }
 
     return (
-        <div className={`bg-zinc-800 h-screen w-[200px] border-r border-zinc-500 sticky top-0 text-sm max-md:hidden group ${animation}`} >
+        <div className={`bg-zinc-900 h-screen w-[200px] border-r border-zinc-500 sticky top-0 text-sm max-md:hidden group ${animation}`} >
             <div className="flex flex-col h-full relative">
                 <div className='absolute w-6 h-7 rounded-md 
                         border border-zinc-300 -right-3 top-20 

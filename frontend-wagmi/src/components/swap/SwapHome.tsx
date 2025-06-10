@@ -7,7 +7,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const { chains, switchChain } = useSwitchChain()
 
     return (
-        <div>
+        <div className='bg-zinc-900 w-full md:w-[500px] h-80 rounded-xl mx-auto mt-20 p-10'>
         </div>
     )
 }
