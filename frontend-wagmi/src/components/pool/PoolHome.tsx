@@ -3,11 +3,11 @@
 import { useSwitchChain } from 'wagmi'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 
-type SwapHomeProps = {}
-const SwapHome: React.FC<SwapHomeProps> = () => {;
+type PoolHomeProps = {}
+const PoolHome: React.FC<PoolHomeProps> = () => {;
     const { chains, switchChain } = useSwitchChain()
     const {getCurrentPath} = useContextUtil() as IContextUtil
-
+ 
     return (
         <div>
             <div className='font-semibold text-xl my-10 md:hidden capitalize'>{getCurrentPath()}</div>
@@ -16,4 +16,4 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     )
 }
 
-export default SwapHome
+export default PoolHome

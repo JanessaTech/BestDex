@@ -10,7 +10,7 @@ import {
     Theme,
     RainbowKitAuthenticationProvider} from '@rainbow-me/rainbowkit';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { createAuthenticationAdapter } from '@rainbow-me/rainbowkit';
 import { createSiweMessage } from 'viem/siwe';
 import useAuthState from '@/config/store';
@@ -27,7 +27,7 @@ const myTheme =  merge(darkTheme(), {
 
 const queryClient = new QueryClient();
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function CoreProvider({ children }: { children: React.ReactNode }) {
   const {connected, setState, isDone} = useAuthState()
 
   const authAdapter = useMemo(() => {

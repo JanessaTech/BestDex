@@ -5,8 +5,6 @@ export function middleware(request: NextRequest) {
     const token = request.cookies.get('token')
     //const protectedRoutes = ['/profile', '/balance', '/pool', '/explore']
     const protectedRoutes = ['/profile']
-    console.log('middleware, token', token)
-    
     if (protectedRoutes.some(path => 
       request.nextUrl.pathname.startsWith(path)) && !token
     ) {

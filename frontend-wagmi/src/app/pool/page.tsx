@@ -1,7 +1,9 @@
+import PoolHome from "@/components/pool/PoolHome"
+
 type PoolProps = {}
 const Pool: React.FC<PoolProps> = () => {
     return (
-        <div>pool</div>
+        <PoolHome/>
     )
 }
 
