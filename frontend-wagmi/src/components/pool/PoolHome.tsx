@@ -11,7 +11,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {;
     return (
         <div>
             <div className='font-semibold text-xl my-10 md:hidden capitalize'>{getCurrentPath()}</div>
-            <div className='bg-zinc-900 w-full md:w-[500px] h-80 rounded-xl md:mt-10 mx-auto p-10'></div>    
+            <div className='bg-zinc-900 w-full md:w-[500px] h-80 rounded-xl md:mt-10 mx-auto p-10'>
+                
+            </div>    
         </div>
     )
 }

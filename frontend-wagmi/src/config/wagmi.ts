@@ -35,9 +35,9 @@ import {
     },
     {
       ...arbitrum,
-      iconUrl: '/imgs/networks/arbitrum.png',
+      iconUrl: '/imgs/networks/arbitrumone.png',
     },
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [{...sepolia, iconUrl: '/imgs/networks/polygon.png'}, {...hardhat, iconUrl: '/imgs/networks/hardhat.png'}] : [])
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [{...sepolia, iconUrl: '/imgs/networks/sepolia.png'}, {...hardhat, iconUrl: '/imgs/networks/hardhat.png'}] : [])
   ]
 
 export const config = getDefaultConfig({

@@ -11,6 +11,9 @@
   .main-margin {
     @apply mx-4 md:mx-8
   }
+  .hover-bg {
+    @apply bg-zinc-700/50
+  }
 }
 
 @layer base {
@@ -79,4 +82,10 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* styles.css */
+.PopoverContent {
+	width: var(--radix-popover-trigger-width);
+	max-height: var(--radix-popover-content-available-height);
 }
