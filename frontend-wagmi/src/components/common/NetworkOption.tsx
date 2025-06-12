@@ -21,10 +21,10 @@ const NetworkOption:React.FC<NetworkOptionProps> = ({networkOpen, curChain, chai
     return (
         <Popover open={networkOpen} onOpenChange={onOpenChange}>
             <PopoverTrigger className='w-full'>
-                <div className='h-10 w-full border-zinc-400 rounded-full border-[0.5px] cursor-pointer relative'>
+                <div className='h-12 w-full border-zinc-400 rounded-full border-[0.5px] cursor-pointer relative'>
                     <div className='w-full h-full hover:bg-pink-500/10 rounded-full'></div>
-                    <SVGArrowDown className='w-4 h-4 text-white absolute right-4 top-3'/>
-                    <div className='flex items-center absolute top-1 left-2'>
+                    <SVGArrowDown className='w-4 h-4 text-white absolute right-4 top-4'/>
+                    <div className='flex items-center absolute top-2 left-2'>
                         <div className='rounded-full w-fit h-fit overflow-hidden'>
                             <Image src={`/imgs/networks/${curChain.name.replace(/\s+/g, '').toLowerCase()}.png`} alt={curChain.name} width={32} height={32}/>
                         </div>
@@ -32,7 +32,7 @@ const NetworkOption:React.FC<NetworkOptionProps> = ({networkOpen, curChain, chai
                     </div>
                 </div>
             </PopoverTrigger>
-            <PopoverContent align='start' className='bg-inherit border-zinc-600 border-[1px] PopoverContent text-white'>
+            <PopoverContent align='start' className='bg-zinc-900 border-zinc-600 border-[1px] PopoverContent text-white'>
                 <ul>
                     {
                         chains.map((chain) => (
