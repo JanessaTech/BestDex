@@ -5,6 +5,7 @@ import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import NetworkOption from '../common/NetworkOption'
 import { useState } from 'react'
 import TokenOption from '../common/TokenOption'
+import { TokenType } from '@/lib/types'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
@@ -14,6 +15,8 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const {getCurrentPath} = useContextUtil() as IContextUtil
     const [networkOpen, setNetworkOpen] = useState(false)
     const [tokenOpen, setTokenOpen] = useState(false)
+    const [tokenFrom, setTokenFrom] = useState<TokenType | undefined>(undefined)
+    const [tokenTo, setTokenTo] = useState<TokenType | undefined>(undefined)
 
     const onNetworkOpenChange = (open: boolean) => {
         setNetworkOpen(open)
@@ -32,6 +35,8 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
         console.log('chainId:', chainId, 'address:', address)
         setTokenOpen(false)
     }
+
+    console.log('tokenFrom:', tokenFrom)
     
     return (
         <div>
@@ -46,7 +51,14 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                 <div className='my-8'>
                     <div className='font-semibold my-3'>Swap from</div>
                     <div className='h-16 flex w-full'>
-                        <TokenOption tokenOpen={tokenOpen} chainId={chainId} onOpenChange={onTokenOpenChange} handleSwitchToken={handleSwitchToken}/>
+                        <TokenOption 
+                            tokenOpen={tokenOpen} 
+                            chainId={chainId} 
+                            curToken={tokenFrom}
+                            onOpenChange={onTokenOpenChange} 
+                            handleSwitchToken={handleSwitchToken}
+                            updateToken={setTokenFrom}
+                            />
                         <input className={`grow border-zinc-700 border-[1px] rounded-r-md 
                             box-border bg-zinc-900 px-3 focus:border-pink-600
                             ${tokenOpen ? 'hidden' : ''}`}></input>
