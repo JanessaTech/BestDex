@@ -59,18 +59,19 @@ type TokenOptionProps = {
   tokenOpen: boolean;
   chainId: number;
   curToken: TokenType | undefined;
+  showFull?: boolean;
   onOpenChange: (open: boolean) => void;
-  handleSwitchToken: (chainId: number, address: string) => void;
+  closeTokenOption: () => void;
   updateToken: React.Dispatch<React.SetStateAction<TokenType | undefined>>
 }
-const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, onOpenChange, handleSwitchToken, updateToken}) => {
+const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, showFull = true, onOpenChange, closeTokenOption, updateToken}) => {
     const tokens = tokenList.filter((l) => l.chainId === chainId)[0].tokens
    
     return (
         <Popover open={tokenOpen} onOpenChange={onOpenChange}>
           <PopoverTrigger asChild>
                     <div className={`border-y-[1px] border-l-[1px] border-zinc-700 rounded-l-md hover:bg-zinc-600/10 
-                    cursor-pointer box-border px-5 flex justify-between items-center ${tokenOpen ? 'w-full border-r-[1px] rounded-r-md' : 'w-2/5'}`}>
+                    cursor-pointer box-border px-5 flex justify-between items-center ${showFull || tokenOpen ? 'w-full border-r-[1px] rounded-r-md' : 'w-2/5'}`}>
                         <div className='flex items-center text-nowrap overflow-hidden'>
                           {
                             curToken ?<><Image src={`/imgs/tokens/${curToken?.name}.png`} alt='eth'width={30} height={30} className="min-w-[30px] rounded-full"/><span className='mx-2 truncate min-w-1'>{curToken.label}</span></> 
@@ -95,7 +96,7 @@ const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, o
                     key={`${chainId}-${token.address}`}
                     value={`${token.name};${token.address}`}
                     onSelect={(curName) => {
-                      handleSwitchToken(chainId, token.address)
+                      closeTokenOption()
                       updateToken(token)
                     }}
                   >

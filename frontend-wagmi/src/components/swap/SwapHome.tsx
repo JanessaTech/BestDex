@@ -6,6 +6,7 @@ import NetworkOption from '../common/NetworkOption'
 import { useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
 import { TokenType } from '@/lib/types'
+import ArrowUpDown from '@/lib/svgs/svg_arrow_updown'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
@@ -14,9 +15,12 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const curChain = chains.filter((c) => c.id === chainId)[0]
     const {getCurrentPath} = useContextUtil() as IContextUtil
     const [networkOpen, setNetworkOpen] = useState(false)
-    const [tokenOpen, setTokenOpen] = useState(false)
+
+    const [tokenFromOpen, setTokenFromOpen] = useState(false)
+    const [tokenToOpen, setTokenToOpen]  = useState(false)
     const [tokenFrom, setTokenFrom] = useState<TokenType | undefined>(undefined)
     const [tokenTo, setTokenTo] = useState<TokenType | undefined>(undefined)
+    
 
     useEffect(() => {
         // reset tokenFrom &tokenTo when chainId is changed
@@ -35,19 +39,32 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
         setTokenTo(undefined)
     }
 
-    const onTokenOpenChange = (open: boolean) => {
-        setTokenOpen(open)
-    }
-    const handleSwitchToken = (chainId: number, address: string) => {
-        setTokenOpen(false)
+    const onTokenFromOpenChange = (open: boolean) => {
+        setTokenFromOpen(open)
     }
 
-    console.log('tokenFrom:', tokenFrom)
+    const onTokenFromToChange = (open: boolean) => {
+        setTokenToOpen(open)
+    }
+
+    const closeTokenFromOption = () => {
+        setTokenFromOpen(false)
+    }
+    const closeTokenToOption = () => {
+        setTokenToOpen(false)
+    }
+
+    const exChangeTokens = () => {
+        const from = tokenFrom
+        const to = tokenTo
+        setTokenFrom(to)
+        setTokenTo(from)
+    }
     
     return (
         <div>
             <div className='font-semibold text-xl my-10 md:hidden capitalize'>{getCurrentPath()}</div>
-            <div className='bg-zinc-900 w-full md:w-[500px] h-96 rounded-xl md:mt-10 mx-auto p-10'>
+            <div className='bg-zinc-900 w-full md:w-[500px] rounded-xl md:mt-10 mx-auto p-10'>
                 <NetworkOption 
                     networkOpen={networkOpen} 
                     curChain={curChain} 
@@ -58,18 +75,35 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                     <div className='font-semibold my-3'>Swap from</div>
                     <div className='h-16 flex w-full'>
                         <TokenOption 
-                            tokenOpen={tokenOpen} 
+                            tokenOpen={tokenFromOpen} 
                             chainId={chainId} 
                             curToken={tokenFrom}
-                            onOpenChange={onTokenOpenChange} 
-                            handleSwitchToken={handleSwitchToken}
+                            showFull={false}
+                            onOpenChange={onTokenFromOpenChange} 
+                            closeTokenOption={closeTokenFromOption}
                             updateToken={setTokenFrom}
                             />
                         <input className={`grow border-zinc-700 border-[1px] rounded-r-md 
                             box-border bg-zinc-900 px-3 focus:border-pink-600
-                            ${tokenOpen ? 'hidden' : ''}`}></input>
+                            ${tokenFromOpen ? 'hidden' : ''}`}></input>
                     </div>
-                </div>      
+                </div> 
+                <div className='my-8 flex justify-center'>
+                    <ArrowUpDown className='w-6 h-6 cursor-pointer hover:text-pink-600' onClick={exChangeTokens}/>
+                </div>     
+                <div className='my-8'>
+                    <div className='font-semibold my-3'>Swap to</div>
+                    <div className='h-16 flex w-full'>
+                            <TokenOption 
+                                tokenOpen={tokenToOpen} 
+                                chainId={chainId} 
+                                curToken={tokenTo}
+                                onOpenChange={onTokenFromToChange} 
+                                closeTokenOption={closeTokenToOption}
+                                updateToken={setTokenTo}
+                            />
+                    </div>
+                </div>
             </div>    
         </div>
     )

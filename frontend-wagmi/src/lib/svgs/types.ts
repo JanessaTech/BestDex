@@ -1,1 +1,4 @@
-export type SVGProps = {className?: string}
+export type SVGProps = {
+    className?: string;
+    onClick?: () => void
+}
