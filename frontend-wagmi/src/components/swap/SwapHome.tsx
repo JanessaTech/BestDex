@@ -3,7 +3,7 @@
 import { useChainId, useSwitchChain } from 'wagmi'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import NetworkOption from '../common/NetworkOption'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
 import { TokenType } from '@/lib/types'
 
@@ -18,6 +18,12 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const [tokenFrom, setTokenFrom] = useState<TokenType | undefined>(undefined)
     const [tokenTo, setTokenTo] = useState<TokenType | undefined>(undefined)
 
+    useEffect(() => {
+        // reset tokenFrom &tokenTo when chainId is changed
+        setTokenFrom(undefined)
+        setTokenTo(undefined)
+    }, [chainId])
+
     const onNetworkOpenChange = (open: boolean) => {
         setNetworkOpen(open)
     }
@@ -25,14 +31,14 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const handleSwitchNetwork = (id: number)=> {
         setNetworkOpen(false)
         switchChain({chainId: id})
+        setTokenFrom(undefined)
+        setTokenTo(undefined)
     }
 
     const onTokenOpenChange = (open: boolean) => {
-        console.log('onTokenOpenChange:', open)
         setTokenOpen(open)
     }
     const handleSwitchToken = (chainId: number, address: string) => {
-        console.log('chainId:', chainId, 'address:', address)
         setTokenOpen(false)
     }
 

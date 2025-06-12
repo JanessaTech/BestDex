@@ -64,11 +64,8 @@ type TokenOptionProps = {
   updateToken: React.Dispatch<React.SetStateAction<TokenType | undefined>>
 }
 const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, onOpenChange, handleSwitchToken, updateToken}) => {
-
-    const [value, setValue] = React.useState("")
     const tokens = tokenList.filter((l) => l.chainId === chainId)[0].tokens
-    console.log(tokens)
-
+   
     return (
         <Popover open={tokenOpen} onOpenChange={onOpenChange}>
           <PopoverTrigger asChild>
@@ -79,29 +76,25 @@ const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, o
                             curToken ?<><Image src={`/imgs/tokens/${curToken?.name}.png`} alt='eth'width={30} height={30} className="min-w-[30px] rounded-full"/><span className='mx-2 truncate min-w-1'>{curToken.label}</span></> 
                             : <><div className="w-[30px] h-[30px] rounded-full bg-zinc-500 min-w-[30px]"></div><span className='mx-2 truncate min-w-1'>Choose a token</span></>
                           }
-                            
-                            
                         </div>
                         <SVGArrowDown className='w-5 h-5 text-white'/>
                     </div>
           </PopoverTrigger>
           <PopoverContent className="PopoverContent p-0 border-zinc-600 border-[1px]">
             <Command className="bg-zinc-900" filter={(value, search, keywords) => {
-                const extendValue = value + ' ' + keywords?.join(' ')
-                console.log('value: ', value + '  search:', search, + ' keywords:', keywords)
-                if (extendValue.includes(search)) return 1
+                // define your custom filter
+                if (value.toLocaleLowerCase().includes(search.toLocaleLowerCase())) return 1
                 return 0
             }}>
-              <CommandInput placeholder="Search token..." className="h-12 text-white" />
+              <CommandInput placeholder="Search name or paste address" className="h-12 text-white" />
               <CommandList>
                 <CommandEmpty>No token found.</CommandEmpty>
                 <CommandGroup>
                   {tokens.map((token, _) => (
                     <CommandItem
                     key={`${chainId}-${token.address}`}
-                    value={token.name}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue)
+                    value={`${token.name};${token.address}`}
+                    onSelect={(curName) => {
                       handleSwitchToken(chainId, token.address)
                       updateToken(token)
                     }}
@@ -114,7 +107,7 @@ const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, o
                     <Check
                       className={cn(
                         "ml-auto",
-                        value === token.name ? "opacity-100" : "opacity-0"
+                        curToken?.name === token.name ? "opacity-100" : "opacity-0"
                       )}
                     />
                   </CommandItem>
