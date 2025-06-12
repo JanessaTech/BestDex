@@ -59,5 +59,5 @@ export const config = getDefaultConfig({
     [sepolia.id]: http(`https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`),
     [hardhat.id]: http('http://127.0.0.1:8545')
   },
-  ssr: true,
+  ssr: true
 });
