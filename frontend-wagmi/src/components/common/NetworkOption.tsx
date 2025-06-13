@@ -20,7 +20,7 @@ const NetworkOption:React.FC<NetworkOptionProps> = ({networkOpen, curChain, chai
 
     return (
         <Popover open={networkOpen} onOpenChange={onOpenChange}>
-            <PopoverTrigger className='w-full'>
+            <PopoverTrigger className='w-full' asChild>
                 <div className='h-12 w-full border-zinc-400 rounded-full border-[0.5px] cursor-pointer relative'>
                     <div className='w-full h-full hover:bg-pink-500/10 rounded-full'></div>
                     <SVGArrowDown className='w-4 h-4 text-white absolute right-4 top-4'/>

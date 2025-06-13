@@ -121,7 +121,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                 <div className='flex justify-center'>
                     <Button 
                         className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' disabled={!tokenFrom || !tokenTo || !swapAmount}
-                        onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Continue' :'Connect Wallet'}</Button>
+                        onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Swap' :'Connect Wallet'}</Button>
                 </div>
             </div>    
         </div>
