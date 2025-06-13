@@ -22,9 +22,10 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const [networkOpen, setNetworkOpen] = useState(false)
     const [tokenFromOpen, setTokenFromOpen] = useState(false)
     const [tokenToOpen, setTokenToOpen]  = useState(false)
+    const [settingOpen, setSettingOpen] = useState(false)
     const [tokenFrom, setTokenFrom] = useState<TokenType | undefined>(undefined)
     const [tokenTo, setTokenTo] = useState<TokenType | undefined>(undefined)
-    const [swapAmount, setSwapAmount] = useState<Number>(0)
+    const [swapAmount, setSwapAmount] = useState<number>(0)
     
 
     useEffect(() => {
@@ -49,8 +50,12 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
         setTokenFromOpen(open)
     }
 
-    const onTokenFromToChange = (open: boolean) => {
+    const onTokenToOpenChange = (open: boolean) => {
         setTokenToOpen(open)
+    }
+
+    const onSettingOpenChange = (open: boolean) => {
+        setSettingOpen(open)
     }
 
     const closeTokenFromOption = () => {
@@ -88,7 +93,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                     <div className='pb-16 pt-1 px-10'>
                         <div className='flex justify-end items-center py-5'>
                             <div className='px-7 cursor-pointer hover:text-pink-600' onClick={clear}>Clear</div>
-                            <Setting/>
+                            <Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>
                         </div>
                         <NetworkOption 
                             networkOpen={networkOpen} 
@@ -108,9 +113,11 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                     closeTokenOption={closeTokenFromOption}
                                     updateToken={setTokenFrom}
                                     />
-                                <input className={`grow border-zinc-700 border-[1px] rounded-r-md 
+                                <input className={`border-zinc-700 border-[1px] rounded-r-md w-3/5
                                     box-border bg-zinc-900 px-3 focus:border-pink-600
-                                    ${tokenFromOpen ? 'hidden' : ''}`} onChange={handleInputChange}></input>
+                                    ${tokenFromOpen ? 'hidden' : ''}`} 
+                                    
+                                    onChange={handleInputChange}></input>
                             </div>
                         </div> 
                         <div className='my-8 flex justify-center'>
@@ -123,7 +130,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                         tokenOpen={tokenToOpen} 
                                         chainId={chainId} 
                                         curToken={tokenTo}
-                                        onOpenChange={onTokenFromToChange} 
+                                        onOpenChange={onTokenToOpenChange} 
                                         closeTokenOption={closeTokenToOption}
                                         updateToken={setTokenTo}
                                     />

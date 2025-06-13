@@ -75,7 +75,7 @@ const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, s
                         <div className='flex items-center text-nowrap overflow-hidden'>
                           {
                             curToken ?<><Image src={`/imgs/tokens/${curToken?.name}.png`} alt='eth'width={30} height={30} className="min-w-[30px] rounded-full"/><span className='mx-2 truncate min-w-1'>{curToken.label}</span></> 
-                            : <><div className="w-[30px] h-[30px] rounded-full bg-zinc-500 min-w-[30px]"></div><span className='mx-2 truncate min-w-1'>Choose a token</span></>
+                            : <><div className="w-[30px] h-[30px] rounded-full bg-zinc-500 min-w-[30px]"></div><span className='mx-2 truncate min-w-1 text-sm'>Choose a token</span></>
                           }
                         </div>
                         <SVGArrowDown className='w-5 h-5 text-white'/>
