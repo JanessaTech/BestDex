@@ -27,7 +27,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const [settingOpen, setSettingOpen] = useState(false)
     const [tokenFrom, setTokenFrom] = useState<TokenType | undefined>(undefined)
     const [tokenTo, setTokenTo] = useState<TokenType | undefined>(undefined)
-    const [swapAmount, setSwapAmount] = useState<number>(0)
+    const [swapAmount, setSwapAmount] = useState('')
     
 
     useEffect(() => {
@@ -97,14 +97,14 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
 
     }
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSwapAmount(Number(e.target.value))
+    const handleInputChange = (value: string) => {
+        setSwapAmount(value)
     }
 
     const clear = () => {
         setTokenFrom(undefined)
         setTokenTo(undefined)
-        setSwapAmount(0)
+        setSwapAmount('')
     }
     
     return (
@@ -136,7 +136,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                     updateToken={handleTokenFromChange}
                                     />
 
-                                <SwapInput hidden={tokenFromOpen} onChange={handleInputChange}/>
+                                <SwapInput amount={swapAmount} hidden={tokenFromOpen} onChange={handleInputChange}/>
                             </div>
                         </div> 
                         <div className='my-8 flex justify-center'>
