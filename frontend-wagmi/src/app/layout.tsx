@@ -4,6 +4,7 @@ import Header from "@/components/header/Header";
 import WebMenu from "@/components/menu/WebMenu";
 import { CoreProvider } from "@/components/providers/CoreProvider";
 import ContextUtilProvider from "@/components/providers/ContextUtilProvider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "The Best DEX in the world",
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body
         className={`font-title antialiased text-white bg-black`}
       >
+        <Toaster richColors closeButton/>
         <CoreProvider>
           <ContextUtilProvider>
             <div className="flex w-full">

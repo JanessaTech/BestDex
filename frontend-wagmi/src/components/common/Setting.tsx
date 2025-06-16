@@ -1,11 +1,12 @@
 import {
     Popover,
     PopoverContent,
-    PopoverTrigger,
+    PopoverTrigger,   
   } from "@/components/ui/popover"
 import SVGClose from "@/lib/svgs/svg_close"
 import SVGSetting from "@/lib/svgs/svg_setting"
 import { useState } from "react"
+import QuestionMarkToolTip from "./QuestionMarkToolTip"
 
 type SettingProps = {
     settingOpen: boolean;
@@ -64,16 +65,22 @@ const Setting:React.FC<SettingProps> = ({settingOpen, onOpenChange}) => {
                         </div>
                         <div>
                             <div>SWAP & LIQUIDITY</div>
-                            <div className="text-sm py-3 font-semibold">Slippage Tolerance</div>
+                            <div className="flex items-center">
+                                <div className="text-sm py-3 font-semibold">Slippage Tolerance</div>
+                                <QuestionMarkToolTip>
+                                    <div className="w-[200px] text-xs">Your transaction will revert if the price changes unfavorably by more than this percentage</div>
+                                </QuestionMarkToolTip>
+                            </div>
+                            
                             <div className="flex items-center md:justify-between flex-wrap space-y-[2px] space-x-[10px]">
-                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 0 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => setSelect(0)}>0.01%</div>
-                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 1 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => setSelect(1)}>0.05%</div>
-                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 2 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => setSelect(2)}>0.30%</div>
-                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 3 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => setSelect(3)}>1.00%</div>
+                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 0 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => {setSelect(0); setCustom('custom')}}>0.01%</div>
+                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 1 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => {setSelect(1); setCustom('custom')}}>0.05%</div>
+                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 2 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => {setSelect(2); setCustom('custom')}}>0.30%</div>
+                                <div className={`border-[1px]  rounded-full cursor-pointer text-sm px-2 ${select=== 3 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`} onClick={() => {setSelect(3); setCustom('custom')}}>1.00%</div>
                                 <div className="relative">
                                     <input 
                                         type="text" 
-                                        className={`w-[65px] px-1 text-sm h-full border-[1px] rounded-full ${select === 4 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`}
+                                        className={`w-[70px] px-2 text-sm h-full border-[1px] rounded-full ${select === 4 ? 'bg-pink-600 text-white' : 'border-zinc-400'}`}
                                         value={custom}
                                         onClick={handleCustomClick}
                                         onBlur={handleCustomOnBlur}
@@ -90,10 +97,16 @@ const Setting:React.FC<SettingProps> = ({settingOpen, onOpenChange}) => {
                                                 }
                                         }}
                                     />
-                                    <span className="absolute text-sm right-[6px] top-[2px] text-white">{custom === 'custom' ? '' : '%'}</span>
+                                    <span className="absolute text-sm right-[16px] top-[2px] text-white">{custom === 'custom' ? '' : '%'}</span>
                                 </div>
                             </div>
-                            <div className="text-sm py-3 font-semibold">Transaction Deadline</div>
+                            <div className="flex items-center">
+                                <div className="text-sm py-3 font-semibold">Transaction Deadline</div>
+                                <QuestionMarkToolTip>
+                                    <div className="w-[200px] text-xs">Your transaction will revert if it is pending for more than this period of time</div>
+                                </QuestionMarkToolTip>
+                            </div>
+                            
                             <div className="flex items-center">
                                 <input type="number"
                                     className="border-[1px] border-zinc-500 rounded-md w-14 px-2 py-1 text-xs"

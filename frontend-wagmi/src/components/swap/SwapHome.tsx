@@ -10,6 +10,8 @@ import ArrowUpDown from '@/lib/svgs/svg_arrow_updown'
 import { Button } from "@/components/ui/button"
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Setting from '../common/Setting'
+import { toast } from "sonner"
+import { toEventHash } from 'viem'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
@@ -65,6 +67,26 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
         setTokenToOpen(false)
     }
 
+    const handleTokenFromChange = (from: TokenType | undefined) => {
+        if (from) {
+            if (from.address === tokenTo?.address) {
+                toast.warning(`You cannot select the same token pair`)
+            } else {
+                setTokenFrom(from)
+            }
+        }
+    }
+
+    const handleTokenToChange = (to: TokenType | undefined) => {
+        if (to) {
+            if (to.address === tokenFrom?.address) {
+                toast.warning(`You cannot select the same token pair`)
+            } else {
+                setTokenTo(to)
+            }
+        }
+    }
+
     const exChangeTokens = () => {
         const from = tokenFrom
         const to = tokenTo
@@ -111,7 +133,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                     showFull={false}
                                     onOpenChange={onTokenFromOpenChange} 
                                     closeTokenOption={closeTokenFromOption}
-                                    updateToken={setTokenFrom}
+                                    updateToken={handleTokenFromChange}
                                     />
                                 <input className={`border-zinc-700 border-[1px] rounded-r-md w-3/5
                                     box-border bg-zinc-900 px-3 focus:border-pink-600
@@ -132,13 +154,13 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                         curToken={tokenTo}
                                         onOpenChange={onTokenToOpenChange} 
                                         closeTokenOption={closeTokenToOption}
-                                        updateToken={setTokenTo}
+                                        updateToken={handleTokenToChange}
                                     />
                             </div>
                         </div>
                         <div className='flex justify-center'>
                             <Button 
-                                className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' disabled={!tokenFrom || !tokenTo || !swapAmount}
+                                className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' disabled={isConnected ? !tokenFrom || !tokenTo || !swapAmount : false}
                                 onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Swap' :'Connect Wallet'}</Button>
                         </div>
                     </div>

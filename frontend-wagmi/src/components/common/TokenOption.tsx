@@ -62,7 +62,8 @@ type TokenOptionProps = {
   showFull?: boolean;
   onOpenChange: (open: boolean) => void;
   closeTokenOption: () => void;
-  updateToken: React.Dispatch<React.SetStateAction<TokenType | undefined>>
+  //updateToken: React.Dispatch<React.SetStateAction<TokenType | undefined>>
+  updateToken: (from: TokenType | undefined) => void;
 }
 const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, showFull = true, onOpenChange, closeTokenOption, updateToken}) => {
     const tokens = tokenList.filter((l) => l.chainId === chainId)[0].tokens

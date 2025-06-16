@@ -1,4 +1,6 @@
 export type SVGProps = {
     className?: string;
-    onClick?: () => void
+    onClick?: () => void;
+    onMouseEnter?: () => void
+    onMouseLeave?: () => void
 }
