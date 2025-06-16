@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Setting from '../common/Setting'
 import { toast } from "sonner"
-import { toEventHash } from 'viem'
+import SwapInput from './SwapInput'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
@@ -135,11 +135,13 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                     closeTokenOption={closeTokenFromOption}
                                     updateToken={handleTokenFromChange}
                                     />
-                                <input className={`border-zinc-700 border-[1px] rounded-r-md w-3/5
+
+                                <SwapInput hidden={tokenFromOpen} onChange={handleInputChange}/>
+                                {/* <input className={`border-zinc-700 border-[1px] rounded-r-md w-3/5
                                     box-border bg-zinc-900 px-3 focus:border-pink-600
                                     ${tokenFromOpen ? 'hidden' : ''}`} 
                                     
-                                    onChange={handleInputChange}></input>
+                                    onChange={handleInputChange}></input> */}
                             </div>
                         </div> 
                         <div className='my-8 flex justify-center'>
