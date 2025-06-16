@@ -26,7 +26,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({token1, token2}) => {
     }
 
     return (
-        <div>
+        <div className="py-5">
             <div className="pb-2">Set price range</div>
             <div className="grid md:grid-cols-2 gap-3">
                 <div className="border-[1px] border-zinc-700 rounded-l-md rounded-r-md md:rounded-r-none flex justify-between items-center p-4">
@@ -38,10 +38,10 @@ const PriceRange: React.FC<PriceRangeProps> = ({token1, token2}) => {
                     <div>
                         <SVGMinus 
                             onClick={minusMin}
-                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-300"/>
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500"/>
                         <SVGPlus 
                             onClick={plusMin}
-                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-300 mt-2"/>
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500 mt-2"/>
                     </div>
                 </div>
                 <div className="border-[1px] border-zinc-700 rounded-r-md rounded-l-md md:rounded-l-none flex justify-between items-center p-4">
@@ -53,10 +53,10 @@ const PriceRange: React.FC<PriceRangeProps> = ({token1, token2}) => {
                     <div>
                         <SVGMinus 
                             onClick={minusMax}
-                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-300"/>
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500"/>
                         <SVGPlus 
                             onClick={plusMax}
-                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-300 mt-2"/>
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500 mt-2"/>
                     </div>
                 </div>
             </div>

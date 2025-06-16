@@ -11,6 +11,7 @@ import FeeTier from './FeeTier'
 import PriceRange from './PriceRange'
 import { Button } from '../ui/button'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import Deposit from './Deposit'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -23,6 +24,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token2Open, setToken2Open]  = useState(false)
     const [token1, setToken1] = useState<TokenType | undefined>(undefined)
     const [token2, setToken2] = useState<TokenType | undefined>(undefined)
+    const [deposit, setDeposit] = useState({amount1: '0', amount2: '0'})
     
     useEffect(() => {
         setToken1(undefined)
@@ -45,6 +47,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setToken2Open(false)
     }
 
+    const handleDepositToken1Change = (value: string) => {
+        setDeposit({...deposit, amount1: value})
+    }
+    const handleDepositToken2Change = (value: string) => {
+        setDeposit({...deposit, amount2: value})
+    }
     const handleNewPosition = () => {
 
     }
@@ -72,6 +80,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const clear = () => {
         setToken1(undefined)
         setToken2(undefined)
+        setDeposit({amount1: '0', amount2: '0'})
     }
  
     return (
@@ -109,8 +118,17 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                     </div>
                     <FeeTier/>
                     <PriceRange token1={token1} token2={token2}/>
+                    <Deposit 
+                        amount1={deposit.amount1}
+                        amount2={deposit.amount2}
+                        token1={token1} 
+                        token2={token2} 
+                        handleDepositToken1Change={handleDepositToken1Change} 
+                        handleDepositToken2Change={handleDepositToken2Change} />
                     <div className='pt-8'>
-                        <Button className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
+                        <Button 
+                        className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
+                        disabled={!token1 || !token2 || deposit.amount1 === '0' || deposit.amount2 === '0' || deposit.amount1 === '' || deposit.amount2 === ''}
                         onClick={isConnected ? handleNewPosition : openConnectModal}>{isConnected ? 'New Position' :'Connect Wallet'}</Button>
                     </div>
                 </div>

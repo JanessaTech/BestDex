@@ -6,7 +6,7 @@ const FeeTier: React.FC<FeeTierProps> = () => {
     const [select, setSelect] = useState(2)
     
     return (
-        <div className='py-4'>
+        <div className='py-5'>
                         <div className='pb-2'>Fee tier</div>
                         <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
                             <div className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => setSelect(0)}>
