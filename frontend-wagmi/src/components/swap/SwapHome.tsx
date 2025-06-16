@@ -137,11 +137,6 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                     />
 
                                 <SwapInput hidden={tokenFromOpen} onChange={handleInputChange}/>
-                                {/* <input className={`border-zinc-700 border-[1px] rounded-r-md w-3/5
-                                    box-border bg-zinc-900 px-3 focus:border-pink-600
-                                    ${tokenFromOpen ? 'hidden' : ''}`} 
-                                    
-                                    onChange={handleInputChange}></input> */}
                             </div>
                         </div> 
                         <div className='my-8 flex justify-center'>
