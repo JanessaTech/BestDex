@@ -6,3 +6,10 @@ export type TokenType = {
     company?: string
 }
 export type TokenListType = {chainId: number, tokens: TokenType[]}[]
+
+export enum TransactionType {
+    Swap,
+    BurnPosition,
+    AddLiquidity,
+    MintPosition
+}
