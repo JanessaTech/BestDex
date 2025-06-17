@@ -109,7 +109,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     
     return (
         <div>
-            <div className='font-semibold text-xl my-10  md:hidden capitalize'>{getCurrentPath()}</div>
+            <div className='font-semibold text-xl my-10  md:hidden capitalize'>Swap</div>
             
                 <div className='bg-zinc-900 w-full md:w-[500px] rounded-xl md:mt-10 mx-auto'>
                     <div className='pb-16 pt-1 px-10'>

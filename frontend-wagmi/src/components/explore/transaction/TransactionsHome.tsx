@@ -78,7 +78,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                                         $123
                                     </TableCell>
                                     <TableCell className="text-center">
-                                        <ToolTipHelper content={<p><strong>Address:</strong> ${transaction.wallet}</p>}>
+                                        <ToolTipHelper content={<p><strong>Address:</strong> {transaction.wallet}</p>}>
                                             <div className="w-[100px] truncate">
                                                 {transaction.wallet}
                                             </div>
