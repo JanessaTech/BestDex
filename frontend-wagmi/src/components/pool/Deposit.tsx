@@ -1,5 +1,6 @@
 import type { TokenType } from "@/lib/types";
 import Image from "next/image";
+import Token from "../common/Token";
 
 type DepositProps = {
     token1: TokenType | undefined;
@@ -35,12 +36,7 @@ const Deposit: React.FC<DepositProps> = ({amount1, amount2, token1, token2, hand
                     />
                     <div className="text-xs text-zinc-400">$0</div>
                 </div>
-                <div className="flex items-center">
-                    {
-                        token1 ?<><Image src={`/imgs/tokens/${token1?.name}.png`} alt='eth'width={30} height={30} className="min-w-[30px] rounded-full"/><span className='mx-2 truncate min-w-1'>{token1.label}</span></> 
-                        : <><div className="w-[30px] h-[30px] rounded-full bg-zinc-500 min-w-[30px]"></div><span className='mx-2 truncate min-w-1 text-sm'>N/A</span></>
-                    }
-                </div>
+                <Token token={token1} imageSize={30}/>
             </div>
             <div className="w-full rounded-md p-4 bg-pink-600/10 flex justify-between items-center">
                 <div className="grow basis-10">
@@ -64,12 +60,7 @@ const Deposit: React.FC<DepositProps> = ({amount1, amount2, token1, token2, hand
                     />
                     <div className="text-xs text-zinc-400">$0</div>
                 </div>
-                <div className="flex items-center">
-                    {
-                        token2 ?<><Image src={`/imgs/tokens/${token2?.name}.png`} alt='eth'width={30} height={30} className="min-w-[30px] rounded-full"/><span className='mx-2 truncate min-w-1'>{token2.label}</span></> 
-                        : <><div className="w-[30px] h-[30px] rounded-full bg-zinc-500 min-w-[30px]"></div><span className='mx-2 truncate min-w-1 text-sm'>N/A</span></>
-                    }
-                </div>
+                <Token token={token2} imageSize={30}/>
             </div>
         </div>
     )

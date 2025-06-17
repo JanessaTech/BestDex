@@ -20,6 +20,7 @@ import {
 import Image from "next/image"
 import SVGArrowDown from "@/lib/svgs/svg_arrow_down"
 import type { TokenListType, TokenType } from "@/lib/types"
+import Token from "./Token"
 
 const tokenList: TokenListType = [
   {
@@ -62,7 +63,6 @@ type TokenOptionProps = {
   showFull?: boolean;
   onOpenChange: (open: boolean) => void;
   closeTokenOption: () => void;
-  //updateToken: React.Dispatch<React.SetStateAction<TokenType | undefined>>
   updateToken: (from: TokenType | undefined) => void;
 }
 const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, showFull = true, onOpenChange, closeTokenOption, updateToken}) => {
@@ -73,12 +73,7 @@ const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, s
           <PopoverTrigger asChild>
                     <div className={`border-y-[1px] border-l-[1px] border-zinc-700 rounded-l-md hover:bg-zinc-600/10 
                     cursor-pointer box-border px-5 flex justify-between items-center ${showFull || tokenOpen ? 'w-full border-r-[1px] rounded-r-md' : 'w-2/5'}`}>
-                        <div className='flex items-center text-nowrap overflow-hidden'>
-                          {
-                            curToken ?<><Image src={`/imgs/tokens/${curToken?.name}.png`} alt='eth'width={30} height={30} className="min-w-[30px] rounded-full"/><span className='mx-2 truncate min-w-1'>{curToken.label}</span></> 
-                            : <><div className="w-[30px] h-[30px] rounded-full bg-zinc-500 min-w-[30px]"></div><span className='mx-2 truncate min-w-1 text-sm'>Choose a token</span></>
-                          }
-                        </div>
+                        <Token token={curToken} imageSize={30} className="flex items-center text-nowrap overflow-hidden" defaultLabel="Choose a token"/>
                         <SVGArrowDown className='w-5 h-5 text-white'/>
                     </div>
           </PopoverTrigger>
