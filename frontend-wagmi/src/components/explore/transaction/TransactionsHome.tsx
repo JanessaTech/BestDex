@@ -25,12 +25,12 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                 <TableHeader className="bg-zinc-700 sticky top-16">
                     <TableRow>
                         <TableHead className="text-white font-bold">Time</TableHead>
-                        <TableHead className="text-white font-bold">Transaction ID</TableHead>
+                        <TableHead className="text-white font-bold">Tx ID</TableHead>
                         <TableHead className="text-white font-bold text-center">Type</TableHead>
-                        <TableHead className="text-white font-bold text-center">Token amount</TableHead>
-                        <TableHead className="text-white font-bold text-center">Token amount</TableHead>
-                        <TableHead className="text-white font-bold text-center">USD</TableHead>
-                        <TableHead className="text-center text-white">Wallet</TableHead>
+                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token amount</TableHead>
+                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token amount</TableHead>
+                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>USD</TableHead>
+                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Wallet</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -41,7 +41,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                                     <TableCell>{transaction.time}</TableCell>
                                     <TableCell>
                                         <ToolTipHelper content={transaction.tx}>
-                                            <div className="w-[100px] truncate">
+                                            <div className="max-md:w-10 truncate">
                                                 {transaction.tx}
                                             </div>
                                         </ToolTipHelper>
@@ -62,22 +62,22 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                                         </div>
                                         
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className={`max-md:hidden`}>
                                         <div className="flex flex-col items-center">
                                             <div>${transaction.token0Amount}</div>
                                             <Token token={transaction.token1} imageSize={20}/>
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className={`max-md:hidden`}>
                                         <div className="flex flex-col items-center">
                                             <div>${transaction.token1Amount}</div>
                                             <Token token={transaction.token0} imageSize={20}/>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-right max-md:hidden">
                                         $123
                                     </TableCell>
-                                    <TableCell className="text-center">
+                                    <TableCell className="text-center max-md:hidden">
                                         <ToolTipHelper content={<p><strong>Address:</strong> {transaction.wallet}</p>}>
                                             <div className="w-[100px] truncate">
                                                 {transaction.wallet}

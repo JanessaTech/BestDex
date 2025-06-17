@@ -26,11 +26,11 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                     <TableRow>
                         <TableHead className="text-white font-bold">Position ID</TableHead>
                         <TableHead className="text-white font-bold">Token0<br/>Token1</TableHead>
-                        <TableHead className="text-white font-bold">Ticks</TableHead>
-                        <TableHead className="text-white font-bold">Liquidity</TableHead>
-                        <TableHead className="text-white font-bold">Status</TableHead>
+                        <TableHead className={`text-white font-bold max-md:hidden`}>Ticks</TableHead>
+                        <TableHead className={`text-white font-bold max-md:hidden`}>Liquidity</TableHead>
+                        <TableHead className={`text-white font-bold max-md:hidden`}>Status</TableHead>
                         <TableHead className="text-white font-bold">Fee</TableHead>
-                        <TableHead className="text-white font-bold">Wallet</TableHead>
+                        <TableHead className={`text-white font-bold max-md:hidden`}>Wallet</TableHead>
                         <TableHead className="text-center text-white">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -46,25 +46,25 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                         <Token token={position.token1} imageSize={20}/>
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className={`max-md:hidden`}>
                                     <div>
                                         <div><span className="font-bold">Low:</span>{position.lowTick}</div>
                                         <div><span className="font-bold">High:</span>{position.highTick}</div>
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className={`max-md:hidden`}>
                                     <ToolTipHelper content={`${position.liquidity}`}>
                                         <div className="w-[100px] truncate">{position.liquidity}</div>
                                     </ToolTipHelper>
                                 </TableCell>
-                                <TableCell>   
+                                <TableCell className={`max-md:hidden`}>   
                                     <ToolTipHelper content={`${position.status ? 'In range': 'Out of range'}`}>
                                         <div className={`w-3 h-3 rounded-full ${position.status ? 'bg-lime-500' : 'bg-red-500'}`}/>
                                     </ToolTipHelper>                                
                                     
                                 </TableCell>
                                 <TableCell>{position.fee}%</TableCell>
-                                <TableCell>
+                                <TableCell className={`max-md:hidden`}>
                                     <ToolTipHelper content={<p><strong>Address : </strong>{position.wallet}</p>}>
                                         <div className="w-[78px] truncate">{position.wallet}</div>
                                     </ToolTipHelper>
