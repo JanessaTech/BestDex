@@ -1,5 +1,4 @@
 import type { TokenType } from "@/lib/types";
-import Image from "next/image";
 import Token from "../common/Token";
 
 type DepositProps = {

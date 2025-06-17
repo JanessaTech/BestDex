@@ -19,42 +19,9 @@ import {
 } from "@/components/ui/popover"
 import Image from "next/image"
 import SVGArrowDown from "@/lib/svgs/svg_arrow_down"
-import type { TokenListType, TokenType } from "@/lib/types"
+import type { TokenType } from "@/lib/types"
 import Token from "./Token"
-
-const tokenList: TokenListType = [
-  {
-    chainId: 1,  
-    tokens: [
-      {name: 'usdt', label: 'USDT', address: '1111'}, 
-      {name: 'weth', label: 'WETH', address: '2222'}
-    ]
-  },
-  {
-    chainId: 137,  
-    tokens: [
-      {name: 'pol', label: 'POL', address: '3333'}, 
-      {name: 'weth', label: 'WETH', address: '4444'},
-      {name: 'usdt', label: 'USDT', address: '5555'}
-    ]
-  },
-  {
-    chainId: 42161,  
-    tokens: [
-      {name: 'dai', label: 'DAI', address: '666'}, 
-      {name: 'wbtc', label: 'WBTC', address: '777'},
-      {name: '1inch', label: '1INCH', address: '888'}
-    ]
-  },
-  {
-    chainId: 11155111,  
-    tokens: []
-  },
-  {
-    chainId: 31337,  
-    tokens: []
-  }
-]
+import { tokenList } from "@/lib/Data"
 
 type TokenOptionProps = {
   tokenOpen: boolean;
