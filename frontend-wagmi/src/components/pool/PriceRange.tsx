@@ -3,14 +3,15 @@ import SVGPlus from "@/lib/svgs/svg_plus"
 import { TokenType } from "@/lib/types";
 import { useState } from "react"
 import Token from "../common/Token";
+import PriceSelector from "./PriceSelector";
 
 type PriceRangeProps = {
     token1: TokenType | undefined;
     token2: TokenType | undefined
 }
 const PriceRange: React.FC<PriceRangeProps> = ({token1, token2}) => {
-    const [max, setMax] = useState('20')
-    const [min, setMin] = useState('30')
+    const [max, setMax] = useState(1000)
+    const [min, setMin] = useState(0)
 
     const plusMin = () => {
 
@@ -25,6 +26,12 @@ const PriceRange: React.FC<PriceRangeProps> = ({token1, token2}) => {
 
     }
 
+    const updateMinMax = (min: number, max: number) => {
+        console.log('updateMinMax:', 'min=', min, ' max=', max)
+        setMin(min)
+        setMax(max)
+    }
+
     return (
         <div className="py-5">
             <div className="pb-2">Set price range</div>
@@ -36,12 +43,13 @@ const PriceRange: React.FC<PriceRangeProps> = ({token1, token2}) => {
                  }
                  
              </div>
-            <div className="w-full h-44 rounded-md bg-zinc-600/30">
+            <div className="w-full h-fit rounded-md bg-zinc-600/30">
                 <div>
                     <div className="flex justify-end py-2">
                         <Token token={token1} imageSize={25} textSize="text-xs"/>
                         <Token token={token2} imageSize={25} textSize="text-xs"/>
-                    </div>  
+                    </div> 
+                    <PriceSelector min={min} max={max} updateMinMax={updateMinMax}/> 
                 </div>
             </div>
             <div className="grid md:grid-cols-2 gap-3 mt-1">
