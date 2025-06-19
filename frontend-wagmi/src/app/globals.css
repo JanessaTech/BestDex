@@ -132,11 +132,10 @@ input[type=number] {
   pointer-events: all;
 }
 .thumbbar::-moz-range-thumb {
-  width: 40px;
-  height: 40px;
+  width: 1px;
+  height: 200px;
   border: none;
   background: #a1a1aa;
-  border-radius: 50%;
   cursor: w-resize;
   pointer-events: all;
 }

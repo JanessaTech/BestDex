@@ -1,7 +1,10 @@
 'use client'
+import SVGMinus from "@/lib/svgs/svg_minus";
+import SVGPlus from "@/lib/svgs/svg_plus";
 import SVGZoomIn from "@/lib/svgs/svg_zoom_in";
 import SVGZoomOut from "@/lib/svgs/svg_zoom_out";
-import { useCallback, useEffect, useRef, useState } from "react";
+import type { TokenType } from "@/lib/types";
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 
 const Axis = () => {
     return <div className="w-[300px] bg-zinc-400 h-[4px] absolute top-0"></div>
@@ -10,9 +13,11 @@ const Axis = () => {
 type PriceSelectorProps = {
     min: number;
     max: number;
-    updateMinMax: (min: number, max: number) => void
+    token1: TokenType | undefined;
+    token2: TokenType | undefined
+    updateMinMax: (min: number, max: number) => void;
 }
-const PriceSelector: React.FC<PriceSelectorProps> = ({min = 0, max = 1000, updateMinMax}) => {
+const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, updateMinMax}) => {
 
     const [minVal, setMinVal] = useState<number>(parseFloat(((3 * min + max) / 4).toFixed(2)));
     const [maxVal, setMaxVal] = useState<number>(parseFloat(((min + 3 * max) / 4).toFixed(2)));
@@ -24,40 +29,41 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min = 0, max = 1000, updat
     const mid = parseFloat(((min + max) / 2).toFixed(2))
 
     const getPercent = useCallback(
-        (value: number) => Math.round(((value - min) / (max - min)) * 100),
+        (value: number) => Math.max(Math.round(((value - min) / (max - min)) * 100), 0),
         [min, max]
       );
     
     useEffect(() => {
-    if (maxValInputRef.current) {
-        const minPercent = getPercent(minVal);
-        const maxPercent = getPercent(Number(maxValInputRef.current.value));
+        if (maxValInputRef.current) {
+            const minPercent = getPercent(minVal);
+            const maxPercent = getPercent(Number(maxValInputRef.current.value));
 
-        if (range.current) {
-        range.current.style.left = `${minPercent}%`;
-        range.current.style.width = `${maxPercent - minPercent}%`;
-        
+            if (range.current) {
+            range.current.style.left = `${minPercent}%`;
+            range.current.style.width = `${maxPercent - minPercent}%`;
+            
+            }
+            if (minValueDivRef.current) {
+                minValueDivRef.current.style.left = `${minPercent}%`;
+            }
+
+            console.log('minPercent=', minPercent)
+            console.log('maxPercent=', maxPercent)
         }
-        if (minValueDivRef.current) {
-            minValueDivRef.current.style.left = `${minPercent}%`;
-        }
-        console.log('minPercent=', minPercent)
-        console.log('maxPercent=', maxPercent)
-    }
     }, [minVal, getPercent]);
 
     useEffect(() => {
-    if (minValInputRef.current) {
-        const minPercent = getPercent(Number(minValInputRef.current.value));
-        const maxPercent = getPercent(maxVal);
+        if (minValInputRef.current) {
+            const minPercent = getPercent(Number(minValInputRef.current.value));
+            const maxPercent = getPercent(maxVal);
 
-        if (range.current) {
-        range.current.style.width = `${maxPercent - minPercent}%`;
+            if (range.current) {
+            range.current.style.width = `${maxPercent - minPercent}%`;
+            }
+            if (maxValueDivRef.current) {
+                maxValueDivRef.current.style.left = `${maxPercent}%`;
+            }
         }
-        if (maxValueDivRef.current) {
-            maxValueDivRef.current.style.left = `${maxPercent}%`;
-        }
-    }
     }, [maxVal, getPercent]);
 
     const onChangeLeft = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,8 +78,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min = 0, max = 1000, updat
     }
 
     const handleReset = () => {
-        setMinVal((3 * min + max) / 4)
-        setMaxVal((min + 3 * max) / 4)
+        setMinVal(parseFloat(((3 * min + max) / 4).toFixed(2)))
+        setMaxVal(parseFloat(((min + 3 * max) / 4).toFixed(2)))
     }
 
     const handleZoomIn = () => {
@@ -87,6 +93,26 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min = 0, max = 1000, updat
         const newMin = Math.max(0, parseFloat(((21 * min - max) / 20).toFixed(2)))
         const newMax = parseFloat(((21 * max - min) / 20).toFixed(2))
         updateMinMax(newMin, newMax)
+    }
+
+    const plusMin = () => {
+        const newMinVal = parseFloat((minVal + (mid - minVal) / 10).toFixed(2))
+        setMinVal(newMinVal);
+    }
+
+    const minusMin = () => {
+        const newMinVal = Math.max(min, parseFloat((minVal - (mid - minVal) / 10).toFixed(2)))
+        setMinVal(newMinVal);
+    }
+    
+    const plusMax = () => {
+        const newMaxVal = Math.min(max, parseFloat((maxVal + (maxVal - mid) /10).toFixed(2)))
+        setMaxVal(newMaxVal)
+    }
+    
+    const minusMax = () => {
+        const newMaxVal = parseFloat((maxVal - (maxVal - mid) /10).toFixed(2))
+        setMaxVal(newMaxVal)
     }
 
     return (
@@ -133,11 +159,40 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min = 0, max = 1000, updat
                     <SVGZoomIn className="size-5 cursor-pointer" onClick={handleZoomIn}/>
 
                 </div>
-                <div>
-
-                </div>
                 <div className="h-7 text-xs px-2 py-1 bg-zinc-400/30 hover:bg-zinc-200/30 active:bg-zinc-100/30 rounded-full w-fit text-white cursor-pointer flex items-center ml-2"
                     onClick={handleReset}> <span>Reset</span></div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-3 mt-1">
+                <div className="border-[1px] border-zinc-700 rounded-none md:rounded-bl-md flex justify-between items-center p-4">
+                    <div className="flex flex-col justify-between text-xs">
+                        <div>Min price</div>
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={minVal}/>
+                        <div>{token1 && token2 ? <span>{`${token2?.label} = 1 ${token1?.label}`}</span> : <span></span>}</div>
+                    </div>
+                    <div>
+                        <SVGMinus 
+                            onClick={minusMin}
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500"/>
+                        <SVGPlus 
+                            onClick={plusMin}
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500 mt-2"/>
+                    </div>
+                </div>
+                <div className="border-[1px] border-zinc-700 rounded-b-md md:rounded-br-md md:rounded-bl-none flex justify-between items-center p-4">
+                    <div className="flex flex-col justify-between text-xs">
+                        <div>Max price</div>
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={maxVal}/>
+                        <div>{token1 && token2 ? <span>{`${token2?.label} = 1 ${token1?.label}`}</span> : <span></span>}</div>
+                    </div>
+                    <div>
+                        <SVGMinus 
+                            onClick={minusMax}
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500"/>
+                        <SVGPlus 
+                            onClick={plusMax}
+                            className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500 mt-2"/>
+                    </div>
+                </div>
             </div>
         </div>    
     )

@@ -12,6 +12,7 @@ import PriceRange from './PriceRange'
 import { Button } from '../ui/button'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Deposit from './Deposit'
+import SVGLeft from '@/lib/svgs/svg_left'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -25,11 +26,14 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token1, setToken1] = useState<TokenType | undefined>(undefined)
     const [token2, setToken2] = useState<TokenType | undefined>(undefined)
     const [deposit, setDeposit] = useState({amount1: '0', amount2: '0'})
+    const [step, setStep] = useState(1)
     
+    // in case we change network via wallet connection button
     useEffect(() => {
         setToken1(undefined)
         setToken2(undefined)
-    }, [chainId])
+        setStep(1)
+    }, [chainId, isConnected])
 
     const onSettingOpenChange = (open: boolean) => {
         setSettingOpen(open)
@@ -53,10 +57,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const handleDepositToken2Change = (value: string) => {
         setDeposit({...deposit, amount2: value})
     }
-    const handleNewPosition = () => {
-
-    }
-
+    
     const handleToken1Change = (token1: TokenType | undefined) => {
         if (token1) {
             if (token1.address === token2?.address) {
@@ -77,6 +78,15 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         }
     }
 
+    const handleNextStep = () => {
+        setStep(step + 1)
+    }
+
+    const handlePrevStep = () => {
+        setStep(step - 1)
+    }
+
+
     const clear = () => {
         setToken1(undefined)
         setToken2(undefined)
@@ -94,42 +104,62 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             <div className='px-7 cursor-pointer hover:text-pink-600 hidden md:block' onClick={clear}>Clear</div>
                             <Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>
                         </div>
-                    </div>
-                    <div>
-                        <div className='pb-2'>Select pair</div>
-                        <div className='h-16 grid w-full grid-cols-2 gap-3'>
-                            <TokenOption 
-                                tokenOpen={token1Open} 
-                                chainId={chainId} 
-                                curToken={token1}
-                                onOpenChange={onToken1OpenChange} 
-                                closeTokenOption={closeToken1Option}
-                                updateToken={handleToken1Change}
-                            />
-                            <TokenOption 
-                                tokenOpen={token2Open} 
-                                chainId={chainId} 
-                                curToken={token2}
-                                onOpenChange={onToken2OpenChange} 
-                                closeTokenOption={closeToken2Option}
-                                updateToken={handleToken2Change}
+                        <div>
+                            <SVGLeft 
+                                className={`size-6 absolute left-[-10px] cursor-pointer hover:text-pink-600 ${step === 1 ? 'hidden' : ''}`}
+                                onClick={handlePrevStep}  
                             />
                         </div>
                     </div>
-                    <FeeTier/>
-                    <PriceRange token1={token1} token2={token2}/>
-                    <Deposit 
-                        amount1={deposit.amount1}
-                        amount2={deposit.amount2}
-                        token1={token1} 
-                        token2={token2} 
-                        handleDepositToken1Change={handleDepositToken1Change} 
-                        handleDepositToken2Change={handleDepositToken2Change} />
+                    {
+                        step === 1 &&
+                        <>
+                            <div>
+                                <div className='pb-2'>Select pair</div>
+                                <div className='h-16 grid w-full grid-cols-2 gap-3'>
+                                    <TokenOption 
+                                        tokenOpen={token1Open} 
+                                        chainId={chainId} 
+                                        curToken={token1}
+                                        onOpenChange={onToken1OpenChange} 
+                                        closeTokenOption={closeToken1Option}
+                                        updateToken={handleToken1Change}
+                                    />
+                                    <TokenOption 
+                                        tokenOpen={token2Open} 
+                                        chainId={chainId} 
+                                        curToken={token2}
+                                        onOpenChange={onToken2OpenChange} 
+                                        closeTokenOption={closeToken2Option}
+                                        updateToken={handleToken2Change}
+                                    />
+                                </div>
+                            </div>
+                            <FeeTier/>
+                        </>
+                    }
+                    {
+                        step === 2 && 
+                        <>
+                            <PriceRange token1={token1} token2={token2}/>
+                            <Deposit 
+                                amount1={deposit.amount1}
+                                amount2={deposit.amount2}
+                                token1={token1} 
+                                token2={token2} 
+                                handleDepositToken1Change={handleDepositToken1Change} 
+                                handleDepositToken2Change={handleDepositToken2Change} />
+                        </>
+                    }
                     <div className='pt-8'>
                         <Button 
-                        className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
-                        disabled={!token1 || !token2 || deposit.amount1 === '0' || deposit.amount2 === '0' || deposit.amount1 === '' || deposit.amount2 === ''}
-                        onClick={isConnected ? handleNewPosition : openConnectModal}>{isConnected ? 'New Position' :'Connect Wallet'}</Button>
+                            className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
+                            disabled={ isConnected ? (!token1 || !token2) : false}
+                            onClick={isConnected ? handleNextStep : openConnectModal}>
+                                {isConnected 
+                                    ? step === 1 ? 'Next' : 'New Position'
+                                    :'Connect Wallet'}
+                        </Button>
                     </div>
                 </div>
             </div>    
