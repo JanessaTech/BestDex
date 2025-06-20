@@ -1,5 +1,3 @@
-import SVGMinus from "@/lib/svgs/svg_minus"
-import SVGPlus from "@/lib/svgs/svg_plus"
 import { TokenType } from "@/lib/types";
 import { useState } from "react"
 import Token from "../common/Token";
