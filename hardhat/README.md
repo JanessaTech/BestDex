@@ -1,3 +1,9 @@
+## Important about this project
+
+I don't maintain this project any more. if you need to checkout the latest changes, pls move on to hardhat2 under the same dir
+If you need to run this project, pls upgrade hardhat to v2.22.14 or above to make sure
+the coommand 'npx hardhat node --fork ...' could work well
+
 ## How to create the project from scratch
 
 ```
@@ -21,6 +27,10 @@ test:
     npx hardhat test --network localhost .\test\CoreSwap.sell.test.js
     npx hardhat test --network localhost .\test\CoreSwap.buy.test.js
 ```
+
+npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am
+
+npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am --fork-block-number 11095000
 
 ## How to run scripts
 

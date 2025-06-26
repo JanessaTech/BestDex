@@ -14,5 +14,16 @@
     "@uniswap/v3-core": "^1.0.1",
     "@uniswap/v3-periphery": "^1.4.1",
     "jsbi": "^4.3.0"
-  }
+  },
+  "description": "```\r npm init\r npm add --save-dev hardhat\r npx hardhat init\r npm add @uniswap/v3-periphery @uniswap/v3-core\r ```",
+  "version": "1.0.0",
+  "main": "hardhat.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC"
 }
