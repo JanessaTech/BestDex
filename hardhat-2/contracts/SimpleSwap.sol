@@ -16,7 +16,7 @@ contract SimpleSwap {
         swapRouter = _swapRouter;
     }
 
-    function swapWETHForDAI(uint256 amountIn) external returns (uint256 amountOut) {
+    function swapExactInputSingle(uint256 amountIn) external returns (uint256 amountOut) {
 
         // Transfer the specified amount of WETH9 to this contract.
         TransferHelper.safeTransferFrom(WETH9, msg.sender, address(this), amountIn);
