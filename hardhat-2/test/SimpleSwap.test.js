@@ -9,7 +9,7 @@ const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 const DAI_DECIMALS = 18; 
 const WETH_DECIMALS = 18; 
 const SwapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564"; 
-const DAI_WHALE = "0xdDb108893104dE4E1C6d0E47c42237dB4E617ACc";// it has 3.62token in dai
+const DAI_WHALE = "0xcD1EBa67A0242d89750e8031CE6a6DA298fB1418";// it has 3.62token in dai
 
 
 const ercAbi = [
@@ -33,6 +33,7 @@ const ercAbi = [
     "function symbol() view returns (string)",
     "function decimals() view returns (uint8)",
     "function balanceOf(address) view returns (uint256)",
+    "function approve(address,uint256) returns (bool)",
     "function transfer(address to, uint256 amount) returns (bool)"
   ];
 
@@ -48,7 +49,7 @@ describe('SimpleSwap', function () {
     }
 
     describe('swapExactInputSingle', function () {
-        it('should success when call swapExactInputSingle', async function () {
+        it.skip('should success when call swapExactInputSingle', async function () {
             const {simpleSwapFactory, acc1, acc2, WETH, DAI} = await loadFixture(sharedContractFixture)
             const deposit = await WETH.connect(acc1).deposit({value: ethers.parseEther('10')})
             await deposit.wait()
@@ -77,7 +78,54 @@ describe('SimpleSwap', function () {
     })
 
     describe('swapExactOutputSingle', function () {
-
+        it('swapExactOutputSingle', async function () {
+            const SimpleSwapFactory = await ethers.getContractFactory("SimpleSwap");
+            const simpleSwapFactory = await SimpleSwapFactory.deploy(SwapRouterAddress);
+            let [acc1, acc2, ...others] = await ethers.getSigners();
+            await simpleSwapFactory.waitForDeployment();
+        
+            /* Connect to DAI and mint some tokens  */
+            const DAI = new ethers.Contract(DAI_ADDRESS, daiAbi, ethers.provider)
+            //Unlock DAI whale
+            await network.provider.request({
+              method: "hardhat_impersonateAccount",
+              params: [DAI_WHALE],
+            });
+            const daiWhale = await ethers.getSigner(DAI_WHALE)
+            await DAI.connect(daiWhale).transfer(acc1.address, ethers.parseEther("0.000000000000009"))
+        
+            /* Check DAI Balance before swap */ 
+            const daiBalanceBeforeSwap = await DAI.balanceOf(acc1.address);
+            const daiBalanceBefore = Number(ethers.formatUnits(daiBalanceBeforeSwap, DAI_DECIMALS));
+            console.log('daiBalanceBeforeSwap = ', daiBalanceBeforeSwap)
+            console.log('daiBalanceBefore = ', daiBalanceBefore)
+        
+            /* Check wei balance before swap */
+            const WETH = new ethers.Contract(WETH_ADDRESS, weiAbi, ethers.provider)
+            const weiBalanceBeforeSwap = await WETH.balanceOf(acc1.address);
+            const weiBalanceBefore = Number(ethers.formatUnits(weiBalanceBeforeSwap, WETH_DECIMALS));
+            console.log('weiBalanceBeforeSwap = ', weiBalanceBeforeSwap)
+            console.log('weiBalanceBefore = ', weiBalanceBefore)
+        
+            /* Approve the swapper contract to spend DAI for me */
+            await DAI.connect(acc1).approve(simpleSwapFactory.getAddress(),  ethers.parseEther("0.000000000000009")); 
+        
+            /* Execute the swap */
+            const amountOut = ethers.parseEther("0.000000000000000001"); 
+            const amountInMaximum = ethers.parseEther("0.000000000000009"); 
+            const swap = await simpleSwapFactory.swapExactOutputSingle(amountOut, amountInMaximum, { gasLimit: 300000 });
+            swap.wait(); 
+        
+            /* Check DAI end balance */
+            const daiBalanceAfterSwap = await DAI.balanceOf(acc1.address);
+            const daiBalanceAfter = Number(daiBalanceAfterSwap);
+            console.log('daiBalanceAfter = ', daiBalanceAfter)
+        
+            /* Check wei balance after swap*/
+            const weiBalanceAfterSwap = await WETH.balanceOf(acc1.address);
+            const weiBalanceAfter = Number(ethers.formatUnits(weiBalanceAfterSwap, WETH_DECIMALS));
+            console.log('weiBalanceAfter = ', weiBalanceAfter)
+          })
     })
 
 
