@@ -30,7 +30,7 @@ const erc20Abi = [
     "function transfer(address to, uint256 amount) returns (bool)"
   ];
 
-describe('', function () {
+describe('CoreSwap', function () {
     async function sharedContractFixture() {
         const coreSwapFactory = await ethers.getContractFactory('CoreSwap')
         const coreSwap = await coreSwapFactory.deploy(SwapRouterAddress)

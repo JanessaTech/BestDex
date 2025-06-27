@@ -12,4 +12,7 @@ npx hardhat node
 
 ```
 npx hardhat test .\test\SimpleSwap.test.js
+npx hardhat test .\test\CoreSwap.test.js
+npx hardhat test .\test\LiquidityExamples.test.js
+
 ```
