@@ -9,17 +9,7 @@ const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 const DAI_DECIMALS = 18; 
 const WETH_DECIMALS = 18; 
 const SwapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564"; 
-const DAI_WHALE = "0xcD1EBa67A0242d89750e8031CE6a6DA298fB1418";// it has 3.62token in dai
-
-
-const ercAbi = [
-    // Read-Only Functions
-    "function balanceOf(address) view returns (uint256)",
-    // Authenticated Functions
-    "function transfer(address, uint) returns (bool)",
-    "function deposit() public payable",
-    "function approve(address, uint256) returns (bool)"
-  ];
+const DAI_WHALE = "0xcD1EBa67A0242d89750e8031CE6a6DA298fB1418";// whale account
 
   const weiAbi = [
     "function balanceOf(address) view returns (uint)",

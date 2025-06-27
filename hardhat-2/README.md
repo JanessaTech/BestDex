@@ -11,5 +11,5 @@ npx hardhat node
 ## How to test
 
 ```
-
+npx hardhat test .\test\SimpleSwap.test.js
 ```
