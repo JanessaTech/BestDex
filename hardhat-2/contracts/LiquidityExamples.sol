@@ -160,8 +160,8 @@ contract LiquidityExamples is IERC721Receiver {
         (liquidity, amount0, amount1) = nonfungiblePositionManager.increaseLiquidity(params);
 
         console.log("added liquidity", liquidity);
-        console.log("amount 0", amount0);
-        console.log("amount 1", amount1);
+        console.log("amount 0:", amount0);
+        console.log("amount 1:", amount1);
 
         // Remove allowance and refund in both assets.
         if (amount0 < amountAdd0) {
@@ -197,8 +197,16 @@ contract LiquidityExamples is IERC721Receiver {
 
         (amount0, amount1) = nonfungiblePositionManager.decreaseLiquidity(params);
         console.log("removed liquidity", liquidity);
-        console.log("amount 0", amount0);
-        console.log("amount 1", amount1);
+        console.log("amount 0:", amount0);
+        console.log("amount 1:", amount1);
+        // if (amount0 > 0) {
+        //     TransferHelper.safeTransfer(DAI, msg.sender, amount0);
+        // }
+
+        // if (amount1 > 0) {
+        //     TransferHelper.safeTransfer(USDC, msg.sender, amount1);
+        // }
+
     }
 
     function getLiquidity(uint _tokenId) external view returns (uint128) {
@@ -206,7 +214,4 @@ contract LiquidityExamples is IERC721Receiver {
             nonfungiblePositionManager.positions(_tokenId);
         return liquidity;
     }
-
-
-
 }
