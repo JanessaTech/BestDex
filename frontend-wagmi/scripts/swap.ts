@@ -7,10 +7,10 @@ import {
     SwapType
   } from '@uniswap/smart-order-router'
 import { ChainId, CurrencyAmount, Percent, Token, TradeType} from '@uniswap/sdk-core';
-import { ERC20_ABI, TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER, V3_SWAP_ROUTER_ADDRESS } from './constant';
+import { ERC20_ABI, MAX_FEE_PER_GAS, MAX_PRIORITY_FEE_PER_GAS, TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER, V3_SWAP_ROUTER_ADDRESS } from './constant';
 
-const mainnetProvider = new ethers.providers.JsonRpcProvider('')
-const localProvider = new ethers.providers.JsonRpcProvider('')
+const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
+const localProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
 const recipient = ''
 const WETH_TOKEN = new Token(
     1,
@@ -104,10 +104,6 @@ export async function generateRoute(): Promise<SwapRoute | null> {
     return route
 }
 
-
-
-
-
 export async function executeRoute(route: SwapRoute): Promise<TransactionState>  {
     const walletAddress = wallet.address
     const provider = getProvider()
@@ -115,10 +111,20 @@ export async function executeRoute(route: SwapRoute): Promise<TransactionState> 
     if (!provider) {
         return TransactionState.Failed
     }
-    
-
-
-    return TransactionState.New
+    const tokenApproval = await getTokenTransferApproval(tokens.in)
+    // Fail if transfer approvals do not go through
+    if (tokenApproval !== TransactionState.Sent) {
+        return TransactionState.Failed
+    }
+    const res = await sendTransaction({
+        data: route.methodParameters?.calldata,
+        to: V3_SWAP_ROUTER_ADDRESS,
+        value: route?.methodParameters?.value,
+        from: walletAddress,
+        maxFeePerGas: MAX_FEE_PER_GAS,
+        maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS,
+      })
+    return res
 }
 
 export async function sendTransaction(
@@ -139,6 +145,7 @@ export async function sendTransaction(
     if (transaction.value) {
         transaction.value = BigNumber.from(transaction.value)
     }
+
     const txRes = await wallet.sendTransaction(transaction)
     let receipt = null
     while (receipt === null) {
@@ -160,7 +167,6 @@ export async function sendTransaction(
     }
   }
 
-
 export async function getTokenTransferApproval(token: Token): Promise<TransactionState> {
     const walletAddress = wallet.address
     const provider = wallet.provider
@@ -173,13 +179,10 @@ export async function getTokenTransferApproval(token: Token): Promise<Transactio
               TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER,
               token.decimals
             ).toString()
-          )
-        
-        
-        
+        )
+        return sendTransaction({...transaction, from: walletAddress})
     } catch (e) {
-
+        console.error(e)
+        return TransactionState.Failed
     }
-
-    return TransactionState.New
 }
