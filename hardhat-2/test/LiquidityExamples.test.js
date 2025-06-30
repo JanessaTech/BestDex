@@ -96,10 +96,9 @@ describe('LiquidityExamples', function () {
 
         console.log("--- decrease liquidity ---")
         console.log(`liquidity ${liquidity}`)
-        // console.log("DAI balance after decrease liquidity",await dai.balanceOf(accounts[0].address))
-        // console.log("USDC balance after decrease liquidity", await usdc.balanceOf(accounts[0].address))
-        console.log("DAI balance after decrease liquidity",await dai.balanceOf(liquidityExamples.getAddress()))
-        console.log("USDC balance after decrease liquidity", await usdc.balanceOf(liquidityExamples.getAddress()))
+        console.log('accounts[0].address:', accounts[0].address)
+        console.log("DAI balance after decrease liquidity",await dai.balanceOf(accounts[0].address))
+        console.log("USDC balance after decrease liquidity", await usdc.balanceOf(accounts[0].address))
     })
     
 })

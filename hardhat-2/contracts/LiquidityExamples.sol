@@ -10,6 +10,7 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/INonfungiblePositionManager.sol";
 import "@uniswap/v3-periphery/contracts/base/LiquidityManagement.sol";
 import "hardhat/console.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract LiquidityExamples is IERC721Receiver {
     address public constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
@@ -60,6 +61,7 @@ contract LiquidityExamples is IERC721Receiver {
 
         console.log("Token id", _tokenId);
         console.log("Liquidity", liquidity);
+        console.log('owner:', owner);
 
         tokenId = _tokenId;
     }
@@ -195,18 +197,42 @@ contract LiquidityExamples is IERC721Receiver {
                 deadline: block.timestamp
             });
 
-        (amount0, amount1) = nonfungiblePositionManager.decreaseLiquidity(params);
+        nonfungiblePositionManager.decreaseLiquidity(params);
         console.log("removed liquidity", liquidity);
+        
+        (amount0, amount1) = nonfungiblePositionManager.collect(
+            INonfungiblePositionManager.CollectParams({
+                tokenId: tokenId,
+                recipient: address(this),
+                amount0Max: type(uint128).max,
+                amount1Max: type(uint128).max
+            })
+        );
         console.log("amount 0:", amount0);
         console.log("amount 1:", amount1);
-        // if (amount0 > 0) {
-        //     TransferHelper.safeTransfer(DAI, msg.sender, amount0);
-        // }
+        _sendToOwner(tokenId, amount0, amount1);
+    }
 
-        // if (amount1 > 0) {
-        //     TransferHelper.safeTransfer(USDC, msg.sender, amount1);
-        // }
+    function _sendToOwner(
+        uint256 _tokenId,
+        uint256 amount0,
+        uint256 amount1
+    ) internal {
+        // get owner of contract
+        address owner = deposits[_tokenId].owner;
 
+        address token0 = deposits[_tokenId].token0;
+        address token1 = deposits[_tokenId].token1;
+        // send collected fees to owner
+        console.log('_sendToOwner - owner:', owner);
+        console.log('amount0:', amount0);
+        console.log('amount1:', amount1);
+        console.log('amount0 before transfer:', IERC20(token0).balanceOf(owner));
+        console.log('amount1 before transfer:',IERC20(token1).balanceOf(owner));
+        TransferHelper.safeTransfer(token0, owner, amount0);
+        TransferHelper.safeTransfer(token1, owner, amount1);
+        console.log('amount0 after transfer:', IERC20(token0).balanceOf(owner));
+        console.log('amount1 after transfer:',IERC20(token1).balanceOf(owner));
     }
 
     function getLiquidity(uint _tokenId) external view returns (uint128) {
