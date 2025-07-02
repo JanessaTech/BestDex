@@ -42,15 +42,17 @@ export enum TransactionState {
   const walletInfo =  {
     address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
     privateKey:
-      '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+      'ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
   }
 
 const wallet = createWallet()
 function createWallet(): ethers.Wallet {
     let provider = mainnetProvider
-    //provider = localProvider
+    provider = localProvider
     return new ethers.Wallet(walletInfo.privateKey, provider)
 }
+
+console.log('wallet.address:', wallet.address)
 
 export function getProvider(): providers.Provider | null {
     return wallet.provider
@@ -81,7 +83,7 @@ export async function generateRoute(): Promise<SwapRoute | null> {
         provider: mainnetProvider,
       })
     const options: SwapOptionsSwapRouter02 = {
-        recipient: recipient,
+        recipient: wallet.address,
         slippageTolerance: new Percent(50, 10_000),
         deadline: Math.floor(Date.now() / 1000 + 1800),
         type: SwapType.SWAP_ROUTER_02,
@@ -89,7 +91,7 @@ export async function generateRoute(): Promise<SwapRoute | null> {
 
     const route = await router.route(
         CurrencyAmount.fromRawAmount(
-            WETH_TOKEN,
+          tokens.in,
           fromReadableAmount(
             tokens.amountIn,
             tokens.in.decimals
@@ -186,3 +188,21 @@ export async function getTokenTransferApproval(token: Token): Promise<Transactio
         return TransactionState.Failed
     }
 }
+
+async function main() {
+  try {
+    const route = await generateRoute()
+    if (!route) throw new Error('failed to get route')
+    const res = await executeRoute(route)
+    console.log('executeRoute result: ', res)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+// main().then().catch(e => {
+//   console.error(e)
+// })
+
+const res = fromReadableAmount(1.2, 3)
+console.log(res)

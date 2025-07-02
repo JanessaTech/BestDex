@@ -16,3 +16,9 @@ npm install cookies-next@4.3.0
 npm install lodash.merge
 npm i --save-dev @types/lodash.merge
 ```
+
+## How to run scripts
+
+```
+npx ts-node
+```
