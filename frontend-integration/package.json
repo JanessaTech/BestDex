@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@uniswap/sdk-core": "^3.1.0",
+    "@uniswap/smart-order-router": "^3.3.0",
+    "@uniswap/v3-sdk": "^3.9.0",
+    "ethers": "^5.8.0"
+  }
+}
