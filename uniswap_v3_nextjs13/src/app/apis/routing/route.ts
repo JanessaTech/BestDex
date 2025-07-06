@@ -87,12 +87,7 @@ export async function GET() {
         TradeType.EXACT_INPUT,
         options
       )
-
-      // // const route = await generateRoute()
-    // if (!route) {
-    //     return NextResponse.json({ res: TransactionState.Failed})
-    // }
-
+    
     console.log('The best price:', route?.quote.toExact())
     console.log('PoolIdentifiers:', route?.route.map((r) => r.poolIdentifiers))
     console.log('The path detail:', route?.route.map((r) => r.tokenPath.map((t) => t.symbol).join(' -> ')).join(', '))

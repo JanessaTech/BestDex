@@ -5,12 +5,10 @@ import './routing.css'
 import { Environment, CurrentConfig } from './lib/config'
 import { getCurrencyBalance, wrapETH } from './lib/wallet'
 import {
-  connectBrowserExtensionWallet,
   getProvider,
   getWalletAddress,
   TransactionState,
 } from './lib/providers'
-import { cpSync } from 'fs'
 
 const useOnBlockUpdated = (callback: (blockNumber: number) => void) => {
   useEffect(() => {
@@ -52,9 +50,6 @@ const Example = () => {
   // Event Handlers
 
   const onConnectWallet = useCallback(async () => {
-    if (await connectBrowserExtensionWallet()) {
-      refreshBalances()
-    }
   }, [refreshBalances])
 
   const executeSwap = async () => {
