@@ -167,7 +167,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
                     <div className="flex flex-col justify-between text-xs">
                         <div>Min price</div>
                         <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={minVal}/>
-                        <div>{token1 && token2 ? <span>{`${token2?.label} = 1 ${token1?.label}`}</span> : <span></span>}</div>
+                        <div>{token1 && token2 ? <span>{`${token2?.symbol} = 1 ${token1?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
                         <SVGMinus 
@@ -182,7 +182,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
                     <div className="flex flex-col justify-between text-xs">
                         <div>Max price</div>
                         <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={maxVal}/>
-                        <div>{token1 && token2 ? <span>{`${token2?.label} = 1 ${token1?.label}`}</span> : <span></span>}</div>
+                        <div>{token1 && token2 ? <span>{`${token2?.symbol} = 1 ${token1?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
                         <SVGMinus 

@@ -23,7 +23,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({token1, token2}) => {
             <div className="flex items-center text-xs flex-wrap">
                  <div className="text-zinc-200">Market price: </div> 
                  {
-                    token1 && token2 && <><div className="text-pink-600">335.376 {token2 ? token2.label : ''} = 1 {token1 ? token1.label : ''}</div>
+                    token1 && token2 && <><div className="text-pink-600">335.376 {token2 ? token2.symbol : ''} = 1 {token1 ? token1.symbol : ''}</div>
                     <div className="text-zinc-200">($2,573.22)</div></>
                  }
                  

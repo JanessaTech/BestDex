@@ -1,6 +1,6 @@
 'use client'
 
-import { useAccount, useChainId, useSwitchChain} from 'wagmi'
+import { useChainId, useSwitchChain} from 'wagmi'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import NetworkOption from '../common/NetworkOption'
 import { useEffect, useState } from 'react'
@@ -8,7 +8,6 @@ import TokenOption from '../common/TokenOption'
 import { TokenType } from '@/lib/types'
 import ArrowUpDown from '@/lib/svgs/svg_arrow_updown'
 import { Button } from "@/components/ui/button"
-import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Setting from '../common/Setting'
 import { toast } from "sonner"
 import SwapInput from './SwapInput'
@@ -19,8 +18,6 @@ type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
     const { chains, switchChain } = useSwitchChain()
     const chainId = useChainId()
-    const { openConnectModal } = useConnectModal()
-    const { isConnected } = useAccount()
     const curChain = chains.filter((c) => c.id === chainId)[0]
     const {getCurrentPath} = useContextUtil() as IContextUtil
     const [networkOpen, setNetworkOpen] = useState(false)

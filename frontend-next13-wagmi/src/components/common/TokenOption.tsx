@@ -57,21 +57,21 @@ const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, s
                   {tokens.map((token, _) => (
                     <CommandItem
                     key={`${chainId}-${token.address}`}
-                    value={`${token.name};${token.address}`}
+                    value={`${token.symbol};${token.address}`}
                     onSelect={(curName) => {
                       closeTokenOption()
                       updateToken(token)
                     }}
                   >
                     <div className="flex items-center">
-                      <Image src={`/imgs/tokens/${token.name}.png`} alt={token.name} width={30} height={30}/>
-                      <span className="px-2">{token.label}</span>
+                      <Image src={`/imgs/tokens/${token.alias}.png`} alt={token.alias} width={30} height={30}/>
+                      <span className="px-2">{token.symbol}</span>
                     </div>
                     
                     <Check
                       className={cn(
                         "ml-auto",
-                        curToken?.name === token.name ? "opacity-100" : "opacity-0"
+                        curToken?.symbol === token.symbol ? "opacity-100" : "opacity-0"
                       )}
                     />
                   </CommandItem>

@@ -1,7 +1,9 @@
 export type TokenType = {
     chainId: number;
     name: string;
-    label: string;
+    symbol: string;
+    decimal: number;
+    alias: string;
     address: string;
     company?: string
 }
