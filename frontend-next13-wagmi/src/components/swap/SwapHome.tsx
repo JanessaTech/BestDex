@@ -12,6 +12,8 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Setting from '../common/Setting'
 import { toast } from "sonner"
 import SwapInput from './SwapInput'
+import SVGLeft from '@/lib/svgs/svg_left'
+import Quotes from './Quotes'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
@@ -28,6 +30,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const [tokenFrom, setTokenFrom] = useState<TokenType | undefined>(undefined)
     const [tokenTo, setTokenTo] = useState<TokenType | undefined>(undefined)
     const [swapAmount, setSwapAmount] = useState('')
+    const [step, setStep] = useState(1)
     
 
     useEffect(() => {
@@ -93,9 +96,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
         setTokenFrom(to)
         setTokenTo(from)
     }
-    const handleSwap = () => {
-
-    }
+    
 
     const handleInputChange = (value: string) => {
         setSwapAmount(value)
@@ -105,6 +106,14 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
         setTokenFrom(undefined)
         setTokenTo(undefined)
         setSwapAmount('')
+        setStep(1)
+    }
+    const handlePrevStep = () => {
+        setStep(step - 1)
+    }
+
+    const handleGetQuotes = () => {
+        setStep(step + 1)
     }
     
     return (
@@ -113,53 +122,76 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
             
                 <div className='bg-zinc-900 w-full md:w-[500px] rounded-xl md:mt-10 mx-auto'>
                     <div className='pb-16 pt-1 px-10'>
-                        <div className='flex justify-end items-center py-5'>
-                            <div className='px-7 cursor-pointer hover:text-pink-600' onClick={clear}>Clear</div>
-                            <Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>
+                        <div className='flex justify-end items-center py-5 relative'>
+                            <div>
+                                <SVGLeft
+                                        className={`size-6 absolute left-0 top-5 cursor-pointer hover:text-pink-600 ${step === 1 ? 'hidden' : ''}`}
+                                        onClick={handlePrevStep} />
+                            </div>
+                            <div className='flex justify-end items-center'>
+                                <div className='px-7 cursor-pointer hover:text-pink-600' onClick={clear}>Clear</div>
+                                <Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>
+                            </div>
                         </div>
-                        <NetworkOption 
-                            networkOpen={networkOpen} 
-                            curChain={curChain} 
-                            chains={chains} 
-                            onOpenChange={onNetworkOpenChange} 
-                            handleSwitchNetwork={handleSwitchNetwork}/>
-                        <div className='my-8'>
-                            <div className='font-semibold my-3'>Swap from</div>
-                            <div className='h-16 flex w-full'>
-                                <TokenOption 
-                                    tokenOpen={tokenFromOpen} 
-                                    chainId={chainId} 
-                                    curToken={tokenFrom}
-                                    showFull={false}
-                                    onOpenChange={onTokenFromOpenChange} 
-                                    closeTokenOption={closeTokenFromOption}
-                                    updateToken={handleTokenFromChange}
-                                    />
+                        {
+                            step === 1 &&
+                            <>
+                                <NetworkOption 
+                                networkOpen={networkOpen} 
+                                curChain={curChain} 
+                                chains={chains} 
+                                onOpenChange={onNetworkOpenChange} 
+                                handleSwitchNetwork={handleSwitchNetwork}/>
+                                <div className='my-8'>
+                                    <div className='font-semibold my-3'>Swap from</div>
+                                    <div className='h-16 flex w-full'>
+                                        <TokenOption 
+                                            tokenOpen={tokenFromOpen} 
+                                            chainId={chainId} 
+                                            curToken={tokenFrom}
+                                            showFull={false}
+                                            onOpenChange={onTokenFromOpenChange} 
+                                            closeTokenOption={closeTokenFromOption}
+                                            updateToken={handleTokenFromChange}
+                                            />
 
-                                <SwapInput amount={swapAmount} hidden={tokenFromOpen} onChange={handleInputChange}/>
-                            </div>
-                        </div> 
-                        <div className='my-8 flex justify-center'>
-                            <ArrowUpDown className='w-6 h-6 cursor-pointer hover:text-pink-600' onClick={exChangeTokens}/>
-                        </div>     
-                        <div className='my-8'>
-                            <div className='font-semibold my-3'>Swap to</div>
-                            <div className='h-16 flex w-full'>
-                                    <TokenOption 
-                                        tokenOpen={tokenToOpen} 
-                                        chainId={chainId} 
-                                        curToken={tokenTo}
-                                        onOpenChange={onTokenToOpenChange} 
-                                        closeTokenOption={closeTokenToOption}
-                                        updateToken={handleTokenToChange}
-                                    />
-                            </div>
-                        </div>
-                        <div className='flex justify-center'>
-                            <Button 
-                                className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' disabled={isConnected ? !tokenFrom || !tokenTo || !swapAmount : false}
-                                onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Swap' :'Connect Wallet'}</Button>
-                        </div>
+                                        <SwapInput amount={swapAmount} hidden={tokenFromOpen} onChange={handleInputChange}/>
+                                    </div>
+                                </div> 
+                                <div className='my-8 flex justify-center'>
+                                    <ArrowUpDown className='w-6 h-6 cursor-pointer hover:text-pink-600' onClick={exChangeTokens}/>
+                                </div>     
+                                <div className='my-8'>
+                                    <div className='font-semibold my-3'>Swap to</div>
+                                    <div className='h-16 flex w-full'>
+                                            <TokenOption 
+                                                tokenOpen={tokenToOpen} 
+                                                chainId={chainId} 
+                                                curToken={tokenTo}
+                                                onOpenChange={onTokenToOpenChange} 
+                                                closeTokenOption={closeTokenToOption}
+                                                updateToken={handleTokenToChange}
+                                            />
+                                    </div>
+                                </div>
+                                <div className='flex justify-center'>
+                                    <Button 
+                                        className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
+                                        disabled={!tokenFrom || !tokenTo || !swapAmount}
+                                        onClick={handleGetQuotes}
+                                        >
+                                        Get Quotes
+                                    </Button>
+                                </div>
+                            </>
+                        }
+                        {
+                            step === 2 &&
+                            <>
+                             <Quotes tokenFrom={tokenFrom} tokenTo={tokenTo} swapAmount={swapAmount}/>
+                            </>
+                        }
+                        
                     </div>
                 </div>    
         </div>
