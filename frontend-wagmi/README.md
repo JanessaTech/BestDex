@@ -15,6 +15,13 @@ npm install siwe
 npm install cookies-next@4.3.0
 npm install lodash.merge
 npm i --save-dev @types/lodash.merge
+npx shadcn@latest add button
+npx shadcn@latest add command
+npx shadcn@latest add popover
+npx shadcn@latest add sonner
+npx shadcn@latest add table
+npx shadcn@latest add tabs
+npx shadcn@latest add tooltip
 ```
 
 ## How to run scripts
