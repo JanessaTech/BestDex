@@ -1,6 +1,7 @@
 import { ethers, BigNumber } from 'ethers'
 import { ChainId, Token} from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
+import JSBI from 'jsbi'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import { computePoolAddress } from '@uniswap/v3-sdk'
@@ -27,20 +28,39 @@ export const USDC_TOKEN = new Token(
 )
 
 const tokens =  {
-    in: USDC_TOKEN,
+    in: WETH_TOKEN,
     amountIn: 1000,
-    out: WETH_TOKEN,
+    out: USDC_TOKEN,
     poolFee: FeeAmount.MEDIUM,
   }
 
   const READABLE_FORM_LEN = 4
 
-  export function fromReadableAmount(
-    amount: number,
-    decimals: number
-  ): BigNumber {
-    return ethers.utils.parseUnits(amount.toString(), decimals)
+  // export function fromReadableAmount(
+  //   amount: number,
+  //   decimals: number
+  // ): BigNumber {
+  //   return ethers.utils.parseUnits(amount.toString(), decimals)
+  // }
+
+function fromReadableAmount(amount: number, decimals: number): JSBI {
+  const extraDigits = Math.pow(10, countDecimals(amount))
+  const adjustedAmount = amount * extraDigits
+  return JSBI.divide(
+    JSBI.multiply(
+      JSBI.BigInt(adjustedAmount),
+      JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
+    ),
+    JSBI.BigInt(extraDigits)
+  )
+}
+
+function countDecimals(x: number) {
+  if (Math.floor(x) === x) {
+      return 0
   }
+  return x.toString().split('.')[1].length || 0
+}
   
   export function toReadableAmount(rawAmount: number, decimals: number): string {
     return ethers.utils
@@ -69,6 +89,7 @@ export async function quote(): Promise<string> {
         ).toString(),
         0
       )
+      console.log('quotedAmountOut=', quotedAmountOut)
 
       return toReadableAmount(quotedAmountOut, tokens.out.decimals)
 }
@@ -84,6 +105,8 @@ async function getPoolConstants(): Promise<{
       tokenB: tokens.out,
       fee: tokens.poolFee,
     })
+
+    console.log('currentPoolAddress=', currentPoolAddress)
   
     const poolContract = new ethers.Contract(
       currentPoolAddress,
