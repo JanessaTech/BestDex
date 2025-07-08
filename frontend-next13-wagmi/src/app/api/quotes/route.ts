@@ -77,9 +77,10 @@ export async function POST(request: Request) {
             TradeType.EXACT_INPUT,
             options
           )
-        if (!route) return NextResponse.json({ success: false})
+        if (!route) return NextResponse.json({ success: false, message: 'failed to get route'})
         return NextResponse.json({ success: true, quote: route.quote.toExact(), estimatedGasUsed: route.estimatedGasUsed.toString()})
     } catch(e) {
+        console.log('failed to get quotes due to:', e)
         return NextResponse.json({ success: false})
     }
 }

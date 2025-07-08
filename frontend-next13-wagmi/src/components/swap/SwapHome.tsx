@@ -185,7 +185,11 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                         {
                             step === 2 &&
                             <>
-                             {tokenFrom && tokenTo && <Quotes tokenFrom={tokenFrom} tokenTo={tokenTo} swapAmount={Number(swapAmount)}/>}
+                             {tokenFrom && tokenTo && <Quotes 
+                                                        tokenFrom={tokenFrom} 
+                                                        tokenTo={tokenTo} 
+                                                        swapAmount={Number(swapAmount)} 
+                                                        handlePrevStep={handlePrevStep}/>}
                             </>
                         }
                         

@@ -8,6 +8,11 @@ import { POOL_FACTORY_CONTRACT_ADDRESS, QUOTER_CONTRACT_ADDRESS, READABLE_FORM_L
 import Token from "../common/Token"
 import SVGArrowDownMid from "@/lib/svgs/svg_arrow_down_mid"
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
+import * as allChains from 'wagmi/chains'
+import { useChainId} from 'wagmi'
+import { useChains } from 'wagmi'
+import Spinner from "../common/Spinner"
+import SVGWarning from "@/lib/svgs/svg_warning"
 
 
 
@@ -23,37 +28,58 @@ import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
 //     .formatUnits(rawAmount, decimals)
 //     .slice(0, READABLE_FORM_LEN)
 // }
+type NoQuotesProps = {
+  handlePrevStep: () => void
+}
+const NoQuotes: React.FC<NoQuotesProps> = ({handlePrevStep}) => {
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-80">
+      <SVGWarning className="text-red-400 w-20 h-20"/>
+      <div className="text-xl font-semibold">No quotes available</div>
+      <div className="text-zinc-500 text-sm my-2">Try adjusting the amount or slippage settings and try again</div>
+      <div className="border-[2px] border-pink-600 hover:text-pink-600 px-4 py-2 rounded-full cursor-pointer my-2" onClick={handlePrevStep}>
+        <span>Go back</span>
+      </div>
+    </div>
+  )
+}
 
 type QuotesProps = {
-  tokenFrom: TokenType,
-  tokenTo: TokenType,
-  swapAmount: number
+  tokenFrom: TokenType;
+  tokenTo: TokenType;
+  swapAmount: number;
+  handlePrevStep: () => void
 }
-const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount}) => {
+const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, handlePrevStep}) => {
     const { isConnected, connector} = useAccount()
     const { openConnectModal } = useConnectModal()
     const [loading, setLoading] = useState<boolean>(false)
     const [quote, setQuote] = useState('')
     const [estimatedGasUsed, setEstimatedGasUsed] = useState('')
+    const [isError, setIsError] = useState(false)
+    const chainId = useChainId()
+    const chains = useChains()
+    const chain = chains.find((chain) => chain.id === chainId)
 
-    // useEffect(() => {
-    //     (async () => {
-    //         setLoading(true)
-    //         try {
-    //           const response = await fetch('/api/quotes', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' }
-    //           });
-    //           const result = await response.json();
-    //           if (!result.success) throw new Error('failed to read /api/quotes')
-    //           setQuote(result.quote)
-    //           setEstimatedGasUsed(result.estimatedGasUsed)
-    //         } catch (e) {
-    //             toast.error('Failed to get quote. Please try again')
-    //         }
-    //         setLoading(false)
-    //     })()
-    // }, [])
+    useEffect(() => {
+        (async () => {
+            setLoading(true)
+            try {
+              const response = await fetch('/api/quotes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+              });
+              const result = await response.json();
+              if (!result.success) throw new Error('failed to read /api/quotes')
+              setQuote(result.quote)
+              setEstimatedGasUsed(result.estimatedGasUsed)
+            } catch (e) {
+              console.log('failed to get quotes due to:', e)
+              setIsError(true)
+            }
+            setLoading(false)
+        })()
+    }, [])
 
     const handleSwap = () => {
 
@@ -61,35 +87,42 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount}) => {
 
     return (
         <div>
-          <div className="flex flex-col items-center">
-            <div className="flex items-center"><Token token={tokenFrom} imageSize={40}/> <span className="text-zinc-400">($2,531.76)</span></div>
-            <div><SVGArrowDownMid className="size-6 text-zinc-400"/></div>
-            <div className="my-2"><Token token={tokenTo} imageSize={40}/></div>
-            <div><span className="text-3xl">256488</span></div>
-            <div><span className="text-zinc-400">($2,512.74)</span><span className="text-pink-600 font-semibold mx-2">-0.908%</span></div>
-          </div>
-          <div className="border-y-[1px] border-zinc-600 py-3 my-10">
-            <div className="flex justify-between">
-              <div className="flex items-center">
-                  <span>Estimated Gas Fee</span>
-                  <QuestionMarkToolTip>
-                    <div className="w-[200px] text-xs">BEST dex doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is</div>
-                  </QuestionMarkToolTip>
-              </div>
-              <div>0.000490664 ETH</div>
-            </div>
-            <div className="flex justify-end mt-1">
-              <div>Max fee:$2.76</div>
-            </div>
-          </div>
-
-
-            <div className='flex justify-center'>
-            <Button 
-                className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
-                disabled={isConnected ? !tokenFrom || !tokenTo || !swapAmount : false}
-                onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Swap' :'Connect Wallet'}</Button>
-            </div>
+          {
+            loading 
+              ? <div className="flex w-full h-80 justify-center items-center"><Spinner/></div>
+              : isError
+                ? <NoQuotes handlePrevStep={handlePrevStep}/>
+                : <>
+                    <div className="flex flex-col items-center">
+                      <div className="flex items-center"><span className="px-2">{swapAmount}</span><Token token={tokenFrom} imageSize={40}/> <span className="text-zinc-400">($2,531.76)</span></div>
+                      <div><SVGArrowDownMid className="size-6 text-zinc-400"/></div>
+                      <div className="my-2"><Token token={tokenTo} imageSize={40}/></div>
+                      <div><span className="text-3xl">256488</span></div>
+                      <div><span className="text-zinc-400">($2,512.74)</span><span className="text-pink-600 font-semibold mx-2">-0.908%</span></div>
+                    </div>
+                    <div className="border-y-[1px] border-zinc-600 py-3 my-10">
+                      <div className="flex justify-between">
+                        <div className="flex items-center">
+                            <span>Estimated Gas Fee</span>
+                            <QuestionMarkToolTip>
+                              <div className="w-[200px] text-xs">BEST dex doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is</div>
+                            </QuestionMarkToolTip>
+                        </div>
+                        <div>0.000490664 {chain?.nativeCurrency.symbol}</div>
+                      </div>
+                      <div className="flex justify-end mt-1">
+                        <div>Max fee:$2.76</div>
+                      </div>
+                    </div>
+                    <div className='flex justify-center'>
+                      <Button 
+                          className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
+                          disabled={isConnected ? !tokenFrom || !tokenTo || !swapAmount : false}
+                          onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Swap' :'Connect Wallet'}
+                      </Button>
+                    </div>
+                  </>
+          }
         </div>
     )
 }
