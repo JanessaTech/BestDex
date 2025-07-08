@@ -3,31 +3,14 @@ import type { TokenType } from "@/lib/types"
 import { useAccount} from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from "react"
-import { toast } from "sonner"
-import { POOL_FACTORY_CONTRACT_ADDRESS, QUOTER_CONTRACT_ADDRESS, READABLE_FORM_LEN } from "@/config/constants"
 import Token from "../common/Token"
 import SVGArrowDownMid from "@/lib/svgs/svg_arrow_down_mid"
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
-import * as allChains from 'wagmi/chains'
 import { useChainId} from 'wagmi'
 import { useChains } from 'wagmi'
 import Spinner from "../common/Spinner"
 import SVGWarning from "@/lib/svgs/svg_warning"
 
-
-
-// function fromReadableAmount(
-//     amount: number,
-//     decimals: number
-//   ): BigNumber {
-//     return ethers.utils.parseUnits(amount.toString(), decimals)
-//   }
-
-// function toReadableAmount(rawAmount: number, decimals: number): string {
-// return ethers.utils
-//     .formatUnits(rawAmount, decimals)
-//     .slice(0, READABLE_FORM_LEN)
-// }
 type NoQuotesProps = {
   handlePrevStep: () => void
 }
