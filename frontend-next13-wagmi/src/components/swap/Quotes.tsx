@@ -2,105 +2,58 @@ import { Button } from "@/components/ui/button"
 import type { TokenType } from "@/lib/types"
 import { useAccount} from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { ethers, BigNumber} from 'ethers'
-import { ChainId, Token} from '@uniswap/sdk-core'
-import { computePoolAddress, FeeAmount} from '@uniswap/v3-sdk'
-import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { POOL_FACTORY_CONTRACT_ADDRESS, QUOTER_CONTRACT_ADDRESS, READABLE_FORM_LEN } from "@/config/constants"
+import Token from "../common/Token"
+import SVGArrowDownMid from "@/lib/svgs/svg_arrow_down_mid"
+import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
+
+
+
+// function fromReadableAmount(
+//     amount: number,
+//     decimals: number
+//   ): BigNumber {
+//     return ethers.utils.parseUnits(amount.toString(), decimals)
+//   }
+
+// function toReadableAmount(rawAmount: number, decimals: number): string {
+// return ethers.utils
+//     .formatUnits(rawAmount, decimals)
+//     .slice(0, READABLE_FORM_LEN)
+// }
 
 type QuotesProps = {
-    tokenFrom: TokenType,
-    tokenTo: TokenType,
-    swapAmount: number
+  tokenFrom: TokenType,
+  tokenTo: TokenType,
+  swapAmount: number
 }
-
-function fromReadableAmount(
-    amount: number,
-    decimals: number
-  ): BigNumber {
-    return ethers.utils.parseUnits(amount.toString(), decimals)
-  }
-
-function toReadableAmount(rawAmount: number, decimals: number): string {
-return ethers.utils
-    .formatUnits(rawAmount, decimals)
-    .slice(0, READABLE_FORM_LEN)
-}
-
 const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount}) => {
     const { isConnected, connector} = useAccount()
     const { openConnectModal } = useConnectModal()
-    const tokenIn = new Token(ChainId.MAINNET, tokenFrom.address, tokenFrom.decimal, tokenFrom.symbol, tokenFrom.name)
-    const tokenOut = new Token(ChainId.MAINNET, tokenTo.address, tokenTo.decimal, tokenTo.symbol, tokenTo.name)
     const [loading, setLoading] = useState<boolean>(false)
     const [quote, setQuote] = useState('')
+    const [estimatedGasUsed, setEstimatedGasUsed] = useState('')
 
-    useEffect(() => {
-        (async () => {
-            setLoading(true)
-            try {
-                const res = await getQuote()
-                if (!res) throw new Error('failed to get quote')
-                setQuote(res)
-            } catch (e) {
-                toast.error('Failed to get quote. Please try again')
-            }
-            setLoading(false)
-        })()
-    }, [])
-
-    async function getQuote(): Promise<string | undefined> {
-        try {
-            const provider = await connector?.getProvider()
-            if (!provider) throw new Error('failed to get provider')
-            const web3provider = new ethers.providers.Web3Provider(provider)
-            const quoterContract = new ethers.Contract(QUOTER_CONTRACT_ADDRESS, Quoter.abi, web3provider)
-
-            const poolConstants = await getPoolConstants(web3provider)
-
-            const quotedAmountOut = await quoterContract.callStatic.quoteExactInputSingle(
-                poolConstants.token0,
-                poolConstants.token1,
-                poolConstants.fee,
-                fromReadableAmount(swapAmount, tokenIn.decimals).toString(),
-                0
-              )
-              return toReadableAmount(quotedAmountOut, tokenOut.decimals)
-
-        } catch (e) {
-            console.log('failed to get quote due to:', e)
-            throw e
-        }
-    }
-
-      async function getPoolConstants(web3provider: ethers.providers.Web3Provider): Promise<{token0: string, token1: string, fee: number}> {
-        const currentPoolAddress = computePoolAddress({
-            factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
-            tokenA: new Token(ChainId.MAINNET, tokenFrom.address, tokenFrom.decimal, tokenFrom.symbol, tokenFrom.name),
-            tokenB: new Token(ChainId.MAINNET, tokenTo.address, tokenTo.decimal, tokenTo.symbol, tokenTo.name),
-            fee: FeeAmount.MEDIUM,
-          })
-  
-          const poolContract = new ethers.Contract(
-            currentPoolAddress,
-            IUniswapV3PoolABI.abi,
-            web3provider
-          )
-          const [token0, token1, fee] = await Promise.all([
-            poolContract.token0(),
-            poolContract.token1(),
-            poolContract.fee(),
-          ])
-      
-          return {
-            token0,
-            token1,
-            fee,
-          }
-      }
+    // useEffect(() => {
+    //     (async () => {
+    //         setLoading(true)
+    //         try {
+    //           const response = await fetch('/api/quotes', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' }
+    //           });
+    //           const result = await response.json();
+    //           if (!result.success) throw new Error('failed to read /api/quotes')
+    //           setQuote(result.quote)
+    //           setEstimatedGasUsed(result.estimatedGasUsed)
+    //         } catch (e) {
+    //             toast.error('Failed to get quote. Please try again')
+    //         }
+    //         setLoading(false)
+    //     })()
+    // }, [])
 
     const handleSwap = () => {
 
@@ -108,8 +61,30 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount}) => {
 
     return (
         <div>
+          <div className="flex flex-col items-center">
+            <div className="flex items-center"><Token token={tokenFrom} imageSize={40}/> <span className="text-zinc-400">($2,531.76)</span></div>
+            <div><SVGArrowDownMid className="size-6 text-zinc-400"/></div>
+            <div className="my-2"><Token token={tokenTo} imageSize={40}/></div>
+            <div><span className="text-3xl">256488</span></div>
+            <div><span className="text-zinc-400">($2,512.74)</span><span className="text-pink-600 font-semibold mx-2">-0.908%</span></div>
+          </div>
+          <div className="border-y-[1px] border-zinc-600 py-3 my-10">
+            <div className="flex justify-between">
+              <div className="flex items-center">
+                  <span>Estimated Gas Fee</span>
+                  <QuestionMarkToolTip>
+                    <div className="w-[200px] text-xs">BEST dex doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is</div>
+                  </QuestionMarkToolTip>
+              </div>
+              <div>0.000490664 ETH</div>
+            </div>
+            <div className="flex justify-end mt-1">
+              <div>Max fee:$2.76</div>
+            </div>
+          </div>
+
+
             <div className='flex justify-center'>
-            <Button className="w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600 text-white">{loading ? 'loading' : quote}</Button>
             <Button 
                 className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
                 disabled={isConnected ? !tokenFrom || !tokenTo || !swapAmount : false}
