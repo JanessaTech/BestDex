@@ -53,33 +53,65 @@ type QuotesProps = {
 const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, handlePrevStep}) => {
     const { isConnected, connector} = useAccount()
     const { openConnectModal } = useConnectModal()
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false) // loading flag is set only when we first load the page
+    const [hiddenLoading, setHiddenLoading] = useState<boolean>(false)  // the loading flag is set when an time interval is ended
     const [quote, setQuote] = useState('')
     const [estimatedGasUsed, setEstimatedGasUsed] = useState('')
     const [isError, setIsError] = useState(false)
     const chainId = useChainId()
     const chains = useChains()
     const chain = chains.find((chain) => chain.id === chainId)
+    const [seconds, setSeconds] = useState(30)
+    const [startCountDown, setStartCountDown] = useState(false)
 
     useEffect(() => {
         (async () => {
-            setLoading(true)
-            try {
-              const response = await fetch('/api/quotes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-              });
-              const result = await response.json();
-              if (!result.success) throw new Error('failed to read /api/quotes')
-              setQuote(result.quote)
-              setEstimatedGasUsed(result.estimatedGasUsed)
-            } catch (e) {
-              console.log('failed to get quotes due to:', e)
-              setIsError(true)
-            }
-            setLoading(false)
+            await updateQuotes(true)
+            setStartCountDown(true)
+            setSeconds(30)
         })()
     }, [])
+
+    useEffect(() => {
+      let interval = null
+      if(startCountDown) {
+        if (seconds > 0) {
+          interval = setInterval(() => setSeconds((prev) => prev - 1), 1000)
+        } else if (seconds === 0) {
+          (async () => {
+            console.log('running updateQuotes')
+            await updateQuotes(false)
+            console.log('done updateQuotes')
+          })()
+        }
+      }
+      return () => {
+        if (interval) clearInterval(interval)
+      }
+    }, [startCountDown, seconds])
+
+    const updateQuotes = async (first: boolean) => {
+      if (first) setLoading(true)
+      else setHiddenLoading(true)
+      try {
+        const response = await fetch('/api/quotes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const result = await response.json();
+        if (!result.success) throw new Error('failed to read /api/quotes')
+        console.log('result:', result)
+        setQuote(result.quote)
+        setEstimatedGasUsed(result.estimatedGasUsed)
+        setSeconds(30)  // start a new time interval
+      } catch (e) {
+        console.log('failed to get quotes due to:', e)
+        setIsError(true)
+        setStartCountDown(false)
+      }
+      if (first) setLoading(false)
+      else setHiddenLoading(false)
+    }
 
     const handleSwap = () => {
 
@@ -94,10 +126,11 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, handlePre
                 ? <NoQuotes handlePrevStep={handlePrevStep}/>
                 : <>
                     <div className="flex flex-col items-center">
+                      <div className="my-2"><span className="text-xs text-zinc-400">{hiddenLoading ? 'Calculating new quotes...' : `New Quotes in 0:${seconds}`}</span></div>
                       <div className="flex items-center"><span className="px-2">{swapAmount}</span><Token token={tokenFrom} imageSize={40}/> <span className="text-zinc-400">($2,531.76)</span></div>
                       <div><SVGArrowDownMid className="size-6 text-zinc-400"/></div>
                       <div className="my-2"><Token token={tokenTo} imageSize={40}/></div>
-                      <div><span className="text-3xl">256488</span></div>
+                      <div className="my-2"><span className="text-4xl">{quote}</span></div>
                       <div><span className="text-zinc-400">($2,512.74)</span><span className="text-pink-600 font-semibold mx-2">-0.908%</span></div>
                     </div>
                     <div className="border-y-[1px] border-zinc-600 py-3 my-10">
