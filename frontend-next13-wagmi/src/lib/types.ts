@@ -15,3 +15,14 @@ export enum TransactionType {
     AddLiquidity,
     MintPosition
 }
+
+export type QuotesParameterType = {
+    chainId: number;
+    rpcUrl: string;
+    recipient: `0x${string}`;
+    slippage: number,
+    deadline: number,
+    amountIn: number,
+    tokenIn: TokenType,
+    tokenOut: TokenType
+}

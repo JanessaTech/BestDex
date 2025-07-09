@@ -7,6 +7,9 @@ import {
 import { ethers } from 'ethers'
 import JSBI from 'jsbi'
 import { TradeType, ChainId, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import type { QuotesParameterType } from '@/lib/types';
+import { AwardIcon } from 'lucide-react';
+import { dataTagErrorSymbol } from '@tanstack/react-query';
 
 const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")  
 //const mainnetProvider = new ethers.providers.WebSocketProvider("wss://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
@@ -52,11 +55,24 @@ export function fromReadableAmount(amount: number, decimals: number): JSBI {
     'Wrapped Ether'
   )
 
+async function parseDataFromRequest(request: Request) {
+  const data = await request.json() as QuotesParameterType
+  console.log('data', data)
+  return {
+    chainId: data.chainId,
+    provider: new ethers.providers.JsonRpcProvider(data.rpcUrl),
+    recipient: data.recipient,
+    slippageTolerance: new Percent(data.slippage, 10_000),
+    deadline: Math.floor(Date.now() / 1000 + data.deadline),
+    tokenIn : new Token(data.chainId, data.tokenIn.address, data.tokenIn.decimal, data.tokenIn.symbol, data.tokenIn.name),
+    tokenOut : new Token(data.chainId, data.tokenOut.address, data.tokenOut.decimal, data.tokenOut.symbol, data.tokenOut.name)
+  }
+}
+
 export async function POST(request: Request) {
   console.log('POST - get quotes')
     try {
-        const data = await request.json()
-        console.log('data', data)
+        const params = await parseDataFromRequest(request)
         const router = new AlphaRouter({
             chainId: 1,
             provider: mainnetProvider,

@@ -1,16 +1,14 @@
 import { Button } from "@/components/ui/button"
-import type { TokenType } from "@/lib/types"
-import { useAccount} from 'wagmi'
+import type { QuotesParameterType, TokenType } from "@/lib/types"
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from "react"
 import Token from "../common/Token"
 import SVGArrowDownMid from "@/lib/svgs/svg_arrow_down_mid"
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
-import { useChainId} from 'wagmi'
-import { useChains } from 'wagmi'
+import { useAccount, useChainId, useChains,useClient, useConfig} from 'wagmi'
 import Spinner from "../common/Spinner"
 import SVGWarning from "@/lib/svgs/svg_warning"
-import { useUpdateSetting } from "@/config/store"
+
 
 type NoQuotesProps = {
   handlePrevStep: () => void
@@ -43,11 +41,14 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const [quote, setQuote] = useState('')
     const [estimatedGasUsed, setEstimatedGasUsed] = useState('')
     const [isError, setIsError] = useState(false)
-    const chainId = useChainId()
-    const chains = useChains()
-    const chain = chains.find((chain) => chain.id === chainId)
     const [seconds, setSeconds] = useState(30)
     const [startCountDown, setStartCountDown] = useState(false)
+
+    const chainId = useChainId()
+    const chains = useChains()
+    const client = useClient()
+    const chain = chains.find((chain) => chain.id === chainId)
+    const rpcUrl  = client?.transport.url // we can make sure rpcUrl is not empty
     
     useEffect(() => {
         (async () => {
@@ -79,9 +80,10 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const updateQuotes = async (first: boolean) => {
       if (first) setLoading(true)
       else setHiddenLoading(true)
-      const data = {
+      const data: QuotesParameterType = {
         chainId: chainId,
-        recipient: address,
+        rpcUrl: rpcUrl,
+        recipient: address!,
         slippage: setting.slipage * 100, // one ten-thousandth
         deadline: setting.deadline === '' ? 1800 : setting.deadline * 60, // in seconds
         amountIn: swapAmount,
