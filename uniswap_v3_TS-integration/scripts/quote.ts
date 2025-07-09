@@ -68,7 +68,8 @@ function countDecimals(x: number) {
       .slice(0, READABLE_FORM_LEN)
   }
 
-const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
+//const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
+const mainnetProvider = new ethers.providers.WebSocketProvider("wss://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
 
 export async function quote(): Promise<string> {
     const quoterContract = new ethers.Contract(
