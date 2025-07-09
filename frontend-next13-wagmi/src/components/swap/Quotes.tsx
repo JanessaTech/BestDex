@@ -10,6 +10,7 @@ import { useChainId} from 'wagmi'
 import { useChains } from 'wagmi'
 import Spinner from "../common/Spinner"
 import SVGWarning from "@/lib/svgs/svg_warning"
+import { useUpdateSetting } from "@/config/store"
 
 type NoQuotesProps = {
   handlePrevStep: () => void
@@ -31,10 +32,11 @@ type QuotesProps = {
   tokenFrom: TokenType;
   tokenTo: TokenType;
   swapAmount: number;
+  setting: {slipage: number, deadline: number | ''}
   handlePrevStep: () => void
 }
-const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, handlePrevStep}) => {
-    const { isConnected, connector} = useAccount()
+const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, handlePrevStep}) => {
+    const { isConnected, address} = useAccount()
     const { openConnectModal } = useConnectModal()
     const [loading, setLoading] = useState<boolean>(false) // loading flag is set only when we first load the page
     const [hiddenLoading, setHiddenLoading] = useState<boolean>(false)  // the loading flag is set when an time interval is ended
@@ -46,12 +48,12 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, handlePre
     const chain = chains.find((chain) => chain.id === chainId)
     const [seconds, setSeconds] = useState(30)
     const [startCountDown, setStartCountDown] = useState(false)
-
+    
     useEffect(() => {
         (async () => {
             await updateQuotes(true)
-            setStartCountDown(true)
             setSeconds(30)
+            setStartCountDown(true)
         })()
     }, [])
 
@@ -64,6 +66,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, handlePre
           (async () => {
             console.log('running updateQuotes')
             await updateQuotes(false)
+            setSeconds(30)  // start a new time interval
             console.log('done updateQuotes')
           })()
         }
@@ -76,17 +79,26 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, handlePre
     const updateQuotes = async (first: boolean) => {
       if (first) setLoading(true)
       else setHiddenLoading(true)
+      const data = {
+        chainId: chainId,
+        recipient: address,
+        slippage: setting.slipage * 100, // one ten-thousandth
+        deadline: setting.deadline === '' ? 1800 : setting.deadline * 60, // in seconds
+        amountIn: swapAmount,
+        tokenIn: tokenFrom,
+        tokenOut: tokenTo
+      }
       try {
         const response = await fetch('/api/quotes', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
         });
         const result = await response.json();
         if (!result.success) throw new Error('failed to read /api/quotes')
         console.log('result:', result)
         setQuote(result.quote)
         setEstimatedGasUsed(result.estimatedGasUsed)
-        setSeconds(30)  // start a new time interval
       } catch (e) {
         console.log('failed to get quotes due to:', e)
         setIsError(true)

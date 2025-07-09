@@ -5,17 +5,25 @@ import {
   } from "@/components/ui/popover"
 import SVGClose from "@/lib/svgs/svg_close"
 import SVGSetting from "@/lib/svgs/svg_setting"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import QuestionMarkToolTip from "./QuestionMarkToolTip"
+import { useUpdateSetting } from "@/config/store"
 
 type SettingProps = {
     settingOpen: boolean;
     onOpenChange: (open: boolean) => void;
 }
 const Setting:React.FC<SettingProps> = ({settingOpen, onOpenChange}) => {
+    const {slipage, updateSlipage, deadline, updateDeadline} = useUpdateSetting()
     const [select, setSelect] = useState(2)
     const [custom, setCustom] = useState<string>('custom')
-    const [deadline, setDeadline] = useState<number | ''>(10)
+    
+    useEffect(() => {
+        const newSplipage = custom !== 'custom' 
+        ? Number(custom)
+        : [0.01, 0.05, 0.3, 1.0][select]
+        updateSlipage(newSplipage)
+    }, [select, custom])
 
     const handleCustomClick = (e: React.MouseEvent<HTMLInputElement>) => {
         if (custom === 'custom') {
@@ -39,14 +47,14 @@ const Setting:React.FC<SettingProps> = ({settingOpen, onOpenChange}) => {
         console.log('handleDeadlineOnBlur')
         console.log('deadline = ', deadline)
         if (deadline === 0 || deadline === '') {
-            setDeadline(10)
+            updateDeadline(10)
         }
     }
     const handleDeadlineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value !== '') {
-            setDeadline(Number(e.target.value))
+            updateDeadline(Number(e.target.value))
         } else {
-            setDeadline('')
+            updateDeadline('')
         } 
     }
 

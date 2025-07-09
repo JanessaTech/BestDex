@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import SwapInput from './SwapInput'
 import SVGLeft from '@/lib/svgs/svg_left'
 import Quotes from './Quotes'
+import { useUpdateSetting } from '@/config/store'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
@@ -28,7 +29,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const [tokenTo, setTokenTo] = useState<TokenType | undefined>(undefined)
     const [swapAmount, setSwapAmount] = useState('')
     const [step, setStep] = useState(1)
-    
+    const {slipage, deadline} = useUpdateSetting()
 
     useEffect(() => {
         // reset tokenFrom &tokenTo when chainId is changed
@@ -189,6 +190,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                                         tokenFrom={tokenFrom} 
                                                         tokenTo={tokenTo} 
                                                         swapAmount={Number(swapAmount)} 
+                                                        setting={{slipage: slipage, deadline: deadline}}
                                                         handlePrevStep={handlePrevStep}/>}
                             </>
                         }

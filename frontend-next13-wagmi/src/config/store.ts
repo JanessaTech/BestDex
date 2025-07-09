@@ -10,7 +10,7 @@ interface AuthState {
     setIsDone: (done: boolean) => void
 }
 
-const useAuthState = create<AuthState>()(persist(
+export const useAuthState = create<AuthState>()(persist(
     (set) => ({
         connected: 'loading',
         isDone: false,
@@ -26,4 +26,21 @@ const useAuthState = create<AuthState>()(persist(
     }
 ))
 
-export default useAuthState
+interface SettingState {
+    slipage: number;
+    deadline: number | '';
+    updateSlipage: (newSlipage: number) => void;
+    updateDeadline: (newDeadline: number | '') => void
+}
+export const useUpdateSetting = create<SettingState>()(persist(
+    (set) => ({
+        slipage: 0.3, // percentage
+        deadline: 10, // mins
+        updateSlipage : (slipage) => set({slipage: slipage}),
+        updateDeadline: (deadline) => set({deadline: deadline})
+    }),
+    {
+        name: 'setting', 
+        storage: createJSONStorage(() => localStorage),
+    }
+))

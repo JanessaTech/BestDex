@@ -9,6 +9,7 @@ import JSBI from 'jsbi'
 import { TradeType, ChainId, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")  
+//const mainnetProvider = new ethers.providers.WebSocketProvider("wss://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
 export function fromReadableAmount(amount: number, decimals: number): JSBI {
     const extraDigits = Math.pow(10, countDecimals(amount))
     const adjustedAmount = amount * extraDigits
@@ -52,7 +53,10 @@ export function fromReadableAmount(amount: number, decimals: number): JSBI {
   )
 
 export async function POST(request: Request) {
+  console.log('POST - get quotes')
     try {
+        const data = await request.json()
+        console.log('data', data)
         const router = new AlphaRouter({
             chainId: 1,
             provider: mainnetProvider,

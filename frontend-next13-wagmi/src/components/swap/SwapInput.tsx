@@ -22,8 +22,8 @@ const SwapInput: React.FC<SwapInputProps> = ({amount, hidden, onChange}) => {
                             || (amount === '0' && event?.key === '.')
                             || (/^[1-9]\d{0,20}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
                             || (/^[1-9]\d{0,20}$/.test(amount) && event?.key === '.')
-                            || (/^[1-9]\d{0,20}.\d{0,20}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
-                            || (/^0.\d{0,20}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                            || (/^[1-9]\d{0,20}\.\d{0,20}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                            || (/^0\.\d{0,20}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
                 if (!allow) {
                     event.preventDefault(); 
                 }

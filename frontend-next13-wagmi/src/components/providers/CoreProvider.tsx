@@ -13,7 +13,7 @@ import {
 import { useMemo } from 'react';
 import { createAuthenticationAdapter } from '@rainbow-me/rainbowkit';
 import { createSiweMessage } from 'viem/siwe';
-import useAuthState from '@/config/store';
+import {useAuthState} from '@/config/store';
 import { config } from '@/config/wagmi';
 import merge from 'lodash.merge';
 
