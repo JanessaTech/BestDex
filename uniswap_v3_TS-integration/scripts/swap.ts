@@ -246,6 +246,28 @@ export async function getTokenTransferApproval(token: Token): Promise<Transactio
     }
 }
 
+async function getGasPrice() {
+  try {
+    // 获取当前Gas价格（传统模式）
+    const legacyGasPrice = await mainnetProvider.getGasPrice();
+    console.log(`Legacy Gas Price: ${ethers.utils.formatUnits(legacyGasPrice, "gwei")} Gwei`);
+
+    // 获取EIP-1559费用参数（推荐）
+    const feeData = await mainnetProvider.getFeeData();
+    console.log(`
+      EIP-1559 Fee Data:
+      - Max Fee: ${ethers.utils.formatUnits(feeData.maxFeePerGas || 0 , "gwei")} Gwei
+      - Max Priority Fee: ${ethers.utils.formatUnits(feeData.maxPriorityFeePerGas || 0, "gwei")} Gwei
+      - Base Fee: ${ethers.utils.formatUnits(feeData.lastBaseFeePerGas || 0, "gwei")} Gwei
+    `);
+
+    return { legacyGasPrice, feeData };
+  } catch (error) {
+    console.error("Error fetching gas price:", error);
+    throw error;
+  }
+}
+
 async function main() {
   try {
     const route = await generateRoute()
@@ -254,8 +276,10 @@ async function main() {
     console.log('PoolIdentifiers:', route?.route.map((r) => r.poolIdentifiers))
     console.log('The path detail:', route?.route.map((r) => r.tokenPath.map((t) => t.symbol).join(' -> ')).join(', '))
     console.log('Estimated Gas:', route?.estimatedGasUsed.toString())
-    const res = await executeRoute(route)
-    console.log('executeRoute result: ', res)
+    console.log('Estimated USD:', route?.estimatedGasUsedUSD.toExact())
+    await getGasPrice()
+    // const res = await executeRoute(route)
+    // console.log('executeRoute result: ', res)
   } catch (e) {
     console.error(e)
   }

@@ -29,31 +29,31 @@ export const USDC_TOKEN = new Token(
 
 const tokens =  {
     in: WETH_TOKEN,
-    amountIn: 1000,
+    amountIn: 1,
     out: USDC_TOKEN,
     poolFee: FeeAmount.MEDIUM,
   }
 
   const READABLE_FORM_LEN = 4
 
-  // export function fromReadableAmount(
-  //   amount: number,
-  //   decimals: number
-  // ): BigNumber {
-  //   return ethers.utils.parseUnits(amount.toString(), decimals)
-  // }
+  export function fromReadableAmount(
+    amount: number,
+    decimals: number
+  ): BigNumber {
+    return ethers.utils.parseUnits(amount.toString(), decimals)
+  }
 
-function fromReadableAmount(amount: number, decimals: number): JSBI {
-  const extraDigits = Math.pow(10, countDecimals(amount))
-  const adjustedAmount = amount * extraDigits
-  return JSBI.divide(
-    JSBI.multiply(
-      JSBI.BigInt(adjustedAmount),
-      JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
-    ),
-    JSBI.BigInt(extraDigits)
-  )
-}
+// function fromReadableAmount(amount: number, decimals: number): JSBI {
+//   const extraDigits = Math.pow(10, countDecimals(amount))
+//   const adjustedAmount = amount * extraDigits
+//   return JSBI.divide(
+//     JSBI.multiply(
+//       JSBI.BigInt(adjustedAmount),
+//       JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
+//     ),
+//     JSBI.BigInt(extraDigits)
+//   )
+// }
 
 function countDecimals(x: number) {
   if (Math.floor(x) === x) {
