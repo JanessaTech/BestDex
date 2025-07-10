@@ -8,56 +8,19 @@ const { ethers } = require("ethers") // for nodejs only
 //const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/eth_sepolia")
 const provider = new ethers.providers.JsonRpcProvider("https://eth.llamarpc.com")
 const aggregatorV3InterfaceABI = [
-  {
-    inputs: [],
-    name: "decimals",
-    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "description",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "uint80", name: "_roundId", type: "uint80" }],
-    name: "getRoundData",
-    outputs: [
-      { internalType: "uint80", name: "roundId", type: "uint80" },
-      { internalType: "int256", name: "answer", type: "int256" },
-      { internalType: "uint256", name: "startedAt", type: "uint256" },
-      { internalType: "uint256", name: "updatedAt", type: "uint256" },
-      { internalType: "uint80", name: "answeredInRound", type: "uint80" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "latestRoundData",
-    outputs: [
-      { internalType: "uint80", name: "roundId", type: "uint80" },
-      { internalType: "int256", name: "answer", type: "int256" },
-      { internalType: "uint256", name: "startedAt", type: "uint256" },
-      { internalType: "uint256", name: "updatedAt", type: "uint256" },
-      { internalType: "uint80", name: "answeredInRound", type: "uint80" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "version",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
+  'function latestAnswer() view returns (int256)',
+  'function latestTimestamp() view returns (uint256)',
+  'function latestRound() view returns (uint256)',
+  'function getAnswer(uint256 _roundId) view returns (int256)',
+  'function getTimestamp(uint256 _roundId) view returns (uint256)',
+  'function decimals() view returns (uint8)',
+  'function getRoundData(uint80 _roundId) view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)',
+  'function latestRoundData() view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)',
+  'function description() view returns (string)',
+  'function version() view returns (uint256)'
 ]
 //const addr = "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43"
-const addr = "0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9"  // DAI/USD -- Ethereum Mainnet
+const addr = "0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9"  // the address of datafeed for DAI/USD -- Ethereum Mainnet
 
 const priceFeed = new ethers.Contract(addr, aggregatorV3InterfaceABI, provider)
 priceFeed.latestRoundData().then((roundData) => {
