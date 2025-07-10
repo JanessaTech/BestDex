@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import Token from "../common/Token"
 import SVGArrowDownMid from "@/lib/svgs/svg_arrow_down_mid"
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
-import { useAccount, useChainId, useChains,useClient, useConfig} from 'wagmi'
+import { useAccount, useChainId, useChains,useClient} from 'wagmi'
 import Spinner from "../common/Spinner"
 import SVGWarning from "@/lib/svgs/svg_warning"
 

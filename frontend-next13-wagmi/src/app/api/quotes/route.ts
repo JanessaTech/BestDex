@@ -8,8 +8,6 @@ import { ethers } from 'ethers'
 import JSBI from 'jsbi'
 import { TradeType, ChainId, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import type { QuotesParameterType } from '@/lib/types';
-import { AwardIcon } from 'lucide-react';
-import { dataTagErrorSymbol } from '@tanstack/react-query';
 
 const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")  
 //const mainnetProvider = new ethers.providers.WebSocketProvider("wss://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
@@ -62,6 +60,7 @@ async function parseDataFromRequest(request: Request) {
     chainId: data.chainId,
     provider: new ethers.providers.JsonRpcProvider(data.rpcUrl),
     recipient: data.recipient,
+    amountIn: data.amountIn,
     slippageTolerance: new Percent(data.slippage, 10_000),
     deadline: Math.floor(Date.now() / 1000 + data.deadline),
     tokenIn : new Token(data.chainId, data.tokenIn.address, data.tokenIn.decimal, data.tokenIn.symbol, data.tokenIn.name),
@@ -72,33 +71,60 @@ async function parseDataFromRequest(request: Request) {
 export async function POST(request: Request) {
   console.log('POST - get quotes')
     try {
+        
+        // const router = new AlphaRouter({
+        //     chainId: 1,
+        //     provider: mainnetProvider,
+        // })
+    
+        // const options: SwapOptionsSwapRouter02 = {
+        //     recipient: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+        //     slippageTolerance: new Percent(50, 10_000),
+        //     deadline: Math.floor(Date.now() / 1000 + 1800),
+        //     type: SwapType.SWAP_ROUTER_02,
+        // }
+          
+        // let route = await router.route(
+        //     CurrencyAmount.fromRawAmount(
+        //         WETH_TOKEN,
+        //       fromReadableAmount(
+        //         1,
+        //         18
+        //       ).toString()
+        //     ),
+        //     USDC_TOKEN,
+        //     TradeType.EXACT_INPUT,
+        //     options
+        //   )
+        // if (!route) return NextResponse.json({ success: false, message: 'failed to get route'})
+        // return NextResponse.json({ success: true, quote: route.quote.toExact(), estimatedGasUsed: route.estimatedGasUsed.toString()})
         const params = await parseDataFromRequest(request)
         const router = new AlphaRouter({
-            chainId: 1,
-            provider: mainnetProvider,
-        })
-    
-        const options: SwapOptionsSwapRouter02 = {
-            recipient: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-            slippageTolerance: new Percent(50, 10_000),
-            deadline: Math.floor(Date.now() / 1000 + 1800),
-            type: SwapType.SWAP_ROUTER_02,
-        }
-          
-        let route = await router.route(
-            CurrencyAmount.fromRawAmount(
-                WETH_TOKEN,
-              fromReadableAmount(
-                1,
-                18
-              ).toString()
-            ),
-            USDC_TOKEN,
-            TradeType.EXACT_INPUT,
-            options
-          )
-        if (!route) return NextResponse.json({ success: false, message: 'failed to get route'})
-        return NextResponse.json({ success: true, quote: route.quote.toExact(), estimatedGasUsed: route.estimatedGasUsed.toString()})
+          chainId: params.chainId,
+          provider: params.provider,
+      })
+  
+      const options: SwapOptionsSwapRouter02 = {
+          recipient: params.recipient,
+          slippageTolerance: params.slippageTolerance,
+          deadline: params.deadline,
+          type: SwapType.SWAP_ROUTER_02,
+      }
+        
+      let route = await router.route(
+          CurrencyAmount.fromRawAmount(
+              params.tokenIn,
+            fromReadableAmount(
+              params.amountIn,
+              params.tokenIn.decimals
+            ).toString()
+          ),
+          params.tokenOut,
+          TradeType.EXACT_INPUT,
+          options
+        )
+      if (!route) return NextResponse.json({ success: false, message: 'failed to get route'})
+      return NextResponse.json({ success: true, quote: route.quote.toExact(), estimatedGasUsed: route.estimatedGasUsed.toString()})
     } catch(e) {
         console.log('failed to get quotes due to:', e)
         return NextResponse.json({ success: false})

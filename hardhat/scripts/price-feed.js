@@ -57,7 +57,7 @@ const aggregatorV3InterfaceABI = [
   },
 ]
 //const addr = "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43"
-const addr = "0x773616E4d11A78F511299002da57A0a94577F1f4"
+const addr = "0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9"  // DAI/USD -- Ethereum Mainnet
 
 const priceFeed = new ethers.Contract(addr, aggregatorV3InterfaceABI, provider)
 priceFeed.latestRoundData().then((roundData) => {
