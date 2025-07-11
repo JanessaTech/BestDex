@@ -7,6 +7,7 @@ import { signMessage } from '@wagmi/core'
 import { useAuthState } from "@/config/store";
 import { setCookie, deleteCookie } from 'cookies-next';
 import { toast } from "sonner"
+import SVGClose from "@/lib/svgs/svg_close";
 
 class NetworkError extends Error {
     constructor(message: string) {
@@ -135,7 +136,6 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
                 let token = 'fake-jwt-token'
                 setCookie('token', token, { maxAge: 60 * 60 * 24 })
             } else {
-                setAuth('unauthenticated')
                 disconnect()
             }
         } catch (e: any) {
@@ -144,16 +144,21 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
         }    
     }
 
+    const handleClose = () => {
+        disconnect()
+    }
+
     return (
         <div>
             {children}
             {
-                showModal ? <div className={`fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/60 p-10 flex justify-center items-center`}>
-                                <div className="w-80 bg-zinc-800 rounded-3xl p-10 border-[1px] border-zinc-500 flex flex-col items-center gap-y-4">
+                showModal ? <div className={`fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/75 p-10 flex justify-center items-center z-50`}>
+                                <div className="w-80 bg-zinc-800 rounded-3xl p-10 border-[1px] border-zinc-500 flex flex-col items-center gap-y-4 relative">
+                                    <div><SVGClose className="w-7 h-7 hover:bg-zinc-700 active:bg-zinc-700/60 rounded-full p-1 cursor-pointer absolute right-5 top-5" onClick={handleClose}/></div>
                                     <span className="text-white text-xl font-semibold">Verify your account</span>
                                     <span className="text-sm text-zinc-400 text-center">To finish connecting, you must sign a message in your wallet to verify that you are the owner of this account</span>
                                     <div className="px-4 py-1 rounded-full bg-pink-600 hover:bg-pink-600/80 cursor-pointer text-zinc-300 font-semibold text-sm active:bg-pink-600/70" onClick={handleVerify}>Verify</div>
-                                    <div className="px-4 py-1 rounded-full  cursor-pointer text-zinc-300 font-semibold text-sm active:bg-zinc-700" onClick={handleCancel}>Cancel</div>
+                                    <div className="px-4 py-1 rounded-full  cursor-pointer text-zinc-300 hover:bg-zinc-700 font-semibold text-sm active:bg-zinc-700/85" onClick={handleCancel}>Cancel</div>
                                 </div>
                             </div>
                 : <></>

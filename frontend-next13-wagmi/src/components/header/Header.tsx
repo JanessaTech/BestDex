@@ -8,7 +8,7 @@ const Header: React.FC<HeaderProps> = () => {
     const pathname = usePathname()
     const name = pathname === '/' ? 'Swap' : pathname.substring(1)
     return (
-        <div className="h-20 z-50 sticky top-0 bg-black flex justify-between items-center main-margin">
+        <div className="h-20 z-40 sticky top-0 bg-black flex justify-between items-center main-margin">
             <div className="md:hidden">
                 <img src="/imgs/logo.svg" alt="best DEX" 
                     width={50}
