@@ -139,15 +139,9 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
                 disconnect()
             }
         } catch (e: any) {
-            if (e?.code === 4001) {
-                toast.error('You rejected. Please try again')
-                disconnect()
-            } else {
-                console.error('failed to verify due to :', e)
-                disconnect()
-            }
-        }
-        
+            toast.error('You failed to verify the message. Please try again')
+            disconnect()  
+        }    
     }
 
     return (
@@ -155,10 +149,10 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
             {children}
             {
                 showModal ? <div className={`fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/60 p-10 flex justify-center items-center`}>
-                                <div className="w-80 bg-zinc-800 rounded-3xl p-10 border-[1px] border-zinc-200 flex flex-col items-center gap-y-4">
+                                <div className="w-80 bg-zinc-800 rounded-3xl p-10 border-[1px] border-zinc-500 flex flex-col items-center gap-y-4">
                                     <span className="text-white text-xl font-semibold">Verify your account</span>
                                     <span className="text-sm text-zinc-400 text-center">To finish connecting, you must sign a message in your wallet to verify that you are the owner of this account</span>
-                                    <div className="px-4 py-1 rounded-full bg-zinc-500 cursor-pointer text-zinc-300 font-semibold text-sm active:bg-zinc-600" onClick={handleVerify}>Verify</div>
+                                    <div className="px-4 py-1 rounded-full bg-pink-600 hover:bg-pink-600/80 cursor-pointer text-zinc-300 font-semibold text-sm active:bg-pink-600/70" onClick={handleVerify}>Verify</div>
                                     <div className="px-4 py-1 rounded-full  cursor-pointer text-zinc-300 font-semibold text-sm active:bg-zinc-700" onClick={handleCancel}>Cancel</div>
                                 </div>
                             </div>
