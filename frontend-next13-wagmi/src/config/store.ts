@@ -4,21 +4,21 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 
 interface AuthState {
-    connected: AuthenticationStatus;
-    setState: (status: AuthenticationStatus) => void;
+    auth: AuthenticationStatus;
+    setAuth: (status: AuthenticationStatus) => void;
     isDone: boolean;
     setIsDone: (done: boolean) => void
 }
 
 export const useAuthState = create<AuthState>()(persist(
     (set) => ({
-        connected: 'loading',
+        auth: 'loading',
         isDone: false,
-        setState: (status) => set({connected: status}),
+        setAuth: (status) => set({auth: status}),
         setIsDone: (done) => set({isDone: done})
     }),
     {
-        name: 'auth_state',
+        name: 'authState',
         storage: createJSONStorage(() => localStorage),
         onRehydrateStorage: () => (state) => {
             state?.setIsDone(true)
