@@ -136,6 +136,7 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
                 let token = 'fake-jwt-token'
                 setCookie('token', token, { maxAge: 60 * 60 * 24 })
             } else {
+                toast.error('You failed to verify the message. Please try again')
                 disconnect()
             }
         } catch (e: any) {
