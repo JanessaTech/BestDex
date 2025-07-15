@@ -1,5 +1,5 @@
-
 ## Installed independences
+
 ```
 npm install @uniswap/v3-sdk @uniswap/sdk-core ethers@^5.8.0 @uniswap/smart-order-router
 ```
@@ -10,4 +10,5 @@ npm install @uniswap/v3-sdk @uniswap/sdk-core ethers@^5.8.0 @uniswap/smart-order
 npx ts-node .\scripts\hello.ts
 npx ts-node .\scripts\swap.ts
 npx ts-node .\scripts\quote.ts
+npx ts-node .\scripts\getPrice.ts
 ```

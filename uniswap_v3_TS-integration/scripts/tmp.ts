@@ -1,15 +1,20 @@
 
 
 function test() {
-    let amount = '0.223'
-    let next = '2'
-    const allow =  (amount === '' &&next >= '0' && next <= '9')
-    || (amount === '0' && next === '.')
-    || (/^[1-9]\d{0,2}$/.test(amount) && next >= '0' && next <= '9')
-    || (/^[1-9]\d{0,2}$/.test(amount) && next === '.')
-    || (/^[1-9]\d{0,2}\.\d{0,3}$/.test(amount) && next >= '0' && next <= '9')
-    || (/^0\.\d{0,2}$/.test(amount) && next >= '0' && next <= '9')
-
-    console.log('allow = ', allow)
+    const decimals = 2
+    const rawValue = '12300'
+    let valueStr = rawValue.toString().padStart(decimals + 1, '0');
+    console.log('valueStr =', valueStr)
+            
+    // 插入小数点
+    const integerPart = valueStr.slice(0, -decimals) || '0';
+    const fractionalPart = valueStr.slice(-decimals).replace(/0+$/, '');
+    console.log('integerPart =', integerPart)
+    console.log('fractionalPart =', fractionalPart)
+    console.log(0.1 + 0.2)
+    console.log('0x404460C6A5EdE2D891e8297795264fDe62ADBB75'.toLowerCase())
+    
 }
 test()
+
+// npx ts-node .\scripts\tmp.ts 

@@ -138,3 +138,6 @@ async function getPoolConstants(): Promise<{
 
   //  const res = toReadableAmount(12, 2)
   //  console.log(res)
+  
+  // how to run:
+  //npx ts-node .\scripts\quote.ts
