@@ -1,6 +1,5 @@
 'use client'
 
-import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import Setting from '../common/Setting'
 import { useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
@@ -19,7 +18,6 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const chainId = useChainId()
     const { openConnectModal } = useConnectModal()
     const { isConnected } = useAccount()
-    const {getCurrentPath} = useContextUtil() as IContextUtil
     const [settingOpen, setSettingOpen] = useState(false)
     const [token1Open, setToken1Open]  = useState(false)
     const [token2Open, setToken2Open]  = useState(false)

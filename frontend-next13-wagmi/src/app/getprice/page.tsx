@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { useState } from 'react'
 import { createClient, gql } from 'urql';
 import { cacheExchange, fetchExchange } from '@urql/core'
+import { tokenList } from '@/lib/data';
 
 //const provider = new ethers.providers.JsonRpcProvider("https://eth.llamarpc.com")
 const provider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
@@ -43,7 +44,8 @@ const GetPrice: React.FC<GetPriceProps> = () => {
             }
         }
         `;
-        const tokenAddress = '0x514910771af9ca656af840dff83e8264ecf986ca'  //LINK
+        const tokenAddress = '0x514910771af9ca656af840dff83e8264ecf986ca'  //LINK in ethereum
+        //const tokenAddress = '0xf97f4df75117a78c1a5a0dbb814af92458539fb4'  //LINK in Arbitrum One
         const result = await client.query(DATA_QUERY,{id: tokenAddress.toLowerCase()}).toPromise();
         if (result.error) {
             console.error('Failed to get derived price from uniswap v3 subgraphs')
@@ -56,6 +58,8 @@ const GetPrice: React.FC<GetPriceProps> = () => {
     const getPairPirceFromCoinGecko = async () => {
         try {
             const url  = 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
+            //const url  = 'https://api.coingecko.com/api/v3/simple/token_price/arbitrum-one?contract_addresses=0x82aF49447D8a07e3bd95BD0d56f35241523fBab1&vs_currencies=usd&include_24hr_change=true'
+
             const response = await fetch(url)
             const data = await response.json()
             return data['ethereum']['usd'] as string
@@ -66,6 +70,7 @@ const GetPrice: React.FC<GetPriceProps> = () => {
     }
     const getPairPriceFromChainlink  = async () => {
         const addr = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"  // ETH/USD -- Ethereum Mainnet
+        //const addr = "0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612" // ETH/USD -- Arbitrum One Mainnet
 
         const priceFeed = new ethers.Contract(addr, aggregatorV3InterfaceABI, provider)
         const latestAnswer = await priceFeed.latestAnswer()
@@ -101,7 +106,13 @@ const GetPrice: React.FC<GetPriceProps> = () => {
     }
 
     const onClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        await method1()
+       //await method1()
+       const addresses: any = []
+       const res =  tokenList.filter((chain) => chain.network_enum !== 'localhost' && chain.network_enum !== 'testnet').forEach((chain) => chain.tokens.forEach((token) => addresses.push({network: chain.network_enum, address: token.address})))
+       const data = {
+        addresses: addresses
+       }
+       console.log(data)
     }
 
     return (

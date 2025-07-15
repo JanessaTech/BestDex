@@ -14,13 +14,14 @@ import SwapInput from './SwapInput'
 import SVGLeft from '@/lib/svgs/svg_left'
 import Quotes from './Quotes'
 import { useUpdateSetting } from '@/config/store'
+import { ChainId } from '@uniswap/sdk-core'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {;
     const { chains, switchChain } = useSwitchChain()
-    const chainId = useChainId()
+    const chainId = useChainId() as ChainId
     const curChain = chains.filter((c) => c.id === chainId)[0]
-    const {getCurrentPath} = useContextUtil() as IContextUtil
+    const {tokenPrices} = useContextUtil() as IContextUtil
     const [networkOpen, setNetworkOpen] = useState(false)
     const [tokenFromOpen, setTokenFromOpen] = useState(false)
     const [tokenToOpen, setTokenToOpen]  = useState(false)
@@ -30,6 +31,8 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const [swapAmount, setSwapAmount] = useState('')
     const [step, setStep] = useState(1)
     const {slipage, deadline} = useUpdateSetting()
+
+    console.log('Price is : ', tokenPrices[chainId]?.get('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'))
 
     useEffect(() => {
         // reset tokenFrom &tokenTo when chainId is changed

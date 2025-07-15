@@ -27,7 +27,7 @@ type AuthenticationProviderProps = {
     children: ReactNode
 }
 const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children}) => {
-    const {auth, setAuth} = useAuthState()
+    const {auth, setAuth, isDone} = useAuthState()
     const {isConnected, address} = useAccount()
     const { disconnect } = useDisconnect()
     const chainId = useChainId()
@@ -37,6 +37,7 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
     console.log('AuthenticationProvider.isConnected=', isConnected)
     console.log('showModal:', showModal)
     console.log('auth:', auth)
+    console.log('isDone:', isDone)
     useEffect(() => {
         if (isConnected) {
             if (auth !== 'authenticated') {

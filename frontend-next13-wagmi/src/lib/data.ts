@@ -4,6 +4,7 @@ import  {  TransactionType } from "./types"
 export const tokenList: TokenListType = [
     {
       chainId: 1,  
+      network_enum: 'eth-mainnet',
       tokens: [
         {chainId: 1, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}, 
         {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'}
@@ -11,6 +12,7 @@ export const tokenList: TokenListType = [
     },
     {
       chainId: 137,  
+      network_enum: 'polygon-mainnet',
       tokens: [
         {chainId: 137, name: 'Polygon Ecosystem Token', symbol: 'POL', alias: 'pol', decimal: 18, address: '0x0000000000000000000000000000000000001010'},
         {chainId: 137, name: '(PoS) Tether USD', symbol: 'USDT ', alias: 'usdt', decimal: 6, address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'},
@@ -19,6 +21,7 @@ export const tokenList: TokenListType = [
     },
     {
       chainId: 42161,  
+      network_enum: 'arb-mainnet',
       tokens: [
         {chainId: 137, name: 'Dai Stablecoin', symbol: 'DAI', alias: 'dai', decimal: 18, address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'},
         {chainId: 137, name: 'Wrapped BTC', symbol: 'WBTC', alias: 'wbtc', decimal: 8, address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f'},
@@ -27,10 +30,12 @@ export const tokenList: TokenListType = [
     },
     {
       chainId: 11155111,  
+      network_enum: 'testnet',
       tokens: []
     },
     {
       chainId: 31337,  
+      network_enum: 'localhost',
       tokens: []
     }
   ]

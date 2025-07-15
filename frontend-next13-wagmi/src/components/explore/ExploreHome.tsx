@@ -1,13 +1,11 @@
 'use client'
 
-import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Tabs,TabsList, TabsTrigger } from "@/components/ui/tabs"
 import PositionsHome from "./position/PositionsHome"
 import TransactionsHome from "./transaction/TransactionsHome"
 
 type ExploreHomeProps = {}
 const ExploreHome:React.FC<ExploreHomeProps> = () => {
-    //const {getCurrentPath} = useContextUtil() as IContextUtil
 
     return (
         <div>
