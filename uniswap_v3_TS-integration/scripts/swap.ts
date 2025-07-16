@@ -7,9 +7,10 @@ import {
     SwapType,
     
   } from '@uniswap/smart-order-router'
-import { CurrencyAmount, Percent, Token, TradeType} from '@uniswap/sdk-core';
+import { CurrencyAmount, Percent, Rounding, Token, TradeType} from '@uniswap/sdk-core';
+import { Decimal } from 'decimal.js';
 
-const mainnetProvider = new ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/c385e2e722284dc9b570de7ede60dba1")
+const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
 const localProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
 
 // Addresses
@@ -272,11 +273,15 @@ async function main() {
   try {
     const route = await generateRoute()
     if (!route) throw new Error('failed to get route')
+    const gasPrice = (await mainnetProvider.getGasPrice()).toString()
     console.log('The best price:', route?.quote.toExact())
     console.log('PoolIdentifiers:', route?.route.map((r) => r.poolIdentifiers))
     console.log('The path detail:', route?.route.map((r) => r.tokenPath.map((t) => t.symbol).join(' -> ')).join(', '))
     console.log('Estimated Gas:', route?.estimatedGasUsed.toString())
-    console.log('Estimated USD:', route?.estimatedGasUsedUSD.toExact())
+    console.log('Estimated Gas(gwei):', new Decimal(route?.estimatedGasUsed.toString()).dividedBy(1000000000).toString())
+    console.log('getGasPrice:', gasPrice)
+    console.log('cost(eth): ', new Decimal(route?.estimatedGasUsed.toString()).times(new Decimal(gasPrice)).div('1000000000000000000').toDecimalPlaces(18, Decimal.ROUND_HALF_UP).toString())
+    console.log('Estimated USD:', route?.estimatedGasUsedUSD.toFixed(2))
     await getGasPrice()
     // const res = await executeRoute(route)
     // console.log('executeRoute result: ', res)
@@ -288,3 +293,5 @@ async function main() {
 main().then().catch(e => {
   console.error(e)
 })
+
+//npx ts-node .\scripts\swap.ts
