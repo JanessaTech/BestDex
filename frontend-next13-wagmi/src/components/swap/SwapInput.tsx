@@ -23,7 +23,7 @@ const SwapInput: React.FC<SwapInputProps> = ({tokenFrom, amount, hidden, onChang
         if (tokenFrom && tokenFrom?.address && amount) {
             const price = tokenPrices[chainId]?.get(tokenFrom?.address)
             const estimatedUSD = new Decimal(price ? price : '0').times(new Decimal(amount)).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
-            console.log('estimatedUSD = ', estimatedUSD)
+            //console.log('estimatedUSD = ', estimatedUSD)
             setUsd(estimatedUSD)
         } else {
             setUsd('')

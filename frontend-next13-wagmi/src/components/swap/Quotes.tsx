@@ -8,12 +8,16 @@ import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
 import { useAccount, useChainId, useChains,useClient} from 'wagmi'
 import Spinner from "../common/Spinner"
 import SVGWarning from "@/lib/svgs/svg_warning"
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
+import { Decimal } from 'decimal.js'
+import { ChainId } from '@uniswap/sdk-core'
 
 
 type NoQuotesProps = {
   handlePrevStep: () => void
 }
 const NoQuotes: React.FC<NoQuotesProps> = ({handlePrevStep}) => {
+  
   return (
     <div className="flex flex-col items-center justify-center w-full h-80">
       <SVGWarning className="text-red-400 w-20 h-20"/>
@@ -34,21 +38,44 @@ type QuotesProps = {
   handlePrevStep: () => void
 }
 const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, handlePrevStep}) => {
+    const {tokenPrices} = useContextUtil() as IContextUtil
     const { isConnected, address} = useAccount()
     const { openConnectModal } = useConnectModal()
     const [loading, setLoading] = useState<boolean>(false) // loading flag is set only when we first load the page
     const [hiddenLoading, setHiddenLoading] = useState<boolean>(false)  // the loading flag is set when an time interval is ended
     const [quote, setQuote] = useState('')
     const [estimatedGasUsed, setEstimatedGasUsed] = useState('')
+    const [estimatedGasUsedUSD, setEstimatedGasUsedUSD] = useState('')
     const [isError, setIsError] = useState(false)
     const [seconds, setSeconds] = useState(30)
     const [startCountDown, setStartCountDown] = useState(false)
+    const [tokenInUSD, setTokenInUSD] = useState('')
+    const [tokenOutUSD, setTokenOutUSD] = useState('')
+    const [loss, setLoss] = useState('')
 
-    const chainId = useChainId()
+    const chainId = useChainId() as ChainId
     const chains = useChains()
     const client = useClient()
     const chain = chains.find((chain) => chain.id === chainId)
     const rpcUrl  = client?.transport.url // we can make sure rpcUrl is not empty
+
+    const updateUSD = (quote: string) => {
+      const inPrice = tokenPrices[chainId]?.get(tokenFrom?.address)
+      const outPrice = tokenPrices[chainId]?.get(tokenTo?.address)
+      if (inPrice && outPrice) {
+        const poolValue = new Decimal(outPrice).times(new Decimal(quote))
+        const heldValue = new Decimal(inPrice).times(new Decimal(swapAmount))
+        setTokenInUSD(heldValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())
+        setTokenOutUSD(poolValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())
+        const loss = heldValue.isZero() ? '' : poolValue.dividedBy(heldValue).minus(new Decimal(1)).times(100).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
+        setLoss(loss)
+        console.log('poolValue:', poolValue.toString())
+        console.log('heldValue:', heldValue.toString())
+        console.log('loss:', loss)
+      } else {
+        setLoss('')
+      }
+    }
     
     useEffect(() => {
         (async () => {
@@ -100,7 +127,9 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         if (!result.success) throw new Error('failed to read /api/quotes')
         console.log('result:', result)
         setQuote(result.quote)
+        updateUSD(result.quote)
         setEstimatedGasUsed(result.estimatedGasUsed)
+        setEstimatedGasUsedUSD(result.estimatedGasUsedUSD)
       } catch (e) {
         console.log('failed to get quotes due to:', e)
         setIsError(true)
@@ -124,11 +153,11 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                 : <>
                     <div className="flex flex-col items-center">
                       <div className="my-2"><span className="text-xs text-zinc-400">{hiddenLoading ? 'Calculating new quotes...' : `New Quotes in 0:${seconds}`}</span></div>
-                      <div className="flex items-center"><span className="px-2">{swapAmount}</span><Token token={tokenFrom} imageSize={40}/> <span className="text-zinc-400">($2,531.76)</span></div>
+                      <div className="flex items-center"><span className="px-2">{swapAmount}</span><Token token={tokenFrom} imageSize={40}/> <span className="text-zinc-400">{tokenInUSD ? `($${tokenInUSD})` : ''}</span></div>
                       <div><SVGArrowDownMid className="size-6 text-zinc-400"/></div>
                       <div className="my-2"><Token token={tokenTo} imageSize={40}/></div>
                       <div className="my-2"><span className="text-4xl">{quote}</span></div>
-                      <div><span className="text-zinc-400">($2,512.74)</span><span className="text-pink-600 font-semibold mx-2">-0.908%</span></div>
+                      <div><span className="text-zinc-400">{tokenOutUSD ? `($${tokenOutUSD})` : ''}</span><span className="text-pink-600 font-semibold mx-2">{loss ? `${loss}%` : ''}</span></div>
                     </div>
                     <div className="border-y-[1px] border-zinc-600 py-3 my-10">
                       <div className="flex justify-between">
@@ -138,10 +167,10 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                               <div className="w-[200px] text-xs">BEST dex doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is</div>
                             </QuestionMarkToolTip>
                         </div>
-                        <div>0.000490664 {chain?.nativeCurrency.symbol}</div>
+                        <div>{estimatedGasUsed} {chain?.nativeCurrency.symbol}</div>
                       </div>
                       <div className="flex justify-end mt-1">
-                        <div>Max fee:$2.76</div>
+                        <div>Estimated fee:${estimatedGasUsedUSD}</div>
                       </div>
                     </div>
                     <div className='flex justify-center'>

@@ -7,7 +7,8 @@ import {
 import { ethers } from 'ethers'
 import JSBI from 'jsbi'
 import { TradeType, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import type { QuotesParameterType } from '@/lib/types';
+import type { QuotesParameterType } from '@/lib/types'
+import { Decimal } from 'decimal.js'
 
 export function fromReadableAmount(amount: number, decimals: number): JSBI {
     const extraDigits = Math.pow(10, countDecimals(amount))
@@ -71,7 +72,13 @@ export async function POST(request: Request) {
           options
         )
       if (!route) return NextResponse.json({ success: false, message: 'failed to get route'})
-      return NextResponse.json({ success: true, quote: route.quote.toExact(), estimatedGasUsed: route.estimatedGasUsed.toString()})
+      const cost  = new Decimal(route?.estimatedGasUsed.toString()).times(new Decimal((await params.provider.getGasPrice()).toString())).div('1000000000000000000').toDecimalPlaces(18, Decimal.ROUND_HALF_UP).toString()
+      return NextResponse.json({ 
+      success: true, 
+      quote: route.quote.toExact(), 
+      estimatedGasUsed: cost,
+      estimatedGasUsedUSD: route.estimatedGasUsedUSD.toFixed(2)
+      })
     } catch(e) {
         console.log('failed to get quotes due to:', e)
         return NextResponse.json({ success: false})
