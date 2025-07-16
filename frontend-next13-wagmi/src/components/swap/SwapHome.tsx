@@ -1,7 +1,6 @@
 'use client'
 
 import { useChainId, useSwitchChain} from 'wagmi'
-import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import NetworkOption from '../common/NetworkOption'
 import { useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
@@ -21,7 +20,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const { chains, switchChain } = useSwitchChain()
     const chainId = useChainId() as ChainId
     const curChain = chains.filter((c) => c.id === chainId)[0]
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    
     const [networkOpen, setNetworkOpen] = useState(false)
     const [tokenFromOpen, setTokenFromOpen] = useState(false)
     const [tokenToOpen, setTokenToOpen]  = useState(false)
@@ -32,8 +31,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
     const [step, setStep] = useState(1)
     const {slipage, deadline} = useUpdateSetting()
 
-    console.log('Price is : ', tokenPrices[chainId]?.get('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'))
-
+    
     useEffect(() => {
         // reset tokenFrom &tokenTo when chainId is changed
         setTokenFrom(undefined)
@@ -156,7 +154,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                             updateToken={handleTokenFromChange}
                                             />
 
-                                        <SwapInput amount={swapAmount} hidden={tokenFromOpen} onChange={handleInputChange}/>
+                                        <SwapInput tokenFrom={tokenFrom} amount={swapAmount} hidden={tokenFromOpen} onChange={handleInputChange}/>
                                     </div>
                                 </div> 
                                 <div className='my-8 flex justify-center'>

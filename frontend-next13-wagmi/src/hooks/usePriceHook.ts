@@ -72,7 +72,7 @@ const usePriceHook = () => {
 
         const data = {addresses: addresses}
 
-        console.log('data:', data)
+        //console.log('data:', data)
 
         try {
             const startTime = performance.now()
@@ -87,7 +87,7 @@ const usePriceHook = () => {
             }
     
             const res = await response.json();
-            console.log(JSON.stringify(res, null, 2)); 
+            //console.log(JSON.stringify(res, null, 2)); 
             let endTime = performance.now()
             let executionTime = endTime - startTime
             console.log('it takes times:', executionTime)

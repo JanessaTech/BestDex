@@ -4,7 +4,7 @@ export type TokenType = {
     symbol: string;
     decimal: number;
     alias: string;
-    address: string;
+    address: `0x${string}`;
     company?: string
 }
 export type Network_Enum = 'eth-mainnet' | 'arb-mainnet' | 'bnb-mainnet' | 'polygon-mainnet' | 'localhost' | 'testnet'
