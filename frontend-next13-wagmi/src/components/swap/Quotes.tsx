@@ -11,6 +11,7 @@ import SVGWarning from "@/lib/svgs/svg_warning"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
 import { ChainId } from '@uniswap/sdk-core'
+import ReviewSwap from "./ReviewSwap"
 
 
 type NoQuotesProps = {
@@ -52,6 +53,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const [tokenInUSD, setTokenInUSD] = useState('')
     const [tokenOutUSD, setTokenOutUSD] = useState('')
     const [loss, setLoss] = useState('')
+
+    const [openModal, setOpenModal] = useState(false)
 
     const chainId = useChainId() as ChainId
     const chains = useChains()
@@ -140,7 +143,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     }
 
     const handleSwap = () => {
-
+      setOpenModal(true)
     }
 
     return (
@@ -180,6 +183,16 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                           onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Swap' :'Connect Wallet'}
                       </Button>
                     </div>
+                    {
+                      openModal && <ReviewSwap 
+                                      tokenFrom={tokenFrom} 
+                                      tokenTo={tokenTo} 
+                                      approveAmount={swapAmount}
+                                      quote={quote}
+                                      tokenInUSD={tokenInUSD}
+                                      tokenOutUSD={tokenOutUSD}
+                                      setOpenModal={setOpenModal}/>
+                    }
                   </>
           }
         </div>

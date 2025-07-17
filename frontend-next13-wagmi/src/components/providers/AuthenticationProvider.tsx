@@ -155,7 +155,7 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
             {children}
             {
                 showModal ? <div className={`fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/75 p-10 flex justify-center items-center z-50`}>
-                                <div className="w-80 bg-zinc-800 rounded-3xl p-10 border-[1px] border-zinc-500 flex flex-col items-center gap-y-4 relative">
+                                <div className="w-80 bg-zinc-800 rounded-xl p-10 border-[1px] border-zinc-500 flex flex-col items-center gap-y-4 relative">
                                     <div><SVGClose className="w-7 h-7 hover:bg-zinc-700 active:bg-zinc-700/60 rounded-full p-1 cursor-pointer absolute right-5 top-5" onClick={handleClose}/></div>
                                     <span className="text-white text-xl font-semibold">Verify your account</span>
                                     <span className="text-sm text-zinc-400 text-center">To finish connecting, you must sign a message in your wallet to verify that you are the owner of this account</span>

@@ -87,10 +87,10 @@ const usePriceHook = () => {
             }
     
             const res = await response.json();
-            console.log(JSON.stringify(res, null, 2)); 
+            //console.log(JSON.stringify(res, null, 2)); 
             let endTime = performance.now()
             let executionTime = endTime - startTime
-            console.log('it takes times:', executionTime)
+            //console.log('it takes times:', executionTime)
             return res['data'] as ReturnPriceType[]; 
         } catch (error) {
             console.error('Fetch error:', error);
