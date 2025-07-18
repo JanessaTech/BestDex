@@ -31,6 +31,8 @@ const NoQuotes: React.FC<NoQuotesProps> = ({handlePrevStep}) => {
   )
 }
 
+const span = 60
+
 type QuotesProps = {
   tokenFrom: TokenType;
   tokenTo: TokenType;
@@ -82,8 +84,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     
     useEffect(() => {
         (async () => {
-            await updateQuotes(true)
-            setSeconds(30)
+            //await updateQuotes(true)
+            setSeconds(span)
             setStartCountDown(true)
         })()
     }, [])
@@ -96,8 +98,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         } else if (seconds === 0) {
           (async () => {
             console.log('running updateQuotes')
-            await updateQuotes(false)
-            setSeconds(30)  // start a new time interval
+            //await updateQuotes(false)
+            setSeconds(span)  // start a new time interval
             console.log('done updateQuotes')
           })()
         }
@@ -143,6 +145,14 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     }
 
     const handleSwap = () => {
+      setOpenModal(true)
+    }
+
+    const handleTest = () => {
+      console.log('handleTest...')
+      setQuote('10')
+      setTokenInUSD('1234')
+      setTokenOutUSD('5678')
       setOpenModal(true)
     }
 
@@ -197,6 +207,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                     }
                   </>
           }
+          <div><Button onClick={handleTest}>Open Review</Button></div>
+
         </div>
     )
 }

@@ -8,6 +8,7 @@ import { toast } from "sonner"
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
+import SwaperExecutor from "./SwapExecutor";
 
 type ReviewSwapProps = {
     tokenFrom: TokenType;
@@ -21,6 +22,7 @@ type ReviewSwapProps = {
 const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, quote, tokenInUSD, tokenOutUSD, setOpenModal}) => {
     const [approveAmount, setApproveAmount] = useState(swapAmount)
     const [inputUSD, setInputUSD] = useState(tokenInUSD)
+    const [approved, setApproved] = useState(false)
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as ChainId
     const handleClose = () => {
@@ -40,6 +42,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
             toast.warning(`The value you will approve must be equal to or greater than ${swapAmount}`)
             return
         }
+        setApproved(true)
         console.log('handleApprove ...')
     }
 
@@ -111,14 +114,16 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                         <Token token={tokenTo} imageSize={40} showText={false}/>
                     </div>
                 </div>
-                <div className='flex justify-center'>
-                    <Button 
+                {
+                    approved
+                    ? <div className='flex justify-center'>
+                        <Button 
                         className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600 active:bg-pink-700/80' 
                         onClick={handleApprove}>Approve and swap
-                    </Button>
-                </div>
-
-
+                        </Button>
+                      </div>
+                    : <SwaperExecutor tokenFrom={tokenFrom}/>
+                }
             </div>
         </div>
     )

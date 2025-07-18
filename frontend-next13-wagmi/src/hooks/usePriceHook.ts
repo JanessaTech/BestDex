@@ -35,7 +35,7 @@ const usePriceHook = () => {
                 
 
             })()
-        }, 10000)
+        }, 20000)
         return () => {
             clearInterval(interval)
         }
