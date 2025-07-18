@@ -175,7 +175,7 @@ const SwapHome: React.FC<SwapHomeProps> = () => {;
                                 </div>
                                 <div className='flex justify-center'>
                                     <Button 
-                                        className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
+                                        className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600 active:bg-pink-700/80'
                                         disabled={!tokenFrom || !tokenTo || !swapAmount}
                                         onClick={handleGetQuotes}
                                         >

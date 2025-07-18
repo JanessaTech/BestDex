@@ -173,12 +173,14 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                         <div>{estimatedGasUsed} {chain?.nativeCurrency.symbol}</div>
                       </div>
                       <div className="flex justify-end mt-1">
-                        <div>Estimated fee:${estimatedGasUsedUSD}</div>
+                        <div className="flex">
+                          <div>Estimated fee:</div><div className="text-pink-600 pl-1">${estimatedGasUsedUSD}</div>
+                        </div>
                       </div>
                     </div>
                     <div className='flex justify-center'>
                       <Button 
-                          className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
+                          className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600 active:bg-pink-700/80' 
                           disabled={isConnected ? !tokenFrom || !tokenTo || !swapAmount : false}
                           onClick={isConnected ? handleSwap : openConnectModal}>{isConnected ? 'Swap' :'Connect Wallet'}
                       </Button>
@@ -187,7 +189,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                       openModal && <ReviewSwap 
                                       tokenFrom={tokenFrom} 
                                       tokenTo={tokenTo} 
-                                      approveAmount={swapAmount}
+                                      swapAmount={`${swapAmount}`}
                                       quote={quote}
                                       tokenInUSD={tokenInUSD}
                                       tokenOutUSD={tokenOutUSD}
