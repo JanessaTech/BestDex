@@ -70,7 +70,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                     <div className="flex flex-col gap-1 ">
                         <div className="text-xs text-zinc-400">You pay</div>
                         <div className="flex items-center text-xl">
-                            <input className="px-3 bg-inherit"
+                            <input className="px-3 bg-inherit max-md:w-36"
                                 value={approveAmount}
                                 onChange={handleInputChange}
                                 onKeyDown={(event) => {
@@ -101,7 +101,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                     <div className="flex flex-col gap-1 ">
                         <div className="text-xs text-zinc-400">You will receive probably</div>
                         <div className="flex items-center">
-                            <div className="text-xl">{quote}</div>
+                            <div className="text-xl max-md:w-36 truncate">{quote}</div>
                             <div className="px-2 text-sm">{tokenTo.symbol}</div>
                         </div>
                         
