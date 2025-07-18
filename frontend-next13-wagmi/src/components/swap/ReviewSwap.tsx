@@ -5,24 +5,30 @@ import Token from "../common/Token";
 import { Button } from "@/components/ui/button"
 import { Decimal } from 'decimal.js'
 import { toast } from "sonner"
+import { useChainId} from 'wagmi'
+import { ChainId } from '@uniswap/sdk-core'
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 
 type ReviewSwapProps = {
     tokenFrom: TokenType;
     tokenTo: TokenType;
     swapAmount: string;
     quote: string;
-    tokenInUSD:string;
+    tokenInUSD: string;
     tokenOutUSD:string;
     setOpenModal: Dispatch<SetStateAction<boolean>>
 }
 const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, quote, tokenInUSD, tokenOutUSD, setOpenModal}) => {
     const [approveAmount, setApproveAmount] = useState(swapAmount)
+    const [inputUSD, setInputUSD] = useState(tokenInUSD)
+    const {tokenPrices} = useContextUtil() as IContextUtil
+    const chainId = useChainId() as ChainId
     const handleClose = () => {
         setOpenModal(false)
     }
 
     const checkApproveAmount = () => {
-        if (new Decimal(approveAmount).lessThan(new Decimal(swapAmount))) {
+        if (!approveAmount || new Decimal(approveAmount).lessThan(new Decimal(swapAmount))) {
             return false
         }
         return true
@@ -39,6 +45,17 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setApproveAmount(e.target.value)
+        calcUSD(e.target.value)
+    }
+
+    const calcUSD = (input: string) => {
+        const inPrice = tokenPrices[chainId]?.get(tokenFrom?.address)
+        if (inPrice && input) {
+            const heldValue = new Decimal(inPrice).times(new Decimal(input))
+            setInputUSD(heldValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())
+        } else {
+            setInputUSD('0')
+        }
     }
 
     return (
@@ -74,7 +91,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                             </input>
                             <div className="px-2 text-sm">{tokenFrom.symbol}</div>
                         </div>
-                        <div className="text-xs text-zinc-400">${tokenInUSD}</div>
+                        <div className="text-xs text-zinc-400">${inputUSD}</div>
                     </div>
                     <div>
                         <Token token={tokenFrom} imageSize={40} showText={false}/>
