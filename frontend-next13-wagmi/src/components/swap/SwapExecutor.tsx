@@ -1,8 +1,7 @@
 import type { TokenType } from "@/lib/types";
-import Token from "../common/Token";
 import SVGCheck from "@/lib/svgs/svg_check";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import SVGLockOpen from "@/lib/svgs/svg_lock_open";
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGSign from "@/lib/svgs/svg_sign";
@@ -26,7 +25,11 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom}) => {
             <div className="flex items-center relative">
                 <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isLoading ? '' : 'hidden'}`}/>
                 <SVGLockOpen className="text-white size-4 ml-[4px]"/>
-                <div className={`text-xs pl-4 ${isLoading ? 'text-pink-600' : 'text-zinc-400'}`}>Approve in wallet</div>
+                <div className={`text-xs pl-4 ${isLoading ? 'text-pink-600' : 'text-zinc-400'}`}>{isLoading 
+                                                                                                        ? 'Approve in wallet' 
+                                                                                                        : success
+                                                                                                            ? 'Approved'
+                                                                                                            : 'Failed'}</div>
             </div>
             <div>
                 {
@@ -53,7 +56,11 @@ const SignStep:React.FC<SignStepProps> = ({}) => {
             <div className="flex items-center relative">
                 <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isLoading ? '' : 'hidden'}`}/>
                 <SVGSign className="text-white size-4 ml-[4px]"/>
-                <div className={`text-xs pl-4 ${isLoading ? 'text-pink-600' : 'text-zinc-400'}`}>Sign message</div>
+                <div className={`text-xs pl-4 ${isLoading ? 'text-pink-600' : 'text-zinc-400'}`}>{isLoading 
+                                                                                                        ? 'Sign the message' 
+                                                                                                        : success
+                                                                                                            ? 'Signed'
+                                                                                                            : 'Failed'}</div>
             </div>
             <div>
                 {
@@ -69,17 +76,29 @@ const SignStep:React.FC<SignStepProps> = ({}) => {
         </div>
     )
 }
-type ConfirmStepProps = {}
-const ConfirmStep:React.FC<ConfirmStepProps> = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [success, isSucess] = useState(false)
+type ConfirmStepProps = {
+    setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
+}
+const ConfirmStep:React.FC<ConfirmStepProps> = ({setShowSwapSuccess}) => {
+    const [isLoading, setIsLoading] = useState(true)
+    const [success, setSucess] = useState(true)
+    useEffect(() => {
+        setInterval(() => {
+            setSucess(true)
+            setShowSwapSuccess(true)
+        }, 10000)
+    }, [])
 
     return (
         <div className="flex justify-between items-center">
             <div className="flex items-center relative">
                 <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isLoading ? '' : 'hidden'}`}/>
                 <SVGCheckCircle className="text-white size-5 ml-[2px]"/>
-                <div className={`text-xs pl-3 ${isLoading ? 'text-pink-600' : 'text-zinc-400'}`}>Confirm swap in wallet</div>
+                <div className={`text-xs pl-3 ${isLoading ? 'text-pink-600' : 'text-zinc-400'}`}>{isLoading 
+                                                                                                        ? 'Confirm swap in wallet' 
+                                                                                                        : success
+                                                                                                            ? 'Confirmed'
+                                                                                                            : 'Failed'}</div>
             </div>
             <div>
                 {
@@ -96,19 +115,20 @@ const ConfirmStep:React.FC<ConfirmStepProps> = () => {
     )
 }
 
-type SwaperExecutorProps = {
+type SwapeExecutorProps = {
     tokenFrom: TokenType;
+    setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
 }
-const SwaperExecutor: React.FC<SwaperExecutorProps> = ({tokenFrom}) => {
+const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, setShowSwapSuccess}) => {
     return (
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
             <ApproveStep tokenFrom={tokenFrom}/>
             <Seperator/>
             <SignStep/>
             <Seperator/>
-            <ConfirmStep/> 
+            <ConfirmStep setShowSwapSuccess={setShowSwapSuccess}/> 
         </div>
     )
 }
 
-export default SwaperExecutor
+export default SwapeExecutor
