@@ -1,11 +1,11 @@
 import SVGCheck from "@/lib/svgs/svg_check";
 import SVGLockOpen from "@/lib/svgs/svg_lock_open";
 import { TokenType } from "@/lib/types";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import JSBI from 'jsbi'
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
-import { useWriteContract, useReadContract } from 'wagmi'
+import { useWriteContract } from 'wagmi'
 import { ERC20 } from "@/config/abis"
 import { memo } from "react";
 
@@ -34,40 +34,34 @@ type ApproveStepProps = {
     tokenFrom: TokenType;
 }
 const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom}) => {
-    //const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
-    const {data: message, isSuccess, isLoading, error} = useReadContract({
-        abi:ERC20,
-        address: tokenFrom.address,
-        functionName: 'symbol'
-      })
+    const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
 
-    // const handleApprove = () => {
-    //     writeContract({
-    //         address: tokenFrom.address,
-    //         abi:ERC20,
-    //         functionName: 'approve',
-    //         args: [V3_SWAP_ROUTER_ADDRESS, '1000']
-    //     })
-    // }
-
-    const handleReadSymbol = () => {
-
+    const handleApprove = () => {
+        writeContract({
+            address: tokenFrom.address,
+            abi:ERC20,
+            functionName: 'approve',
+            args: [V3_SWAP_ROUTER_ADDRESS, '1000']
+        })
     }
 
     useEffect(() => {
         console.log('start handleApprove ...')
-        //handleApprove()
+        handleApprove()
     }, [])
     console.log('tokenFrom', tokenFrom.address)
-    console.log('message:', message)
+    console.log('hash:', hash)
+    console.log('isSuccess:', isSuccess)
+    console.log('isPending:', isPending)
+    console.log('error:', error)
     
 
     return (
         <div className="flex justify-between items-center">
             <div className="flex items-center relative">
-                <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isLoading ? '' : 'hidden'}`}/>
+                <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending ? '' : 'hidden'}`}/>
                 <SVGLockOpen className="text-white size-4 ml-[4px]"/>
-                <div className={`text-xs pl-4 ${isLoading ? 'text-pink-600' : 'text-zinc-400'}`}>{isLoading 
+                <div className={`text-xs pl-4 ${isPending ? 'text-pink-600' : 'text-zinc-400'}`}>{isPending 
                                                                                                         ? 'Approve in wallet' 
                                                                                                         : isSuccess
                                                                                                             ? 'Approved'
@@ -75,11 +69,11 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom}) => {
             </div>
             <div>
                 {
-                    isLoading
+                    isPending
                     ? <></>
-                    : isLoading
+                    : isSuccess
                         ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                        : <ToolTipHelper content={<p>{error?.message}</p>}>
+                        : <ToolTipHelper content={<div className="w-80">{error?.message}</div>}>
                             <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
                           </ToolTipHelper>
                 }  
