@@ -1,3 +1,4 @@
+import { memo } from "react"
 import SVGClose from "@/lib/svgs/svg_close"
 import type { TokenType } from "@/lib/types";
 import { Dispatch, SetStateAction, useState } from "react"
@@ -163,4 +164,4 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
     )
 }
 
-export default ReviewSwap
+export default memo(ReviewSwap)
