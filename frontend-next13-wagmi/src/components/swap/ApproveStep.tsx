@@ -33,8 +33,9 @@ function countDecimals(x: number) {
 type ApproveStepProps = {
     tokenFrom: TokenType;
     approveAmount: string;
+    goNext: () => void
 }
-const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount}) => {
+const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount, goNext}) => {
 
     const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
 
@@ -50,6 +51,12 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount}) => 
     useEffect(() => {
         handleApprove()
     }, [])
+
+    useEffect(() => {
+        if (isSuccess) {
+            goNext()
+        }
+    }, [isSuccess])
     
     return (
         <div className="flex justify-between items-center">
