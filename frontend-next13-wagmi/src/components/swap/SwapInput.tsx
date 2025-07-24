@@ -1,4 +1,4 @@
-import { TokenType } from "@/lib/types";
+import { LocalChainIds, TokenType } from "@/lib/types";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
@@ -14,14 +14,15 @@ type SwapInputProps = {
 const SwapInput: React.FC<SwapInputProps> = ({tokenFrom, amount, hidden, onChange}) => {
     const [usd, setUsd] = useState('')
     const {tokenPrices} = useContextUtil() as IContextUtil
-    const chainId = useChainId() as ChainId
+    const chainId = useChainId() as (ChainId | LocalChainIds)
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value)
     }
 
     useEffect(() => {
         if (tokenFrom && tokenFrom?.address && amount) {
-            const price = tokenPrices[chainId]?.get(tokenFrom?.address)
+            const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId  // for test
+            const price = tokenPrices[targetChainId]?.get(tokenFrom?.address)
             const estimatedUSD = new Decimal(price ? price : '0').times(new Decimal(amount)).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
             //console.log('estimatedUSD = ', estimatedUSD)
             setUsd(estimatedUSD)

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { ChainId } from '@uniswap/sdk-core'
 import { tokenList } from "@/lib/data";
-import { Network_Enum } from "@/lib/types";
+import { Network_Enum, LocalChainIds } from "@/lib/types";
 
 export type TokenPriceInUSDType = {
-    [K in ChainId]?: Map<`0x${string}`, string>
+    [K in ChainId | LocalChainIds]?: Map<`0x${string}`, string>
 }
 
 type ReturnPriceType = {

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import type { QuotesParameterType, TokenType } from "@/lib/types"
+import type { LocalChainIds, QuotesParameterType, TokenType } from "@/lib/types"
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from "react"
 import Token from "../common/Token"
@@ -58,15 +58,17 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
 
     const [openModal, setOpenModal] = useState(false)
 
-    const chainId = useChainId() as ChainId
+    const chainId = useChainId() as (ChainId | LocalChainIds)
     const chains = useChains()
     const client = useClient()
     const chain = chains.find((chain) => chain.id === chainId)
     const rpcUrl  = client?.transport.url // we can make sure rpcUrl is not empty
 
     const updateUSD = (quote: string) => {
-      const inPrice = tokenPrices[chainId]?.get(tokenFrom?.address)
-      const outPrice = tokenPrices[chainId]?.get(tokenTo?.address)
+      const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
+
+      const inPrice = tokenPrices[targetChainId]?.get(tokenFrom?.address)
+      const outPrice = tokenPrices[targetChainId]?.get(tokenTo?.address)
       if (inPrice && outPrice) {
         const poolValue = new Decimal(outPrice).times(new Decimal(quote))
         const heldValue = new Decimal(inPrice).times(new Decimal(swapAmount))
@@ -84,7 +86,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     
     useEffect(() => {
         (async () => {
-            //await updateQuotes(true)
+            await updateQuotes(true)
             setSeconds(span)
             setStartCountDown(true)
         })()
@@ -98,7 +100,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         } else if (seconds === 0) {
           (async () => {
             console.log('running updateQuotes')
-            //await updateQuotes(false)
+            await updateQuotes(false)
             setSeconds(span)  // start a new time interval
             console.log('done updateQuotes')
           })()
@@ -113,8 +115,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
       if (first) setLoading(true)
       else setHiddenLoading(true)
       const data: QuotesParameterType = {
-        chainId: chainId,
-        rpcUrl: rpcUrl,
+        chainId: chainId === 31337 ? ChainId.MAINNET : chainId,   // for test
+        rpcUrl: chainId === 31337 ? `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}` : rpcUrl,   // for test
         recipient: address!,
         slippage: setting.slipage * 100, // one ten-thousandth
         deadline: setting.deadline === '' ? 1800 : setting.deadline * 60, // in seconds
@@ -122,6 +124,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         tokenIn: tokenFrom,
         tokenOut: tokenTo
       }
+
+      console.info('data:', data)
       try {
         const response = await fetch('/api/quotes', {
           method: 'POST',

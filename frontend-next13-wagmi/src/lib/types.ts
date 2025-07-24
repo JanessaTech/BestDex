@@ -27,3 +27,5 @@ export type QuotesParameterType = {
     tokenIn: TokenType,
     tokenOut: TokenType
 }
+
+export type LocalChainIds = 31337

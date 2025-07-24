@@ -1,6 +1,6 @@
 import { memo } from "react"
 import SVGClose from "@/lib/svgs/svg_close"
-import type { TokenType } from "@/lib/types";
+import type { LocalChainIds, TokenType } from "@/lib/types";
 import { Dispatch, SetStateAction, useState } from "react"
 import Token from "../common/Token";
 import { Button } from "@/components/ui/button"
@@ -54,7 +54,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
     const [approved, setApproved] = useState(false)
     const [showSwapSuccess, setShowSwapSuccess] = useState(false)
     const {tokenPrices} = useContextUtil() as IContextUtil
-    const chainId = useChainId() as ChainId
+    const chainId = useChainId() as (ChainId | LocalChainIds)
     const handleClose = () => {
         setOpenModal(false)
     }
@@ -73,7 +73,6 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
             return
         }
         setApproved(true)
-        console.log('handleApprove ...')
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +81,8 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
     }
 
     const calcUSD = (input: string) => {
-        const inPrice = tokenPrices[chainId]?.get(tokenFrom?.address)
+        const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId  // for test
+        const inPrice = tokenPrices[targetChainId]?.get(tokenFrom?.address)
         if (inPrice && input) {
             const heldValue = new Decimal(inPrice).times(new Decimal(input))
             setInputUSD(heldValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())
