@@ -12,12 +12,13 @@ const Seperator = () => {
 
 type SwapeExecutorProps = {
     tokenFrom: TokenType;
+    approveAmount: string;
     setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
 }
-const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, setShowSwapSuccess}) => {
+const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, approveAmount, setShowSwapSuccess}) => {
     return (
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
-            <ApproveStep tokenFrom={tokenFrom}/>
+            <ApproveStep tokenFrom={tokenFrom} approveAmount={approveAmount}/>
             <Seperator/>
             <SignStep/>
             <Seperator/>

@@ -32,8 +32,9 @@ function countDecimals(x: number) {
 
 type ApproveStepProps = {
     tokenFrom: TokenType;
+    approveAmount: string;
 }
-const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom}) => {
+const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount}) => {
 
     const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
 
@@ -42,7 +43,7 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom}) => {
             address: tokenFrom.address,
             abi:ERC20,
             functionName: 'approve',
-            args: [V3_SWAP_ROUTER_ADDRESS, '5000']
+            args: [V3_SWAP_ROUTER_ADDRESS, fromReadableAmount(Number(approveAmount), tokenFrom.decimal).toString()]
         })
     }
 
@@ -55,11 +56,14 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom}) => {
             <div className="flex items-center relative">
                 <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending ? '' : 'hidden'}`}/>
                 <SVGLockOpen className="text-white size-4 ml-[4px]"/>
-                <div className={`text-xs pl-4 ${isPending ? 'text-pink-600' : 'text-zinc-400'}`}>{isPending 
-                                                                                                        ? 'Approve in wallet' 
-                                                                                                        : isSuccess
-                                                                                                            ? 'Approved'
-                                                                                                            : 'Failed'}</div>
+                <div className={`text-xs pl-4 ${isPending 
+                                                ? 'text-pink-600' 
+                                                : isSuccess
+                                                    ? 'text-zinc-400'
+                                                    : 'text-red-600'}`}>{isPending ? 'Approve in wallet' 
+                                                                                      : isSuccess
+                                                                                           ? 'Approved'
+                                                                                           : 'Failed'}</div>
             </div>
             <div>
                 {
