@@ -86,7 +86,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     
     useEffect(() => {
         (async () => {
-            await updateQuotes(true)
+            //await updateQuotes(true)
             setSeconds(span)
             setStartCountDown(true)
         })()
@@ -100,7 +100,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         } else if (seconds === 0) {
           (async () => {
             console.log('running updateQuotes')
-            await updateQuotes(false)
+            //await updateQuotes(false)
             setSeconds(span)  // start a new time interval
             console.log('done updateQuotes')
           })()
