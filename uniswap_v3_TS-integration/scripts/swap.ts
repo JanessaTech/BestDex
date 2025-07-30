@@ -14,7 +14,6 @@ const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainne
 const localProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
 
 // Addresses
-//export const V3_SWAP_ROUTER_ADDRESS = '0xE592427A0AEce92De3Edee1F18E0157C05861564'
 export const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 export const WETH_CONTRACT_ADDRESS =
   '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
@@ -283,8 +282,12 @@ async function main() {
     console.log('cost(eth): ', new Decimal(route?.estimatedGasUsed.toString()).times(new Decimal(gasPrice)).div('1000000000000000000').toDecimalPlaces(18, Decimal.ROUND_HALF_UP).toString())
     console.log('Estimated USD:', route?.estimatedGasUsedUSD.toFixed(2))
     await getGasPrice()
-    // const res = await executeRoute(route)
-    // console.log('executeRoute result: ', res)
+    const calldata = route.methodParameters?.calldata
+    console.log('-----------calldata----------')
+    console.log(calldata)
+    console.log('------end of -----calldata----------')
+    const res = await executeRoute(route)
+    console.log('executeRoute result: ', res)
   } catch (e) {
     console.error(e)
   }
