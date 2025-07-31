@@ -11,7 +11,8 @@ import { CurrencyAmount, Percent, Rounding, Token, TradeType} from '@uniswap/sdk
 import { Decimal } from 'decimal.js';
 
 const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
-const localProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
+//const localProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
+const localProvider = new ethers.providers.JsonRpcProvider('https://virtual.mainnet.eu.rpc.tenderly.co/788e8993-30e7-40ea-8442-f5b91c13efd0')
 
 // Addresses
 export const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
@@ -181,6 +182,7 @@ export async function executeRoute(route: SwapRoute): Promise<TransactionState> 
         maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS,
       })
     return res
+    //return TransactionState.Sent
 }
 
 export async function sendTransaction(
@@ -297,4 +299,4 @@ main().then().catch(e => {
   console.error(e)
 })
 
-//npx ts-node .\scripts\swap.ts
+//npx hardhat run scripts\swap.ts
