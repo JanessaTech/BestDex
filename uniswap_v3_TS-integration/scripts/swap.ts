@@ -203,7 +203,7 @@ export async function sendTransaction(
     }
 
     const txRes = await wallet.sendTransaction(transaction)
-    //console.log(txRes)
+    console.log(txRes)
     let receipt = null
     while (receipt === null) {
         try {
@@ -212,6 +212,7 @@ export async function sendTransaction(
             if (receipt === null) {
               continue
             }
+            console.log(receipt)
           } catch (e) {
             console.log(`Receipt error:`, e)
             break
