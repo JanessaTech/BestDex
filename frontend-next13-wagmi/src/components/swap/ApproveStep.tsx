@@ -72,7 +72,7 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount, goNe
                                                     : 'text-red-600'}`}>{isPending ? 'Approve in wallet' 
                                                                                       : isSuccess
                                                                                            ? 'Approved'
-                                                                                           : 'Failed'}</div>
+                                                                                           : 'Failed to approve'}</div>
             </div>
             <div>
                 {

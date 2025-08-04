@@ -7,12 +7,12 @@ import { useSendTransaction } from 'wagmi'
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
-type ConfirmStepProps = {
+type SwapStepProps = {
     started: boolean,
     calldata: `0x${string}`;
     setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
 }
-const ConfirmStep:React.FC<ConfirmStepProps> = ({started, calldata, setShowSwapSuccess}) => {
+const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess}) => {
     const { data: hash, sendTransaction, isPending, error, isSuccess} = useSendTransaction()
 
     const handleSendTransation = () => {
@@ -31,6 +31,7 @@ const ConfirmStep:React.FC<ConfirmStepProps> = ({started, calldata, setShowSwapS
 
     useEffect(() => {
         if (isSuccess) {
+            console.log('isSuccess =', isSuccess)
             setInterval(() => {setShowSwapSuccess(true)}, 1000)
         }
     }, [error, isSuccess])
@@ -70,4 +71,4 @@ const ConfirmStep:React.FC<ConfirmStepProps> = ({started, calldata, setShowSwapS
     )
 }
 
-export default ConfirmStep
+export default SwapStep

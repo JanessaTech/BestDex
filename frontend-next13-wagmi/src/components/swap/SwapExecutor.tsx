@@ -1,8 +1,8 @@
 import type { TokenType } from "@/lib/types";
 import { Dispatch, SetStateAction, useState} from "react";
 import ApproveStep from "./ApproveStep";
-import SignStep from "./SignStep";
-import ConfirmStep from "./ConfirmStep";
+import SwapStep from "./SwapStep";
+import SimulateSwapStep from "./SimulateSwapStep";
 
 const Seperator = () => {
     return (
@@ -27,7 +27,9 @@ const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, approveAmount, 
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
             <ApproveStep tokenFrom={tokenFrom} approveAmount={approveAmount} goNext={goNext}/>
             <Seperator/>
-            <ConfirmStep started={step === 2} calldata={calldata} setShowSwapSuccess={setShowSwapSuccess}/> 
+            <SimulateSwapStep started={step === 2} goNext={goNext}/>
+            <Seperator/>
+            <SwapStep started={step === 3} calldata={calldata} setShowSwapSuccess={setShowSwapSuccess}/> 
         </div>
     )
 }
