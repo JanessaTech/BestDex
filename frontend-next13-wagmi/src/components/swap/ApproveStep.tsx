@@ -9,7 +9,7 @@ import { useWriteContract} from 'wagmi'
 import { ERC20 } from "@/config/abis"
 import { memo } from "react";
 
-export const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
 function fromReadableAmount(amount: number, decimals: number): JSBI {
     const extraDigits = Math.pow(10, countDecimals(amount))
@@ -57,6 +57,8 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount, goNe
             goNext()
         }
     }, [isSuccess])
+
+    console.log('Approve tx hash =', hash)
     
     return (
         <div className="flex justify-between items-center">

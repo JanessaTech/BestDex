@@ -46,9 +46,10 @@ type ReviewSwapProps = {
     quote: string;
     tokenInUSD: string;
     tokenOutUSD:string;
+    calldata: `0x${string}`;
     setOpenModal: Dispatch<SetStateAction<boolean>>
 }
-const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, quote, tokenInUSD, tokenOutUSD, setOpenModal}) => {
+const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, quote, tokenInUSD, tokenOutUSD, calldata, setOpenModal}) => {
     const [approveAmount, setApproveAmount] = useState(swapAmount)
     const [inputUSD, setInputUSD] = useState(tokenInUSD)
     const [approved, setApproved] = useState(false)
@@ -104,7 +105,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                     :   <div className="flex flex-col gap-y-4">
                             <div className="flex justify-between items-center bg-zinc-700/30 p-2 rounded-md">
                                 <div className="flex flex-col gap-1 ">
-                                    <div className="text-xs text-zinc-400">You pay</div>
+                                    <div className="text-xs text-zinc-400">You approve</div>
                                     <div className="flex items-center text-xl">
                                         <input className="px-3 bg-inherit max-md:w-36"
                                         value={approveAmount}
@@ -158,6 +159,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                                 : <SwapeExecutor 
                                         tokenFrom={tokenFrom} 
                                         approveAmount={approveAmount}
+                                        calldata={calldata}
                                         setShowSwapSuccess={setShowSwapSuccess}/>
                             }
                         </div>

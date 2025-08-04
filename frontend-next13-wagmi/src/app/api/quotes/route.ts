@@ -77,7 +77,8 @@ export async function POST(request: Request) {
       success: true, 
       quote: route.quote.toExact(), 
       estimatedGasUsed: cost,
-      estimatedGasUsedUSD: route.estimatedGasUsedUSD.toFixed(2)
+      estimatedGasUsedUSD: route.estimatedGasUsedUSD.toFixed(2),
+      calldata: route.methodParameters?.calldata
       })
     } catch(e) {
         console.log('failed to get quotes due to:', e)

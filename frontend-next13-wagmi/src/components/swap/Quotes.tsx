@@ -56,6 +56,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const [tokenOutUSD, setTokenOutUSD] = useState('')
     const [loss, setLoss] = useState('')
 
+    const [calldata, setCalldata] = useState<`0x${string}`>('0x')
+
     const [openModal, setOpenModal] = useState(false)
 
     const chainId = useChainId() as (ChainId | LocalChainIds)
@@ -86,7 +88,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     
     useEffect(() => {
         (async () => {
-            //await updateQuotes(true)
+            await updateQuotes(true)
             setSeconds(span)
             setStartCountDown(true)
         })()
@@ -100,7 +102,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         } else if (seconds === 0) {
           (async () => {
             console.log('running updateQuotes')
-            //await updateQuotes(false)
+            await updateQuotes(false)
             setSeconds(span)  // start a new time interval
             console.log('done updateQuotes')
           })()
@@ -139,6 +141,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         updateUSD(result.quote)
         setEstimatedGasUsed(result.estimatedGasUsed)
         setEstimatedGasUsedUSD(result.estimatedGasUsedUSD)
+        setCalldata(result.calldata)
       } catch (e) {
         console.log('failed to get quotes due to:', e)
         setIsError(true)
@@ -149,14 +152,6 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     }
 
     const handleSwap = () => {
-      setOpenModal(true)
-    }
-
-    const handleTest = () => {
-      console.log('handleTest...')
-      setQuote('10')
-      setTokenInUSD('1234')
-      setTokenOutUSD('5678')
       setOpenModal(true)
     }
 
@@ -207,12 +202,11 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                                       quote={quote}
                                       tokenInUSD={tokenInUSD}
                                       tokenOutUSD={tokenOutUSD}
+                                      calldata={calldata}
                                       setOpenModal={setOpenModal}/>
                     }
                   </>
           }
-          <div><Button onClick={handleTest}>Open Review</Button></div>
-
         </div>
     )
 }
