@@ -4,7 +4,7 @@ import { memo, useEffect, useState } from "react"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useSimulateContract } from "wagmi"
-import { ContractFunctionRevertedErrorType, SimulateContractErrorType, decodeFunctionData, parseAbi } from 'viem'
+import { decodeFunctionData, parseAbi } from 'viem'
 
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
@@ -22,8 +22,8 @@ const parseCalldata = (calldata: `0x${string}`) => {
             deadline = decoded.args[0]
             innerCalls = decoded?.args[1]
         }
-        console.log('deadline=', deadline)
-        console.log('innerCalls=', innerCalls)
+        //console.log('deadline=', deadline)
+        //console.log('innerCalls=', innerCalls)
         return {deadline, innerCalls}
     } catch(err) {
         console.log('failed to parse calldata due to:', err)
@@ -54,7 +54,7 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, calldata, go
     useEffect(() => {
         let interval = undefined
         if (started && isPending) {
-            console.log('it will run refetchSimulation in 3 seconds')
+            console.log('it will run refetchSimulation in 200 millionseconds')
             interval = setInterval(() => {refetchSimulation()}, 200)
         }
         return () => {

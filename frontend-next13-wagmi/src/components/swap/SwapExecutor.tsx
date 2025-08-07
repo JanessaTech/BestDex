@@ -22,8 +22,8 @@ const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, approveAmount, 
     const goNext = useCallback(() => {
         setStep((prev) => prev + 1)
     }, [])
-    console.log('step ===', step)
-    console.log('calldata=', calldata)
+    //console.log('step ===', step)
+    //console.log('calldata=', calldata)
 
     return (
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
