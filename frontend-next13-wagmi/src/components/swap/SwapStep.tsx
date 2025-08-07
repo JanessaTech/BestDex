@@ -58,13 +58,16 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
                 </div>
                 <div>
                     {
-                        isPending
-                        ? <></>
-                        : isSuccess
-                            ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                            : <ToolTipHelper content={<div className="w-80">{error?.message}</div>}>
-                                <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                            </ToolTipHelper>
+                        started
+                        ? isPending
+                            ? <></>
+                            : isSuccess
+                                ? <SVGCheck className="size-4 text-green-600 mx-3"/>
+                                : <ToolTipHelper content={<div className="w-80">{error?.message}</div>}>
+                                    <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
+                                </ToolTipHelper>
+                        : <></>
+                        
                     }  
                 </div>
         </div>  

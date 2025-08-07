@@ -1,5 +1,5 @@
 import type { TokenType } from "@/lib/types";
-import { Dispatch, SetStateAction, useState} from "react";
+import { Dispatch, SetStateAction, memo, useCallback, useState} from "react";
 import ApproveStep from "./ApproveStep";
 import SwapStep from "./SwapStep";
 import SimulateSwapStep from "./SimulateSwapStep";
@@ -19,19 +19,21 @@ type SwapeExecutorProps = {
 const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, approveAmount, calldata, setShowSwapSuccess}) => {
     const [step, setStep] = useState(1)
 
-    const goNext = () => {
+    const goNext = useCallback(() => {
         setStep((prev) => prev + 1)
-    }
+    }, [])
+    console.log('step ===', step)
+    console.log('calldata=', calldata)
 
     return (
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
             <ApproveStep tokenFrom={tokenFrom} approveAmount={approveAmount} goNext={goNext}/>
             <Seperator/>
-            <SimulateSwapStep started={step === 2} goNext={goNext}/>
+            <SimulateSwapStep started={step === 2} calldata={calldata} goNext={goNext}/>
             <Seperator/>
             <SwapStep started={step === 3} calldata={calldata} setShowSwapSuccess={setShowSwapSuccess}/> 
         </div>
     )
 }
 
-export default SwapeExecutor
+export default memo(SwapeExecutor)
