@@ -3,12 +3,21 @@ import SVGSign from "@/lib/svgs/svg_sign"
 import { memo, useEffect, useState } from "react"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
-import { useSimulateContract } from "wagmi"
-import { decodeFunctionData, parseAbi } from 'viem'
+import { useSimulateContract,} from "wagmi"
+import {SimulateContractErrorType} from "@wagmi/core"
+import {decodeFunctionData, parseAbi} from 'viem'
 
+const uniswapErrors: Record<string, string> = {
+    'TOO_LITTLE_RECEIVED': 'The received amount is less than the minimum',
+    'INSUFFICIENT_OUTPUT_AMOUNT': 'Insufficient output amount',
+    'INSUFFICIENT_LIQUIDITY': 'Insufficient liquidity',
+    'EXPIRED': 'Transaction expired',
+    'STF': 'Swap Transaction Failed',
+  };
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 const SwapRouter02ABI = parseAbi(['function multicall(uint256,bytes[]) payable returns (bytes[])'])
+
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
         //console.log('calldata=', calldata)
@@ -29,6 +38,15 @@ const parseCalldata = (calldata: `0x${string}`) => {
         console.log('failed to parse calldata due to:', err)
     }
     return {deadline: undefined, innerCalls: undefined}
+}
+
+const getFailedReason = (simulationError: SimulateContractErrorType): string => {
+    const defaultReason = 'Unknown reason'
+    if (simulationError?.cause) {
+        const reason = (simulationError?.cause as any)?.reason
+        return (simulationError as any)?.shortMessage  || simulationError.message || reason || defaultReason
+    }
+    return defaultReason
 }
 
 type SimulateSwapStepProps = {
@@ -54,7 +72,7 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, calldata, go
     useEffect(() => {
         let interval = undefined
         if (started && isPending) {
-            console.log('it will run refetchSimulation in 200 millionseconds')
+            console.log('it will run refetchSimulation in 200 milliseconds')
             interval = setInterval(() => {refetchSimulation()}, 200)
         }
         return () => {
@@ -66,11 +84,8 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, calldata, go
         if (!simulationError) return
         console.log('simulationError?.name:', simulationError?.name)
         console.log('simulationError?.message:', simulationError?.message)
-        if (simulationError?.cause) {
-            const reason = (simulationError?.cause as any)?.reason
-            setReason(reason)
-        }
-        
+        const reason = getFailedReason(simulationError)
+        setReason(reason)
     }, [simulationError])
 
     useEffect(() => {
