@@ -37,6 +37,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     }, [error, isSuccess])
     console.log('[SwapStep] isPending=', isPending, ' isSuccess=', isSuccess)
     console.log('[SwapStep] swap tx hash =', hash)
+    console.log('[SwapStep] swap tx error =', error)
 
     return (
         <div className="flex justify-between items-center">
@@ -53,8 +54,8 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
                                                                                 ? isPending
                                                                                     ? 'Confirm swap in wallet'
                                                                                     : isSuccess
-                                                                                        ? 'Confirmed'
-                                                                                        : 'Failed'
+                                                                                        ? 'Confirmed swap'
+                                                                                        : 'Failed tp swap'
                                                                                 : 'Confirm swap in wallet'}</div>
                 </div>
                 <div>
@@ -64,9 +65,11 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
                             ? <></>
                             : isSuccess
                                 ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                                : <ToolTipHelper content={<div className="w-80">{error?.message}</div>}>
-                                    <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                                </ToolTipHelper>
+                                : error 
+                                    ? <ToolTipHelper content={<div className="w-80">{error?.message}</div>}>
+                                        <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
+                                      </ToolTipHelper>
+                                    : <></>
                         : <></>
                         
                     }  
