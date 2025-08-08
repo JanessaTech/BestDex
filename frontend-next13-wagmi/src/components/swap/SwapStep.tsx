@@ -24,7 +24,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
 
     useEffect(() => {
         if (started) {
-            console.log('send swap tx')
+            console.log('it will send swap tx')
             handleSendTransation()  
         }
     }, [started])
@@ -35,7 +35,8 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
             setInterval(() => {setShowSwapSuccess(true)}, 1000)
         }
     }, [error, isSuccess])
-    console.log('swap tx hash =', hash)
+    console.log('[SwapStep] isPending=', isPending, ' isSuccess=', isSuccess)
+    console.log('[SwapStep] swap tx hash =', hash)
 
     return (
         <div className="flex justify-between items-center">

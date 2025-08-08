@@ -44,22 +44,24 @@ const getFailedReason = (simulationError: SimulateContractErrorType): string => 
     const defaultReason = 'Unknown reason'
     if (simulationError?.cause) {
         const reason = (simulationError?.cause as any)?.reason
-        return (simulationError as any)?.shortMessage  || simulationError.message || reason || defaultReason
+        const translatedReason = uniswapErrors[reason] || defaultReason
+        return (simulationError as any)?.shortMessage  || simulationError.message || translatedReason
     }
     return defaultReason
 }
 
 type SimulateSwapStepProps = {
     started: boolean;
+    done: boolean;
     calldata: `0x${string}`;
     goNext: () => void
 }
-const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, calldata, goNext}) => {
+const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, done, calldata, goNext}) => {
     const {deadline, innerCalls} = parseCalldata(calldata)
     if (!deadline || !innerCalls) return <div>Failed to parse calldata</div>
     const [reason, setReason] = useState('')
 
-    const { data: simulation, error: simulationError, isPending, isSuccess, refetch:refetchSimulation} = useSimulateContract({
+    const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
         address: V3_SWAP_ROUTER_ADDRESS,
         abi: SwapRouter02ABI,
         functionName: 'multicall',
@@ -70,32 +72,37 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, calldata, go
     })
 
     useEffect(() => {
-        let interval = undefined
-        if (started && isPending) {
-            console.log('it will run refetchSimulation in 200 milliseconds')
-            interval = setInterval(() => {refetchSimulation()}, 200)
+        let timer = undefined
+        if (started) {
+            console.log('it will run refetchSimulation in 1000 milliseconds')
+            timer = setTimeout(() => {console.log('will run refetchSimulation');refetchSimulation()}, 1000)
         }
         return () => {
-            if (interval) clearInterval(interval)
+            if (timer) clearTimeout(timer)
         }
-    }, [started, isPending])
+    }, [started])
 
     useEffect(() => {
         if (!simulationError) return
-        console.log('simulationError?.name:', simulationError?.name)
-        console.log('simulationError?.message:', simulationError?.message)
         const reason = getFailedReason(simulationError)
         setReason(reason)
     }, [simulationError])
 
     useEffect(() => {
-        if (isSuccess) {
-            goNext()
+        let timer = undefined
+        if (isSuccess && started) {
+            console.log('it will goNext in 1000 milliseconds')
+            timer = setTimeout(() => {goNext()}, 1000)
+        }
+        return () => {
+            if (timer) clearTimeout(timer)
         }
     }, [isSuccess])
 
-    console.log('simulationError=', simulationError)
-    console.log('isPending =', isPending, '   isSuccess=', isSuccess)
+    console.log('[SimulateSwapStep] simulationError=', simulationError)
+    console.log('[SimulateSwapStep] isPending =', isPending, '   isSuccess=', isSuccess)
+    console.log('[SimulateSwapStep] isFetching =', isFetching)
+    console.log('[SimulateSwapStep] started =', started, '   done=', done)
 
     return (
         <div className="flex justify-between items-center">
@@ -119,7 +126,7 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, calldata, go
                 </div>
                 <div>
                     {
-                        started
+                        done 
                         ? isPending
                             ? <></>
                             : isSuccess
@@ -127,7 +134,7 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, calldata, go
                                 : <ToolTipHelper content={<div className="w-80">{reason}</div>}>
                                     <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
                                 </ToolTipHelper>
-                        : <></>
+                        : <></> 
                     }  
                 </div>
         </div>

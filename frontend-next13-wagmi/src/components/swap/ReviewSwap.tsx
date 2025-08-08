@@ -1,4 +1,4 @@
-import { memo } from "react"
+import { memo, useEffect } from "react"
 import SVGClose from "@/lib/svgs/svg_close"
 import type { LocalChainIds, TokenType } from "@/lib/types";
 import { Dispatch, SetStateAction, useState } from "react"
@@ -53,9 +53,11 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
     const [approveAmount, setApproveAmount] = useState(swapAmount)
     const [inputUSD, setInputUSD] = useState(tokenInUSD)
     const [approved, setApproved] = useState(false)
+    const [calldataSnapshot, setCalldataSnapshot] = useState(calldata)
     const [showSwapSuccess, setShowSwapSuccess] = useState(false)
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
+
     const handleClose = () => {
         setOpenModal(false)
     }
@@ -159,7 +161,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                                 : <SwapeExecutor 
                                         tokenFrom={tokenFrom} 
                                         approveAmount={approveAmount}
-                                        calldata={calldata}
+                                        calldata={calldataSnapshot}
                                         setShowSwapSuccess={setShowSwapSuccess}/>
                             }
                         </div>

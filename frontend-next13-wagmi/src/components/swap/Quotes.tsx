@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import type { LocalChainIds, QuotesParameterType, TokenType } from "@/lib/types"
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Token from "../common/Token"
 import SVGArrowDownMid from "@/lib/svgs/svg_arrow_down_mid"
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
@@ -13,6 +13,12 @@ import { Decimal } from 'decimal.js'
 import { ChainId } from '@uniswap/sdk-core'
 import ReviewSwap from "./ReviewSwap"
 
+// export type SwapDataType = {
+//   quote: string; 
+//   tokenInUSD: string; 
+//   tokenOutUSD: string; 
+//   calldata: `0x${string}`
+// }
 
 type NoQuotesProps = {
   handlePrevStep: () => void
@@ -154,6 +160,10 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const handleSwap = () => {
       setOpenModal(true)
     }
+
+    // const fetchSwapData = useCallback((): SwapDataType => {
+    //   return {quote: quote, tokenInUSD: tokenInUSD, tokenOutUSD: tokenOutUSD, calldata: calldata}
+    // }, [])
 
     return (
         <div>

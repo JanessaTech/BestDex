@@ -53,12 +53,17 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount, goNe
     }, [])
 
     useEffect(() => {
+        let timer = undefined
         if (isSuccess) {
-            goNext()
+            console.log('it will goNext in 1000 milliseconds')
+            timer = setTimeout(() => {goNext()}, 1000)
+        }
+        return () => {
+            if (timer) clearTimeout(timer)
         }
     }, [isSuccess])
-
-    console.log('Approve tx hash =', hash)
+    console.log('[ApproveStep] isSuccess=', isSuccess, ' isPending=', isPending)
+    console.log('[ApproveStep] Approve tx hash =', hash)
     
     return (
         <div className="flex justify-between items-center">
