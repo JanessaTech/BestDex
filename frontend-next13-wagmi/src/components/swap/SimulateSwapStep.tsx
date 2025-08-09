@@ -67,7 +67,9 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, done, callda
         functionName: 'multicall',
         args: [deadline, innerCalls],
         query: {
-            enabled: false
+            enabled: false,  // run refetchSimulation manually
+            gcTime: 0,  // disable cache
+            staleTime: 0  // disable cache
         }
     })
 
@@ -75,7 +77,10 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, done, callda
         let timer = undefined
         if (started) {
             console.log('it will run refetchSimulation in 1000 milliseconds')
-            timer = setTimeout(() => {console.log('will run refetchSimulation');refetchSimulation()}, 1000)
+            timer = setTimeout(() => {
+                console.log('it will run refetchSimulation')
+                refetchSimulation()
+            }, 1000)
         }
         return () => {
             if (timer) clearTimeout(timer)
@@ -103,6 +108,9 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, done, callda
     console.log('[SimulateSwapStep] isPending =', isPending, '   isSuccess=', isSuccess)
     console.log('[SimulateSwapStep] isFetching =', isFetching)
     console.log('[SimulateSwapStep] started =', started, '   done=', done)
+    if (simulation) {
+        console.log('simulation=', simulation)
+    }
 
     return (
         <div className="flex justify-between items-center">

@@ -3,7 +3,7 @@ import SVGCheckCircle from "@/lib/svgs/svg_check_circle"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
-import { useSendTransaction } from 'wagmi'
+import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
@@ -13,7 +13,16 @@ type SwapStepProps = {
     setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
 }
 const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess}) => {
-    const { data: hash, sendTransaction, isPending, error, isSuccess} = useSendTransaction()
+    const { data: txHash, sendTransaction, isPending, error, isSuccess} = useSendTransaction()
+    const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
+        hash: txHash,
+        confirmations: 1,
+        query: {
+            enabled: false,
+            gcTime: 0,  // disable cache
+            staleTime: 0  // disable cache
+        }
+    })
 
     const handleSendTransation = () => {
         sendTransaction({
@@ -24,20 +33,33 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
 
     useEffect(() => {
         if (started) {
-            console.log('it will send swap tx')
+            console.log('[SwapStep] it will send swap tx')
             handleSendTransation()  
         }
     }, [started])
 
     useEffect(() => {
-        if (isSuccess) {
+        if (txHash) {
+            console.log('[SwapStep] it will fetch the receipt')
+            refetchReceipt()
+        }
+    }, [txHash])
+
+    useEffect(() => {
+        if (isSuccess && started) {
             console.log('isSuccess =', isSuccess)
             setInterval(() => {setShowSwapSuccess(true)}, 1000)
         }
-    }, [error, isSuccess])
+    }, [isSuccess])
+
+
     console.log('[SwapStep] isPending=', isPending, ' isSuccess=', isSuccess)
-    console.log('[SwapStep] swap tx hash =', hash)
+    console.log('[SwapStep] swap tx hash =', txHash)
     console.log('[SwapStep] swap tx error =', error)
+    console.log('[SwapStep][useWaitForTransactionReceipt] isError =', isError)
+    console.log('[SwapStep][useWaitForTransactionReceipt] receiptStatus =', receiptStatus)
+    console.log('[SwapStep][useWaitForTransactionReceipt] receiptError =', receiptError)
+    console.log('[SwapStep][useWaitForTransactionReceipt] receipt =', receipt)
 
     return (
         <div className="flex justify-between items-center">
