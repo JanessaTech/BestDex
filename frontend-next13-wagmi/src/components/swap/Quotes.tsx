@@ -13,12 +13,6 @@ import { Decimal } from 'decimal.js'
 import { ChainId } from '@uniswap/sdk-core'
 import ReviewSwap from "./ReviewSwap"
 
-// export type SwapDataType = {
-//   quote: string; 
-//   tokenInUSD: string; 
-//   tokenOutUSD: string; 
-//   calldata: `0x${string}`
-// }
 
 type NoQuotesProps = {
   handlePrevStep: () => void
@@ -160,10 +154,6 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const handleSwap = () => {
       setOpenModal(true)
     }
-
-    // const fetchSwapData = useCallback((): SwapDataType => {
-    //   return {quote: quote, tokenInUSD: tokenInUSD, tokenOutUSD: tokenOutUSD, calldata: calldata}
-    // }, [])
 
     return (
         <div>
