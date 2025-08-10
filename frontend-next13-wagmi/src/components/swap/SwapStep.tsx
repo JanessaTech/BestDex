@@ -3,7 +3,9 @@ import SVGCheckCircle from "@/lib/svgs/svg_check_circle"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
-import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
+import { usePublicClient, 
+         useSendTransaction, 
+         useWaitForTransactionReceipt } from 'wagmi'
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
@@ -13,6 +15,7 @@ type SwapStepProps = {
     setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
 }
 const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess}) => {
+    const publicClient = usePublicClient()
     const { data: txHash, sendTransaction, isPending, error, isSuccess} = useSendTransaction()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: txHash,
@@ -46,13 +49,23 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     }, [txHash])
 
     useEffect(() => {
-        if (isSuccess && started) {
-            console.log('isSuccess =', isSuccess)
-            setInterval(() => {setShowSwapSuccess(true)}, 1000)
+        let timer = undefined
+        if (!txHash || !receipt) return
+        if (receipt.status === 'success') {
+            console.log('[SwapStep] swap is successful')
+            timer = setTimeout(() => {setShowSwapSuccess(true)}, 1000)
         }
-    }, [isSuccess])
+        if (receipt.status === 'reverted') {
+            console.log('[SwapStep] Get the reason for failure')
 
+        }
+        return () => {
+            if (timer) clearTimeout(timer)
+        }
 
+    }, [receipt, txHash])
+
+    // output debug info
     console.log('[SwapStep] isPending=', isPending, ' isSuccess=', isSuccess)
     console.log('[SwapStep] swap tx hash =', txHash)
     console.log('[SwapStep] swap tx error =', error)
