@@ -3,11 +3,20 @@ import SVGCheckCircle from "@/lib/svgs/svg_check_circle"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
-import { usePublicClient, 
-         useSendTransaction, 
+import { useSendTransaction, 
          useWaitForTransactionReceipt } from 'wagmi'
+import {WaitForTransactionReceiptErrorType} from "@wagmi/core"
+import { UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 
-const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): string => {
+    const defaultReason = 'Unknown reason'
+    if (simulationError?.cause) {
+        const reason = (simulationError?.cause as any)?.reason
+        const translatedReason = UNISWAP_ERRORS[reason] || defaultReason
+        return (simulationError as any)?.shortMessage  || simulationError.message || translatedReason
+    }
+    return defaultReason
+}
 
 type SwapStepProps = {
     started: boolean,
@@ -15,8 +24,10 @@ type SwapStepProps = {
     setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
 }
 const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess}) => {
-    const publicClient = usePublicClient()
-    const { data: txHash, sendTransaction, isPending, error, isSuccess} = useSendTransaction()
+    const [reason, setReason] = useState('')
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [isPending, setIsPending] = useState(false)
+    const { data: txHash, sendTransaction} = useSendTransaction()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: txHash,
         confirmations: 1,
@@ -37,6 +48,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     useEffect(() => {
         if (started) {
             console.log('[SwapStep] it will send swap tx')
+            setIsPending(true)
             handleSendTransation()  
         }
     }, [started])
@@ -49,26 +61,30 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     }, [txHash])
 
     useEffect(() => {
-        let timer = undefined
-        if (!txHash || !receipt) return
-        if (receipt.status === 'success') {
-            console.log('[SwapStep] swap is successful')
-            timer = setTimeout(() => {setShowSwapSuccess(true)}, 1000)
+        const checkTransactionStatus  = async () => {
+            if (!txHash || !receipt) return
+            if (receipt.status === 'success') {
+                console.log('[SwapStep] swap is successful')
+                setIsPending(false)
+                setIsSuccess(true)
+                setShowSwapSuccess(true)
+            }
         }
-        if (receipt.status === 'reverted') {
-            console.log('[SwapStep] Get the reason for failure')
-
-        }
-        return () => {
-            if (timer) clearTimeout(timer)
-        }
-
+        checkTransactionStatus()
     }, [receipt, txHash])
+
+    useEffect(() => {
+        if(receiptError) {
+            const failedReason = getFailedReason(receiptError)
+            setIsPending(false)
+            setIsSuccess(false)
+            setReason(failedReason)
+        }
+    }, [receiptError])
 
     // output debug info
     console.log('[SwapStep] isPending=', isPending, ' isSuccess=', isSuccess)
     console.log('[SwapStep] swap tx hash =', txHash)
-    console.log('[SwapStep] swap tx error =', error)
     console.log('[SwapStep][useWaitForTransactionReceipt] isError =', isError)
     console.log('[SwapStep][useWaitForTransactionReceipt] receiptStatus =', receiptStatus)
     console.log('[SwapStep][useWaitForTransactionReceipt] receiptError =', receiptError)
@@ -90,7 +106,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
                                                                                     ? 'Confirm swap in wallet'
                                                                                     : isSuccess
                                                                                         ? 'Confirmed swap'
-                                                                                        : 'Failed tp swap'
+                                                                                        : 'Failed to swap'
                                                                                 : 'Confirm swap in wallet'}</div>
                 </div>
                 <div>
@@ -100,11 +116,9 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
                             ? <></>
                             : isSuccess
                                 ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                                : error 
-                                    ? <ToolTipHelper content={<div className="w-80">{error?.message}</div>}>
-                                        <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                                      </ToolTipHelper>
-                                    : <></>
+                                : <ToolTipHelper content={<div className="w-80">{reason}</div>}>
+                                    <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
+                                  </ToolTipHelper>
                         : <></>
                         
                     }  

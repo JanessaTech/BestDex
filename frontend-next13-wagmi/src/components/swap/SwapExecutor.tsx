@@ -29,7 +29,7 @@ const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, approveAmount, 
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
             <ApproveStep tokenFrom={tokenFrom} approveAmount={approveAmount} goNext={goNext}/>
             <Seperator/>
-            <SimulateSwapStep started={step === 2} done={step >= 2} calldata={calldata} goNext={goNext}/>
+            <SimulateSwapStep started={step === 2} skip={false} done={step >= 2} calldata={calldata} goNext={goNext}/>
             <Seperator/>
             <SwapStep started={step === 3} calldata={calldata} setShowSwapSuccess={setShowSwapSuccess}/> 
         </div>

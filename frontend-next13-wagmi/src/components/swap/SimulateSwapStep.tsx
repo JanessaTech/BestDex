@@ -5,20 +5,10 @@ import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useSimulateContract,} from "wagmi"
 import {SimulateContractErrorType} from "@wagmi/core"
-import {decodeFunctionData, parseAbi} from 'viem'
+import {decodeFunctionData} from 'viem'
+import { SwapRouter02ABI, UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 
-const uniswapErrors: Record<string, string> = {
-    'TOO_LITTLE_RECEIVED': 'The received amount is less than the minimum',
-    'INSUFFICIENT_OUTPUT_AMOUNT': 'Insufficient output amount',
-    'INSUFFICIENT_LIQUIDITY': 'Insufficient liquidity',
-    'EXPIRED': 'Transaction expired',
-    'STF': 'Swap Transaction Failed',
-  };
-
-const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
-const SwapRouter02ABI = parseAbi(['function multicall(uint256,bytes[]) payable returns (bytes[])'])
-
-const parseCalldata = (calldata: `0x${string}`) => {
+export const parseCalldata = (calldata: `0x${string}`) => {
     try {
         //console.log('calldata=', calldata)
         const decoded = decodeFunctionData({
@@ -44,7 +34,7 @@ const getFailedReason = (simulationError: SimulateContractErrorType): string => 
     const defaultReason = 'Unknown reason'
     if (simulationError?.cause) {
         const reason = (simulationError?.cause as any)?.reason
-        const translatedReason = uniswapErrors[reason] || defaultReason
+        const translatedReason = UNISWAP_ERRORS[reason] || defaultReason
         return (simulationError as any)?.shortMessage  || simulationError.message || translatedReason
     }
     return defaultReason
@@ -53,10 +43,11 @@ const getFailedReason = (simulationError: SimulateContractErrorType): string => 
 type SimulateSwapStepProps = {
     started: boolean;
     done: boolean;
+    skip: boolean; // for test
     calldata: `0x${string}`;
     goNext: () => void
 }
-const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, done, calldata, goNext}) => {
+const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, skip, done, calldata, goNext}) => {
     const {deadline, innerCalls} = parseCalldata(calldata)
     if (!deadline || !innerCalls) return <div>Failed to parse calldata</div>
     const [reason, setReason] = useState('')
@@ -76,9 +67,14 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, done, callda
     useEffect(() => {
         let timer = undefined
         if (started) {
-            console.log('it will run refetchSimulation in 1000 milliseconds')
+            if (skip) {
+                console.log('[SimulateSwapStep] skip SimulateSwapStep')
+                goNext()
+                return
+            }
+            console.log('[SimulateSwapStep] it will run refetchSimulation in 1000 milliseconds')
             timer = setTimeout(() => {
-                console.log('it will run refetchSimulation')
+                console.log('[SimulateSwapStep] it will run refetchSimulation')
                 refetchSimulation()
             }, 1000)
         }
