@@ -61,16 +61,19 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     }, [txHash])
 
     useEffect(() => {
-        const checkTransactionStatus  = async () => {
-            if (!txHash || !receipt) return
-            if (receipt.status === 'success') {
-                console.log('[SwapStep] swap is successful')
-                setIsPending(false)
-                setIsSuccess(true)
+        if (!txHash || !receipt) return
+        let timer = undefined
+        if (receipt.status === 'success') {
+            console.log('[SwapStep] swap is successful')
+            setIsPending(false)
+            setIsSuccess(true)
+            timer = setTimeout(() => {
                 setShowSwapSuccess(true)
-            }
+            }, 1000)
         }
-        checkTransactionStatus()
+        return () => {
+            if (timer) clearTimeout(timer)
+        }
     }, [receipt, txHash])
 
     useEffect(() => {
