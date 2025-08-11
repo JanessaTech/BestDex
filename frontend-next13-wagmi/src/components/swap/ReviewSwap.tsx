@@ -17,8 +17,10 @@ import Link from "next/link";
 type SwapSuccessProps = {
     tokenFrom: TokenType;
     tokenTo: TokenType;
+    swapIn: string;
+    swapOut: string
 }
-const SwapSuccess:React.FC<SwapSuccessProps> = ({tokenFrom, tokenTo}) => {
+const SwapSuccess:React.FC<SwapSuccessProps> = ({tokenFrom, tokenTo, swapIn, swapOut}) => {
     return (
         <div className="flex flex-col gap-y-4 items-center">
             <div className="py-3">
@@ -27,11 +29,11 @@ const SwapSuccess:React.FC<SwapSuccessProps> = ({tokenFrom, tokenTo}) => {
             <div className="font-semibold">Swap success!</div>
             <div className="flex items-center">
                 <div className="flex items-center">
-                    <div className="pr-2 text-pink-600">10</div><Token token={tokenFrom} imageSize={20}/>
+                    <div className="pr-2 text-pink-600">{swapIn}</div><Token token={tokenFrom} imageSize={20}/>
                 </div>
                 <ArrowRight className="w-3 h-3 mx-1"/>
                 <div className="flex items-center">
-                    <div className="pr-2 text-pink-600">15</div><Token token={tokenTo} imageSize={20}/>
+                    <div className="pr-2 text-pink-600">{swapOut}</div><Token token={tokenTo} imageSize={20}/>
                 </div>
             </div>
             <div><Link href="www.baidu.com" className="text-xs text-pink-600">View details</Link></div>
@@ -51,6 +53,7 @@ type ReviewSwapProps = {
 }
 const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, quote, tokenInUSD, tokenOutUSD, calldata, setOpenModal}) => {
     const [approveAmount, setApproveAmount] = useState(swapAmount)
+    const [swapOut, setSwapOut] = useState('')
     const [inputUSD, setInputUSD] = useState(tokenInUSD)
     const [approved, setApproved] = useState(false)
     const [calldataSnapshot, setCalldataSnapshot] = useState(calldata)
@@ -60,6 +63,10 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
 
     const handleClose = () => {
         setOpenModal(false)
+    }
+    const handleSwapSuccess = (swapOut: string) => {
+        setSwapOut(swapOut)
+        setShowSwapSuccess(true)
     }
 
     const checkApproveAmount = () => {
@@ -103,7 +110,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                 </div>
                 {
                     showSwapSuccess
-                    ? <SwapSuccess tokenFrom={tokenFrom} tokenTo={tokenTo}/>
+                    ? <SwapSuccess tokenFrom={tokenFrom} tokenTo={tokenTo} swapIn={approveAmount} swapOut={swapOut}/>
                     :   <div className="flex flex-col gap-y-4">
                             <div className="flex justify-between items-center bg-zinc-700/30 p-2 rounded-md">
                                 <div className="flex flex-col gap-1 ">
@@ -163,7 +170,8 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                                         tokenTo={tokenTo}
                                         approveAmount={approveAmount}
                                         calldata={calldataSnapshot}
-                                        setShowSwapSuccess={setShowSwapSuccess}/>
+                                        handleSwapSuccess={handleSwapSuccess}
+                                        />
                             }
                         </div>
                 }

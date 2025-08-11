@@ -1,6 +1,6 @@
 import SVGCheck from "@/lib/svgs/svg_check"
 import SVGCheckCircle from "@/lib/svgs/svg_check_circle"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useSendTransaction, 
@@ -26,7 +26,7 @@ type SwapStepProps = {
     started: boolean;
     tokenTo: TokenType;
     calldata: `0x${string}`;
-    setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
+    handleSwapSuccess: (swapOut: string) => void
 }
 type StateType = {
     reason: string;
@@ -42,7 +42,7 @@ const defaultState: StateType = {
     preBalance: '',
     actualOutput: ''
 }
-const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, setShowSwapSuccess}) => {
+const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwapSuccess}) => {
     const {address} = useAccount()
     const [state, setState] = useState<StateType>(defaultState)
     const {getTokenBalance} = useContextUtil() as IContextUtil
@@ -101,7 +101,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, setShowSw
     useEffect(() => {
         let timer = undefined
         if (state.isSuccess) {
-            timer = setTimeout(() => {setShowSwapSuccess(true)}, 1000)
+            timer = setTimeout(() => {handleSwapSuccess(state.actualOutput)}, 1000)
         }
         return () => {
             if (timer) clearTimeout(timer)
@@ -149,7 +149,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, setShowSw
                             ? <></>
                             : state.isSuccess
                                 ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                                : <ToolTipHelper content={<div className="w-80">{reason}</div>}>
+                                : <ToolTipHelper content={<div className="w-80">{state.reason}</div>}>
                                     <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
                                   </ToolTipHelper>
                         : <></>
