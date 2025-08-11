@@ -4,9 +4,13 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useSendTransaction, 
-         useWaitForTransactionReceipt } from 'wagmi'
+         useWaitForTransactionReceipt,
+         useAccount } from 'wagmi'
 import {WaitForTransactionReceiptErrorType} from "@wagmi/core"
 import { UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
+import type { TokenType } from "@/lib/types"
+import { Decimal } from 'decimal.js'
 
 const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): string => {
     const defaultReason = 'Unknown reason'
@@ -19,14 +23,30 @@ const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): s
 }
 
 type SwapStepProps = {
-    started: boolean,
+    started: boolean;
+    tokenTo: TokenType;
     calldata: `0x${string}`;
     setShowSwapSuccess: Dispatch<SetStateAction<boolean>>
 }
-const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess}) => {
-    const [reason, setReason] = useState('')
-    const [isSuccess, setIsSuccess] = useState(false)
-    const [isPending, setIsPending] = useState(false)
+type StateType = {
+    reason: string;
+    isSuccess: boolean;
+    isPending: boolean;
+    preBalance: string;
+    actualOutput: string
+}
+const defaultState: StateType = {
+    reason: '',
+    isSuccess: false,
+    isPending: true,
+    preBalance: '',
+    actualOutput: ''
+}
+const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, setShowSwapSuccess}) => {
+    const {address} = useAccount()
+    const [state, setState] = useState<StateType>(defaultState)
+    const {getTokenBalance} = useContextUtil() as IContextUtil
+
     const { data: txHash, sendTransaction} = useSendTransaction()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: txHash,
@@ -38,7 +58,10 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
         }
     })
 
-    const handleSendTransation = () => {
+    const handleSendTransation = async () => {
+        const balance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
+        setState({...state, preBalance: balance})
+        console.log('[SwapStep] pre balance: ',  balance, ' for ', tokenTo.address)
         sendTransaction({
             to: V3_SWAP_ROUTER_ADDRESS,
             data: calldata,
@@ -46,11 +69,14 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     }
 
     useEffect(() => {
-        if (started) {
-            console.log('[SwapStep] it will send swap tx')
-            setIsPending(true)
-            handleSendTransation()  
-        }
+        (async () => {
+            if (started) {
+                console.log('[SwapStep] it will send swap tx')
+                setState({...state, isPending: true})
+                await handleSendTransation()  
+            }
+        })()
+        
     }, [started])
 
     useEffect(() => {
@@ -61,32 +87,36 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     }, [txHash])
 
     useEffect(() => {
-        if (!txHash || !receipt) return
+        (async () => {
+            if (!txHash || !receipt) return
+            if (receipt.status === 'success') {
+                console.log('[SwapStep] swap is successful')
+                const balance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
+                const inc = new Decimal(balance).minus(new Decimal(state.preBalance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
+                setState({...state, isPending: false, isSuccess: true, actualOutput: inc})
+            }
+        })() 
+    }, [receipt, txHash])
+
+    useEffect(() => {
         let timer = undefined
-        if (receipt.status === 'success') {
-            console.log('[SwapStep] swap is successful')
-            setIsPending(false)
-            setIsSuccess(true)
-            timer = setTimeout(() => {
-                setShowSwapSuccess(true)
-            }, 1000)
+        if (state.isSuccess) {
+            timer = setTimeout(() => {setShowSwapSuccess(true)}, 1000)
         }
         return () => {
             if (timer) clearTimeout(timer)
         }
-    }, [receipt, txHash])
+    }, [state.isSuccess])
 
     useEffect(() => {
         if(receiptError) {
             const failedReason = getFailedReason(receiptError)
-            setIsPending(false)
-            setIsSuccess(false)
-            setReason(failedReason)
+            setState({...state, isPending: false, isSuccess: false, reason: failedReason})
         }
     }, [receiptError])
 
     // output debug info
-    console.log('[SwapStep] isPending=', isPending, ' isSuccess=', isSuccess)
+    console.log('[SwapStep] state=', state)
     console.log('[SwapStep] swap tx hash =', txHash)
     console.log('[SwapStep][useWaitForTransactionReceipt] isError =', isError)
     console.log('[SwapStep][useWaitForTransactionReceipt] receiptStatus =', receiptStatus)
@@ -96,18 +126,18 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
     return (
         <div className="flex justify-between items-center">
                 <div className="flex items-center relative">
-                    <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending && started ? '' : 'hidden'}`}/>
+                    <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${state.isPending && started ? '' : 'hidden'}`}/>
                     <SVGCheckCircle className="text-white size-5 ml-[2px]"/>
                     <div className={`text-xs pl-3 ${started 
-                                                        ? isPending
+                                                        ? state.isPending
                                                             ? 'text-pink-600' 
-                                                            : isSuccess 
+                                                            : state.isSuccess 
                                                                 ? 'text-zinc-400'
                                                                 : 'text-red-600'
                                                         : 'text-zinc-400'}`}>{started
-                                                                                ? isPending
+                                                                                ? state.isPending
                                                                                     ? 'Confirm swap in wallet'
-                                                                                    : isSuccess
+                                                                                    : state.isSuccess
                                                                                         ? 'Confirmed swap'
                                                                                         : 'Failed to swap'
                                                                                 : 'Confirm swap in wallet'}</div>
@@ -115,9 +145,9 @@ const SwapStep:React.FC<SwapStepProps> = ({started, calldata, setShowSwapSuccess
                 <div>
                     {
                         started
-                        ? isPending
+                        ? state.isPending
                             ? <></>
-                            : isSuccess
+                            : state.isSuccess
                                 ? <SVGCheck className="size-4 text-green-600 mx-3"/>
                                 : <ToolTipHelper content={<div className="w-80">{reason}</div>}>
                                     <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>

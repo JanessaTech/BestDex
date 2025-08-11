@@ -12,3 +12,19 @@ export const UNISWAP_ERRORS: Record<string, string> = {
     'EXPIRED': 'Transaction expired',
     'STF': 'Swap Transaction Failed',
   };
+
+export const ERC20_ABI = parseAbi([
+  'function name() view returns (string)',
+  'function approve(address,uint256) returns (bool)',
+  'function totalSupply() view returns (uint256)',
+  'function transferFrom(address,address,uint256) returns (bool)',
+  'function decimals() view returns (uint8)',
+  'function balanceOf(address) view returns (uint256)',
+  'function symbol() view returns (string)',
+  'function transfer(address,uint256) returns (bool)',
+  'function allowance(address,address) view returns (uint256)',
+  'event Approval(address indexed,address indexed,uint256)',
+  'event Transfer(address indexed,address indexed,uint256)',
+  'event Deposit(address indexed,uint256)',
+  'event Withdrawal(address indexed,uint256)'
+])
