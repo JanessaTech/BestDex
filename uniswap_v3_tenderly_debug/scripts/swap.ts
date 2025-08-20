@@ -84,7 +84,7 @@ const tokens =  {
     amountIn: 1,
     out: USDC_TOKEN,
 }
-export enum TransactionState {
+enum TransactionState {
     Failed = 'Failed',
     New = 'New',
     Rejected = 'Rejected',
