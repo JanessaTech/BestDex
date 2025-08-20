@@ -15,12 +15,12 @@ const localProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:854
 //const localProvider = new ethers.providers.JsonRpcProvider('https://virtual.mainnet.eu.rpc.tenderly.co/788e8993-30e7-40ea-8442-f5b91c13efd0')
 
 // Addresses
-export const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
-export const WETH_CONTRACT_ADDRESS =
+const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+const WETH_CONTRACT_ADDRESS =
   '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
 // ABI's
-export const ERC20_ABI = [
+const ERC20_ABI = [
     // Read-Only Functions
     'function balanceOf(address owner) view returns (uint256)',
     'function decimals() view returns (uint8)',
@@ -36,9 +36,9 @@ export const ERC20_ABI = [
 
 // Transactions
 
-export const MAX_FEE_PER_GAS = 100000000000
-export const MAX_PRIORITY_FEE_PER_GAS = 100000000000
-export const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 10000
+const MAX_FEE_PER_GAS = 100000000000
+const MAX_PRIORITY_FEE_PER_GAS = 100000000000
+const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 10000
 
 const WETH_TOKEN = new Token(
     1,
@@ -106,7 +106,7 @@ function createWallet(): ethers.Wallet {
 
 console.log('wallet.address:', wallet.address)
 
-export function getProvider(): providers.Provider | null {
+function getProvider(): providers.Provider | null {
     return wallet.provider
   }
 
@@ -129,14 +129,14 @@ function countDecimals(x: number) {
     return x.toString().split('.')[1].length || 0
 }
 
-export async function generateRoute(): Promise<SwapRoute | null> {
+async function generateRoute(): Promise<SwapRoute | null> {
     const router = new AlphaRouter({
         chainId: 1,
         provider: mainnetProvider,
       })
     const options: SwapOptionsSwapRouter02 = {
         recipient: wallet.address,
-        slippageTolerance: new Percent(30, 10_000),  //new Percent(50, 10_000),
+        slippageTolerance: new Percent(100, 10_000),  //new Percent(50, 10_000),
         deadline: Math.floor(Date.now() / 1000 + 1800),  // in 30 mins
         type: SwapType.SWAP_ROUTER_02,
     }
@@ -158,7 +158,7 @@ export async function generateRoute(): Promise<SwapRoute | null> {
     return route
 }
 
-export async function executeRoute(route: SwapRoute): Promise<TransactionState>  {
+async function executeRoute(route: SwapRoute): Promise<TransactionState>  {
     const walletAddress = wallet.address
     const provider = getProvider()
     const feeData = await provider?.getFeeData()
@@ -193,7 +193,7 @@ export async function executeRoute(route: SwapRoute): Promise<TransactionState> 
     //return TransactionState.Sent
 }
 
-export async function sendTransaction(
+async function sendTransaction(
     transaction: ethers.providers.TransactionRequest
   ): Promise<TransactionState> {
     return sendTransactionViaWallet(transaction)
@@ -235,7 +235,7 @@ export async function sendTransaction(
     }
   }
 
-export async function getTokenTransferApproval(token: Token): Promise<TransactionState> {
+async function getTokenTransferApproval(token: Token): Promise<TransactionState> {
     const walletAddress = wallet.address
     const provider = getProvider()
     if (!provider) {

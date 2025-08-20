@@ -1,4 +1,29 @@
-import { ethers} from 'ethers'
+import { ethers, providers} from 'ethers'
+import { FeeAmount } from '@uniswap/v3-sdk'
+import {Token, ChainId } from '@uniswap/sdk-core'
+
+const USDC_TOKEN = new Token(
+    ChainId.MAINNET,
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    6,
+    'USDC',
+    'USD//C'
+)
+const DAI_TOKEN = new Token(
+    ChainId.MAINNET,
+    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    18,
+    'DAI',
+    'Dai Stablecoin'
+  )
+
+const tokens =  {
+    token0: USDC_TOKEN,
+    token0Amount: 1000,
+    token1: DAI_TOKEN,
+    token1Amount: 1000,
+    poolFee: FeeAmount.LOW,
+}
 
 enum TransactionState {
     Failed = 'Failed',
@@ -23,11 +48,31 @@ function createWallet(): ethers.Wallet {
 }
 
 const wallet = createWallet()
-
+function getProvider(): providers.Provider | null {
+    return wallet.provider
+}
 
 
 async function mintPosition(): Promise<TransactionState> {
+    const address = wallet.address
+    const provider = getProvider()
+    if (!address || !provider) {
+        return TransactionState.Failed
+    }
 
 
+    return TransactionState.Sent
+}
+
+async function getTokenTransferApproval(token: Token): Promise<TransactionState> {
+    const address = wallet.address
+    const provider = getProvider()
+    if (!provider || !address) {
+        console.log('No Provider Found')
+        return TransactionState.Failed
+    }
+    try {
+        
+    }
     return TransactionState.Sent
 }
