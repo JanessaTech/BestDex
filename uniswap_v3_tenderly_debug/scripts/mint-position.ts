@@ -75,7 +75,7 @@ const POOL_FACTORY_CONTRACT_ADDRESS =
   '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS =
   '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
-const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 1000
+const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 100
 
 // Transactions
 const MAX_FEE_PER_GAS = '100000000000'
@@ -144,6 +144,7 @@ async function mintPosition(): Promise<TransactionState> {
         return TransactionState.Failed
     }
 
+    
     const positionToMint = await constructPosition(
         CurrencyAmount.fromRawAmount(
           tokens.token0,
@@ -173,6 +174,8 @@ async function mintPosition(): Promise<TransactionState> {
     mintOptions
   )
 
+  console.log('calldata:', calldata)
+
   // build transaction
   const transaction = {
     data: calldata,
@@ -184,6 +187,7 @@ async function mintPosition(): Promise<TransactionState> {
   }
 
   return sendTransaction(transaction)
+  //return TransactionState.Sent
 
 }
 
@@ -362,15 +366,25 @@ async function constructPosition(
     return {
       tickLower: position.tickLower,
       tickUpper: position.tickUpper,
-      liquidity: position.liquidity,
+      liquidity: position.liquidity.toString(),
       feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
       feeGrowthInside1LastX128: position.feeGrowthInside1LastX128,
-      tokensOwed0: position.tokensOwed0,
-      tokensOwed1: position.tokensOwed1,
+      tokensOwed0: position.tokensOwed0.toString(),
+      tokensOwed1: position.tokensOwed1.toString(),
     }
   }
 
-  mintPosition().then().catch(e => {
+  async function main() {
+    await mintPosition()
+    const positionIds = await getPositionIds()
+    for (let id of positionIds) {
+      const positionInfo = await getPositionInfo(id)
+      console.log('=====position id:', id.toString(), '===========')
+      console.log(positionInfo)
+    }
+  }
+
+  main().then().catch((e) => {
     console.log(e)
   })
 
