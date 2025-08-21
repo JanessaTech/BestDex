@@ -233,7 +233,7 @@ async function sendTransaction(
     } else {
         return TransactionState.Failed
     }
-  }
+}
 
 async function getTokenTransferApproval(token: Token): Promise<TransactionState> {
     const walletAddress = wallet.address
