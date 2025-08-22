@@ -15,7 +15,7 @@ async function main() {
     await ethers.provider.send("hardhat_impersonateAccount", [DAI_WHALE]);
     const whale = await ethers.getSigner(DAI_WHALE);
     const dai = new ethers.Contract(DAI_ADDRESS, DAI_ABI, whale);
-    const amount = ethers.utils.parseUnits("1000", 18);
+    const amount = ethers.utils.parseUnits("2000", 18);
     console.log(`Transferring ${ethers.utils.formatUnits(amount, 18)} DAI to ${MY_ACCOUNT}...`);
     const whaleBalance = await dai.balanceOf(DAI_WHALE);
     console.log(

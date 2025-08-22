@@ -14,7 +14,7 @@ async function main() {
     await ethers.provider.send("hardhat_impersonateAccount", [USDC_WHALE]);
     const whale = await ethers.getSigner(USDC_WHALE);
     const usdc = new ethers.Contract(USDC_ADDRESS, usdc_ABI, whale);
-    const amount = ethers.utils.parseUnits("1000", 6);
+    const amount = ethers.utils.parseUnits("2000", 6);
     console.log(`Transferring ${ethers.utils.formatUnits(amount, 6)} USDC to ${MY_ACCOUNT}...`);
     const whaleBalance = await usdc.balanceOf(USDC_WHALE);
     console.log(

@@ -6,6 +6,9 @@ import {
         nearestUsableTick,
         NonfungiblePositionManager,
         MintOptions,
+        AddLiquidityOptions,
+        RemoveLiquidityOptions,
+        CollectOptions,
         Pool} from '@uniswap/v3-sdk'
 import {CurrencyAmount, Token, ChainId, Percent } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
@@ -52,6 +55,10 @@ const tokens =  {
     token1: DAI_TOKEN,
     token1Amount: 1000,
     poolFee: FeeAmount.LOW,
+    fractionToRemove: 1,
+    fractionToAdd: 0.5,
+    token0AmountToCollect: 10,
+    token1AmountToCollect: 10,
 }
 interface PoolInfo {
     token0: string
@@ -75,7 +82,7 @@ const POOL_FACTORY_CONTRACT_ADDRESS =
   '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS =
   '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
-const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 100
+const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 2000
 
 // Transactions
 const MAX_FEE_PER_GAS = '100000000000'
@@ -110,24 +117,23 @@ function getProvider(): providers.Provider | null {
 }
 
 function fromReadableAmount(amount: number, decimals: number): JSBI {
-    const extraDigits = Math.pow(10, countDecimals(amount))
-    const adjustedAmount = amount * extraDigits
-    return JSBI.divide(
-      JSBI.multiply(
-        JSBI.BigInt(adjustedAmount),
-        JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
-      ),
-      JSBI.BigInt(extraDigits)
-    )
-  }
-
-function countDecimals(x: number) {
-    if (Math.floor(x) === x) {
-        return 0
-    }
-    return x.toString().split('.')[1].length || 0
+  const extraDigits = Math.pow(10, countDecimals(amount))
+  const adjustedAmount = amount * extraDigits
+  return JSBI.divide(
+    JSBI.multiply(
+      JSBI.BigInt(adjustedAmount),
+      JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
+    ),
+    JSBI.BigInt(extraDigits)
+  )
 }
 
+function countDecimals(x: number) {
+  if (Math.floor(x) === x) {
+    return 0
+  }
+  return x.toString().split('.')[1].length || 0
+}
 
 async function mintPosition(): Promise<TransactionState> {
     const address = wallet.address
@@ -300,6 +306,8 @@ async function constructPosition(
   ): Promise<Position> {
     const poolInfo = await getPoolInfo()
     // construct pool instance
+    console.log('token0Amount.quotient=', token0Amount.quotient.toString())
+    console.log('token1Amount.quotient=', token1Amount.quotient.toString())
     const configuredPool = new Pool(
         token0Amount.currency,
         token1Amount.currency,
@@ -312,10 +320,10 @@ async function constructPosition(
         pool: configuredPool,
         tickLower:
           nearestUsableTick(poolInfo.tick, poolInfo.tickSpacing) -
-          poolInfo.tickSpacing * 2,
+          poolInfo.tickSpacing * 100,
         tickUpper:
           nearestUsableTick(poolInfo.tick, poolInfo.tickSpacing) +
-          poolInfo.tickSpacing * 2,
+          poolInfo.tickSpacing * 100,
         amount0: token0Amount.quotient,
         amount1: token1Amount.quotient,
         useFullPrecision: true,
@@ -374,9 +382,159 @@ async function constructPosition(
     }
   }
 
+  async function addLiquidity(positionId: number): Promise<TransactionState> {
+    const address = wallet.address
+    const provider = getProvider()
+    if (!address || !provider) {
+      return TransactionState.Failed
+    }
+  
+    const positionToIncreaseBy = await constructPosition(
+      CurrencyAmount.fromRawAmount(
+        tokens.token0,
+        fromReadableAmount(
+          (tokens.token0Amount * tokens.fractionToAdd),
+          tokens.token0.decimals
+        )
+      ),
+      CurrencyAmount.fromRawAmount(
+        tokens.token1,
+        fromReadableAmount(
+          (tokens.token1Amount * tokens.fractionToAdd),
+          tokens.token1.decimals
+        )
+      )
+    )
+
+    const addLiquidityOptions: AddLiquidityOptions = {
+      deadline: Math.floor(Date.now() / 1000) + 60 * 20,
+      slippageTolerance: new Percent(50, 10_000),
+      tokenId: positionId,
+    }
+     // get calldata for increasing a position
+    const { calldata, value } = NonfungiblePositionManager.addCallParameters(
+      positionToIncreaseBy,
+      addLiquidityOptions
+    )
+
+    // build transaction
+    const transaction = {
+      data: calldata,
+      to: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+      value: value,
+      from: address,
+      maxFeePerGas: MAX_FEE_PER_GAS,
+      maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS,
+    }
+
+    await sendTransaction(transaction)
+    return TransactionState.Sent
+  }
+
+  async function removeLiquidity(positionId: number): Promise<TransactionState> {
+    const address = wallet.address
+    const provider = getProvider()
+    if (!address || !provider) {
+      return TransactionState.Failed
+    }
+  
+    const currentPosition = await constructPosition(
+      CurrencyAmount.fromRawAmount(
+        tokens.token0,
+        fromReadableAmount(
+          tokens.token0Amount,
+          tokens.token0.decimals
+        )
+      ),
+      CurrencyAmount.fromRawAmount(
+        tokens.token1,
+        fromReadableAmount(
+          tokens.token1Amount,
+          tokens.token1.decimals
+        )
+      )
+    )
+
+    const collectOptions: Omit<CollectOptions, 'tokenId'> = {
+      expectedCurrencyOwed0: CurrencyAmount.fromRawAmount(DAI_TOKEN, 0),
+      expectedCurrencyOwed1: CurrencyAmount.fromRawAmount(USDC_TOKEN, 0),
+      recipient: address,
+    }
+    const removeLiquidityOptions: RemoveLiquidityOptions = {
+      deadline: Math.floor(Date.now() / 1000) + 60 * 20,
+      slippageTolerance: new Percent(50, 10_000),
+      tokenId: positionId,
+      // percentage of liquidity to remove
+      liquidityPercentage: new Percent(tokens.fractionToRemove),
+      collectOptions,
+    }
+    // get calldata for minting a position
+    const { calldata, value } = NonfungiblePositionManager.removeCallParameters(
+      currentPosition,
+      removeLiquidityOptions
+    )
+  
+    // build transaction
+    const transaction = {
+      data: calldata,
+      to: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+      value: value,
+      from: address,
+      maxFeePerGas: MAX_FEE_PER_GAS,
+      maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS,
+    }
+  
+    await sendTransaction(transaction)
+    return TransactionState.Sent
+  }
+
+  async function collectFees(positionId: number): Promise<TransactionState> {
+    const address = wallet.address
+    const provider = getProvider()
+    if (!address || !provider) {
+      return TransactionState.Failed
+    }
+    const collectOptions: CollectOptions = {
+      tokenId: positionId,
+      expectedCurrencyOwed0: CurrencyAmount.fromRawAmount(
+        tokens.token0,
+        fromReadableAmount(
+          tokens.token0AmountToCollect,
+          tokens.token0.decimals
+        )
+      ),
+      expectedCurrencyOwed1: CurrencyAmount.fromRawAmount(
+        tokens.token1,
+        fromReadableAmount(
+          tokens.token1AmountToCollect,
+          tokens.token1.decimals
+        )
+      ),
+      recipient: address,
+    }
+
+    const { calldata, value } =
+    NonfungiblePositionManager.collectCallParameters(collectOptions)
+
+    // build transaction
+    const transaction = {
+      data: calldata,
+      to: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+      value: value,
+      from: address,
+      maxFeePerGas: MAX_FEE_PER_GAS,
+      maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS,
+    }
+
+    return sendTransaction(transaction)
+  }
+
   async function main() {
-    await mintPosition()
+    //await mintPosition()
     const positionIds = await getPositionIds()
+    //await addLiquidity(positionIds[positionIds.length - 1])
+    //await removeLiquidity(positionIds[positionIds.length - 1])
+    await collectFees(positionIds[positionIds.length - 1])
     for (let id of positionIds) {
       const positionInfo = await getPositionInfo(id)
       console.log('=====position id:', id.toString(), '===========')
@@ -387,5 +545,6 @@ async function constructPosition(
   main().then().catch((e) => {
     console.log(e)
   })
+
 
   //npx hardhat run scripts\mint-position.ts
