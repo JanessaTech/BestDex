@@ -24,8 +24,6 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
                                             minVal: parseFloat(((3 * min + max) / 4).toFixed(2)),
                                             maxVal: parseFloat(((min + 3 * max) / 4).toFixed(2))
                                         })
-    const [initMin, setInitMin] = useState(min)
-    const [initMax, setInitMax] = useState(max)
     const [minVal, setMinVal] = useState<number>(parseFloat(((3 * min + max) / 4).toFixed(2)));
     const [maxVal, setMaxVal] = useState<number>(parseFloat(((min + 3 * max) / 4).toFixed(2)));
     const minValInputRef = useRef<HTMLInputElement>(null);
@@ -58,9 +56,6 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
             if (minValueDivRef.current) {
                 minValueDivRef.current.style.left = `${minPercent}%`;
             }
-
-            //console.log('minPercent=', minPercent)
-            //console.log('maxPercent=', maxPercent)
         }
     }, [minVal, getPercent]);
 
@@ -98,8 +93,6 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
     const handleZoomIn = () => {
         const newMin = Math.min(parseFloat(((19 * min + max) / 20).toFixed(2)), minVal)
         const newMax = Math.max(parseFloat(((19 * max + min) / 20).toFixed(2)), maxVal)
-        console.log('handleZoomIn:', 'min=', min, '  max=', max)
-        console.log('handleZoomIn:', 'newMin=', newMin+ ',  newMax=', newMax)
         updateMinMax(newMin, newMax)
     }
     const handleZoomOut = () => {
