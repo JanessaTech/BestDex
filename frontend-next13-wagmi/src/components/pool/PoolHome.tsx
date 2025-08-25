@@ -88,6 +88,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const clear = () => {
         setToken1(undefined)
         setToken2(undefined)
+        setStep(1)
         setDeposit({amount1: '0', amount2: '0'})
     }
  

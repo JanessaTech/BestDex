@@ -18,7 +18,14 @@ type PriceSelectorProps = {
     updateMinMax: (min: number, max: number) => void;
 }
 const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, updateMinMax}) => {
-
+    const [initState, setInitState] = useState({
+                                            initMin: min, 
+                                            initMax: max, 
+                                            minVal: parseFloat(((3 * min + max) / 4).toFixed(2)),
+                                            maxVal: parseFloat(((min + 3 * max) / 4).toFixed(2))
+                                        })
+    const [initMin, setInitMin] = useState(min)
+    const [initMax, setInitMax] = useState(max)
     const [minVal, setMinVal] = useState<number>(parseFloat(((3 * min + max) / 4).toFixed(2)));
     const [maxVal, setMaxVal] = useState<number>(parseFloat(((min + 3 * max) / 4).toFixed(2)));
     const minValInputRef = useRef<HTMLInputElement>(null);
@@ -26,7 +33,12 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
     const range = useRef<HTMLDivElement>(null);
     const minValueDivRef = useRef<HTMLDivElement>(null);
     const maxValueDivRef = useRef<HTMLDivElement>(null);
-    const mid = parseFloat(((min + max) / 2).toFixed(2))
+    const [mid, setMid] = useState(parseFloat(((min + max) / 2).toFixed(2))) 
+
+    console.log('minVal=', minVal, 'maxVal=', maxVal)
+    console.log('min=', min, 'max=', max)
+    console.log('mid=', mid)
+    console.log('initState=', initState)
 
     const getPercent = useCallback(
         (value: number) => Math.max(Math.round(((value - min) / (max - min)) * 100), 0),
@@ -47,8 +59,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
                 minValueDivRef.current.style.left = `${minPercent}%`;
             }
 
-            console.log('minPercent=', minPercent)
-            console.log('maxPercent=', maxPercent)
+            //console.log('minPercent=', minPercent)
+            //console.log('maxPercent=', maxPercent)
         }
     }, [minVal, getPercent]);
 
@@ -58,7 +70,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
             const maxPercent = getPercent(maxVal);
 
             if (range.current) {
-            range.current.style.width = `${maxPercent - minPercent}%`;
+                range.current.style.left = `${minPercent}%`;
+                range.current.style.width = `${maxPercent - minPercent}%`;
             }
             if (maxValueDivRef.current) {
                 maxValueDivRef.current.style.left = `${maxPercent}%`;
@@ -69,28 +82,28 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
     const onChangeLeft = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Math.min(Number(e.target.value), maxVal - 1);
           setMinVal(value);
-          e.target.value = value.toString();
     }
     const onChangeRight = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Math.max(Number(e.target.value), minVal + 1);
-        setMaxVal(value);
-        e.target.value = value.toString();
+        setMaxVal(value)
+        setMaxVal
     }
 
     const handleReset = () => {
-        setMinVal(parseFloat(((3 * min + max) / 4).toFixed(2)))
-        setMaxVal(parseFloat(((min + 3 * max) / 4).toFixed(2)))
+        updateMinMax(initState.initMin, initState.initMax)
+        setMinVal(initState.minVal)
+        setMaxVal(initState.maxVal)
     }
 
     const handleZoomIn = () => {
-        const newMin = parseFloat(((19 * min + max) / 20).toFixed(2))
-        const newMax = parseFloat(((19 * max + min) / 20).toFixed(2))
+        const newMin = Math.min(parseFloat(((19 * min + max) / 20).toFixed(2)), minVal)
+        const newMax = Math.max(parseFloat(((19 * max + min) / 20).toFixed(2)), maxVal)
         console.log('handleZoomIn:', 'min=', min, '  max=', max)
         console.log('handleZoomIn:', 'newMin=', newMin+ ',  newMax=', newMax)
         updateMinMax(newMin, newMax)
     }
     const handleZoomOut = () => {
-        const newMin = Math.max(0, parseFloat(((21 * min - max) / 20).toFixed(2)))
+        const newMin = parseFloat(((21 * min - max) / 20).toFixed(2))
         const newMax = parseFloat(((21 * max - min) / 20).toFixed(2))
         updateMinMax(newMin, newMax)
     }
