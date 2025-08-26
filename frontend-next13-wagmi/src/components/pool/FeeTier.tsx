@@ -12,17 +12,26 @@ const feeTiers = [
     {value: 0.3, description: 'Best for most pairs.'},
     {value: 1, description: 'Best for exotic pairs.'},
 ]
-type FeeTierProps = {}
-const FeeTier: React.FC<FeeTierProps> = () => {
+type FeeTierProps = {
+    handleFeeAmountChange: (_feeAmount: number) => void
+}
+const FeeTier: React.FC<FeeTierProps> = ({handleFeeAmountChange}) => {
     const [select, setSelect] = useState(2)
     
+    const handleFeeSelect = (id: number) => {
+        setSelect(id)
+        const feeAmount = feeTiers[id].value * 10000
+        console.log('feeAmount=', feeAmount)
+        handleFeeAmountChange(feeAmount)
+    }
+
     return (
         <div className='py-5'>
                         <div className='pb-2'>Fee tier</div>
                         <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
                             {
                                 feeTiers.map((feeTier, id) => (
-                                    <div className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => setSelect(id)}>
+                                    <div key={id} className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => handleFeeSelect(id)}>
                                         <div className='flex justify-between items-center'>
                                             <span className={`text-sm font-semibold ${select === id ? 'text-pink-600' : 'text-white'}`}>{feeTier.value}%</span>
                                             <SVGCheck className={`text-white bg-pink-600 rounded-full p-1 size-5 ${select === id ? '' : 'invisible'}`}/>

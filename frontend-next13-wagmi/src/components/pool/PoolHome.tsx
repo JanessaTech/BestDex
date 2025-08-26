@@ -27,6 +27,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [deposit, setDeposit] = useState({amount1: '0', amount2: '0'})
     const [step, setStep] = useState(1)
     const {slipage, deadline} = useUpdateSetting()
+    const [feeAmount, setFeeAmount] = useState(3000)
 
     console.log('slipage=', slipage, 'deadline=', deadline)
     
@@ -88,6 +89,10 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setStep(step - 1)
     }
 
+    const handleFeeAmountChange = (_feeAmount: number) => {
+        setFeeAmount(_feeAmount)
+    }
+
 
     const clear = () => {
         setToken1(undefined)
@@ -138,7 +143,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                     />
                                 </div>
                             </div>
-                            <FeeTier/>
+                            <FeeTier handleFeeAmountChange={handleFeeAmountChange}/>
                         </>
                     }
                     {
