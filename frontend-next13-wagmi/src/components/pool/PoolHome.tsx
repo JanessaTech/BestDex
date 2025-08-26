@@ -12,6 +12,7 @@ import { Button } from '../ui/button'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
+import { useUpdateSetting } from '@/config/store'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -25,6 +26,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token2, setToken2] = useState<TokenType | undefined>(undefined)
     const [deposit, setDeposit] = useState({amount1: '0', amount2: '0'})
     const [step, setStep] = useState(1)
+    const {slipage, deadline} = useUpdateSetting()
+
+    console.log('slipage=', slipage, 'deadline=', deadline)
     
     // in case we change network via wallet connection button
     useEffect(() => {

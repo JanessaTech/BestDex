@@ -1,6 +1,17 @@
 import SVGCheck from "@/lib/svgs/svg_check"
 import { useState } from "react"
-
+/**
+ *  100 -> 500 / 1,000,000 = 0.0001 -> 0.01%
+ *  500 -> 500 / 1,000,000 = 0.0005 -> 0.05%
+    3000 -> 3000 / 1,000,000 = 0.003 -> 0.3%
+    10000 -> 10000 / 1,000,000 = 0.01 -> 1%
+ */
+const feeTiers = [
+    {value: 0.01, description: 'Best for very stable pairs.'}, 
+    {value: 0.05, description: 'Best for stable pairs.'},
+    {value: 0.3, description: 'Best for most pairs.'},
+    {value: 1, description: 'Best for exotic pairs.'},
+]
 type FeeTierProps = {}
 const FeeTier: React.FC<FeeTierProps> = () => {
     const [select, setSelect] = useState(2)
@@ -9,34 +20,17 @@ const FeeTier: React.FC<FeeTierProps> = () => {
         <div className='py-5'>
                         <div className='pb-2'>Fee tier</div>
                         <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
-                            <div className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => setSelect(0)}>
-                                <div className='flex justify-between items-center'>
-                                    <span className={`text-sm font-semibold ${select === 0 ? 'text-pink-600' : 'text-white'}`}>0.01%</span>
-                                    <SVGCheck className={`text-white bg-pink-600 rounded-full p-1 size-5 ${select === 0 ? '' : 'invisible'}`}/>
-                                </div>
-                                <div className='text-xs pt-2'><span>Best for very stable pairs.</span></div>
-                            </div>
-                            <div className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => setSelect(1)}>
-                                <div className='flex justify-between items-center'>
-                                    <span className={`text-sm font-semibold ${select === 1 ? 'text-pink-600' : 'text-white'}`}>0.05%</span>
-                                    <SVGCheck className={`text-white bg-pink-600 rounded-full p-1 size-5 ${select === 1 ? '' : 'invisible'}`}/>
-                                </div>
-                                <div className='text-xs pt-2'><span>Best for stable pairs.</span></div>
-                            </div>
-                            <div className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => setSelect(2)}>
-                                <div className='flex justify-between items-center'>
-                                    <span className={`text-sm font-semibold ${select === 2 ? 'text-pink-600' : 'text-white'}`}>0.3%</span>
-                                    <SVGCheck className={`text-white bg-pink-600 rounded-full p-1 size-5 ${select === 2 ? '' : 'invisible'}`}/>
-                                </div>
-                                <div className='text-xs pt-2'><span>Best for most pairs.</span></div>
-                            </div>
-                            <div className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => setSelect(3)}>
-                                <div className='flex justify-between items-center'>
-                                    <span className={`text-sm font-semibold ${select === 3 ? 'text-pink-600' : 'text-white'}`}>1%</span>
-                                    <SVGCheck className={`text-white bg-pink-600 rounded-full p-1 size-5 ${select === 3 ? '' : 'invisible'}`}/>
-                                </div>
-                                <div className='text-xs pt-2'><span>Best for exotic pairs.</span></div>
-                            </div>
+                            {
+                                feeTiers.map((feeTier, id) => (
+                                    <div className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => setSelect(id)}>
+                                        <div className='flex justify-between items-center'>
+                                            <span className={`text-sm font-semibold ${select === id ? 'text-pink-600' : 'text-white'}`}>{feeTier.value}%</span>
+                                            <SVGCheck className={`text-white bg-pink-600 rounded-full p-1 size-5 ${select === id ? '' : 'invisible'}`}/>
+                                        </div>
+                                        <div className='text-xs pt-2'><span>{feeTier.description}</span></div>
+                                    </div>
+                                ))
+                            }
                         </div>
         </div>
     )
