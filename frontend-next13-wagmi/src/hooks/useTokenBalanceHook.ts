@@ -1,17 +1,17 @@
 import { 
     usePublicClient
   } from 'wagmi'
-  import { formatUnits } from 'viem'
+import { formatUnits } from 'viem'
 import { ERC20_ABI } from '@/config/constants'
 
 const useTokenBalanceHook = () => {
     const publicClient = usePublicClient()
-    
+
     const getTokenBalance = async (
         tokenAddress: `0x${string}`| undefined, 
         userAddress: `0x${string}`,
         options: { decimals?: number } = {}
-        ) => {
+        ):Promise<string> => {
         try {
             const decimals = options.decimals ? options.decimals : 18
             if (!publicClient) throw new Error('publicClient is null')

@@ -13,6 +13,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
 import { useUpdateSetting } from '@/config/store'
+import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -28,6 +29,8 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [step, setStep] = useState(1)
     const {slipage, deadline} = useUpdateSetting()
     const [feeAmount, setFeeAmount] = useState(3000)
+
+    const {getPoolInfo} = useContextUtil() as IContextUtil
 
     console.log('slipage=', slipage, 'deadline=', deadline)
     
@@ -81,7 +84,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         }
     }
 
-    const handleNextStep = () => {
+    const handleNextStep = async () => {
         setStep(step + 1)
     }
 

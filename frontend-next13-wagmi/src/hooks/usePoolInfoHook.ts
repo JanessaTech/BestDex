@@ -19,19 +19,22 @@ export type PoolInfo = {
     tick: number
 }
 const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
+
 const usePoolInfoHook = () => {
     const publicClient = usePublicClient()
 
-    const getPoolInfo = async (token0 : Token, token1: Token, feeAmount: number) => {
+    const getPoolInfo = async (token0 : Token, token1: Token, feeAmount: number): Promise<PoolInfo> => {
         try {
             if (!publicClient) throw new Error('publicClient is null')
             const feeAmount_enum = Object.values(FeeAmount).includes(feeAmount) ? feeAmount as FeeAmount : FeeAmount.MEDIUM
+            console.log('feeAmount_enum=', feeAmount_enum)
             const currentPoolAddress = computePoolAddress({
                 factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
                 tokenA: token0,
                 tokenB: token1,
                 fee: feeAmount_enum,
             })
+            console.log('currentPoolAddress=', currentPoolAddress)
             if (!currentPoolAddress) throw new Error('No pool address found')
             const data = await publicClient.multicall({
                 contracts: [
