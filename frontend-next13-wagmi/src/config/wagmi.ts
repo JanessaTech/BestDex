@@ -37,7 +37,9 @@ import {
       ...arbitrum,
       iconUrl: '/imgs/networks/arbitrumone.png',
     },
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [{...sepolia, iconUrl: '/imgs/networks/sepolia.png'}, {...hardhat, iconUrl: '/imgs/networks/hardhat.png'}] : [])
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [{...sepolia, iconUrl: '/imgs/networks/sepolia.png'}, 
+                                                              {...hardhat, iconUrl: '/imgs/networks/hardhat.png', contracts: {multicall3: {address: '0xca11bde05977b3631167028862be2a173976ca11', blockCreated: 14353601}}}] 
+                                                           : [])
   ]
 
 export const config = getDefaultConfig({

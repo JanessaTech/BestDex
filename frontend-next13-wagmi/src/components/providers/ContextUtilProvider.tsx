@@ -5,7 +5,7 @@ import usePriceHook, { TokenPriceInUSDType } from "@/hooks/usePriceHook"
 import useTokenBalanceHook from "@/hooks/useTokenBalanceHook";
 import useURLHook from "@/hooks/useURLHook"
 import { createContext, useContext } from "react"
-import {Token} from '@uniswap/sdk-core'
+import { TokenType } from "@/lib/types";
 
 export interface IContextUtil {
     getCurrentPath: () => string;
@@ -14,7 +14,7 @@ export interface IContextUtil {
             tokenAddress: `0x${string}`| undefined, 
             userAddress: `0x${string}`, 
             options: { decimals?: number }) => Promise<string>;
-    getPoolInfo: (token0 : Token, token1: Token, feeAmount: number) => Promise<PoolInfo>
+    getPoolInfo: (token0 : TokenType, token1: TokenType, feeAmount: number) => Promise<PoolInfo>
 }
 
 const ContextUtil = createContext<IContextUtil | undefined>(undefined)

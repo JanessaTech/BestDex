@@ -86,6 +86,14 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     const handleNextStep = async () => {
         setStep(step + 1)
+        if (token1 && token2) {
+            try {
+                const poolInfo = await getPoolInfo(token1, token2, feeAmount)
+                console.log('poolInfo=', poolInfo)
+            } catch (error) {
+                console.log('failed to get pool info due to:', error)
+            }  
+        } 
     }
 
     const handlePrevStep = () => {
