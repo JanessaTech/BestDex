@@ -29,7 +29,7 @@ const usePoolInfoHook = () => {
         try {
             if (!publicClient) throw new Error('publicClient is null')
             const feeAmount_enum = Object.values(FeeAmount).includes(feeAmount) ? feeAmount as FeeAmount : FeeAmount.MEDIUM
-            console.log('feeAmount_enum=', feeAmount_enum)
+            console.log('feeAmount_enum=', feeAmount_enum)  // to-do: should add warning message
             const currentPoolAddress = computePoolAddress({
                 factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
                 tokenA: new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
@@ -72,7 +72,7 @@ const usePoolInfoHook = () => {
                     }
                 ]
             })
-            console.log(data)
+            //console.log(data)
             if (!data[0].result 
                 || !data[1].result
                 || !data[2].result

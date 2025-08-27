@@ -29,6 +29,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [step, setStep] = useState(1)
     const {slipage, deadline} = useUpdateSetting()
     const [feeAmount, setFeeAmount] = useState(3000)
+    const [isLoading, setIsLoading] = useState(false)
 
     const {getPoolInfo} = useContextUtil() as IContextUtil
 
@@ -85,10 +86,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     }
 
     const handleNextStep = async () => {
-        setStep(step + 1)
         if (token1 && token2) {
             try {
+                setIsLoading(true)
                 const poolInfo = await getPoolInfo(token1, token2, feeAmount)
+                setIsLoading(false)
+                setStep(step + 1)
                 console.log('poolInfo=', poolInfo)
             } catch (error) {
                 console.log('failed to get pool info due to:', error)
@@ -176,7 +179,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             disabled={ isConnected ? (!token1 || !token2) : false}
                             onClick={isConnected ? handleNextStep : openConnectModal}>
                                 {isConnected 
-                                    ? step === 1 ? 'Next' : 'New Position'
+                                    ? step === 1 
+                                        ? <div className='relative'>
+                                            <div className={`size-10 border-[1px] rounded-full border-white border-t-transparent animate-spin absolute top-[-10px] ${isLoading ? '' : 'hidden'}`}></div>
+                                            <span>Next</span>
+                                          </div>
+                                        : <span>New Position</span>
                                     :'Connect Wallet'}
                         </Button>
                     </div>
