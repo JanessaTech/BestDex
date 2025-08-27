@@ -4,6 +4,7 @@ import {
     nearestUsableTick
     } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
+import { Decimal } from 'decimal.js';
 
 const USDC_TOKEN = new Token(
     ChainId.MAINNET,
@@ -62,7 +63,7 @@ function test_nearestUsableTick() {
     console.log('nearestUsableTick =', res)
 }
 
-function test() {
+function FeeAmount_test() {
     enum FeeAmount {
       LOWEST = 100,
       LOW_200 = 200,
@@ -79,9 +80,31 @@ function test() {
   console.log(res)
 }
 
+function sqrtPriceX96 () {
+  const sqrtPriceX96Str: string = '21552058857303015757123454635'
+  const token0Decimals: number = 18
+  const token1Decimals: number = 18
+  const isToken0Base: boolean = true
+  const sqrtPriceX96 = new Decimal(sqrtPriceX96Str)
+  const TWO_96 = new Decimal(2).pow(96);
+
+  // price = (sqrtPriceX96 / 2^96)^2
+  const sqrtRatio = sqrtPriceX96.dividedBy(TWO_96);
+  const ratio = sqrtRatio.pow(2);
+  
+  // adjust
+  const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals);
+  const adjustedRatio = ratio.times(decimalsAdjustment);
+  
+  // result
+  return isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio);
+}
+
+
 //test_CurrencyAmount()
 //test_nearestUsableTick()
-test()
-
+//FeeAmount_test()
+const res = sqrtPriceX96()
+console.log(res)
 
 //npx hardhat run scripts\tmp.ts
