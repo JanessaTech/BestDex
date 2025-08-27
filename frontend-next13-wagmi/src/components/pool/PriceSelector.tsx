@@ -13,11 +13,11 @@ const Axis = () => {
 type PriceSelectorProps = {
     min: number;
     max: number;
-    token1: TokenType | undefined;
-    token2: TokenType | undefined
+    token0: TokenType | undefined;
+    token1: TokenType | undefined
     updateMinMax: (min: number, max: number) => void;
 }
-const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, updateMinMax}) => {
+const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, updateMinMax}) => {
     const [initState, setInitState] = useState({
                                             initMin: min, 
                                             initMax: max, 
@@ -173,7 +173,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
                     <div className="flex flex-col justify-between text-xs">
                         <div>Min price</div>
                         <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={minVal}/>
-                        <div>{token1 && token2 ? <span>{`${token2?.symbol} = 1 ${token1?.symbol}`}</span> : <span></span>}</div>
+                        <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
                         <SVGMinus 
@@ -188,7 +188,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token1, token2, 
                     <div className="flex flex-col justify-between text-xs">
                         <div>Max price</div>
                         <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={maxVal}/>
-                        <div>{token1 && token2 ? <span>{`${token2?.symbol} = 1 ${token1?.symbol}`}</span> : <span></span>}</div>
+                        <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
                         <SVGMinus 

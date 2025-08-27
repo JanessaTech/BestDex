@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import type { LocalChainIds, QuotesParameterType, TokenType } from "@/lib/types"
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Token from "../common/Token"
 import SVGArrowDownMid from "@/lib/svgs/svg_arrow_down_mid"
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip"
