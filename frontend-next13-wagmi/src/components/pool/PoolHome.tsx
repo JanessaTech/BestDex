@@ -1,7 +1,7 @@
 'use client'
 
 import Setting from '../common/Setting'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
 import { useAccount, useChainId } from 'wagmi'
 import { TokenType } from '@/lib/types'
@@ -14,6 +14,7 @@ import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
 import { useUpdateSetting } from '@/config/store'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
+import { PoolInfo } from '@/hooks/usePoolInfoHook'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -26,10 +27,10 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token1, setToken1] = useState<TokenType | undefined>(undefined)
     const [token2, setToken2] = useState<TokenType | undefined>(undefined)
     const [deposit, setDeposit] = useState({amount1: '0', amount2: '0'})
-    const [step, setStep] = useState(1)
     const {slipage, deadline} = useUpdateSetting()
     const [feeAmount, setFeeAmount] = useState(3000)
-    const [isLoading, setIsLoading] = useState(false)
+
+    const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
 
     const {getPoolInfo} = useContextUtil() as IContextUtil
 
@@ -39,7 +40,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     useEffect(() => {
         setToken1(undefined)
         setToken2(undefined)
-        setStep(1)
+        setState({...state, step: 1})
     }, [chainId, isConnected])
 
     const onSettingOpenChange = (open: boolean) => {
@@ -88,19 +89,19 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const handleNextStep = async () => {
         if (token1 && token2) {
             try {
-                setIsLoading(true)
+                setState({...state, isLoading: true})
                 const poolInfo = await getPoolInfo(token1, token2, feeAmount)
-                setIsLoading(false)
-                setStep(step + 1)
+                setState({...state, isLoading: false, step: state.step + 1, poolInfo: poolInfo})
                 console.log('poolInfo=', poolInfo)
             } catch (error) {
                 console.log('failed to get pool info due to:', error)
+                toast.warning('Failed to get the pool info, Please choose the corret feeTier and try again')
             }  
         } 
     }
 
     const handlePrevStep = () => {
-        setStep(step - 1)
+        setState({...state, step: state.step - 1})
     }
 
     const handleFeeAmountChange = (_feeAmount: number) => {
@@ -111,7 +112,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const clear = () => {
         setToken1(undefined)
         setToken2(undefined)
-        setStep(1)
+        setState({...state, step: 1})
         setDeposit({amount1: '0', amount2: '0'})
     }
  
@@ -128,13 +129,13 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                         </div>
                         <div>
                             <SVGLeft 
-                                className={`size-6 absolute left-[-10px] cursor-pointer hover:text-pink-600 ${step === 1 ? 'hidden' : ''}`}
+                                className={`size-6 absolute left-[-10px] cursor-pointer hover:text-pink-600 ${state.step === 1 ? 'hidden' : ''}`}
                                 onClick={handlePrevStep}  
                             />
                         </div>
                     </div>
                     {
-                        step === 1 &&
+                        state.step === 1 &&
                         <>
                             <div>
                                 <div className='pb-2'>Select pair</div>
@@ -161,7 +162,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                         </>
                     }
                     {
-                        step === 2 && 
+                        state.step === 2 && 
                         <>
                             <PriceRange token1={token1} token2={token2}/>
                             <Deposit 
@@ -179,9 +180,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             disabled={ isConnected ? (!token1 || !token2) : false}
                             onClick={isConnected ? handleNextStep : openConnectModal}>
                                 {isConnected 
-                                    ? step === 1 
+                                    ? state.step === 1 
                                         ? <div className='relative'>
-                                            <div className={`size-10 border-[1px] rounded-full border-white border-t-transparent animate-spin absolute top-[-10px] ${isLoading ? '' : 'hidden'}`}></div>
+                                            <div className={`size-10 border-[1px] rounded-full border-white border-t-transparent animate-spin absolute top-[-10px] ${state.isLoading ? '' : 'hidden'}`}></div>
                                             <span>Next</span>
                                           </div>
                                         : <span>New Position</span>
@@ -194,4 +195,4 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     )
 }
 
-export default PoolHome
+export default memo(PoolHome)
