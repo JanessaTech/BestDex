@@ -62,7 +62,26 @@ function test_nearestUsableTick() {
     console.log('nearestUsableTick =', res)
 }
 
+function test() {
+    enum FeeAmount {
+      LOWEST = 100,
+      LOW_200 = 200,
+      LOW_300 = 300,
+      LOW_400 = 400,
+      LOW = 500,
+      MEDIUM = 3000,
+      HIGH = 10000
+  }
+  const value = 500
+  const res = Object.values(FeeAmount).includes(value)
+    ? value as FeeAmount
+    : FeeAmount.MEDIUM
+  console.log(res)
+}
+
 //test_CurrencyAmount()
-test_nearestUsableTick()
+//test_nearestUsableTick()
+test()
+
 
 //npx hardhat run scripts\tmp.ts
