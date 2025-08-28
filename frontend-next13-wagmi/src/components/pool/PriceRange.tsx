@@ -5,17 +5,25 @@ import PriceSelector from "./PriceSelector";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
+import { useUpdateSetting } from "@/config/store";
+import { PoolInfo } from "@/hooks/usePoolInfoHook";
 
 type PriceRangeProps = {
     token0: TokenType | undefined;
-    token1: TokenType | undefined
+    token1: TokenType | undefined;
+    feeAmount: number;
+    poolInfo: PoolInfo; 
 }
-const PriceRange: React.FC<PriceRangeProps> = ({token0, token1}) => {
+const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolInfo}) => {
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
+    const {slipage, deadline} = useUpdateSetting()
     const [max, setMax] = useState(1000)
     const [min, setMin] = useState(0)
+    const [poolState, setPoolState] = useState({feeAmount: feeAmount, poolInfo: poolInfo})
 
+    console.log('slipage=', slipage, 'deadline=', deadline)
+    
     const updateMinMax = (min: number, max: number) => {
         console.log('updateMinMax:', 'min=', min, ' max=', max)
         setMin(min)

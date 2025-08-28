@@ -12,7 +12,6 @@ import { Button } from '../ui/button'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
-import { useUpdateSetting } from '@/config/store'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import { PoolInfo } from '@/hooks/usePoolInfoHook'
 
@@ -27,15 +26,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token0, setToken0] = useState<TokenType | undefined>(undefined)
     const [token1, setToken1] = useState<TokenType | undefined>(undefined)
     const [deposit, setDeposit] = useState({amount0: '0', amount1: '0'})
-    const {slipage, deadline} = useUpdateSetting()
     const [feeAmount, setFeeAmount] = useState(3000)
 
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
 
     const {getPoolInfo} = useContextUtil() as IContextUtil
 
-    console.log('slipage=', slipage, 'deadline=', deadline)
-    
     // in case we change network via wallet connection button
     useEffect(() => {
         setToken0(undefined)
@@ -95,7 +91,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                 console.log('poolInfo=', poolInfo)
             } catch (error) {
                 console.log('failed to get pool info due to:', error)
-                toast.warning('Failed to get the pool info, Please choose the corret feeTier and try again')
+                toast.warning('Failed to get the pool info, Please choose the corret feeTier and token pairs, then try again')
             }  
         } 
     }
