@@ -4,7 +4,7 @@ import SVGPlus from "@/lib/svgs/svg_plus";
 import SVGZoomIn from "@/lib/svgs/svg_zoom_in";
 import SVGZoomOut from "@/lib/svgs/svg_zoom_out";
 import type { TokenType } from "@/lib/types";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 
 const Axis = () => {
     return <div className="w-[300px] bg-zinc-400 h-[4px] absolute top-0"></div>
@@ -220,4 +220,4 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
     )
 }
 
-export default PriceSelector
+export default memo(PriceSelector)

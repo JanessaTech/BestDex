@@ -1,11 +1,10 @@
 import { TokenType, LocalChainIds } from "@/lib/types";
-import { memo, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 import Token from "../common/Token";
 import PriceSelector from "./PriceSelector";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
-import { useUpdateSetting } from "@/config/store";
 import { PoolInfo } from "@/hooks/usePoolInfoHook";
 
 type PriceRangeProps = {
@@ -15,24 +14,23 @@ type PriceRangeProps = {
     poolInfo: PoolInfo; 
 }
 const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolInfo}) => {
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    //const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
-    const {slipage, deadline} = useUpdateSetting()
     const [max, setMax] = useState(1000)
     const [min, setMin] = useState(0)
     const {getPoolRangeMaxMin} = useContextUtil() as IContextUtil
-    const [poolRange, setPooRange] = useState(getPoolRangeMaxMin(poolInfo, token0?.decimal, token1?.decimal))
-    const [poolState, setPoolState] = useState({feeAmount: feeAmount, poolInfo: poolInfo})
+    const [poolState, setPoolState] = useState<{max?: number, min?: number , poolInfo: PoolInfo}>({poolInfo: poolInfo})
+   
+    useEffect(() => {
+        const poolRange = getPoolRangeMaxMin(poolInfo, token0.decimal, token1.decimal)
+        console.log('poolRange=', poolRange)
+        setPoolState({...poolState, ... poolRange})
+    }, [])
     
-    console.log('poolRange=', poolRange)
-    console.log('poolInfo=', poolInfo)
-    console.log('slipage=', slipage, 'deadline=', deadline)
-    
-    const updateMinMax = (min: number, max: number) => {
+    const updateMinMax = useCallback((min: number, max: number) => {
         console.log('updateMinMax:', 'min=', min, ' max=', max)
-        // setMin(min)
-        // setMax(max)
-    }
+        setPoolState({...poolState, max: max, min: min})
+    }, [])
 
     return (
         <div>
@@ -51,13 +49,20 @@ const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolI
                         <Token token={token0} imageSize={25} textSize="text-xs"/>
                         <Token token={token1} imageSize={25} textSize="text-xs"/>
                     </div> 
-                    <PriceSelector 
-                        min={min} 
-                        max={max} 
-                        token0={token0}
-                        token1={token1}
-                        updateMinMax={updateMinMax}
-                        /> 
+                    {
+                        poolState.max !== undefined && poolState.min !== undefined 
+                        ? <PriceSelector 
+                            min={min} 
+                            max={max} 
+                            token0={token0}
+                            token1={token1}
+                            updateMinMax={updateMinMax}
+                            /> 
+                        : <div className="flex justify-center py-6 relative">
+                            <div className="size-10 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute top-[14px]"></div>
+                                <span>Loading price selector</span>
+                           </div>
+                    }
                 </div>
             </div>
         </div>
