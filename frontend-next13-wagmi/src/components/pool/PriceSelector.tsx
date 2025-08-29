@@ -32,6 +32,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
     const minValueDivRef = useRef<HTMLDivElement>(null);
     const maxValueDivRef = useRef<HTMLDivElement>(null);
     const [mid, setMid] = useState(parseFloat(((min + max) / 2).toFixed(2))) 
+    const midRef = useRef<HTMLInputElement>(null);
+    const midValueDivRef = useRef<HTMLInputElement>(null);
 
     console.log('minVal=', minVal, 'maxVal=', maxVal)
     console.log('min=', min, 'max=', max)
@@ -42,6 +44,19 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
         (value: number) => Math.max(Math.round(((value - min) / (max - min)) * 100), 0),
         [min, max]
       );
+
+    useEffect(() => {
+        if (midRef.current) {
+            const percent = getPercent(mid)
+            midRef.current.style.left = `0%`;
+            midRef.current.style.width = `${percent}%`
+            //console.log('mid', mid)
+            //console.log('mid percent', percent)
+            if (midValueDivRef.current) {
+                midValueDivRef.current.style.left = `${percent}%`
+            }
+        }
+    }, [mid])
     
     useEffect(() => {
         if (maxValInputRef.current) {
@@ -81,7 +96,6 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
     const onChangeRight = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Math.max(Number(e.target.value), minVal + 1);
         setMaxVal(value)
-        setMaxVal
     }
 
     const handleReset = () => {
@@ -123,38 +137,40 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
 
     return (
         <div>
-            <div className="flex justify-center items-center flex-col relative text-xs">
-                <div className="w-[300px] h-[200px] bg-zinc-600/30 absolute bottom-0"></div> 
-                <div className="border-dashed border-[1px] border-white h-[200px] box-border"></div>
-                <div className="w-[300px] h-0 relative bg-zinc-900">
-                    <Axis/>
-                    <div ref={range} className="bg-pink-600/30 h-[200px] absolute bottom-0 group" >
-                        <div className="text-white w-fit px-2 py-1 absolute top-20 left-[-50px]">10%</div>
-                        <div className="text-white w-fit px-2 py-1 absolute top-20 right-[-50px]">10%</div>
+            <div className="flex justify-center">
+                <div className="w-[300px] h-[200px] flex justify-center items-center flex-col relative text-xs">
+                    <div className="w-[300px] h-[200px] bg-zinc-600/30 absolute bottom-0"></div> 
+                    <div ref={midRef} className="border-dashed border-r-[1px] border-white h-[200px] box-border absolute bottom-0"></div>
+                    <div className="absolute bottom-0">
+                        <div className="w-[300px] h-0 relative bg-zinc-900">
+                            <Axis/>
+                            <div ref={range} className="bg-pink-600/30 h-[200px] absolute bottom-0 group" >
+                                <div className="text-white w-fit px-2 py-1 absolute top-20 left-[-50px]">10%</div>
+                                <div className="text-white w-fit px-2 py-1 absolute top-20 right-[-50px]">10%</div>
+                            </div>
+                            <input 
+                                className="thumbbar w-[300px] z-10" 
+                                type="range" 
+                                min={min}
+                                max={max}
+                                value={minVal}
+                                ref={minValInputRef}
+                                onChange={onChangeLeft}
+                                /> 
+                            <input 
+                                className="thumbbar w-[300px] z-20" 
+                                type="range" 
+                                min={min}
+                                max={max}
+                                value={maxVal}
+                                ref={maxValInputRef}
+                                onChange={onChangeRight}
+                                /> 
+                            <div ref={midValueDivRef} className="text-white absolute bottom-[-25px]">{mid}</div>
+                            <div ref={minValueDivRef} className="text-white absolute bottom-[-25px]">{minVal}</div>
+                            <div ref={maxValueDivRef} className="text-white absolute bottom-[-25px]">{maxVal}</div> 
+                        </div>
                     </div>
-                    <input 
-                        className="thumbbar w-[300px] z-10" 
-                        type="range" 
-                        min={min}
-                        max={max}
-                        value={minVal}
-                        ref={minValInputRef}
-                        onChange={onChangeLeft}
-                        /> 
-                    <input 
-                        className="thumbbar w-[300px] z-20" 
-                        type="range" 
-                        min={min}
-                        max={max}
-                        value={maxVal}
-                        ref={maxValInputRef}
-                        onChange={onChangeRight}
-                        /> 
-                    <div ref={minValueDivRef} className="text-white absolute bottom-[-25px]">{minVal}</div>
-                    <div ref={maxValueDivRef} className="text-white absolute bottom-[-25px]">{maxVal}</div> 
-                </div>
-                <div className="h-0 relative">
-                    <div className="py-1 text-white top-[5px] left-[-10px] absolute text-xs">{mid}</div>
                 </div>
             </div>
             <div className="mt-8 flex justify-end items-center text-white">

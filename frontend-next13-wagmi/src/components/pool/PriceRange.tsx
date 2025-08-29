@@ -9,8 +9,8 @@ import { useUpdateSetting } from "@/config/store";
 import { PoolInfo } from "@/hooks/usePoolInfoHook";
 
 type PriceRangeProps = {
-    token0: TokenType | undefined;
-    token1: TokenType | undefined;
+    token0: TokenType;
+    token1: TokenType;
     feeAmount: number;
     poolInfo: PoolInfo; 
 }
@@ -20,14 +20,18 @@ const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolI
     const {slipage, deadline} = useUpdateSetting()
     const [max, setMax] = useState(1000)
     const [min, setMin] = useState(0)
+    const {getPoolRangeMaxMin} = useContextUtil() as IContextUtil
+    const [poolRange, setPooRange] = useState(getPoolRangeMaxMin(poolInfo, token0?.decimal, token1?.decimal))
     const [poolState, setPoolState] = useState({feeAmount: feeAmount, poolInfo: poolInfo})
-
+    
+    console.log('poolRange=', poolRange)
+    console.log('poolInfo=', poolInfo)
     console.log('slipage=', slipage, 'deadline=', deadline)
     
     const updateMinMax = (min: number, max: number) => {
         console.log('updateMinMax:', 'min=', min, ' max=', max)
-        setMin(min)
-        setMax(max)
+        // setMin(min)
+        // setMax(max)
     }
 
     return (

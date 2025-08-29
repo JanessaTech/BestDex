@@ -9,6 +9,7 @@ import {
   } from 'wagmi'
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import { TokenType } from '@/lib/types'
+import { Decimal } from 'decimal.js'
 
 export type PoolInfo = {
     token0: string
@@ -21,6 +22,46 @@ export type PoolInfo = {
     liquidity: ethers.BigNumber
 }
 const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
+const MIN_TICK = -887272
+const MAX_TICK = 887272
+const TICK_RANG_PERCENTAGE = 0.1 
+const TICK_BASE = new Decimal(1.0001);
+
+const getPriceBySqrtPriceX96 = (isToken0Base: boolean, sqrtPriceX96: string, token0Decimals: number, token1Decimals: number) => {
+    const sqrtPriceX96Decimal = new Decimal(sqrtPriceX96)
+    const TWO_96 = new Decimal(2).pow(96)
+    // price = (sqrtPriceX96 / 2^96)^2
+    const sqrtRatio = sqrtPriceX96Decimal.dividedBy(TWO_96)
+    const ratio = sqrtRatio.pow(2)
+
+    // adjust
+    const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals)
+    const adjustedRatio = ratio.times(decimalsAdjustment)
+
+    return isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio);
+}
+
+const priceToTick = (price: Decimal, roundDirection: 'nearest' | 'up' | 'down', token0Decimals: number, token1Decimals: number) => {
+    const priceDecimal = new Decimal(price);
+    const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals);
+    const adjustedPrice = priceDecimal.div(decimalsAdjustment);
+    const tick = adjustedPrice.log().div(TICK_BASE.log());
+    let roundedTick: number;
+    switch (roundDirection) {
+      case 'up':
+        roundedTick = Math.ceil(tick.toNumber());
+        break;
+      case 'down':
+        roundedTick = Math.floor(tick.toNumber());
+        break;
+      case 'nearest':
+      default:
+        roundedTick = Math.round(tick.toNumber());
+        break;
+    }
+    const adjustedTick = Math.max(MIN_TICK, Math.min(MAX_TICK, roundedTick));
+    return adjustedTick
+  }
 
 const usePoolInfoHook = () => {
     const publicClient = usePublicClient()
@@ -98,7 +139,33 @@ const usePoolInfoHook = () => {
             throw new Error('Failed to get pool info ')
         }
     }
-    return {getPoolInfo}
+
+    const getPoolRangeMaxMin = (poolInfo: PoolInfo, token0Decimals: number, token1Decimals: number) => {
+        console.log('getPoolRangeMaxMin ...')
+        const isToken0Base = poolInfo.token0.toLowerCase() < poolInfo.token1.toLowerCase()
+        const currentPrice = getPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0Decimals, token1Decimals)
+        console.log('currentPrice=', currentPrice)
+        const lowerPrice = currentPrice.mul(1 - TICK_RANG_PERCENTAGE)
+        const upperPrice = currentPrice.mul(1 + TICK_RANG_PERCENTAGE)
+        console.log('lowerPrice=', lowerPrice)
+        console.log('upperPrice=', upperPrice)
+        const _lowerTick = priceToTick(lowerPrice, 'down', token0Decimals, token1Decimals)
+        const _upperTick = priceToTick(upperPrice, 'up', token0Decimals, token1Decimals)
+        const lowerTick =  Math.floor(_lowerTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
+        const upperTick =  Math.ceil(_upperTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
+        console.log(`lowerTick=${lowerTick} tick=${poolInfo.tick} upperTick=${upperTick}`)
+        const absLower = Math.abs(_lowerTick - poolInfo.tick)
+        const absUpper = Math.abs(upperTick - poolInfo.tick)
+        console.log('absLower=', absLower)
+        console.log('absUpper=', absUpper)
+        const quarterRange = Math.ceil(Math.max(absLower, absUpper) / poolInfo.tickSpacing)
+        console.log('quarterRange=', quarterRange)
+        const max = Math.min(MAX_TICK, upperTick + quarterRange * poolInfo.tickSpacing)
+        const min = Math.max(MIN_TICK, lowerTick - quarterRange * poolInfo.tickSpacing)
+        return {max: max, min: min}
+    }
+
+    return {getPoolInfo, getPoolRangeMaxMin}
 }
 
 export default usePoolInfoHook

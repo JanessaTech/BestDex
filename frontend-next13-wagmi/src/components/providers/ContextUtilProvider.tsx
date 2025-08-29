@@ -15,6 +15,7 @@ export interface IContextUtil {
             userAddress: `0x${string}`, 
             options: { decimals?: number }) => Promise<string>;
     getPoolInfo: (token0 : TokenType, token1: TokenType, feeAmount: number) => Promise<PoolInfo>
+    getPoolRangeMaxMin: (poolInfo: PoolInfo, token0Decimals: number, token1Decimals: number) => {max: number, min: number}
 }
 
 const ContextUtil = createContext<IContextUtil | undefined>(undefined)
@@ -24,9 +25,10 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const {getCurrentPath} = useURLHook()
     const {tokenPrices} = usePriceHook()
     const {getTokenBalance} = useTokenBalanceHook() 
-    const {getPoolInfo} = usePoolInfoHook()
+    const {getPoolInfo, getPoolRangeMaxMin} = usePoolInfoHook()
+
     return (
-        <ContextUtil.Provider value={{getCurrentPath, tokenPrices, getTokenBalance, getPoolInfo}}>
+        <ContextUtil.Provider value={{getCurrentPath, tokenPrices, getTokenBalance, getPoolInfo, getPoolRangeMaxMin}}>
                 {children}
         </ContextUtil.Provider>
     )

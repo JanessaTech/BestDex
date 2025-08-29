@@ -161,8 +161,11 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                         state.step === 2 && 
                         <>
                             <PriceRange 
-                                token0={token0} 
-                                token1={token1}/>
+                                token0={token0!} 
+                                token1={token1!}
+                                poolInfo={state.poolInfo!}
+                                feeAmount={feeAmount}
+                                />
                             <Deposit 
                                 amount0={deposit.amount0}
                                 amount1={deposit.amount1}
