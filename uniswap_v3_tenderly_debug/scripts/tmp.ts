@@ -80,11 +80,7 @@ function FeeAmount_test() {
   console.log(res)
 }
 
-function sqrtPriceX96 (str:string) {
-  const sqrtPriceX96Str: string = str
-  const token0Decimals: number = 18
-  const token1Decimals: number = 6
-  const isToken0Base: boolean = false
+function sqrtPriceX96 (sqrtPriceX96Str:string, isToken0Base: boolean, token0Decimals: number, token1Decimals: number) {
   const sqrtPriceX96 = new Decimal(sqrtPriceX96Str)
   const TWO_96 = new Decimal(2).pow(96);
 
@@ -95,33 +91,34 @@ function sqrtPriceX96 (str:string) {
   // adjust
   const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) :  new Decimal(10).pow(token1Decimals - token0Decimals)
   const adjustedRatio = ratio.times(decimalsAdjustment);
-  console.log(adjustedRatio.toString())
+  // console.log(adjustedRatio.toString())
   
   // result
   const res  = isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio)
   
-  return res.toDecimalPlaces(token1Decimals, Decimal.ROUND_HALF_UP).toString()
+  return res.toDecimalPlaces(token1Decimals, Decimal.ROUND_HALF_UP)
 }
 
-function tickToPrice() {
-  const token0Decimals: number = 18
-  const token1Decimals: number = 6
-  const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals);
-  const tick = -218747
+function tickToPrice(tick: number, isToken0Base: boolean, token0Decimals: number, token1Decimals: number) {
+  const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) : new Decimal(10).pow(token1Decimals - token0Decimals)
   const priceRatio = new Decimal(1.0001).pow(tick)
-  const adjustedPrice = priceRatio.mul(decimalsAdjustment);
-  console.log('adjustedPrice=', adjustedPrice)
+  const adjustedPrice = isToken0Base ? priceRatio.mul(decimalsAdjustment) : new Decimal(1).dividedBy(priceRatio.mul(decimalsAdjustment))
+  const rounded = adjustedPrice.toDecimalPlaces(token1Decimals, Decimal.ROUND_HALF_UP);
+  console.log('rounded=', rounded)
 }
 
-function priceToTick(price: Decimal, roundDirection: 'nearest' | 'up' | 'down') {
-  const token0Decimals: number = 18
-  const token1Decimals: number = 6
+function priceToTick(price: Decimal, 
+                     isToken0Base: boolean, 
+                     token0Decimals: number, 
+                     token1Decimals: number, 
+                     roundDirection: 'nearest' | 'up' | 'down') {
+  // const token0Decimals: number = 6
+  // const token1Decimals: number = 18
   const TICK_BASE = new Decimal(1.0001);
   const MIN_TICK = -887272;
   const MAX_TICK = 887272;
-  //const price = '315.93097481172297031'
-  const priceDecimal = new Decimal(price);
-  const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals);
+  const priceDecimal = isToken0Base ? new Decimal(price) : new Decimal(1).dividedBy(new Decimal(price));
+  const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) : new Decimal(10).pow(token1Decimals - token0Decimals) 
   const adjustedPrice = priceDecimal.div(decimalsAdjustment);
   const tick = adjustedPrice.log().div(TICK_BASE.log());
   //const roundDirection = 'nearest' as ('nearest' | 'up' | 'down')
@@ -140,25 +137,31 @@ function priceToTick(price: Decimal, roundDirection: 'nearest' | 'up' | 'down') 
   }
 
   const resTick = Math.max(MIN_TICK, Math.min(MAX_TICK, roundedTick));
-  //console.log('resTick=', resTick)
+  console.log('resTick=', resTick)
   return resTick
 }
 
-function rangeSelect() {
+function rangeSelect(sqrtPriceX96Str: string, 
+                      isToken0Base: boolean, 
+                      token0Decimals: number, 
+                      token1Decimals: number) {
   const MIN_TICK = -887272
   const MAX_TICK = 887272
   const tickSpacing = 60
   let rangePertage = 0.1 
-  const sqrtPriceX96Str: string = '1390784686015304349117594'
-  const tick =  -219016
-  const currentPrice = sqrtPriceX96(sqrtPriceX96Str)
+  //const sqrtPriceX96Str: string = '1300326548979566885653193588871961'
+  const tick =  194125
+  // const token0Decimals: number = 18
+  // const token1Decimals: number = 6
+  // const isToken0Base: boolean = false
+  const currentPrice = sqrtPriceX96(sqrtPriceX96Str, isToken0Base, token0Decimals, token1Decimals)
   console.log('currentPrice=', currentPrice.toString())
   const lowerPrice = currentPrice.mul(1 - rangePertage)
   const upperPrice = currentPrice.mul(1 + rangePertage)
   console.log('lowerPrice=', lowerPrice)
   console.log('upperPrice=', upperPrice)
-  const _lowerTick = priceToTick(lowerPrice, 'down')
-  const _upperTick = priceToTick(upperPrice, 'up')
+  const _lowerTick = isToken0Base ? priceToTick(lowerPrice, isToken0Base, token0Decimals, token1Decimals, 'down') : priceToTick(upperPrice, isToken0Base, token0Decimals, token1Decimals, 'down')
+  const _upperTick = isToken0Base ? priceToTick(upperPrice, isToken0Base, token0Decimals, token1Decimals, 'up') : priceToTick(lowerPrice, isToken0Base, token0Decimals, token1Decimals, 'up')
   const lowerTick =  Math.floor(_lowerTick / tickSpacing) * tickSpacing
   const upperTick =  Math.ceil(_upperTick / tickSpacing) * tickSpacing;
   console.log(`lowerTick=${lowerTick} tick=${tick} upperTick=${upperTick}`)
@@ -178,10 +181,24 @@ function rangeSelect() {
 //test_CurrencyAmount()
 //test_nearestUsableTick()
 //FeeAmount_test()
-const res = sqrtPriceX96('1210433755034072119970306597366444')
-console.log(res.toString())
-// tickToPrice()
-// priceToTick(new Decimal('315.93097481172297031'), 'nearest')
-//rangeSelect()
+
+const sqrtPriceX96Str = '1300326548979566885653193588871961'
+const token0Decimals: number = 6
+const token1Decimals: number = 18
+const isToken0Base: boolean = true
+const tick = 194125
+const tickSpacing = 60
+const priceToken0 = new Decimal('0.000269367807829062')
+const priceToken1 = new Decimal('3712.396103')
+
+// const res = sqrtPriceX96(sqrtPriceX96Str, isToken0Base, token0Decimals, token1Decimals)
+// console.log(res.toString())
+
+tickToPrice(tick, isToken0Base, token0Decimals, token1Decimals)
+
+
+//priceToTick(priceToken0, isToken0Base, token0Decimals, token1Decimals, 'nearest')
+
+//rangeSelect(sqrtPriceX96Str, isToken0Base, token0Decimals, token1Decimals)
 
 //npx hardhat run scripts\tmp.ts
