@@ -15,7 +15,9 @@ export interface IContextUtil {
             userAddress: `0x${string}`, 
             options: { decimals?: number }) => Promise<string>;
     getPoolInfo: (token0 : TokenType, token1: TokenType, feeAmount: number) => Promise<PoolInfo>
-    getPoolRangeMaxMin: (poolInfo: PoolInfo, token0Decimals: number, token1Decimals: number) => {max: number, min: number}
+    getPoolRangeMaxMin: (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {max: number, min: number}
+    getPoolCurrentPrice:  (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => string
+    getPoolPriceFromTick: (tick: number, token0 : TokenType, token1: TokenType) => string
 }
 
 const ContextUtil = createContext<IContextUtil | undefined>(undefined)
@@ -25,10 +27,13 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const {getCurrentPath} = useURLHook()
     const {tokenPrices} = usePriceHook()
     const {getTokenBalance} = useTokenBalanceHook() 
-    const {getPoolInfo, getPoolRangeMaxMin} = usePoolInfoHook()
+    const {getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick} = usePoolInfoHook()
 
     return (
-        <ContextUtil.Provider value={{getCurrentPath, tokenPrices, getTokenBalance, getPoolInfo, getPoolRangeMaxMin}}>
+        <ContextUtil.Provider value={{getCurrentPath, 
+                                      tokenPrices, 
+                                      getTokenBalance, 
+                                      getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick}}>
                 {children}
         </ContextUtil.Provider>
     )

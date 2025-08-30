@@ -18,11 +18,11 @@ const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolI
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [max, setMax] = useState(1000)
     const [min, setMin] = useState(0)
-    const {getPoolRangeMaxMin} = useContextUtil() as IContextUtil
+    const {getPoolRangeMaxMin, getPoolCurrentPrice} = useContextUtil() as IContextUtil
     const [poolState, setPoolState] = useState<{max?: number, min?: number , poolInfo: PoolInfo}>({poolInfo: poolInfo})
    
     useEffect(() => {
-        const poolRange = getPoolRangeMaxMin(poolInfo, token0.decimal, token1.decimal)
+        const poolRange = getPoolRangeMaxMin(poolInfo, token0, token1)
         console.log('poolRange=', poolRange)
         setPoolState({...poolState, ... poolRange})
     }, [])
@@ -38,7 +38,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolI
             <div className="flex items-center text-xs flex-wrap">
                  <div className="text-zinc-200">Market price: </div> 
                  {
-                    token0 && token1 && <><div className="text-pink-600">335.376 {token1 ? token1.symbol : ''} = 1 {token0 ? token0.symbol : ''}</div>
+                    token0 && token1 && <><div className="text-pink-600">{getPoolCurrentPrice(poolInfo, token0, token1)} {token1 ? token1.symbol : ''} = 1 {token0 ? token0.symbol : ''}</div>
                     <div className="text-zinc-200">($2,573.22)</div></>
                  }
                  

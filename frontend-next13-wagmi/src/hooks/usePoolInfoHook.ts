@@ -12,7 +12,7 @@ import { TokenType } from '@/lib/types'
 import { Decimal } from 'decimal.js'
 
 export type PoolInfo = {
-    token0: string
+     token0: string
     token1: string
     fee: number
     tickSpacing: number
@@ -35,15 +35,21 @@ const getPriceBySqrtPriceX96 = (isToken0Base: boolean, sqrtPriceX96: string, tok
     const ratio = sqrtRatio.pow(2)
 
     // adjust
-    const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals)
+    const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) :  new Decimal(10).pow(token1Decimals - token0Decimals)
     const adjustedRatio = ratio.times(decimalsAdjustment)
 
-    return isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio);
+    // result
+    const res  = isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio)
+    return res.toDecimalPlaces(token1Decimals, Decimal.ROUND_HALF_UP)
 }
 
-const priceToTick = (price: Decimal, roundDirection: 'nearest' | 'up' | 'down', token0Decimals: number, token1Decimals: number) => {
-    const priceDecimal = new Decimal(price);
-    const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals);
+
+const priceToTick = (price: Decimal, 
+                    isToken0Base: boolean, 
+                    token0Decimals: number, token1Decimals: number,
+                    roundDirection: 'nearest' | 'up' | 'down') => {
+    const priceDecimal = isToken0Base ? new Decimal(price) : new Decimal(1).dividedBy(new Decimal(price))
+    const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) : new Decimal(10).pow(token1Decimals - token0Decimals) 
     const adjustedPrice = priceDecimal.div(decimalsAdjustment);
     const tick = adjustedPrice.log().div(TICK_BASE.log());
     let roundedTick: number;
@@ -140,17 +146,33 @@ const usePoolInfoHook = () => {
         }
     }
 
-    const getPoolRangeMaxMin = (poolInfo: PoolInfo, token0Decimals: number, token1Decimals: number) => {
+    const getPoolCurrentPrice = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {
+        const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
+        const currentPrice = getPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0.decimal, token1.decimal)
+        return currentPrice.toString()
+    }
+
+    const getPoolPriceFromTick = (tick: number, token0 : TokenType, token1: TokenType) => {
+        const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
+        const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0.decimal - token1.decimal) : new Decimal(10).pow(token1.decimal - token0.decimal)
+        const priceRatio = new Decimal(1.0001).pow(tick)
+        const adjustedPrice = isToken0Base ? priceRatio.mul(decimalsAdjustment) : new Decimal(1).dividedBy(priceRatio.mul(decimalsAdjustment))
+        const roundedPriceFromTick = adjustedPrice.toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP);
+        //console.log('roundedPriceFromTick=', roundedPriceFromTick)
+        return roundedPriceFromTick.toString()
+    }
+
+    const getPoolRangeMaxMin = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {
         console.log('getPoolRangeMaxMin ...')
-        const isToken0Base = poolInfo.token0.toLowerCase() < poolInfo.token1.toLowerCase()
-        const currentPrice = getPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0Decimals, token1Decimals)
-        console.log('currentPrice=', currentPrice)
+        const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
+        const currentPrice = getPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0.decimal, token1.decimal)
+        console.log('currentPrice=', currentPrice.toString())
         const lowerPrice = currentPrice.mul(1 - TICK_RANG_PERCENTAGE)
         const upperPrice = currentPrice.mul(1 + TICK_RANG_PERCENTAGE)
-        console.log('lowerPrice=', lowerPrice)
-        console.log('upperPrice=', upperPrice)
-        const _lowerTick = priceToTick(lowerPrice, 'down', token0Decimals, token1Decimals)
-        const _upperTick = priceToTick(upperPrice, 'up', token0Decimals, token1Decimals)
+        console.log('lowerPrice=', lowerPrice.toString())
+        console.log('upperPrice=', upperPrice.toString())
+        const _lowerTick = isToken0Base ? priceToTick(lowerPrice, isToken0Base, token0.decimal, token1.decimal, 'down') : priceToTick(upperPrice, isToken0Base, token0.decimal, token1.decimal, 'down')
+        const _upperTick = isToken0Base ? priceToTick(upperPrice, isToken0Base, token0.decimal, token1.decimal, 'up') : priceToTick(lowerPrice, isToken0Base, token0.decimal, token1.decimal, 'up')
         const lowerTick =  Math.floor(_lowerTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
         const upperTick =  Math.ceil(_upperTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
         console.log(`lowerTick=${lowerTick} tick=${poolInfo.tick} upperTick=${upperTick}`)
@@ -165,7 +187,7 @@ const usePoolInfoHook = () => {
         return {max: max, min: min}
     }
 
-    return {getPoolInfo, getPoolRangeMaxMin}
+    return {getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick}
 }
 
 export default usePoolInfoHook
