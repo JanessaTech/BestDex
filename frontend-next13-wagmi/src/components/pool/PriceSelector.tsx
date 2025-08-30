@@ -5,6 +5,9 @@ import SVGZoomIn from "@/lib/svgs/svg_zoom_in";
 import SVGZoomOut from "@/lib/svgs/svg_zoom_out";
 import type { TokenType } from "@/lib/types";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { 
+    nearestUsableTick
+    } from '@uniswap/v3-sdk'
 
 const Axis = () => {
     return <div className="w-[300px] bg-zinc-400 h-[4px] absolute top-0"></div>
@@ -16,29 +19,30 @@ type PriceSelectorProps = {
     lower: number;
     upper: number;
     cur: number;
+    tickSpacing: number;
     token0: TokenType | undefined;
     token1: TokenType | undefined
     updateMinMax: (min: number, max: number) => void;
 }
-const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, token0, token1, updateMinMax}) => {
+const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, tickSpacing, token0, token1, updateMinMax}) => {
     const [initState, setInitState] = useState({
-                                            initMin: min, 
-                                            initMax: max, 
-                                            minVal: lower,
-                                            maxVal: upper
+                                            min: min, 
+                                            max: max, 
+                                            lowerVal: lower,
+                                            upperVal: upper
                                         })
-    const [minVal, setMinVal] = useState<number>(lower)
-    const [maxVal, setMaxVal] = useState<number>(upper)
-    const minValInputRef = useRef<HTMLInputElement>(null)
-    const maxValInputRef = useRef<HTMLInputElement>(null)
+    const [lowerVal, setLowerVal] = useState<number>(lower)
+    const [upperVal, setMaxVal] = useState<number>(upper)
+    const lowerValInputRef = useRef<HTMLInputElement>(null)
+    const upperValInputRef = useRef<HTMLInputElement>(null)
     const range = useRef<HTMLDivElement>(null);
-    const minValueDivRef = useRef<HTMLDivElement>(null)
-    const maxValueDivRef = useRef<HTMLDivElement>(null)
+    const lowerValLabelRef = useRef<HTMLDivElement>(null)
+    const upperValLabelRef = useRef<HTMLDivElement>(null)
     const [mid, setMid] = useState(cur) 
     const midRef = useRef<HTMLInputElement>(null)
     const midValueDivRef = useRef<HTMLInputElement>(null)
 
-    console.log('minVal=', minVal, 'maxVal=', maxVal)
+    console.log('lowerVal=', lowerVal, 'upperVal=', upperVal)
     console.log('min=', min, 'max=', max)
     console.log('mid=', mid)
     console.log('initState=', initState)
@@ -62,54 +66,56 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     }, [mid])
     
     useEffect(() => {
-        if (maxValInputRef.current) {
-            const minPercent = getPercent(minVal);
-            const maxPercent = getPercent(Number(maxValInputRef.current.value));
+        if (upperValInputRef.current) {
+            const minPercent = getPercent(lowerVal);
+            const maxPercent = getPercent(Number(upperValInputRef.current.value));
 
             if (range.current) {
             range.current.style.left = `${minPercent}%`;
             range.current.style.width = `${maxPercent - minPercent}%`;
             
             }
-            if (minValueDivRef.current) {
-                minValueDivRef.current.style.left = `${minPercent}%`;
+            if (lowerValLabelRef.current) {
+                lowerValLabelRef.current.style.left = `${minPercent}%`;
             }
         }
-    }, [minVal, getPercent]);
+    }, [lowerVal, getPercent]);
 
     useEffect(() => {
-        if (minValInputRef.current) {
-            const minPercent = getPercent(Number(minValInputRef.current.value));
-            const maxPercent = getPercent(maxVal);
+        if (lowerValInputRef.current) {
+            const minPercent = getPercent(Number(lowerValInputRef.current.value));
+            const maxPercent = getPercent(upperVal);
 
             if (range.current) {
                 range.current.style.left = `${minPercent}%`;
                 range.current.style.width = `${maxPercent - minPercent}%`;
             }
-            if (maxValueDivRef.current) {
-                maxValueDivRef.current.style.left = `${maxPercent}%`;
+            if (upperValLabelRef.current) {
+                upperValLabelRef.current.style.left = `${maxPercent}%`;
             }
         }
-    }, [maxVal, getPercent]);
+    }, [upperVal, getPercent]);
 
     const onChangeLeft = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Math.min(Number(e.target.value), maxVal - 1);
-          setMinVal(value);
+        // why using nearestUsableTick?
+        // make sure that the value is a valid usableTick
+        const value = Math.min(nearestUsableTick(Number(e.target.value), tickSpacing), upperVal); 
+        setLowerVal(value);
     }
     const onChangeRight = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Math.max(Number(e.target.value), minVal + 1);
+        const value = Math.max(nearestUsableTick(Number(e.target.value), tickSpacing), lowerVal);
         setMaxVal(value)
     }
 
     const handleReset = () => {
-        updateMinMax(initState.initMin, initState.initMax)
-        setMinVal(initState.minVal)
-        setMaxVal(initState.maxVal)
+        updateMinMax(initState.min, initState.max)
+        setLowerVal(initState.lowerVal)
+        setMaxVal(initState.upperVal)
     }
 
     const handleZoomIn = () => {
-        const newMin = Math.min(parseFloat(((19 * min + max) / 20).toFixed(2)), minVal)
-        const newMax = Math.max(parseFloat(((19 * max + min) / 20).toFixed(2)), maxVal)
+        const newMin = Math.min(parseFloat(((19 * min + max) / 20).toFixed(2)), lowerVal)
+        const newMax = Math.max(parseFloat(((19 * max + min) / 20).toFixed(2)), upperVal)
         updateMinMax(newMin, newMax)
     }
     const handleZoomOut = () => {
@@ -119,22 +125,22 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     }
 
     const plusLower = () => {
-        const newMinVal = parseFloat((minVal + (mid - minVal) / 10).toFixed(2))
-        setMinVal(newMinVal);
+        const newMinVal = parseFloat((lowerVal + (mid - lowerVal) / 10).toFixed(2))
+        setLowerVal(newMinVal);
     }
 
     const minusLower = () => {
-        const newMinVal = Math.max(min, parseFloat((minVal - (mid - minVal) / 10).toFixed(2)))
-        setMinVal(newMinVal);
+        const newMinVal = Math.max(min, parseFloat((lowerVal - (mid - lowerVal) / 10).toFixed(2)))
+        setLowerVal(newMinVal);
     }
     
     const plusUpper = () => {
-        const newMaxVal = Math.min(max, parseFloat((maxVal + (maxVal - mid) /10).toFixed(2)))
+        const newMaxVal = Math.min(max, parseFloat((upperVal + (upperVal - mid) /10).toFixed(2)))
         setMaxVal(newMaxVal)
     }
     
     const minusUpper = () => {
-        const newMaxVal = parseFloat((maxVal - (maxVal - mid) /10).toFixed(2))
+        const newMaxVal = parseFloat((upperVal - (upperVal - mid) /10).toFixed(2))
         setMaxVal(newMaxVal)
     }
 
@@ -156,8 +162,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                 type="range" 
                                 min={min}
                                 max={max}
-                                value={minVal}
-                                ref={minValInputRef}
+                                value={lowerVal}
+                                ref={lowerValInputRef}
                                 onChange={onChangeLeft}
                                 /> 
                             <input 
@@ -165,13 +171,13 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                 type="range" 
                                 min={min}
                                 max={max}
-                                value={maxVal}
-                                ref={maxValInputRef}
+                                value={upperVal}
+                                ref={upperValInputRef}
                                 onChange={onChangeRight}
                                 /> 
                             <div ref={midValueDivRef} className="text-white absolute bottom-[-25px]">{mid}</div>
-                            <div ref={minValueDivRef} className="text-white absolute bottom-[-25px]">{minVal}</div>
-                            <div ref={maxValueDivRef} className="text-white absolute bottom-[-25px]">{maxVal}</div> 
+                            <div ref={lowerValLabelRef} className="text-white absolute bottom-[-25px]">{lowerVal}</div>
+                            <div ref={upperValLabelRef} className="text-white absolute bottom-[-25px]">{upperVal}</div> 
                         </div>
                     </div>
                 </div>
@@ -191,7 +197,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 <div className="border-[1px] border-zinc-700 rounded-none md:rounded-bl-md flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
                         <div>Lower price</div>
-                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={minVal}/>
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={lowerVal}/>
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
@@ -206,7 +212,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 <div className="border-[1px] border-zinc-700 rounded-b-md md:rounded-br-md md:rounded-bl-none flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
                         <div>Upper price</div>
-                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={maxVal}/>
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={upperVal}/>
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>

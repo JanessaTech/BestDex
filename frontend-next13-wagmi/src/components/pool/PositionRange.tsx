@@ -57,6 +57,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
                             lower={poolState.lower!}
                             upper={poolState.upper!}
                             cur={poolState.poolInfo.tick}
+                            tickSpacing={poolState.poolInfo.tickSpacing}
                             token0={token0}
                             token1={token1}
                             updateMinMax={updateMinMax}
