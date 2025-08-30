@@ -84,7 +84,7 @@ function sqrtPriceX96 (str:string) {
   const sqrtPriceX96Str: string = str
   const token0Decimals: number = 18
   const token1Decimals: number = 6
-  const isToken0Base: boolean = true
+  const isToken0Base: boolean = false
   const sqrtPriceX96 = new Decimal(sqrtPriceX96Str)
   const TWO_96 = new Decimal(2).pow(96);
 
@@ -93,11 +93,14 @@ function sqrtPriceX96 (str:string) {
   const ratio = sqrtRatio.pow(2);
   
   // adjust
-  const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals);
+  const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) :  new Decimal(10).pow(token1Decimals - token0Decimals)
   const adjustedRatio = ratio.times(decimalsAdjustment);
+  console.log(adjustedRatio.toString())
   
   // result
-  return isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio);
+  const res  = isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio)
+  
+  return res.toDecimalPlaces(token1Decimals, Decimal.ROUND_HALF_UP).toString()
 }
 
 function tickToPrice() {
@@ -142,10 +145,6 @@ function priceToTick(price: Decimal, roundDirection: 'nearest' | 'up' | 'down') 
 }
 
 function rangeSelect() {
-  
-  const token0Decimals: number = 18
-  const token1Decimals: number = 6
-  const TICK_BASE = new Decimal(1.0001);
   const MIN_TICK = -887272
   const MAX_TICK = 887272
   const tickSpacing = 60
@@ -153,7 +152,7 @@ function rangeSelect() {
   const sqrtPriceX96Str: string = '1390784686015304349117594'
   const tick =  -219016
   const currentPrice = sqrtPriceX96(sqrtPriceX96Str)
-  console.log('currentPrice=', currentPrice)
+  console.log('currentPrice=', currentPrice.toString())
   const lowerPrice = currentPrice.mul(1 - rangePertage)
   const upperPrice = currentPrice.mul(1 + rangePertage)
   console.log('lowerPrice=', lowerPrice)
@@ -179,10 +178,10 @@ function rangeSelect() {
 //test_CurrencyAmount()
 //test_nearestUsableTick()
 //FeeAmount_test()
-// const res = sqrtPriceX96('1409587834998081473085776')
-// console.log(res)
+const res = sqrtPriceX96('1210433755034072119970306597366444')
+console.log(res.toString())
 // tickToPrice()
 // priceToTick(new Decimal('315.93097481172297031'), 'nearest')
-rangeSelect()
+//rangeSelect()
 
 //npx hardhat run scripts\tmp.ts
