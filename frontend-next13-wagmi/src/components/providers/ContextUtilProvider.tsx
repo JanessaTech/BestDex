@@ -15,7 +15,7 @@ export interface IContextUtil {
             userAddress: `0x${string}`, 
             options: { decimals?: number }) => Promise<string>;
     getPoolInfo: (token0 : TokenType, token1: TokenType, feeAmount: number) => Promise<PoolInfo>
-    getPoolRangeMaxMin: (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {max: number, min: number}
+    getPoolRangeMaxMin: (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {max: number, min: number, lower: number, upper: number}
     getPoolCurrentPrice:  (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => string
     getPoolPriceFromTick: (tick: number, token0 : TokenType, token1: TokenType) => string
 }

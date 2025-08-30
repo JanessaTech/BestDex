@@ -7,19 +7,19 @@ import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { PoolInfo } from "@/hooks/usePoolInfoHook";
 
-type PriceRangeProps = {
+type PositionRangeProps = {
     token0: TokenType;
     token1: TokenType;
     feeAmount: number;
     poolInfo: PoolInfo; 
 }
-const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolInfo}) => {
+const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount, poolInfo}) => {
     //const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [max, setMax] = useState(1000)
     const [min, setMin] = useState(0)
     const {getPoolRangeMaxMin, getPoolCurrentPrice} = useContextUtil() as IContextUtil
-    const [poolState, setPoolState] = useState<{max?: number, min?: number , poolInfo: PoolInfo}>({poolInfo: poolInfo})
+    const [poolState, setPoolState] = useState<{max?: number, min?: number, lower?: number, upper?: number, poolInfo: PoolInfo}>({poolInfo: poolInfo})
    
     useEffect(() => {
         const poolRange = getPoolRangeMaxMin(poolInfo, token0, token1)
@@ -34,7 +34,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolI
 
     return (
         <div>
-            <div className="pb-2">Set price range</div>
+            <div className="pb-2">Set position range</div>
             <div className="flex items-center text-xs flex-wrap">
                  <div className="text-zinc-200">Market price: </div> 
                  {
@@ -52,8 +52,11 @@ const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolI
                     {
                         poolState.max !== undefined && poolState.min !== undefined 
                         ? <PriceSelector 
-                            min={min} 
-                            max={max} 
+                            min={poolState.min} 
+                            max={poolState.max} 
+                            lower={poolState.lower!}
+                            upper={poolState.upper!}
+                            cur={poolState.poolInfo.tick}
                             token0={token0}
                             token1={token1}
                             updateMinMax={updateMinMax}
@@ -69,4 +72,4 @@ const PriceRange: React.FC<PriceRangeProps> = ({token0, token1, feeAmount, poolI
     )
 }
 
-export default memo(PriceRange)
+export default memo(PositionRange)

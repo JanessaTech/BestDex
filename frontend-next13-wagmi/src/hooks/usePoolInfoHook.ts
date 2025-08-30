@@ -184,7 +184,7 @@ const usePoolInfoHook = () => {
         console.log('quarterRange=', quarterRange)
         const max = Math.min(MAX_TICK, upperTick + quarterRange * poolInfo.tickSpacing)
         const min = Math.max(MIN_TICK, lowerTick - quarterRange * poolInfo.tickSpacing)
-        return {max: max, min: min}
+        return {max: max, min: min, lower: lowerTick, upper: upperTick}
     }
 
     return {getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick}

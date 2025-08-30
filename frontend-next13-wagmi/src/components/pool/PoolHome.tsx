@@ -7,13 +7,13 @@ import { useAccount, useChainId } from 'wagmi'
 import { TokenType } from '@/lib/types'
 import { toast } from 'sonner'
 import FeeTier from './FeeTier'
-import PriceRange from './PriceRange'
 import { Button } from '../ui/button'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import { PoolInfo } from '@/hooks/usePoolInfoHook'
+import PositionRange from './PositionRange'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -160,7 +160,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                     {
                         state.step === 2 && 
                         <>
-                            <PriceRange 
+                            <PositionRange
                                 token0={token0!} 
                                 token1={token1!}
                                 poolInfo={state.poolInfo!}

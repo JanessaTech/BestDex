@@ -13,27 +13,30 @@ const Axis = () => {
 type PriceSelectorProps = {
     min: number;
     max: number;
+    lower: number;
+    upper: number;
+    cur: number;
     token0: TokenType | undefined;
     token1: TokenType | undefined
     updateMinMax: (min: number, max: number) => void;
 }
-const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, updateMinMax}) => {
+const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, token0, token1, updateMinMax}) => {
     const [initState, setInitState] = useState({
                                             initMin: min, 
                                             initMax: max, 
-                                            minVal: parseFloat(((3 * min + max) / 4).toFixed(2)),
-                                            maxVal: parseFloat(((min + 3 * max) / 4).toFixed(2))
+                                            minVal: lower,
+                                            maxVal: upper
                                         })
-    const [minVal, setMinVal] = useState<number>(parseFloat(((3 * min + max) / 4).toFixed(2)));
-    const [maxVal, setMaxVal] = useState<number>(parseFloat(((min + 3 * max) / 4).toFixed(2)));
-    const minValInputRef = useRef<HTMLInputElement>(null);
-    const maxValInputRef = useRef<HTMLInputElement>(null);
+    const [minVal, setMinVal] = useState<number>(lower)
+    const [maxVal, setMaxVal] = useState<number>(upper)
+    const minValInputRef = useRef<HTMLInputElement>(null)
+    const maxValInputRef = useRef<HTMLInputElement>(null)
     const range = useRef<HTMLDivElement>(null);
-    const minValueDivRef = useRef<HTMLDivElement>(null);
-    const maxValueDivRef = useRef<HTMLDivElement>(null);
-    const [mid, setMid] = useState(parseFloat(((min + max) / 2).toFixed(2))) 
-    const midRef = useRef<HTMLInputElement>(null);
-    const midValueDivRef = useRef<HTMLInputElement>(null);
+    const minValueDivRef = useRef<HTMLDivElement>(null)
+    const maxValueDivRef = useRef<HTMLDivElement>(null)
+    const [mid, setMid] = useState(cur) 
+    const midRef = useRef<HTMLInputElement>(null)
+    const midValueDivRef = useRef<HTMLInputElement>(null)
 
     console.log('minVal=', minVal, 'maxVal=', maxVal)
     console.log('min=', min, 'max=', max)
@@ -115,22 +118,22 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
         updateMinMax(newMin, newMax)
     }
 
-    const plusMin = () => {
+    const plusLower = () => {
         const newMinVal = parseFloat((minVal + (mid - minVal) / 10).toFixed(2))
         setMinVal(newMinVal);
     }
 
-    const minusMin = () => {
+    const minusLower = () => {
         const newMinVal = Math.max(min, parseFloat((minVal - (mid - minVal) / 10).toFixed(2)))
         setMinVal(newMinVal);
     }
     
-    const plusMax = () => {
+    const plusUpper = () => {
         const newMaxVal = Math.min(max, parseFloat((maxVal + (maxVal - mid) /10).toFixed(2)))
         setMaxVal(newMaxVal)
     }
     
-    const minusMax = () => {
+    const minusUpper = () => {
         const newMaxVal = parseFloat((maxVal - (maxVal - mid) /10).toFixed(2))
         setMaxVal(newMaxVal)
     }
@@ -187,31 +190,31 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
             <div className="grid md:grid-cols-2 gap-3 mt-1">
                 <div className="border-[1px] border-zinc-700 rounded-none md:rounded-bl-md flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
-                        <div>Min price</div>
+                        <div>Lower price</div>
                         <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={minVal}/>
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
                         <SVGMinus 
-                            onClick={minusMin}
+                            onClick={minusLower}
                             className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500"/>
                         <SVGPlus 
-                            onClick={plusMin}
+                            onClick={plusLower}
                             className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500 mt-2"/>
                     </div>
                 </div>
                 <div className="border-[1px] border-zinc-700 rounded-b-md md:rounded-br-md md:rounded-bl-none flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
-                        <div>Max price</div>
+                        <div>Upper price</div>
                         <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={maxVal}/>
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
                         <SVGMinus 
-                            onClick={minusMax}
+                            onClick={minusUpper}
                             className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500"/>
                         <SVGPlus 
-                            onClick={plusMax}
+                            onClick={plusUpper}
                             className="size-7 text-black bg-zinc-200 rounded-full cursor-pointer hover:bg-zinc-400 active:bg-zinc-500 mt-2"/>
                     </div>
                 </div>
@@ -221,3 +224,6 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, token0, token1, 
 }
 
 export default memo(PriceSelector)
+
+// for a good understanding for the price selector, pls check the original codes
+// at : https://github.com/JanessaTech/exercises/blob/master/nextjs/next-toolkits/src/app/slider/range3/PriceSelector.tsx
