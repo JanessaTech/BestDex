@@ -10,6 +10,9 @@ import {
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import { TokenType } from '@/lib/types'
 import { Decimal } from 'decimal.js'
+import { TICK_BASE, 
+         MIN_TICK, MAX_TICK, 
+         TICK_RANG_PERCENTAGE, POOL_FACTORY_CONTRACT_ADDRESS} from '@/config/constants'
 
 export type PoolInfo = {
      token0: string
@@ -21,11 +24,7 @@ export type PoolInfo = {
     tick: number
     liquidity: ethers.BigNumber
 }
-const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
-const MIN_TICK = -887272
-const MAX_TICK = 887272
-const TICK_RANG_PERCENTAGE = 0.1 
-const TICK_BASE = new Decimal(1.0001);
+
 
 const getPriceBySqrtPriceX96 = (isToken0Base: boolean, sqrtPriceX96: string, token0Decimals: number, token1Decimals: number) => {
     const sqrtPriceX96Decimal = new Decimal(sqrtPriceX96)
@@ -69,7 +68,7 @@ const priceToTick = (price: Decimal,
     return adjustedTick
   }
 
-const usePoolInfoHook = () => {
+const usePoolHook = () => {
     const publicClient = usePublicClient()
 
     const getPoolInfo = async (token0 : TokenType, token1: TokenType, feeAmount: number): Promise<PoolInfo> => {
@@ -190,4 +189,4 @@ const usePoolInfoHook = () => {
     return {getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick}
 }
 
-export default usePoolInfoHook
+export default usePoolHook

@@ -1,4 +1,5 @@
 import {parseAbi} from 'viem'
+import { Decimal } from 'decimal.js'
 
 export const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
 export const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
@@ -28,3 +29,8 @@ export const ERC20_ABI = parseAbi([
   'event Deposit(address indexed,uint256)',
   'event Withdrawal(address indexed,uint256)'
 ])
+
+export const MIN_TICK = -887272
+export const MAX_TICK = 887272
+export const TICK_RANG_PERCENTAGE = 0.1 
+export const TICK_BASE = new Decimal(1.0001);

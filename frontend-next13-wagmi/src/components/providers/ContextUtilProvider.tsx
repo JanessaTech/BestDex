@@ -1,11 +1,11 @@
 'use client'
 
-import usePoolInfoHook, { PoolInfo } from "@/hooks/usePoolInfoHook";
 import usePriceHook, { TokenPriceInUSDType } from "@/hooks/usePriceHook"
 import useTokenBalanceHook from "@/hooks/useTokenBalanceHook";
 import useURLHook from "@/hooks/useURLHook"
 import { createContext, useContext } from "react"
 import { TokenType } from "@/lib/types";
+import usePoolHook, { PoolInfo } from "@/hooks/usePoolHook";
 
 export interface IContextUtil {
     getCurrentPath: () => string;
@@ -27,7 +27,7 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const {getCurrentPath} = useURLHook()
     const {tokenPrices} = usePriceHook()
     const {getTokenBalance} = useTokenBalanceHook() 
-    const {getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick} = usePoolInfoHook()
+    const {getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick} = usePoolHook()
 
     return (
         <ContextUtil.Provider value={{getCurrentPath, 

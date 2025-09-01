@@ -8,6 +8,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { 
     nearestUsableTick
     } from '@uniswap/v3-sdk'
+import { MAX_TICK, MIN_TICK } from "@/config/constants";
 
 const Axis = () => {
     return <div className="w-[300px] bg-zinc-400 h-[4px] absolute top-0"></div>
@@ -32,19 +33,19 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                             upperVal: upper
                                         })
     const [lowerVal, setLowerVal] = useState<number>(lower)
-    const [upperVal, setMaxVal] = useState<number>(upper)
+    const [upperVal, setUpperVal] = useState<number>(upper)
     const lowerValInputRef = useRef<HTMLInputElement>(null)
     const upperValInputRef = useRef<HTMLInputElement>(null)
     const range = useRef<HTMLDivElement>(null);
     const lowerValLabelRef = useRef<HTMLDivElement>(null)
     const upperValLabelRef = useRef<HTMLDivElement>(null)
-    const [mid, setMid] = useState(cur) 
-    const midRef = useRef<HTMLInputElement>(null)
-    const midValueDivRef = useRef<HTMLInputElement>(null)
+    const [currentPrice, setCurrentPrice] = useState(cur) 
+    const setCurrentPriceRef = useRef<HTMLInputElement>(null)
+    const setCurrentPriceLabelRef = useRef<HTMLInputElement>(null)
 
     console.log('lowerVal=', lowerVal, 'upperVal=', upperVal)
     console.log('min=', min, 'max=', max)
-    console.log('mid=', mid)
+    console.log('currentPrice=', currentPrice)
     console.log('initState=', initState)
 
     const getPercent = useCallback(
@@ -53,17 +54,17 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
       );
 
     useEffect(() => {
-        if (midRef.current) {
-            const percent = getPercent(mid)
-            midRef.current.style.left = `0%`;
-            midRef.current.style.width = `${percent}%`
+        if (setCurrentPriceRef.current) {
+            const percent = getPercent(currentPrice)
+            setCurrentPriceRef.current.style.left = `0%`;
+            setCurrentPriceRef.current.style.width = `${percent}%`
             //console.log('mid', mid)
             //console.log('mid percent', percent)
-            if (midValueDivRef.current) {
-                midValueDivRef.current.style.left = `${percent}%`
+            if (setCurrentPriceLabelRef.current) {
+                setCurrentPriceLabelRef.current.style.left = `${percent}%`
             }
         }
-    }, [mid])
+    }, [currentPrice])
     
     useEffect(() => {
         if (upperValInputRef.current) {
@@ -104,44 +105,44 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     }
     const onChangeRight = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Math.max(nearestUsableTick(Number(e.target.value), tickSpacing), lowerVal);
-        setMaxVal(value)
+        setUpperVal(value)
     }
 
     const handleReset = () => {
         updateMinMax(initState.min, initState.max)
         setLowerVal(initState.lowerVal)
-        setMaxVal(initState.upperVal)
+        setUpperVal(initState.upperVal)
     }
 
     const handleZoomIn = () => {
-        const newMin = Math.min(parseFloat(((19 * min + max) / 20).toFixed(2)), lowerVal)
-        const newMax = Math.max(parseFloat(((19 * max + min) / 20).toFixed(2)), upperVal)
+        const newMin = Math.min(lowerVal, min + tickSpacing)
+        const newMax = Math.max(upperVal, max - tickSpacing)
         updateMinMax(newMin, newMax)
     }
     const handleZoomOut = () => {
-        const newMin = parseFloat(((21 * min - max) / 20).toFixed(2))
-        const newMax = parseFloat(((21 * max - min) / 20).toFixed(2))
+        const newMin = Math.max(min - tickSpacing, Math.ceil(MIN_TICK / tickSpacing) * tickSpacing)
+        const newMax = Math.min(max + tickSpacing, Math.floor(MAX_TICK / tickSpacing) * tickSpacing)
         updateMinMax(newMin, newMax)
     }
 
     const plusLower = () => {
-        const newMinVal = parseFloat((lowerVal + (mid - lowerVal) / 10).toFixed(2))
+        const newMinVal = Math.min(lowerVal + tickSpacing, upperVal)
         setLowerVal(newMinVal);
     }
 
     const minusLower = () => {
-        const newMinVal = Math.max(min, parseFloat((lowerVal - (mid - lowerVal) / 10).toFixed(2)))
+        const newMinVal = Math.max(lowerVal - tickSpacing, min)
         setLowerVal(newMinVal);
     }
     
     const plusUpper = () => {
-        const newMaxVal = Math.min(max, parseFloat((upperVal + (upperVal - mid) /10).toFixed(2)))
-        setMaxVal(newMaxVal)
+        const newMaxVal = Math.min(max, upperVal + tickSpacing)
+        setUpperVal(newMaxVal)
     }
     
     const minusUpper = () => {
-        const newMaxVal = parseFloat((upperVal - (upperVal - mid) /10).toFixed(2))
-        setMaxVal(newMaxVal)
+        const newMaxVal = Math.max(lowerVal, upperVal - tickSpacing)
+        setUpperVal(newMaxVal)
     }
 
     return (
@@ -149,7 +150,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
             <div className="flex justify-center">
                 <div className="w-[300px] h-[200px] flex justify-center items-center flex-col relative text-xs">
                     <div className="w-[300px] h-[200px] bg-zinc-600/30 absolute bottom-0"></div> 
-                    <div ref={midRef} className="border-dashed border-r-[1px] border-white h-[200px] box-border absolute bottom-0"></div>
+                    <div ref={setCurrentPriceRef} className="border-dashed border-r-[1px] border-white h-[200px] box-border absolute bottom-0"></div>
                     <div className="absolute bottom-0">
                         <div className="w-[300px] h-0 relative bg-zinc-900">
                             <Axis/>
@@ -175,7 +176,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                 ref={upperValInputRef}
                                 onChange={onChangeRight}
                                 /> 
-                            <div ref={midValueDivRef} className="text-white absolute bottom-[-25px]">{mid}</div>
+                            <div ref={setCurrentPriceLabelRef} className="text-white absolute bottom-[-25px]">{currentPrice}</div>
                             <div ref={lowerValLabelRef} className="text-white absolute bottom-[-25px]">{lowerVal}</div>
                             <div ref={upperValLabelRef} className="text-white absolute bottom-[-25px]">{upperVal}</div> 
                         </div>
