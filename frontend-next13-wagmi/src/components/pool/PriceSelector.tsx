@@ -9,6 +9,13 @@ import {
     nearestUsableTick
     } from '@uniswap/v3-sdk'
 import { MAX_TICK, MIN_TICK } from "@/config/constants";
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
+import { Decimal } from 'decimal.js'
+
+const calPercentage = (price: string, marketPrice: string) => {
+    const percentage = new Decimal(price).minus(new Decimal(marketPrice)).div(new Decimal(marketPrice)).mul(100).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
+    return percentage
+}
 
 const Axis = () => {
     return <div className="w-[300px] bg-zinc-400 h-[4px] absolute top-0"></div>
@@ -20,12 +27,13 @@ type PriceSelectorProps = {
     lower: number;
     upper: number;
     cur: number;
+    marketPrice: string;
     tickSpacing: number;
-    token0: TokenType | undefined;
-    token1: TokenType | undefined
+    token0: TokenType;
+    token1: TokenType
     updateMinMax: (min: number, max: number) => void;
 }
-const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, tickSpacing, token0, token1, updateMinMax}) => {
+const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, marketPrice, tickSpacing, token0, token1, updateMinMax}) => {
     const [initState, setInitState] = useState({
                                             min: min, 
                                             max: max, 
@@ -43,6 +51,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     const setCurrentPriceRef = useRef<HTMLInputElement>(null)
     const setCurrentPriceLabelRef = useRef<HTMLInputElement>(null)
 
+    const {getPoolPriceFromTick} = useContextUtil() as IContextUtil
+   
     console.log('lowerVal=', lowerVal, 'upperVal=', upperVal)
     console.log('min=', min, 'max=', max)
     console.log('currentPrice=', currentPrice)
@@ -58,8 +68,6 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
             const percent = getPercent(currentPrice)
             setCurrentPriceRef.current.style.left = `0%`;
             setCurrentPriceRef.current.style.width = `${percent}%`
-            //console.log('mid', mid)
-            //console.log('mid percent', percent)
             if (setCurrentPriceLabelRef.current) {
                 setCurrentPriceLabelRef.current.style.left = `${percent}%`
             }
@@ -155,8 +163,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                         <div className="w-[300px] h-0 relative bg-zinc-900">
                             <Axis/>
                             <div ref={range} className="bg-pink-600/30 h-[200px] absolute bottom-0 group" >
-                                <div className="text-white w-fit px-2 py-1 absolute top-20 left-[-50px]">10%</div>
-                                <div className="text-white w-fit px-2 py-1 absolute top-20 right-[-50px]">10%</div>
+                                <div className="text-white w-fit px-2 py-1 absolute top-20 left-[-50px]">{`${calPercentage(getPoolPriceFromTick(lowerVal, token0, token1), marketPrice)}%`}</div>
+                                <div className="text-white w-fit px-2 py-1 absolute top-20 right-[-50px]">{`${calPercentage(getPoolPriceFromTick(upperVal, token0, token1), marketPrice)}%`}</div>
                             </div>
                             <input 
                                 className="thumbbar w-[300px] z-10" 
@@ -176,9 +184,15 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                 ref={upperValInputRef}
                                 onChange={onChangeRight}
                                 /> 
-                            <div ref={setCurrentPriceLabelRef} className="text-white absolute bottom-[-25px]">{currentPrice}</div>
-                            <div ref={lowerValLabelRef} className="text-white absolute bottom-[-25px]">{lowerVal}</div>
-                            <div ref={upperValLabelRef} className="text-white absolute bottom-[-25px]">{upperVal}</div> 
+                            <div ref={setCurrentPriceLabelRef} className="text-white absolute bottom-[-10px]">
+                                <div className="absolute left-0 -translate-x-1/2">{getPoolPriceFromTick(currentPrice, token0, token1)}</div>  
+                            </div>
+                            <div ref={lowerValLabelRef} className="text-white absolute bottom-[20px]">
+                                <div className="absolute left-0 -translate-x-1/2 bg-pink-600 border-[1px] border-zinc-200 rounded-full px-2 z-10">{getPoolPriceFromTick(lowerVal, token0, token1)}</div>  
+                            </div>
+                            <div ref={upperValLabelRef} className="text-white absolute bottom-[40px]">
+                                <div className="absolute left-0 -translate-x-1/2 bg-pink-600 border-[1px] border-zinc-200 rounded-full px-2 z-20">{getPoolPriceFromTick(upperVal, token0, token1)}</div> 
+                            </div> 
                         </div>
                     </div>
                 </div>
@@ -198,7 +212,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 <div className="border-[1px] border-zinc-700 rounded-none md:rounded-bl-md flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
                         <div>Lower price</div>
-                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={lowerVal}/>
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={getPoolPriceFromTick(lowerVal, token0, token1)}/>
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
@@ -213,7 +227,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 <div className="border-[1px] border-zinc-700 rounded-b-md md:rounded-br-md md:rounded-bl-none flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
                         <div>Upper price</div>
-                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={upperVal}/>
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={getPoolPriceFromTick(upperVal, token0, token1)} />
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>

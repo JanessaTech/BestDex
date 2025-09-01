@@ -12,7 +12,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
-import { PoolInfo } from '@/hooks/usePoolInfoHook'
+import { PoolInfo } from '@/hooks/usePoolHook'
 import PositionRange from './PositionRange'
 
 type PoolHomeProps = {}
@@ -31,6 +31,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
 
     const {getPoolInfo} = useContextUtil() as IContextUtil
+    const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
     useEffect(() => {
@@ -161,16 +162,15 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                         state.step === 2 && 
                         <>
                             <PositionRange
-                                token0={token0!} 
-                                token1={token1!}
+                                token0={isToken0Base ? token0! : token1!} 
+                                token1={isToken0Base ? token1! : token0!}
                                 poolInfo={state.poolInfo!}
-                                feeAmount={feeAmount}
                                 />
                             <Deposit 
                                 amount0={deposit.amount0}
                                 amount1={deposit.amount1}
-                                token0={token0} 
-                                token1={token1} 
+                                token0={isToken0Base ? token0! : token1!} 
+                                token1={isToken0Base ? token1! : token0!}
                                 handleDepositToken0Change={handleDepositToken0Change} 
                                 handleDepositToken1Change={handleDepositToken1Change} />
                         </>

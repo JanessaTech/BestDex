@@ -5,19 +5,16 @@ import PriceSelector from "./PriceSelector";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
-import { PoolInfo } from "@/hooks/usePoolInfoHook";
+import { PoolInfo } from "@/hooks/usePoolHook";
 
 type PositionRangeProps = {
-    token0: TokenType;
-    token1: TokenType;
-    feeAmount: number;
+    token0: TokenType;  //we have to make sure that token0 is the address of token0 in the pool;
+    token1: TokenType;  //we have to make sure that token1 is the address of token1 in the pool;
     poolInfo: PoolInfo; 
 }
-const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount, poolInfo}) => {
+const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo}) => {
     //const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
-    const [max, setMax] = useState(1000)
-    const [min, setMin] = useState(0)
     const {getPoolRangeMaxMin, getPoolCurrentPrice} = useContextUtil() as IContextUtil
     const [poolState, setPoolState] = useState<{max?: number, min?: number, lower?: number, upper?: number, poolInfo: PoolInfo}>({poolInfo: poolInfo})
    
@@ -57,6 +54,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
                             lower={poolState.lower!}
                             upper={poolState.upper!}
                             cur={poolState.poolInfo.tick}
+                            marketPrice={getPoolCurrentPrice(poolInfo, token0, token1)}
                             tickSpacing={poolState.poolInfo.tickSpacing}
                             token0={token0}
                             token1={token1}

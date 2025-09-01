@@ -162,7 +162,6 @@ const usePoolHook = () => {
     }
 
     const getPoolRangeMaxMin = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {
-        console.log('getPoolRangeMaxMin ...')
         const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
         const currentPrice = getPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0.decimal, token1.decimal)
         console.log('currentPrice=', currentPrice.toString())

@@ -2,8 +2,8 @@ import type { TokenType } from "@/lib/types";
 import Token from "../common/Token";
 
 type DepositProps = {
-    token0: TokenType | undefined;
-    token1: TokenType | undefined;
+    token0: TokenType;
+    token1: TokenType;
     amount0: string,
     amount1: string;
     handleDepositToken0Change: (value: string) => void;
