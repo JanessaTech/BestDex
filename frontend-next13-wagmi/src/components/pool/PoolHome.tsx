@@ -1,7 +1,7 @@
 'use client'
 
 import Setting from '../common/Setting'
-import { memo, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
 import { useAccount, useChainId } from 'wagmi'
 import { TokenType } from '@/lib/types'
@@ -27,6 +27,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token1, setToken1] = useState<TokenType | undefined>(undefined)
     const [deposit, setDeposit] = useState({amount0: '0', amount1: '0'})
     const [feeAmount, setFeeAmount] = useState(3000)
+    const [depositVisible, setDepositVisible] = useState<{token0: boolean, token1: boolean}>({token0: true, token1: true})
 
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
 
@@ -112,6 +113,10 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setState({...state, step: 1})
         setDeposit({amount0: '0', amount1: '0'})
     }
+
+    const updateDepositVisible = useCallback((_token0: boolean, _token1: boolean) => {
+        setDepositVisible({token0: _token0, token1: _token1})
+    }, [])
  
     return (
         <div>
@@ -165,12 +170,14 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 token0={isToken0Base ? token0! : token1!} 
                                 token1={isToken0Base ? token1! : token0!}
                                 poolInfo={state.poolInfo!}
+                                updateDepositVisible={updateDepositVisible}
                                 />
                             <Deposit 
                                 amount0={deposit.amount0}
                                 amount1={deposit.amount1}
                                 token0={isToken0Base ? token0! : token1!} 
                                 token1={isToken0Base ? token1! : token0!}
+                                depositVisible={depositVisible}
                                 handleDepositToken0Change={handleDepositToken0Change} 
                                 handleDepositToken1Change={handleDepositToken1Change} />
                         </>

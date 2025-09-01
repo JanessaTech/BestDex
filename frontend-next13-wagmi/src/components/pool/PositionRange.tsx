@@ -6,21 +6,35 @@ import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { PoolInfo } from "@/hooks/usePoolHook";
+import Decimal from "decimal.js";
 
 type PositionRangeProps = {
     token0: TokenType;  //we have to make sure that token0 is the address of token0 in the pool;
     token1: TokenType;  //we have to make sure that token1 is the address of token1 in the pool;
     poolInfo: PoolInfo; 
+    updateDepositVisible: (token0: boolean, token1: boolean) => void
 }
-const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo}) => {
-    //const {tokenPrices} = useContextUtil() as IContextUtil
+const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo, updateDepositVisible}) => {
+    const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const {getPoolRangeMaxMin, getPoolCurrentPrice} = useContextUtil() as IContextUtil
     const [poolState, setPoolState] = useState<{max?: number, min?: number, lower?: number, upper?: number, poolInfo: PoolInfo}>({poolInfo: poolInfo})
-   
+
+    const [token0InUSDC, setToken0InUSDC] = useState('')
+
+    const updateUSD = () => {
+        const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
+        const price = tokenPrices[targetChainId]?.get(token0.address)
+        if (price) {
+            const usdcValue = new Decimal(price).times(1)
+            setToken0InUSDC(usdcValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())
+        }
+    }
+
     useEffect(() => {
         const poolRange = getPoolRangeMaxMin(poolInfo, token0, token1)
         console.log('poolRange=', poolRange)
+        updateUSD()
         setPoolState({...poolState, ... poolRange})
     }, [])
     
@@ -36,7 +50,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo})
                  <div className="text-zinc-200">Market price: </div> 
                  {
                     token0 && token1 && <><div className="text-pink-600">{getPoolCurrentPrice(poolInfo, token0, token1)} {token1 ? token1.symbol : ''} = 1 {token0 ? token0.symbol : ''}</div>
-                    <div className="text-zinc-200">($2,573.22)</div></>
+                    <div className="text-zinc-200">(${token0InUSDC})</div></>
                  }
                  
              </div>
@@ -59,6 +73,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo})
                             token0={token0}
                             token1={token1}
                             updateMinMax={updateMinMax}
+                            updateDepositVisible={updateDepositVisible}
                             /> 
                         : <div className="flex justify-center py-6 relative">
                             <div className="size-10 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute top-[14px]"></div>

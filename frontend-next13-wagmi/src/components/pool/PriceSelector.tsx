@@ -32,8 +32,10 @@ type PriceSelectorProps = {
     token0: TokenType;
     token1: TokenType
     updateMinMax: (min: number, max: number) => void;
+    updateDepositVisible: (token0: boolean, token1: boolean) => void
 }
-const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, marketPrice, tickSpacing, token0, token1, updateMinMax}) => {
+const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, marketPrice, tickSpacing, 
+                token0, token1, updateMinMax, updateDepositVisible}) => {
     const [initState, setInitState] = useState({
                                             min: min, 
                                             max: max, 
@@ -108,18 +110,29 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     const onChangeLeft = (e: React.ChangeEvent<HTMLInputElement>) => {
         // why using nearestUsableTick?
         // make sure that the value is a valid usableTick
-        const value = Math.min(nearestUsableTick(Number(e.target.value), tickSpacing), upperVal); 
-        setLowerVal(value);
+        const newLowerVal = Math.min(nearestUsableTick(Number(e.target.value), tickSpacing), upperVal); 
+        setLowerVal(newLowerVal);
+        if (newLowerVal >= currentPrice) {
+            updateDepositVisible(true, false) 
+        } else {
+            updateDepositVisible(true, true) 
+        }
     }
     const onChangeRight = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Math.max(nearestUsableTick(Number(e.target.value), tickSpacing), lowerVal);
-        setUpperVal(value)
+        const newUpperVal = Math.max(nearestUsableTick(Number(e.target.value), tickSpacing), lowerVal);
+        setUpperVal(newUpperVal)
+        if (newUpperVal <= currentPrice) {
+            updateDepositVisible(false, true)
+        } else {
+            updateDepositVisible(true, true) 
+        }
     }
 
     const handleReset = () => {
         updateMinMax(initState.min, initState.max)
         setLowerVal(initState.lowerVal)
         setUpperVal(initState.upperVal)
+        updateDepositVisible(true, true) 
     }
 
     const handleZoomIn = () => {
@@ -134,23 +147,41 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     }
 
     const plusLower = () => {
-        const newMinVal = Math.min(lowerVal + tickSpacing, upperVal)
-        setLowerVal(newMinVal);
+        const newLowerVal = Math.min(lowerVal + tickSpacing, upperVal)
+        setLowerVal(newLowerVal);
+        if (newLowerVal >= currentPrice) {
+            // once the currentPrice is below the position range, only token0 is provided
+            updateDepositVisible(true, false) 
+        } else {
+            updateDepositVisible(true, true) 
+        }
     }
 
     const minusLower = () => {
         const newMinVal = Math.max(lowerVal - tickSpacing, min)
         setLowerVal(newMinVal);
+        if (newMinVal < currentPrice) {
+            updateDepositVisible(true, true) 
+        }
     }
     
     const plusUpper = () => {
-        const newMaxVal = Math.min(max, upperVal + tickSpacing)
-        setUpperVal(newMaxVal)
+        const newUpperVal = Math.min(max, upperVal + tickSpacing)
+        setUpperVal(newUpperVal)
+        if (newUpperVal > currentPrice) {
+            updateDepositVisible(true, true) 
+        }
     }
     
     const minusUpper = () => {
-        const newMaxVal = Math.max(lowerVal, upperVal - tickSpacing)
-        setUpperVal(newMaxVal)
+        const newUpperVal = Math.max(lowerVal, upperVal - tickSpacing)
+        setUpperVal(newUpperVal)
+        if (newUpperVal <= currentPrice) {
+            // once the currentPrice is above the position range, only token1 is provided
+            updateDepositVisible(false, true)
+        } else {
+            updateDepositVisible(true, true)
+        }
     }
 
     return (
