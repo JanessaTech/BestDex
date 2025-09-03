@@ -39,24 +39,32 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
     useEffect(() => {
         console.log('[Deposit] lowerTick=', lowerTick, 'curTick=', curTick, 'upperTick=', upperTick)
         if (!poolInfo) return
-        if (whoInput === 0 && amount0) {
-            const position = createPoistionFromToken0(amount0)
-            const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
-            const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-    
-            console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
-            setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
-            handleDepositChanges(amount0, burnAmount1)
-        } else if (whoInput === 1 && amount1) {
-            const position = createPoistionFromToken1(amount1)
-            const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
-            const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-    
-            console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
-            setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
-            handleDepositChanges(burnAmount0, amount1)
-        }
+        if (upperTick <= curTick) {
+            console.log('token0 is hidden')
+            handleDepositChanges('0', '0')
+        } else if (lowerTick >= curTick) {
+            console.log('token1 is hidden')
+            handleDepositChanges('0', '0')
+        } else {
+            console.log('no tokens is hidden')
+            if (whoInput === 0 && amount0) {
+                const position = createPoistionFromToken0(amount0)
+                const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+                const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
         
+                console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+                setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
+                handleDepositChanges(amount0, burnAmount1)
+            } else if (whoInput === 1 && amount1) {
+                const position = createPoistionFromToken1(amount1)
+                const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+                const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+        
+                console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+                setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
+                handleDepositChanges(burnAmount0, amount1)
+            }
+        }
     }, [lowerTick, upperTick])
 
     useEffect(() => {
