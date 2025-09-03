@@ -12,10 +12,9 @@ type PositionRangeProps = {
     token0: TokenType;  //we have to make sure that token0 is the address of token0 in the pool;
     token1: TokenType;  //we have to make sure that token1 is the address of token1 in the pool;
     poolInfo: PoolInfo; 
-    updateDepositVisible: (token0: boolean, token1: boolean) => void
-    updateTicks: (lower: number, upper: number) => void
+    updateTicks: (lower: number, cur: number, upper: number) => void
 }
-const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo, updateDepositVisible, updateTicks}) => {
+const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo, updateTicks}) => {
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const {getPoolRangeMaxMin, getPoolCurrentPrice} = useContextUtil() as IContextUtil
@@ -74,7 +73,6 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, poolInfo, 
                             token0={token0}
                             token1={token1}
                             updateMinMax={updateMinMax}
-                            updateDepositVisible={updateDepositVisible}
                             updateTicks={updateTicks}
                             /> 
                         : <div className="flex justify-center py-6 relative">

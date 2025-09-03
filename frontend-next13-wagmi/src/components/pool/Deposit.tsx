@@ -21,22 +21,41 @@ type DepositProps = {
     amount1: string;
     poolInfo: PoolInfo; 
     lowerTick: number;
+    curTick: number;
     upperTick: number;
-    depositVisible: {token0: boolean, token1: boolean};
     handleDepositChanges: (amount0 : string, amount1: string) => void
 }
 const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1, 
-                                        poolInfo, lowerTick, upperTick, depositVisible,
+                                        poolInfo, lowerTick, curTick, upperTick,
                                         handleDepositChanges}) => {
 
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
-    
+    const [whoInput, setWhoInput] = useState(0) // indicate which token as the major input: 0 for token0, 1 for token1
+
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
 
     useEffect(() => {
-        console.log('[Deposit] lowerTick=', lowerTick, 'upperTick=', upperTick)
+        console.log('[Deposit] lowerTick=', lowerTick, 'curTick=', curTick, 'upperTick=', upperTick)
+        if (!poolInfo) return
+        if (whoInput === 0 && amount0) {
+            const position = createPoistionFromToken0(amount0)
+            const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+            const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+    
+            console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+            setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
+            handleDepositChanges(amount0, burnAmount1)
+        } else if (whoInput === 1 && amount1) {
+            const position = createPoistionFromToken1(amount1)
+            const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+            const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+    
+            console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+            setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
+            handleDepositChanges(burnAmount0, amount1)
+        }
         
     }, [lowerTick, upperTick])
 
@@ -61,8 +80,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
         setTokensUSD({token0: token0USD, token1: token1USD})
     }
 
-    const updateToken0Change = (value: string) => {
-        if (!poolInfo) return
+    const createPoistionFromToken0 = (value: string) => {
         const feeAmount_enum = Object.values(FeeAmount).includes(poolInfo.fee) ? poolInfo.fee as FeeAmount : FeeAmount.MEDIUM
         const configuredPool = new Pool(
             new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
@@ -79,17 +97,11 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             amount0: fromReadableAmount(Number(value), token0.decimal),
             useFullPrecision: true,
         })
-        const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
-        const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
 
-        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
-        console.log('value=', value)
-        setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
-        handleDepositChanges(value, burnAmount1)
+        return position
     }
 
-    const updateToken1Change = (value: string) => {
-        if (!poolInfo) return
+    const createPoistionFromToken1 = (value: string) => {
         const feeAmount_enum = Object.values(FeeAmount).includes(poolInfo.fee) ? poolInfo.fee as FeeAmount : FeeAmount.MEDIUM
         const configuredPool = new Pool(
             new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
@@ -105,19 +117,40 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             tickUpper: upperTick,
             amount1: fromReadableAmount(Number(value), token1.decimal)
         })
+
+        return position
+    }
+
+    const updateToken0Change = (value: string) => {
+        if (!poolInfo) return
+        const position = createPoistionFromToken0(value)
+        const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+        const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+
+        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+        console.log('value=', value)
+        setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
+        handleDepositChanges(value, burnAmount1)
+        setWhoInput(0)
+    }
+
+    const updateToken1Change = (value: string) => {
+        if (!poolInfo) return
+        const position = createPoistionFromToken1(value)
         const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
         const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
 
         console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
         setBurnAmount({token0: position.amount0.quotient.toString(), token1: position.amount1.quotient.toString()})
         handleDepositChanges(burnAmount0, value)
+        setWhoInput(1)
     }
 
     return (
         <div className="py-5">
             <div className="pb-2">Deposit tokens</div>
             {
-                depositVisible.token0 &&
+                upperTick > curTick &&
                 <div className="w-full rounded-md p-4 bg-pink-600/10 flex justify-between items-center my-2">
                     <div className="grow basis-10">
                         <input 
@@ -146,7 +179,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                 </div>
             }
             {
-                depositVisible.token1 &&
+                lowerTick < curTick &&
                 <div className="w-full rounded-md p-4 bg-pink-600/10 flex justify-between items-center">
                     <div className="grow basis-10">
                         <input 

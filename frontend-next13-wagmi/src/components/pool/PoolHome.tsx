@@ -27,11 +27,10 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token1, setToken1] = useState<TokenType | undefined>(undefined)
     const [deposit, setDeposit] = useState({amount0: '', amount1: ''})
     const [feeAmount, setFeeAmount] = useState(3000)
-    const [depositVisible, setDepositVisible] = useState<{token0: boolean, token1: boolean}>({token0: true, token1: true})
 
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
 
-    const [ticks, setTicks] = useState<{lower: number, upper: number}>({lower:0, upper: 0})
+    const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
 
     const {getPoolInfo} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
@@ -113,12 +112,8 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setDeposit({amount0: '0', amount1: '0'})
     }
 
-    const updateDepositVisible = useCallback((_token0: boolean, _token1: boolean) => {
-        setDepositVisible({token0: _token0, token1: _token1})
-    }, [])
-
-    const updateTicks = useCallback((_lower: number, _upper: number) => {
-        setTicks({lower: _lower, upper: _upper})
+    const updateTicks = useCallback((_lower: number, _cur: number, _upper: number) => {
+        setTicks({lower: _lower, cur: _cur, upper: _upper})
     }, [])
  
     return (
@@ -173,7 +168,6 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 token0={isToken0Base ? token0! : token1!} 
                                 token1={isToken0Base ? token1! : token0!}
                                 poolInfo={state.poolInfo!}
-                                updateDepositVisible={updateDepositVisible}
                                 updateTicks={updateTicks}
                                 />
                             <Deposit 
@@ -183,8 +177,8 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 token1={isToken0Base ? token1! : token0!}
                                 poolInfo={state.poolInfo!}
                                 lowerTick={ticks.lower}
+                                curTick={ticks.cur}
                                 upperTick={ticks.upper}
-                                depositVisible={depositVisible}
                                 handleDepositChanges={handleDepositChanges}/>
                         </>
                     }
