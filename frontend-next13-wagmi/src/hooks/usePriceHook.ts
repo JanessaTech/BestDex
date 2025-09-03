@@ -3,6 +3,8 @@ import { ChainId } from '@uniswap/sdk-core'
 import { tokenList } from "@/lib/data";
 import { Network_Enum, LocalChainIds } from "@/lib/types";
 
+
+const span = 60000
 export type TokenPriceInUSDType = {
     [K in ChainId | LocalChainIds]?: Map<`0x${string}`, string>
 }
@@ -35,7 +37,7 @@ const usePriceHook = () => {
                 
 
             })()
-        }, 20000)
+        }, span)
         return () => {
             clearInterval(interval)
         }

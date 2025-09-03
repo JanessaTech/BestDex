@@ -32,10 +32,13 @@ type PriceSelectorProps = {
     token0: TokenType;
     token1: TokenType
     updateMinMax: (min: number, max: number) => void;
-    updateDepositVisible: (token0: boolean, token1: boolean) => void
+    updateDepositVisible: (token0: boolean, token1: boolean) => void;
+    updateTicks: (lower: number, upper: number) => void
 }
 const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, marketPrice, tickSpacing, 
-                token0, token1, updateMinMax, updateDepositVisible}) => {
+                                                        token0, token1, 
+                                                        updateMinMax, updateDepositVisible,
+                                                        updateTicks}) => {
     const [initState, setInitState] = useState({
                                             min: min, 
                                             max: max, 
@@ -64,6 +67,10 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
         (value: number) => Math.max(Math.round(((value - min) / (max - min)) * 100), 0),
         [min, max]
       );
+
+    useEffect(() => {
+        updateTicks(lowerVal, upperVal)
+    }, [lowerVal, upperVal])
 
     useEffect(() => {
         if (setCurrentPriceRef.current) {

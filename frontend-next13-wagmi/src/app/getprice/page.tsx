@@ -7,7 +7,8 @@ import { cacheExchange, fetchExchange } from '@urql/core'
 import { tokenList } from '@/lib/data';
 
 //const provider = new ethers.providers.JsonRpcProvider("https://eth.llamarpc.com")
-const provider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
+//const provider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk")
+const provider = new ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/c385e2e722284dc9b570de7ede60dba1")
 const aggregatorV3InterfaceABI = [
     'function latestAnswer() view returns (int256)',
     'function latestTimestamp() view returns (uint256)',
