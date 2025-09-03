@@ -42,9 +42,11 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
         if (upperTick <= curTick) {
             console.log('token0 is hidden')
             handleDepositChanges('0', '0')
+            setBurnAmount({token0: '0', token1: '0'})
         } else if (lowerTick >= curTick) {
             console.log('token1 is hidden')
             handleDepositChanges('0', '0')
+            setBurnAmount({token0: '0', token1: '0'})
         } else {
             console.log('no tokens is hidden')
             if (whoInput === 0 && amount0) {
