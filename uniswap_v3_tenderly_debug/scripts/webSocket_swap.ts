@@ -29,7 +29,6 @@ class UniswapV3PoolListener {
             this.ws.on('close', (code: number, reason: string) => {
                 console.log(`WebSocket connection closed: ${code} - ${reason}`)
                 this.isConnected = false
-                //this.handleReconnection()
             })
             this.ws.on('error', (error: Error) => {
                 console.error('WebSocket error:', error)
