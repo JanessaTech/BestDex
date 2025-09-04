@@ -55,8 +55,7 @@ function test_CurrencyAmount() {
           tokens.token0.decimals
         ))
     const amount0 =  token0Amount.quotient
-    console.log('amount0 =', amount0)
-    
+    console.log('amount0 =', amount0.toString())
 }
 function test_nearestUsableTick() {
     const res = nearestUsableTick(7, 5)
@@ -177,24 +176,29 @@ function rangeSelect(sqrtPriceX96Str: string,
   console.log('min=', min)
 }
 
+function test_decimal() {
+  const res = new Decimal(3).times(Decimal('' ? 123 : 0)).toString()
+  console.log('res=', res)
+}
 
+test_decimal()
 //test_CurrencyAmount()
 //test_nearestUsableTick()
 //FeeAmount_test()
 
-const sqrtPriceX96Str = '1300326548979566885653193588871961'
-const token0Decimals: number = 6
-const token1Decimals: number = 18
-const isToken0Base: boolean = true
-const tick = 194125
-const tickSpacing = 60
-const priceToken0 = new Decimal('0.000269367807829062')
-const priceToken1 = new Decimal('3712.396103')
+// const sqrtPriceX96Str = '1300326548979566885653193588871961'
+// const token0Decimals: number = 6
+// const token1Decimals: number = 18
+// const isToken0Base: boolean = true
+// const tick = 194125
+// const tickSpacing = 60
+// const priceToken0 = new Decimal('0.000269367807829062')
+// const priceToken1 = new Decimal('3712.396103')
 
 // const res = sqrtPriceX96(sqrtPriceX96Str, isToken0Base, token0Decimals, token1Decimals)
 // console.log(res.toString())
 
-tickToPrice(tick, isToken0Base, token0Decimals, token1Decimals)
+//tickToPrice(tick, isToken0Base, token0Decimals, token1Decimals)
 
 
 //priceToTick(priceToken0, isToken0Base, token0Decimals, token1Decimals, 'nearest')

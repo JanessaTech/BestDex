@@ -167,6 +167,8 @@ async function mintPosition(): Promise<TransactionState> {
           )
         )
       )
+      positionToMint.amount0
+      positionToMint.amount1
 
       const mintOptions: MintOptions = {
         recipient: address,
