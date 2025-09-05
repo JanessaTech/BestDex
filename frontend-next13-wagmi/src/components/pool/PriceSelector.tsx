@@ -50,7 +50,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     const range = useRef<HTMLDivElement>(null);
     const lowerValLabelRef = useRef<HTMLDivElement>(null)
     const upperValLabelRef = useRef<HTMLDivElement>(null)
-    const [currentPrice, setCurrentPrice] = useState(cur) 
+    const [currentTick, setCurrentTick] = useState(cur) 
     const setCurrentPriceRef = useRef<HTMLInputElement>(null)
     const setCurrentPriceLabelRef = useRef<HTMLInputElement>(null)
 
@@ -58,7 +58,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
    
     console.log('lowerVal=', lowerVal, 'upperVal=', upperVal)
     console.log('min=', min, 'max=', max)
-    console.log('currentPrice=', currentPrice)
+    console.log('currentTick=', currentTick)
     console.log('initState=', initState)
 
     const getPercent = useCallback(
@@ -67,19 +67,19 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
       );
 
     useEffect(() => {
-        updateTicks(lowerVal, currentPrice, upperVal)
+        updateTicks(lowerVal, currentTick, upperVal)
     }, [lowerVal, upperVal])
 
     useEffect(() => {
         if (setCurrentPriceRef.current) {
-            const percent = getPercent(currentPrice)
+            const percent = getPercent(currentTick)
             setCurrentPriceRef.current.style.left = `0%`;
             setCurrentPriceRef.current.style.width = `${percent}%`
             if (setCurrentPriceLabelRef.current) {
                 setCurrentPriceLabelRef.current.style.left = `${percent}%`
             }
         }
-    }, [currentPrice])
+    }, [currentTick])
     
     useEffect(() => {
         if (upperValInputRef.current) {
@@ -194,7 +194,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                 onChange={onChangeRight}
                                 /> 
                             <div ref={setCurrentPriceLabelRef} className="text-white absolute bottom-[-10px]">
-                                <div className="absolute left-0 -translate-x-1/2">{getPoolPriceFromTick(currentPrice, token0, token1)}</div>  
+                                <div className="absolute left-0 -translate-x-1/2">{getPoolPriceFromTick(currentTick, token0, token1)}</div>  
                             </div>
                             <div ref={lowerValLabelRef} className="text-white absolute bottom-[20px]">
                                 <div className="absolute left-0 -translate-x-1/2 bg-pink-600 border-[1px] border-zinc-200 rounded-full px-2 z-10">{getPoolPriceFromTick(lowerVal, token0, token1)}</div>  

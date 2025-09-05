@@ -31,7 +31,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
 
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
-    const [whoInput, setWhoInput] = useState(0) // indicate which token as the major input: 0 for token0, 1 for token1
+    const [whoInput, setWhoInput] = useState(0) // indicate which token is as the major input: 0 for token0, 1 for token1
 
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)

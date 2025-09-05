@@ -65,6 +65,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const client = useClient()
     const chain = chains.find((chain) => chain.id === chainId)
     const rpcUrl  = client?.transport.url // we can make sure rpcUrl is not empty
+    console.log('rpcUrl=', rpcUrl)
 
     const updateUSD = (quote: string) => {
       const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
