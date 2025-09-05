@@ -63,7 +63,17 @@ export const config = getDefaultConfig({
   },
   ssr: true
 }); */
-
+export const chainUrls = {
+  [mainnet.id]: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
+  [polygon.id]: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
+  [arbitrum.id]: `https://arbitrum-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
+  [base.id]: `https://base-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
+  [sepolia.id]: `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
+  [hardhat.id]: 'http://127.0.0.1:8545'
+}
+export const myTransports = Object.fromEntries(
+  Object.entries(chainUrls).map(([chainId, url]) => [chainId, http(url)])
+);
 export const config = getDefaultConfig({
   appName: 'RainbowKit demo',
   projectId: projectId,
@@ -72,16 +82,6 @@ export const config = getDefaultConfig({
     wallets: [walletConnectWallet,okxWallet,uniswapWallet,trustWallet],
   }],
   chains,
-  transports: {
-    // RPC URL for each chain
-    [mainnet.id]: http(
-      `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
-    ),
-    [polygon.id]: http(`https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`),
-    [arbitrum.id]: http(`https://arbitrum-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`),
-    [base.id]: http(`https://base-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`),
-    [sepolia.id]: http(`https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`),
-    [hardhat.id]: http('http://127.0.0.1:8545')
-  },
+  transports: myTransports,
   ssr: true
 });
