@@ -10,7 +10,9 @@ const useWebSocketHook = () => {
     }
 
     useEffect(() => {
-        const poolListenter = new BrowserUniswapV3PoolListener() 
+        const ALCHEMY_WS_URL = 'wss://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk';
+        const POOL_ADDRESS = '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8'; // eg: pool USDC/ETH 0.3% 
+        const poolListenter = new BrowserUniswapV3PoolListener(POOL_ADDRESS, ALCHEMY_WS_URL) 
         setListener(poolListenter)
 
         return () => listener?.disconnect()

@@ -1,8 +1,3 @@
-//import WebSocket from 'ws'
-
-const ALCHEMY_WS_URL = 'wss://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk';
-const ALCHEMY_HTTP_URL = 'https://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk';
-const POOL_ADDRESS = '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8'; // eg: pool USDC/ETH 0.3% 
 
 class BrowserUniswapV3PoolListener {
     private ws: WebSocket | null = null;
@@ -10,20 +5,25 @@ class BrowserUniswapV3PoolListener {
     private maxReconnectAttempts: number = 5;
     private subscriptionId: string | null = null;
 
-    private latestResult?: any;
+    private latestResult: number = 0;
 
-    constructor() {
-        this.initWebSocket();
+    private poolAddress!:string;
+    private wssURL !:string;
+
+    constructor(poolAddress: string, wssURL: string) {
+        this.poolAddress = poolAddress;
+        this.wssURL = wssURL;
+        this.initWebSocket(poolAddress, wssURL);
     }
 
-    private initWebSocket(): void {
-        console.log('init BrowserUniswapV3PoolListener...');
+    private initWebSocket(poolAddress: string, wssURL: string): void {
+        console.log(`init websocket for pool ${poolAddress} via wss ${wssURL}`);
         try {
-            this.ws = new WebSocket(ALCHEMY_WS_URL)
+            this.ws = new WebSocket(wssURL)
             this.ws.addEventListener('open', () => {
                 console.log('Connected to Alchemy WebSocket');
                 this.reconnectAttempts = 0;
-                this.subscribeToSwapEvents();
+                this.subscribeToSwapEvents(poolAddress);
             })
             this.ws.addEventListener('message', (data: MessageEvent) => {
                 this.handleMessage(data);
@@ -60,9 +60,11 @@ class BrowserUniswapV3PoolListener {
                     // received a swap event
                     console.log('Pool State Changed! A swap occurred.');
                     console.log(JSON.stringify(message, null, 2));
-                    this.latestResult = message.params?.result;
+                    //this.latestResult = message.params?.result;
                     // get pool info here
-                    //fetchPoolData(POOL_ADDRESS); 
+                    (async () => {
+                        await this.fetchPoolData(this.poolAddress); 
+                    })()
                 } 
             }
         } catch (error) {
@@ -71,7 +73,7 @@ class BrowserUniswapV3PoolListener {
         
     }
 
-    private subscribeToSwapEvents(): void {
+    private subscribeToSwapEvents(poolAddress: string): void {
         if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
             console.error('WebSocket is not connected');
             return;
@@ -83,7 +85,7 @@ class BrowserUniswapV3PoolListener {
             params: [
               "logs",
               {
-                address: POOL_ADDRESS,
+                address: poolAddress,
                 topics: [
                   // hash for swap event
                   "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"
@@ -107,7 +109,7 @@ class BrowserUniswapV3PoolListener {
           console.log(`Attempting to reconnect in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
           
           setTimeout(() => {
-            this.initWebSocket();
+            this.initWebSocket(this.poolAddress, this.wssURL);
           }, delay);
     }
 
@@ -118,12 +120,12 @@ class BrowserUniswapV3PoolListener {
           }
     }
 
-    public async fetchPoolData(): Promise<void> {
-
+    private async fetchPoolData(addr: string) {
+        return this.latestResult++;
     }
 
-    public getLatestResult(): any {
-        return this.latestResult
+    public getLatestResult() {
+        return this.latestResult;
     }
 
 }

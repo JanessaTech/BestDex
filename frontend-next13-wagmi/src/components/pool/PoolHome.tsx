@@ -32,7 +32,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
 
-    const {getPoolInfo} = useContextUtil() as IContextUtil
+    const {getPoolInfo, getLatestResult} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
@@ -115,6 +115,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const updateTicks = useCallback((_lower: number, _cur: number, _upper: number) => {
         setTicks({lower: _lower, cur: _cur, upper: _upper})
     }, [])
+
+    const handleResult = () => {
+        console.log('handleResult...')
+        const latest = getLatestResult()
+        console.log('latest = ', latest)
+    }
  
     return (
         <div>
@@ -196,6 +202,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                         : <span>New Position</span>
                                     :'Connect Wallet'}
                         </Button>
+                    </div>
+                    <div>
+                        <Button onClick={handleResult}>Get latest result</Button>
                     </div>
                 </div>
             </div>    
