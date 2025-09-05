@@ -3,7 +3,7 @@
 import Setting from '../common/Setting'
 import { memo, useCallback, useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
-import { useAccount, useChainId, useChains } from 'wagmi'
+import { useAccount, useChainId } from 'wagmi'
 import { TokenType } from '@/lib/types'
 import { toast } from 'sonner'
 import FeeTier from './FeeTier'
@@ -34,13 +34,6 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     const {getPoolInfo, getLatestResult} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
-
-    const chains = useChains()
-
-    for (let chain of chains) {
-        console.log(`chain id:`, chain.id)
-        console.log(`rpcUrls ${JSON.stringify(chain.rpcUrls)}`)
-    }
 
     // in case we change network via wallet connection button
     useEffect(() => {

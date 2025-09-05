@@ -63,11 +63,10 @@ export const config = getDefaultConfig({
   },
   ssr: true
 }); */
-export const chainUrls = {
+export const chainUrls = { // it should be consistent with the variable chains defined above
   [mainnet.id]: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
   [polygon.id]: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
   [arbitrum.id]: `https://arbitrum-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
-  [base.id]: `https://base-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
   [sepolia.id]: `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
   [hardhat.id]: 'http://127.0.0.1:8545'
 }

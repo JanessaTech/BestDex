@@ -12,7 +12,10 @@ import { TokenType } from '@/lib/types'
 import { Decimal } from 'decimal.js'
 import { TICK_BASE, 
          MIN_TICK, MAX_TICK, 
-         TICK_RANG_PERCENTAGE, POOL_FACTORY_CONTRACT_ADDRESS} from '@/config/constants'
+         TICK_RANG_PERCENTAGE, POOL_FACTORY_CONTRACT_ADDRESS,
+         UNISWAP_V3_FACTORY_ADDRESSES,
+         UNISWAP_V3_FACTORY_ABI} from '@/config/constants'
+import { isZeroAddress } from '@/lib/utils'
 
 export type PoolInfo = {
      token0: string
@@ -70,6 +73,34 @@ const priceToTick = (price: Decimal,
 
 const usePoolHook = () => {
     const publicClient = usePublicClient()
+
+    const getPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}`, 
+                                   feeAmount: number, chainId: number): Promise<string | undefined> => {
+        try {
+            const factoryAddress = UNISWAP_V3_FACTORY_ADDRESSES[chainId]
+            if (!factoryAddress) {
+                throw new Error(`No uniswap v3 factory address is found for chainId ${chainId}`)
+            }
+            if (!publicClient) throw new Error('publicClient is null')
+            const [token0, token1] = tokenA.toLowerCase() < tokenB.toLowerCase() 
+                    ? [tokenA, tokenB]
+                    : [tokenB, tokenA]
+            const poolAddress = await publicClient.readContract({
+                abi: UNISWAP_V3_FACTORY_ABI,
+                address: factoryAddress,
+                functionName: 'getPool',
+                args: [token0, token1, feeAmount]
+            })
+            if (isZeroAddress(poolAddress)) {
+                return undefined
+            }
+            return poolAddress
+        } catch (error)  {
+            console.log('Failed to check pool existence:', error)
+        }
+
+        return undefined
+    }
 
     const getPoolInfo = async (token0 : TokenType, token1: TokenType, feeAmount: number): Promise<PoolInfo> => {
         try {
@@ -185,7 +216,12 @@ const usePoolHook = () => {
         return {max: max, min: min, lower: lowerTick, upper: upperTick}
     }
 
-    return {getPoolInfo, getPoolRangeMaxMin, getPoolCurrentPrice, getPoolPriceFromTick}
+    return {
+            getPoolAddress,
+            getPoolInfo, 
+            getPoolRangeMaxMin, 
+            getPoolCurrentPrice, 
+            getPoolPriceFromTick}
 }
 
 export default usePoolHook
