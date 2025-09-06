@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import JSBI from 'jsbi'
-import { ZERO_ADDRESS } from "@/config/constants"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -26,7 +25,4 @@ function countDecimals(x: number) {
   return x.toString().split('.')[1].length || 0
 }
 
-export function isZeroAddress(address: `0x${string}`) {
-  if (!address) return false;
-  return address.toLowerCase() === ZERO_ADDRESS.toLowerCase();
-}
+

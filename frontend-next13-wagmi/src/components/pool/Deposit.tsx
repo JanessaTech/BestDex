@@ -1,6 +1,5 @@
 import type { TokenType, LocalChainIds } from "@/lib/types";
 import { default as DexToken } from "../common/Token";
-import { PoolInfo } from "@/hooks/usePoolHook";
 import { 
     FeeAmount,
     Position,
@@ -12,6 +11,7 @@ import { useEffect, useState } from "react";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
+import { PoolInfo } from "@/lib/tools/pool";
 
 
 type DepositProps = {

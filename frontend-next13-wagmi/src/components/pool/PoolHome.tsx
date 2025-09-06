@@ -12,8 +12,8 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
-import { PoolInfo } from '@/hooks/usePoolHook'
 import PositionRange from './PositionRange'
+import { PoolInfo } from '@/lib/tools/pool'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
