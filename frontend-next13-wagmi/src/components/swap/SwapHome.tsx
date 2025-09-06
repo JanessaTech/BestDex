@@ -16,7 +16,7 @@ import { useUpdateSetting } from '@/config/store'
 import { ChainId } from '@uniswap/sdk-core'
 
 type SwapHomeProps = {}
-const SwapHome: React.FC<SwapHomeProps> = () => {;
+const SwapHome: React.FC<SwapHomeProps> = () => {
     const { chains, switchChain } = useSwitchChain()
     const chainId = useChainId() as ChainId
     const curChain = chains.filter((c) => c.id === chainId)[0]

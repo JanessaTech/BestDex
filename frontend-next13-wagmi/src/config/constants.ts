@@ -52,8 +52,6 @@ export const UNISWAP_V3_FACTORY_ADDRESSES: { [chainId: number]: `0x${string}`} =
   137: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Polygon
   42161: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Arbitrum
   10: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Optimism
-  43114: '0x740b1c1de25031C31FF4fC9A62f554A55cdC1baD', // Avalanche
-  56: '0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7', // BSC
   42220: '0xAfE208a311B21f13EF87E33A90049fC17A7acDEc', // Celo
   11155111: '0x0227628f3F023bb0B980b67D528571c95c6DaC1c', // Ethereum Sepolia
   31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test

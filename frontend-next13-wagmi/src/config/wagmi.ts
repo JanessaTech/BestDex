@@ -5,7 +5,6 @@ import {
     mainnet,
     polygon,
     arbitrum,
-    base,
     sepolia,
     hardhat
   } from 'wagmi/chains';

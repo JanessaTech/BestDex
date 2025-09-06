@@ -113,6 +113,7 @@ export const calcPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}
                 functionName: 'getPool',
                 args: [token0, token1, feeAmount]
             })
+            //console.log('[calcPoolAddress]poolAddress=', poolAddress)
             if (isZeroAddress(poolAddress)) {
                 return undefined
             }

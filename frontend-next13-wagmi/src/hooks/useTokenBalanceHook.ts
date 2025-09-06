@@ -4,8 +4,8 @@ import {
 import { formatUnits } from 'viem'
 import { ERC20_ABI } from '@/config/constants'
 
-const useTokenBalanceHook = () => {
-    const publicClient = usePublicClient()
+const useTokenBalanceHook = (chainId: number) => {
+    const publicClient = usePublicClient({chainId})
 
     const getTokenBalance = async (
         tokenAddress: `0x${string}`| undefined, 

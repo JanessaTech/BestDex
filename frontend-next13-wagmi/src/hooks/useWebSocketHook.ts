@@ -8,19 +8,22 @@ import {
     usePublicClient
   } from 'wagmi'
 
-const useWebSocketHook = () => {
+const useWebSocketHook = (chainId: number) => {
     const [listener, setListener] = useState<BrowserUniswapV3PoolListener>()
-    const [listenerMap, setListenerMap] = useState<Map<string, Map<`0x${string}`, PoolInfo>>>(new Map([]))
-    const publicClient = usePublicClient()
-
+    const [listenersMap, setListenersMap] = useState<Map<string, Map<`0x${string}`, PoolInfo>>>(new Map([]))
+    const publicClient = usePublicClient({chainId})
     const getLatestResult = () => {
         return listener?.getLatestResult()
     }
 
     useEffect(() => {
-        for (let [chainId, url] of Object.entries(chainUrls)) {
-            console.log(`${chainId}, ${url}`)
-            const tokens = tokenList.filter((l) => l.chainId === Number(chainId))[0].tokens
+        computePoolAddresses(chainId)
+    }, [chainId])
+
+    const computePoolAddresses = async (chainId: number) => {
+        const filtered = tokenList.filter((l) => l.chainId === chainId)
+        const tokens = filtered.length > 0 ? filtered[0].tokens : undefined
+        if (tokens) {
             for (let i = 0; i < tokens.length; i++) {
                 for (let j = i + 1; j < tokens.length; j++) {
                     for (let feeTier of FEE_TIERS) {
@@ -28,14 +31,13 @@ const useWebSocketHook = () => {
                         const tokenA = tokens[i].address
                         const tokenB = tokens[j].address
                         console.log(`chainId=${chainId}, token0=${tokens[i].symbol}, token1=${tokens[j].symbol}, feeTier=${feeTier.value}`)
-                        const poolAddress = calcPoolAddress(tokenA, tokenB, feeAmount, Number(chainId), publicClient)
+                        const poolAddress = await calcPoolAddress(tokenA, tokenB, feeAmount, Number(chainId), publicClient)
                         console.log(`poolAddress=${poolAddress}, token0=${tokens[i].symbol}, token1=${tokens[j].symbol}, chainId=${chainId} ,feeAmount=${feeAmount}`)
                     }
                 }
             }
-        }
-        
-    }, [])
+        } 
+    }
 
     useEffect(() => {
         const ALCHEMY_WS_URL = 'wss://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk';
@@ -47,7 +49,6 @@ const useWebSocketHook = () => {
     }, [])
 
     return {getLatestResult}
-
 }
 
 export default useWebSocketHook

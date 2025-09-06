@@ -3,7 +3,7 @@
 import Setting from '../common/Setting'
 import { memo, useCallback, useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
-import { useAccount, useChainId } from 'wagmi'
+import { useAccount, useChainId} from 'wagmi'
 import { TokenType } from '@/lib/types'
 import { toast } from 'sonner'
 import FeeTier from './FeeTier'
