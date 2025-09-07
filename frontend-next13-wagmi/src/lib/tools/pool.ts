@@ -1,11 +1,6 @@
 import { ethers} from 'ethers'
 import { TokenType } from '../types'
-import { 
-    FeeAmount,
-    computePoolAddress, 
-    } from '@uniswap/v3-sdk'
-import { MAX_TICK, MIN_TICK, POOL_FACTORY_CONTRACT_ADDRESS, TICK_BASE, TICK_RANG_PERCENTAGE, UNISWAP_V3_FACTORY_ABI, UNISWAP_V3_FACTORY_ADDRESSES } from '@/config/constants'
-import {Token} from '@uniswap/sdk-core'
+import { MAX_TICK, MIN_TICK, TICK_BASE, TICK_RANG_PERCENTAGE, UNISWAP_V3_FACTORY_ABI, UNISWAP_V3_FACTORY_ADDRESSES } from '@/config/constants'
 import { PublicClient } from 'viem'
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import { isZeroAddress } from './common'
@@ -13,28 +8,18 @@ import { Decimal } from 'decimal.js'
 
 export type PoolInfo = {
     token0: string
-   token1: string
-   fee: number
-   tickSpacing: number
-   slot0: any[]
-   sqrtPriceX96: ethers.BigNumber
-   tick: number
-   liquidity: ethers.BigNumber
+    token1: string
+    fee: number
+    tickSpacing: number
+    slot0: any[]
+    sqrtPriceX96: ethers.BigNumber
+    tick: number
+    liquidity: ethers.BigNumber
 }
 
 export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient?: PublicClient): Promise<PoolInfo> => {
     try {
         if (!publicClient) throw new Error('publicClient is null')
-        // const feeAmount_enum = Object.values(FeeAmount).includes(feeAmount) ? feeAmount as FeeAmount : FeeAmount.MEDIUM
-        // console.log('feeAmount_enum=', feeAmount_enum)  // to-do: should add warning message
-        // const currentPoolAddress = computePoolAddress({
-        //     factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
-        //     tokenA: new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
-        //     tokenB: new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
-        //     fee: feeAmount_enum,
-        // })
-        // console.log('currentPoolAddress=', currentPoolAddress)
-        // if (!currentPoolAddress) throw new Error('No pool address found')
         const data = await publicClient.multicall({
             contracts: [
                 {

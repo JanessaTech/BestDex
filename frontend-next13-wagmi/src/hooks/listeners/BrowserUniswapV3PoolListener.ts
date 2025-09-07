@@ -1,3 +1,5 @@
+import { PoolInfo, fetchPoolInfo } from '@/lib/tools/pool';
+import { PublicClient } from 'viem'
 
 class BrowserUniswapV3PoolListener {
     private ws: WebSocket | null = null;
@@ -7,23 +9,26 @@ class BrowserUniswapV3PoolListener {
 
     private latestResult: number = 0;
 
-    private poolAddress!:string;
+    private poolAddress!:`0x${string}`;
     private wssURL !:string;
+    private publicClient !: PublicClient;
+    private latestPooInfo?:PoolInfo | undefined = undefined
 
-    constructor(poolAddress: string, wssURL: string) {
+    constructor(poolAddress: `0x${string}`, wssURL: string, publicClient: PublicClient) {
         this.poolAddress = poolAddress;
         this.wssURL = wssURL;
-        this.initWebSocket(poolAddress, wssURL);
+        this.publicClient = publicClient;
+        this.initWebSocket();
     }
 
-    private initWebSocket(poolAddress: string, wssURL: string): void {
-        console.log(`init websocket for pool ${poolAddress} via wss ${wssURL}`);
+    private initWebSocket(): void {
+        console.log(`Create a websocket for pool ${this.poolAddress} via wss ${this.wssURL}`);
         try {
-            this.ws = new WebSocket(wssURL)
+            this.ws = new WebSocket(this.wssURL)
             this.ws.addEventListener('open', () => {
                 console.log('Connected to Alchemy WebSocket');
                 this.reconnectAttempts = 0;
-                this.subscribeToSwapEvents(poolAddress);
+                this.subscribeToSwapEvents(this.poolAddress);
             })
             this.ws.addEventListener('message', (data: MessageEvent) => {
                 this.handleMessage(data);
@@ -63,7 +68,7 @@ class BrowserUniswapV3PoolListener {
                     //this.latestResult = message.params?.result;
                     // get pool info here
                     (async () => {
-                        await this.fetchPoolData(this.poolAddress); 
+                        await this.fetchPoolData(); 
                     })()
                 } 
             }
@@ -109,7 +114,7 @@ class BrowserUniswapV3PoolListener {
           console.log(`Attempting to reconnect in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
           
           setTimeout(() => {
-            this.initWebSocket(this.poolAddress, this.wssURL);
+            this.initWebSocket();
           }, delay);
     }
 
@@ -120,8 +125,14 @@ class BrowserUniswapV3PoolListener {
           }
     }
 
-    private async fetchPoolData(addr: string) {
-        return this.latestResult++;
+    private async fetchPoolData() {
+        console.log(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
+        const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
+        this.latestPooInfo = poolInfo
+    }
+
+    public getLatestPooInfo(): PoolInfo | undefined {
+        return this.latestPooInfo
     }
 
     public getLatestResult() {
