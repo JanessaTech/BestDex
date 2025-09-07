@@ -6,9 +6,6 @@ class BrowserUniswapV3PoolListener {
     private reconnectAttempts: number = 0;
     private maxReconnectAttempts: number = 5;
     private subscriptionId: string | null = null;
-
-    private latestResult: number = 0;
-
     private poolAddress!:`0x${string}`;
     private wssURL !:string;
     private publicClient !: PublicClient;
@@ -134,11 +131,6 @@ class BrowserUniswapV3PoolListener {
     public getLatestPooInfo(): PoolInfo | undefined {
         return this.latestPooInfo
     }
-
-    public getLatestResult() {
-        return this.latestResult;
-    }
-
 }
 
 export default BrowserUniswapV3PoolListener

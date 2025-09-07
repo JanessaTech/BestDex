@@ -15,10 +15,6 @@ const useWebSocketHook = (chainId: number) => {
     const [listenersMap, setListenersMap] = useState<Map<number, Map<`0x${string}`, BrowserUniswapV3PoolListener | LocalUniswapV3PoolListener>>>(new Map([]))
     const publicClient = usePublicClient({chainId})
 
-    const getLatestResult = () => {
-        return listener?.getLatestResult()
-    }
-
     const getLatestPoolInfo = (poolAddress: `0x${string}`): PoolInfo | undefined => {
         console.log(`get latest pool info from poolAddress=${poolAddress} and chainId=${chainId}`)
         const listener = listenersMap.get(chainId)?.get(poolAddress)
@@ -112,7 +108,7 @@ const useWebSocketHook = (chainId: number) => {
         // return () => listener?.disconnect()
     }, [])
 
-    return {getLatestResult, addWebSocketListener, getLatestPoolInfo}
+    return {addWebSocketListener, getLatestPoolInfo}
 }
 
 export default useWebSocketHook

@@ -13,7 +13,13 @@ const usePoolHook = (chainId: number) => {
         return res
     }
 
-    return {getPoolInfo}
+    const getPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}`, 
+        feeAmount: number): Promise<`0x${string}`> => {
+            const poolAddress = await calcPoolAddress(tokenA, tokenB, feeAmount, chainId, publicClient)
+            return poolAddress
+    }
+
+    return {getPoolInfo, getPoolAddress}
 }
 
 export default usePoolHook

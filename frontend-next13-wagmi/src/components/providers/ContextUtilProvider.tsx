@@ -18,7 +18,7 @@ export interface IContextUtil {
             userAddress: `0x${string}`, 
             options: { decimals?: number }) => Promise<string>;
     getPoolInfo: (token0 : TokenType, token1: TokenType, feeAmount: number) => Promise<PoolInfo>;
-    getLatestResult: () => any;
+    getPoolAddress: (tokenA:`0x${string}`, tokenB: `0x${string}`, feeAmount: number) => Promise<`0x${string}`>;
     getLatestPoolInfo: (poolAddress: `0x${string}`) => PoolInfo | undefined;
     addWebSocketListener: (token0 : TokenType, token1: TokenType, feeAmount: number) => Promise<void>
 }
@@ -31,15 +31,15 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const {getCurrentPath} = useURLHook()
     const {tokenPrices} = usePriceHook()
     const {getTokenBalance} = useTokenBalanceHook(chainId) 
-    const {getPoolInfo} = usePoolHook(chainId)
-    const {getLatestResult, getLatestPoolInfo, addWebSocketListener} = useWebSocketHook(chainId)
+    const {getPoolInfo, getPoolAddress} = usePoolHook(chainId)
+    const {getLatestPoolInfo, addWebSocketListener} = useWebSocketHook(chainId)
 
     return (
         <ContextUtil.Provider value={{getCurrentPath, 
                                       tokenPrices, 
                                       getTokenBalance, 
-                                      getPoolInfo,
-                                      getLatestResult, getLatestPoolInfo, addWebSocketListener}}>
+                                      getPoolInfo,getPoolAddress,
+                                      getLatestPoolInfo, addWebSocketListener}}>
                 {children}
         </ContextUtil.Provider>
     )
