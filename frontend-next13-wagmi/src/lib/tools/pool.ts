@@ -22,48 +22,48 @@ export type PoolInfo = {
    liquidity: ethers.BigNumber
 }
 
-export const fetchPoolInfo = async (token0 : TokenType, token1: TokenType, feeAmount: number, publicClient?: PublicClient): Promise<PoolInfo> => {
+export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient?: PublicClient): Promise<PoolInfo> => {
     try {
         if (!publicClient) throw new Error('publicClient is null')
-        const feeAmount_enum = Object.values(FeeAmount).includes(feeAmount) ? feeAmount as FeeAmount : FeeAmount.MEDIUM
-        console.log('feeAmount_enum=', feeAmount_enum)  // to-do: should add warning message
-        const currentPoolAddress = computePoolAddress({
-            factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
-            tokenA: new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
-            tokenB: new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
-            fee: feeAmount_enum,
-        })
-        console.log('currentPoolAddress=', currentPoolAddress)
-        if (!currentPoolAddress) throw new Error('No pool address found')
+        // const feeAmount_enum = Object.values(FeeAmount).includes(feeAmount) ? feeAmount as FeeAmount : FeeAmount.MEDIUM
+        // console.log('feeAmount_enum=', feeAmount_enum)  // to-do: should add warning message
+        // const currentPoolAddress = computePoolAddress({
+        //     factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
+        //     tokenA: new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
+        //     tokenB: new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
+        //     fee: feeAmount_enum,
+        // })
+        // console.log('currentPoolAddress=', currentPoolAddress)
+        // if (!currentPoolAddress) throw new Error('No pool address found')
         const data = await publicClient.multicall({
             contracts: [
                 {
-                    address: currentPoolAddress as `0x${string}`,
+                    address: poolAddress,
                     abi: IUniswapV3PoolABI.abi,
                     functionName: 'token0'
                 },
                 {
-                    address: currentPoolAddress as `0x${string}`,
+                    address: poolAddress,
                     abi: IUniswapV3PoolABI.abi,
                     functionName: 'token1'
                 },
                 {
-                    address: currentPoolAddress as `0x${string}`,
+                    address: poolAddress,
                     abi: IUniswapV3PoolABI.abi,
                     functionName: 'fee'
                 },
                 {
-                    address: currentPoolAddress as `0x${string}`,
+                    address: poolAddress,
                     abi: IUniswapV3PoolABI.abi,
                     functionName: 'tickSpacing'
                 },
                 {
-                    address: currentPoolAddress as `0x${string}`,
+                    address: poolAddress,
                     abi: IUniswapV3PoolABI.abi,
                     functionName: 'slot0'
                 },
                 {
-                    address: currentPoolAddress as `0x${string}`,
+                    address: poolAddress,
                     abi: IUniswapV3PoolABI.abi,
                     functionName: 'liquidity'
                 }
@@ -92,18 +92,18 @@ export const fetchPoolInfo = async (token0 : TokenType, token1: TokenType, feeAm
                 } as PoolInfo
     } catch (error) {
         console.log('It failed to call IUniswapV3Pool, due to:', error)
-        throw new Error('Failed to get pool info ')
+        throw error
     }
 }
 
 export const calcPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}`, 
-    feeAmount: number, chainId: number, publicClient?: PublicClient): Promise<string | undefined> => {
+    feeAmount: number, chainId: number, publicClient?: PublicClient): Promise<`0x${string}`> => {
         try {
+            if (!publicClient) throw new Error('publicClient is null')
             const factoryAddress = UNISWAP_V3_FACTORY_ADDRESSES[chainId]
             if (!factoryAddress) {
                 throw new Error(`No uniswap v3 factory address is found for chainId ${chainId}`)
             }
-            if (!publicClient) throw new Error('publicClient is null')
             const [token0, token1] = tokenA.toLowerCase() < tokenB.toLowerCase() 
                     ? [tokenA, tokenB]
                     : [tokenB, tokenA]
@@ -113,16 +113,14 @@ export const calcPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}
                 functionName: 'getPool',
                 args: [token0, token1, feeAmount]
             })
-            //console.log('[calcPoolAddress]poolAddress=', poolAddress)
             if (isZeroAddress(poolAddress)) {
-                return undefined
+                throw new Error(`poolAddress calculated from tokenA ${tokenA}, tokenB ${tokenB}, feeAmount ${feeAmount}, chainId ${chainId} is zero`)
             }
             return poolAddress
         } catch (error)  {
-            console.log('Failed to check pool existence:', error)
+            console.log('Invalid pool address due to:', error)
+            throw error
         }
-
-        return undefined
     }
 export const calcPriceBySqrtPriceX96 = (isToken0Base: boolean, sqrtPriceX96: string, token0Decimals: number, token1Decimals: number) => {
     const sqrtPriceX96Decimal = new Decimal(sqrtPriceX96)

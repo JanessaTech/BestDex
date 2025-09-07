@@ -118,8 +118,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
       else setHiddenLoading(true)
       const data: QuotesParameterType = {
         chainId: chainId === 31337 ? ChainId.MAINNET : chainId,   // for test
-        //rpcUrl: chainId === 31337 ? `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}` : rpcUrl,   // for test
-        rpcUrl: chainId === 31337 ? `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}` : rpcUrl,   // for test
+        rpcUrl: chainId === 31337 ? `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}` : rpcUrl,   // for test
+        //rpcUrl: chainId === 31337 ? `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}` : rpcUrl,   // for test
         recipient: address!,
         slippage: setting.slipage * 100, // one ten-thousandth
         deadline: setting.deadline === '' ? 1800 : setting.deadline * 60, // in seconds

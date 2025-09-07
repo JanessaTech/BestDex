@@ -26,21 +26,38 @@ const useWebSocketHook = (chainId: number) => {
         if (tokens) {
             for (let i = 0; i < tokens.length; i++) {
                 for (let j = i + 1; j < tokens.length; j++) {
-                    for (let feeTier of FEE_TIERS) {
-                        const feeAmount = feeTier.value * 10000
-                        const tokenA = tokens[i].address
-                        const tokenB = tokens[j].address
-                        console.log(`chainId=${chainId}, token0=${tokens[i].symbol}, token1=${tokens[j].symbol}, feeTier=${feeTier.value}`)
-                        const poolAddress = await calcPoolAddress(tokenA, tokenB, feeAmount, Number(chainId), publicClient)
-                        console.log(`poolAddress=${poolAddress}, token0=${tokens[i].symbol}, token1=${tokens[j].symbol}, chainId=${chainId} ,feeAmount=${feeAmount}`)
-                    }
+                    const tokenA = tokens[i].address
+                    const tokenB = tokens[j].address
+                    if (chainId !== 31337) {
+                        for (let feeTier of FEE_TIERS) {
+                            const feeAmount = feeTier.value * 10000
+                            console.log(`chainId=${chainId}, token0=${tokens[i].address}(${tokens[i].symbol}), token1=${tokens[j].address}(${tokens[j].symbol}), feeTier=${feeTier.value}`)
+                            try {
+                                const poolAddress = await calcPoolAddress(tokenA, tokenB, feeAmount, Number(chainId), publicClient)
+                                console.log(`poolAddress=${poolAddress}, token0=${tokens[i].symbol}, token1=${tokens[j].symbol}, chainId=${chainId} ,feeAmount=${feeAmount}`)
+                            } catch (error) {
+                                console.log('poolAddress is invalid due to:', error)
+                            }
+                            
+                        }
+                    } else {
+                        // for test
+                        const feeAmount = 3000
+                        console.log(`chainId=${chainId}, token0=${tokens[i].symbol}, token1=${tokens[j].symbol}, feeTier=3000`)
+                        try {
+                            const poolAddress = await calcPoolAddress(tokenA, tokenB, feeAmount, Number(chainId), publicClient)
+                            console.log(`poolAddress=${poolAddress}, token0=${tokens[i].symbol}, token1=${tokens[j].symbol}, chainId=${chainId} ,feeAmount=${feeAmount}`)
+                        } catch (error) {
+                            console.log('poolAddress is invalid due to:', error)
+                        }
+                    }  
                 }
             }
         } 
     }
 
     useEffect(() => {
-        const ALCHEMY_WS_URL = 'wss://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk';
+        const ALCHEMY_WS_URL = 'wss://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am';
         const POOL_ADDRESS = '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8'; // eg: pool USDC/ETH 0.3% 
         const poolListenter = new BrowserUniswapV3PoolListener(POOL_ADDRESS, ALCHEMY_WS_URL) 
         setListener(poolListenter)
