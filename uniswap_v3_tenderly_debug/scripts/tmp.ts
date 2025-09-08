@@ -1,7 +1,8 @@
 import {CurrencyAmount, Token, ChainId, Percent } from '@uniswap/sdk-core'
 import { 
     FeeAmount , 
-    nearestUsableTick
+    nearestUsableTick,
+    computePoolAddress
     } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
 import { Decimal } from 'decimal.js';
@@ -181,10 +182,49 @@ function test_decimal() {
   console.log('res=', res)
 }
 
-test_decimal()
+function test_computePoolAddress() {
+  const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
+  const token0 = {chainId: 42161, name: 'Dai Stablecoin', symbol: 'DAI', alias: 'dai', decimal: 18, address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'}
+  const token1 = {chainId: 42161, name: 'Wrapped BTC', symbol: 'WBTC', alias: 'wbtc', decimal: 8, address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f'}
+  const poolAddress = computePoolAddress({
+    factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
+    tokenA: new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
+    tokenB: new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
+    fee: FeeAmount.MEDIUM,
+  })
+
+  console.log('poolAddress =', poolAddress)
+}
+
+function test_urls() {
+  const chainUrls = {
+    1 : 'aaa',
+    2 : 'bbb',
+    3 : 'ccc'
+  }
+  const getValue = (chainId: number) => {
+    let res = undefined
+    let found = Object.entries(chainUrls).find(([key, value]) => key === `${chainId}`)
+    const url = found ? found[1] : undefined
+    console.log(url)
+  }
+  getValue(4)
+}
+
+function test_map() {
+  const map0 = new Map([[1, 'aaa'], [2, 'bbb']])
+  const map1 = new Map(map0)
+  map1.set(3, 'ccc')
+  console.log(map1)
+}
+
+//test_decimal()
 //test_CurrencyAmount()
 //test_nearestUsableTick()
 //FeeAmount_test()
+//test_computePoolAddress()
+//test_urls()
+test_map()
 
 // const sqrtPriceX96Str = '1300326548979566885653193588871961'
 // const token0Decimals: number = 6
