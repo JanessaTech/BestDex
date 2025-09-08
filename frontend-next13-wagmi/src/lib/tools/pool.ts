@@ -15,6 +15,7 @@ export type PoolInfo = {
     sqrtPriceX96: ethers.BigNumber
     tick: number
     liquidity: ethers.BigNumber
+    timeStamp: number
 }
 
 export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient?: PublicClient): Promise<PoolInfo> => {
@@ -73,7 +74,8 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient?: P
                 slot0: data[4].result,
                 sqrtPriceX96 : slot0[0],
                 tick: slot0[1],
-                liquidity: data[5].result
+                liquidity: data[5].result,
+                timeStamp: Date.now()
                 } as PoolInfo
     } catch (error) {
         console.log('It failed to call IUniswapV3Pool, due to:', error)

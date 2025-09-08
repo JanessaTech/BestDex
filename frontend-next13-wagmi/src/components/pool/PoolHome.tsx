@@ -32,7 +32,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
 
-    const {getPoolInfo, getPoolAddress, addWebSocketListener} = useContextUtil() as IContextUtil
+    const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
@@ -82,15 +82,25 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         }
     }
 
+    const handleResult = async () => {
+        console.log('handleResult...')
+        const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
+        console.log('poolAddress = ', poolAddress)
+        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        console.log('latestPoolInfo=', latestPoolInfo)
+    }
+
     const handleNextStep = async () => {
         if (token0 && token1) {
             try {
                 setState({...state, isLoading: true})
                 const poolInfo = await getPoolInfo(token0, token1, feeAmount)
                 setState({...state, isLoading: false, step: state.step + 1, poolInfo: poolInfo})
+                await addWebSocketListener(token0, token1, feeAmount)
                 console.log('poolInfo=', poolInfo)
             } catch (error) {
                 console.log('failed to get pool info due to:', error)
+                setState({...state, isLoading: false})
                 toast.warning('Failed to get the pool info, Please choose the corret feeTier and token pairs, then try again')
             }  
         } 
@@ -116,12 +126,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setTicks({lower: _lower, cur: _cur, upper: _upper})
     }, [])
 
-    const handleResult = async () => {
-        console.log('handleResult...')
-        const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-        console.log('poolAddress = ', poolAddress)
-        addWebSocketListener(token0!, token1!, feeAmount)
-    }
+    
  
     return (
         <div>

@@ -25,8 +25,6 @@ class LocalUniswapV3PoolListener {
         this.interval = setInterval(this.pollSwapEvents, this.POLL_INTERVAL)
     }
 
-    
-
     public getLatestPooInfo(): PoolInfo | undefined {
         return this.latestPooInfo
     }
