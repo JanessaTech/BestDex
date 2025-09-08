@@ -30,34 +30,34 @@ const tokens =  {
     poolFee: FeeAmount.LOW,
 }
 
-function fromReadableAmount(amount: number, decimals: number): JSBI {
-    const extraDigits = Math.pow(10, countDecimals(amount))
-    const adjustedAmount = amount * extraDigits
-    return JSBI.divide(
-      JSBI.multiply(
-        JSBI.BigInt(adjustedAmount),
-        JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
-      ),
-      JSBI.BigInt(extraDigits)
-    )
-  }
+// function fromReadableAmount(amount: number, decimals: number): JSBI {
+//     const extraDigits = Math.pow(10, countDecimals(amount))
+//     const adjustedAmount = amount * extraDigits
+//     return JSBI.divide(
+//       JSBI.multiply(
+//         JSBI.BigInt(adjustedAmount),
+//         JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
+//       ),
+//       JSBI.BigInt(extraDigits)
+//     )
+//   }
 
-function countDecimals(x: number) {
-    if (Math.floor(x) === x) {
-        return 0
-    }
-    return x.toString().split('.')[1].length || 0
-}
-function test_CurrencyAmount() {
-    const token0Amount: CurrencyAmount<Token> = CurrencyAmount.fromRawAmount(
-        tokens.token0,
-        fromReadableAmount(
-          tokens.token0Amount,
-          tokens.token0.decimals
-        ))
-    const amount0 =  token0Amount.quotient
-    console.log('amount0 =', amount0.toString())
-}
+// function countDecimals(x: number) {
+//     if (Math.floor(x) === x) {
+//         return 0
+//     }
+//     return x.toString().split('.')[1].length || 0
+// }
+// function test_CurrencyAmount() {
+//     const token0Amount: CurrencyAmount<Token> = CurrencyAmount.fromRawAmount(
+//         tokens.token0,
+//         fromReadableAmount(
+//           tokens.token0Amount,
+//           tokens.token0.decimals
+//         ))
+//     const amount0 =  token0Amount.quotient
+//     console.log('amount0 =', amount0.toString())
+// }
 function test_nearestUsableTick() {
     const res = nearestUsableTick(7, 5)
     console.log('nearestUsableTick =', res)
@@ -218,13 +218,27 @@ function test_map() {
   console.log(map1)
 }
 
+function fromReadableAmount(amount: string, decimals: number): string {
+  const res = new Decimal(amount ? amount : 0).mul(new Decimal(10).pow(decimals)).toDecimalPlaces(decimals, Decimal.ROUND_HALF_UP).toString()
+  console.log(res)
+  return res
+}
+
+function test_arbitrary() {
+  const res = new Decimal('10.').greaterThanOrEqualTo(new Decimal('10'))
+  console.log(res)
+}
+
 //test_decimal()
 //test_CurrencyAmount()
 //test_nearestUsableTick()
 //FeeAmount_test()
 //test_computePoolAddress()
 //test_urls()
-test_map()
+//test_map()
+test_arbitrary()
+
+fromReadableAmount('1.', 4)
 
 // const sqrtPriceX96Str = '1300326548979566885653193588871961'
 // const token0Decimals: number = 6
