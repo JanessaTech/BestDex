@@ -32,29 +32,29 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [whoInput, setWhoInput] = useState(0) // indicate which token is as the major input: 0 for token0, 1 for token1
-    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
+    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '10', token1: '10'})
     const {tokenPrices, getTokenBalance} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
 
     const disabled = new Decimal(amount0 ? amount0 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && new Decimal(amount1 ? amount1 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token1)) ? false : true
     console.log('disabled=', disabled)
     useEffect(() => {
-        (async () => {
-            let balance0 = '0', balance1 = '0'
-            if (address) {
-                try {
-                    if (token0) {
-                        balance0 = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
-                    }
-                    if (token1) {
-                        balance1 = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
-                    }
-                    setTokenBalances({token0: balance0, token1: balance1})
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        })()
+        // (async () => {
+        //     let balance0 = '0', balance1 = '0'
+        //     if (address) {
+        //         try {
+        //             if (token0) {
+        //                 balance0 = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
+        //             }
+        //             if (token1) {
+        //                 balance1 = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
+        //             }
+        //             setTokenBalances({token0: balance0, token1: balance1})
+        //         } catch (error) {
+        //             console.log(error)
+        //         }
+        //     }
+        // })()
     }, [address])
 
     useEffect(() => {
@@ -177,6 +177,25 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
         setWhoInput(1)
     }
 
+    const checkDisabled = () => {
+        let disabled = true
+        const dec0 = new Decimal(amount0 ? amount0 : '0')
+        const dec1 = new Decimal(amount1 ? amount1 : '0')
+        if (upperTick <= curTick) { // token0 is hidden
+            //we check token1 only
+            disabled = dec1.lessThanOrEqualTo(new Decimal(tokenBalances.token1)) && dec1.greaterThan(0) ? false : true
+        } else if (lowerTick >= curTick) { // token1 is hidden
+            //we check token0 only
+            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && dec0.greaterThan(0) ? false : true
+        } else { // no tokens hidden
+            // we check both of tokens
+            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && dec0.greaterThan(0) && dec1.lessThanOrEqualTo(new Decimal(tokenBalances.token1)) && dec1.greaterThan(0)? false : true
+        }
+        
+        console.log('disabled=', disabled)
+        return disabled
+    }
+
     return (
         <div>
             <div className="py-5">
@@ -255,13 +274,9 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             <div className='pt-4'>
                 <Button 
                     className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
-                    disabled={disabled}
+                    disabled={checkDisabled()}
                     > 
-                    {
-                        disabled 
-                        ?  <span>Insufficient balance</span>
-                        :  <span>Add position</span>
-                    }
+                    <span>Add position</span>
                 </Button>
             </div>
         </div>
