@@ -19,7 +19,7 @@ type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
     const chainId = useChainId()
     const { openConnectModal } = useConnectModal()
-    const { isConnected } = useAccount()
+    const { isConnected, address} = useAccount()
     const [settingOpen, setSettingOpen] = useState(false)
     const [token0Open, setToken0Open]  = useState(false)
     const [token1Open, setToken1Open]  = useState(false)
@@ -27,12 +27,10 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [token1, setToken1] = useState<TokenType | undefined>(undefined)
     const [deposit, setDeposit] = useState({amount0: '', amount1: ''})
     const [feeAmount, setFeeAmount] = useState(3000)
-
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
-
     const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
 
-    const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo, getTokenBalance} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button

@@ -9,10 +9,9 @@ import { fromReadableAmount } from "@/lib/utils";
 import { Decimal } from 'decimal.js'
 import { useEffect, useState } from "react";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
-import { useChainId} from 'wagmi'
+import { useChainId, useAccount} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { PoolInfo } from "@/lib/tools/pool";
-
 
 type DepositProps = {
     token0: TokenType;
@@ -28,13 +27,32 @@ type DepositProps = {
 const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1, 
                                         poolInfo, lowerTick, curTick, upperTick,
                                         handleDepositChanges}) => {
-
+    const {address} = useAccount()
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [whoInput, setWhoInput] = useState(0) // indicate which token is as the major input: 0 for token0, 1 for token1
-
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
+    const {tokenPrices, getTokenBalance} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
+
+    useEffect(() => {
+        (async () => {
+            let balance0 = '', balance1 = ''
+            if (address) {
+                try {
+                    if (token0) {
+                        balance0 = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
+                    }
+                    if (token1) {
+                        balance1 = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
+                    }
+                    setTokenBalances({token0: balance0, token1: balance1})
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        })()
+    }, [address])
 
     useEffect(() => {
         console.log('[Deposit] lowerTick=', lowerTick, 'curTick=', curTick, 'upperTick=', upperTick)
@@ -185,7 +203,12 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                         />
                         <div className="text-xs text-zinc-400">${tokensUSD.token0}</div>
                     </div>
-                    <DexToken token={token0} imageSize={30}/>
+                    <div>
+                        <DexToken token={token0} imageSize={30}/>
+                        <div className="text-xs text-zinc-400 mt-1">
+                            <span>{tokenBalances.token0}</span><span className="text-pink-600 ml-1">{token0.symbol}</span>
+                        </div>
+                    </div> 
                 </div>
             }
             {
@@ -215,7 +238,13 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                         />
                         <div className="text-xs text-zinc-400">${tokensUSD.token1}</div>
                     </div>
-                    <DexToken token={token1} imageSize={30}/>
+                    <div>
+                        <DexToken token={token1} imageSize={30}/>
+                        <div className="text-xs text-zinc-400 mt-1">
+                            <span>{tokenBalances.token1}</span><span className="text-pink-600 ml-1">{token1.symbol}</span>
+                        </div>
+                    </div>
+                    
                 </div>
             }
         </div>
