@@ -32,7 +32,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
 
-    const {getPoolInfo, getPoolAddress} = useContextUtil() as IContextUtil
+    const {getPoolInfo, getPoolAddress, addWebSocketListener} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
@@ -120,6 +120,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         console.log('handleResult...')
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
         console.log('poolAddress = ', poolAddress)
+        addWebSocketListener(token0!, token1!, feeAmount)
     }
  
     return (

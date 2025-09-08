@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react"
 import BrowserUniswapV3PoolListener from "./listeners/BrowserUniswapV3PoolListener"
 import { chainUrls } from "@/config/wagmi"
-import { tokenList } from "@/lib/data"
-import { FEE_TIERS } from "@/config/constants"
 import { PoolInfo, calcPoolAddress } from "@/lib/tools/pool"
 import { 
     usePublicClient
@@ -96,6 +94,8 @@ const useWebSocketHook = (chainId: number) => {
             newListenersMap.get(chainId)?.set(poolAddress, listener)
             console.log('A new listener is added!')
             setListenersMap(newListenersMap)
+        } else {
+            console.log('A new listener was already added!')
         }
     }
 

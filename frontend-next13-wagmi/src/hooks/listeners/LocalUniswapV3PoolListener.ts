@@ -8,7 +8,11 @@ class LocalUniswapV3PoolListener {
     private POLL_INTERVAL = 12000;
     private interval !:NodeJS.Timeout | null;
     private latestPooInfo?:PoolInfo | undefined = undefined
-
+    private pollSwapEvents = async () =>{ 
+        console.log('Start fetching pool info from local...')
+        const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
+        this.latestPooInfo = poolInfo
+    }
     constructor(poolAddress: `0x${string}`, wssURL: string, publicClient: PublicClient) {
         this.poolAddress = poolAddress;
         this.wssURL = wssURL;
@@ -21,11 +25,7 @@ class LocalUniswapV3PoolListener {
         this.interval = setInterval(this.pollSwapEvents, this.POLL_INTERVAL)
     }
 
-    private async pollSwapEvents() { 
-        console.log('Start fetching pool info from local...')
-        const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
-        this.latestPooInfo = poolInfo
-    }
+    
 
     public getLatestPooInfo(): PoolInfo | undefined {
         return this.latestPooInfo
