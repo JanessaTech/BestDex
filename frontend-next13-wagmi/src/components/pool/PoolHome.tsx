@@ -169,6 +169,19 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 </div>
                             </div>
                             <FeeTier handleFeeAmountChange={handleFeeAmountChange}/>
+                            <div className='pt-4'>
+                                <Button 
+                                    className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
+                                    disabled={ isConnected ? (!token0 || !token1) : false}
+                                    onClick={isConnected ? handleNextStep : openConnectModal}>
+                                        {isConnected 
+                                            ? <div className='relative'>
+                                                <div className={`size-10 border-[1px] rounded-full border-white border-t-transparent animate-spin absolute top-[-10px] ${state.isLoading ? '' : 'hidden'}`}></div>
+                                                <span>Next</span>
+                                               </div>
+                                            :'Connect Wallet'}
+                                </Button>
+                            </div>
                         </>
                     }
                     {
@@ -192,26 +205,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 handleDepositChanges={handleDepositChanges}/>
                         </>
                     }
-                    <div className='pt-8'>
-                        <Button 
-                            className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
-                            disabled={ isConnected ? (!token0 || !token1) : false}
-                            onClick={isConnected ? handleNextStep : openConnectModal}>
-                                {isConnected 
-                                    ? state.step === 1 
-                                        ? <div className='relative'>
-                                            <div className={`size-10 border-[1px] rounded-full border-white border-t-transparent animate-spin absolute top-[-10px] ${state.isLoading ? '' : 'hidden'}`}></div>
-                                            <span>Next</span>
-                                          </div>
-                                        : <span>New Position</span>
-                                    :'Connect Wallet'}
-                        </Button>
-                    </div>
                     <div>
-                        <Button onClick={handleResult}>Get latest result</Button>
+                        <Button onClick={handleResult}>Get latest poolInfo</Button>
                     </div>
                 </div>
-            </div>    
+            </div> 
+
         </div>
     )
 }

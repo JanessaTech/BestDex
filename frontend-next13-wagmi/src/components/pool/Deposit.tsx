@@ -3,15 +3,16 @@ import { default as DexToken } from "../common/Token";
 import { 
     FeeAmount,
     Position,
-    Pool} from '@uniswap/v3-sdk'
-import {Token} from '@uniswap/sdk-core'
+    Pool} from '@uniswap/v3-sdk';
+import {Token} from '@uniswap/sdk-core';
 import { fromReadableAmount } from "@/lib/utils";
-import { Decimal } from 'decimal.js'
+import { Decimal } from 'decimal.js';
 import { useEffect, useState } from "react";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId, useAccount} from 'wagmi'
-import { ChainId } from '@uniswap/sdk-core'
+import { ChainId } from '@uniswap/sdk-core';
 import { PoolInfo } from "@/lib/tools/pool";
+import { Button } from '../ui/button';
 
 type DepositProps = {
     token0: TokenType;
@@ -175,79 +176,87 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
     }
 
     return (
-        <div className="py-5">
-            <div className="pb-2">Deposit tokens</div>
-            {
-                upperTick > curTick &&
-                <div className="w-full rounded-md p-4 bg-pink-600/10 flex justify-between items-center my-2">
-                    <div className="grow basis-10">
-                        <input 
-                            type="text" 
-                            className="bg-inherit text-xl text-pink-600 w-full pr-3 box-border"
-                            value={amount0}
-                            onChange={(e) => updateToken0Change(e.target.value)}
-                            onKeyDown={(event) => {
-                                const regex1 = new RegExp(`^[1-9]\\d{0,14}\\.\\d{0,${token0.decimal - 1}}$`);
-                                const regex2 = new RegExp(`^0\\.\\d{0,${token0.decimal - 1}}$`);
-                                const allow =  (event?.key === 'Backspace' || event?.key === 'Delete')
-                                            || (amount0 === '' && event?.key >= '0' && event?.key <= '9')
-                                            || (amount0 === '0' && event?.key === '.')
-                                            || (/^[1-9]\d{0,13}$/.test(amount0) && event?.key >= '0' && event?.key <= '9')
-                                            || (/^[1-9]\d{0,14}$/.test(amount0) && event?.key === '.')
-                                            || (regex1.test(amount0) && event?.key >= '0' && event?.key <= '9') //(/^[1-9]\d{0,14}\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
-                                            || (regex2.test(amount0) && event?.key >= '0' && event?.key <= '9')  //(/^0\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
-                                if (!allow) {
-                                    event.preventDefault(); 
-                                }
-                            }}
-                        />
-                        <div className="text-xs text-zinc-400">${tokensUSD.token0}</div>
-                    </div>
-                    <div>
-                        <DexToken token={token0} imageSize={30}/>
-                        <div className="text-xs text-zinc-400 mt-1">
-                            <span>{tokenBalances.token0}</span><span className="text-pink-600 ml-1">{token0.symbol}</span>
+        <div>
+            <div className="py-5">
+                <div className="pb-2">Deposit tokens</div>
+                {
+                    upperTick > curTick &&
+                    <div className="w-full rounded-md p-4 bg-pink-600/10 flex justify-between items-center my-2">
+                        <div className="grow basis-10">
+                            <input 
+                                type="text" 
+                                className="bg-inherit text-xl text-pink-600 w-full pr-3 box-border"
+                                value={amount0}
+                                onChange={(e) => updateToken0Change(e.target.value)}
+                                onKeyDown={(event) => {
+                                    const regex1 = new RegExp(`^[1-9]\\d{0,14}\\.\\d{0,${token0.decimal - 1}}$`);
+                                    const regex2 = new RegExp(`^0\\.\\d{0,${token0.decimal - 1}}$`);
+                                    const allow =  (event?.key === 'Backspace' || event?.key === 'Delete')
+                                                || (amount0 === '' && event?.key >= '0' && event?.key <= '9')
+                                                || (amount0 === '0' && event?.key === '.')
+                                                || (/^[1-9]\d{0,13}$/.test(amount0) && event?.key >= '0' && event?.key <= '9')
+                                                || (/^[1-9]\d{0,14}$/.test(amount0) && event?.key === '.')
+                                                || (regex1.test(amount0) && event?.key >= '0' && event?.key <= '9') //(/^[1-9]\d{0,14}\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                                                || (regex2.test(amount0) && event?.key >= '0' && event?.key <= '9')  //(/^0\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                                    if (!allow) {
+                                        event.preventDefault(); 
+                                    }
+                                }}
+                            />
+                            <div className="text-xs text-zinc-400">${tokensUSD.token0}</div>
                         </div>
-                    </div> 
-                </div>
-            }
-            {
-                lowerTick < curTick &&
-                <div className="w-full rounded-md p-4 bg-pink-600/10 flex justify-between items-center">
-                    <div className="grow basis-10">
-                        <input 
-                            type="text" 
-                            className="bg-inherit text-xl text-pink-600 w-full pr-3 box-border"
-                            value={amount1}
-                            onChange={(e) => updateToken1Change(e.target.value)}
-                            onKeyDown={(event) => {
+                        <div>
+                            <DexToken token={token0} imageSize={30}/>
+                            <div className="text-xs text-zinc-400 mt-1">
+                                <span>{tokenBalances.token0}</span><span className="text-pink-600 ml-1">{token0.symbol}</span>
+                            </div>
+                        </div> 
+                    </div>
+                }
+                {
+                    lowerTick < curTick &&
+                    <div className="w-full rounded-md p-4 bg-pink-600/10 flex justify-between items-center">
+                        <div className="grow basis-10">
+                            <input 
+                                type="text" 
+                                className="bg-inherit text-xl text-pink-600 w-full pr-3 box-border"
+                                value={amount1}
+                                onChange={(e) => updateToken1Change(e.target.value)}
+                                onKeyDown={(event) => {
 
-                                const regex1 = new RegExp(`^[1-9]\\d{0,14}\\.\\d{0,${token1.decimal - 1}}$`);
-                                const regex2 = new RegExp(`^0\\.\\d{0,${token1.decimal - 1}}$`);
-                                const allow =  (event?.key === 'Backspace' || event?.key === 'Delete')
-                                            || (amount1 === '' && event?.key >= '0' && event?.key <= '9')
-                                            || (amount1 === '0' && event?.key === '.')
-                                            || (/^[1-9]\d{0,13}$/.test(amount1) && event?.key >= '0' && event?.key <= '9')
-                                            || (/^[1-9]\d{0,14}$/.test(amount1) && event?.key === '.')
-                                            || (regex1.test(amount1) && event?.key >= '0' && event?.key <= '9') //(/^[1-9]\d{0,14}\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
-                                            || (regex2.test(amount1) && event?.key >= '0' && event?.key <= '9')  //(/^0\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
-                                if (!allow) {
-                                    event.preventDefault(); 
-                                }
-                            }}
-                        />
-                        <div className="text-xs text-zinc-400">${tokensUSD.token1}</div>
-                    </div>
-                    <div>
-                        <DexToken token={token1} imageSize={30}/>
-                        <div className="text-xs text-zinc-400 mt-1">
-                            <span>{tokenBalances.token1}</span><span className="text-pink-600 ml-1">{token1.symbol}</span>
+                                    const regex1 = new RegExp(`^[1-9]\\d{0,14}\\.\\d{0,${token1.decimal - 1}}$`);
+                                    const regex2 = new RegExp(`^0\\.\\d{0,${token1.decimal - 1}}$`);
+                                    const allow =  (event?.key === 'Backspace' || event?.key === 'Delete')
+                                                || (amount1 === '' && event?.key >= '0' && event?.key <= '9')
+                                                || (amount1 === '0' && event?.key === '.')
+                                                || (/^[1-9]\d{0,13}$/.test(amount1) && event?.key >= '0' && event?.key <= '9')
+                                                || (/^[1-9]\d{0,14}$/.test(amount1) && event?.key === '.')
+                                                || (regex1.test(amount1) && event?.key >= '0' && event?.key <= '9') //(/^[1-9]\d{0,14}\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                                                || (regex2.test(amount1) && event?.key >= '0' && event?.key <= '9')  //(/^0\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                                    if (!allow) {
+                                        event.preventDefault(); 
+                                    }
+                                }}
+                            />
+                            <div className="text-xs text-zinc-400">${tokensUSD.token1}</div>
                         </div>
+                        <div>
+                            <DexToken token={token1} imageSize={30}/>
+                            <div className="text-xs text-zinc-400 mt-1">
+                                <span>{tokenBalances.token1}</span><span className="text-pink-600 ml-1">{token1.symbol}</span>
+                            </div>
+                        </div>
+                        
                     </div>
-                    
-                </div>
-            }
+                }
+            </div>
+            <div className='pt-4'>
+                <Button className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'>
+                    <span>New Position</span>
+                </Button>
+            </div>
         </div>
+        
     )
 }
 
