@@ -13,6 +13,7 @@ import { useChainId, useAccount} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core';
 import { PoolInfo } from "@/lib/tools/pool";
 import { Button } from '../ui/button';
+import ReviewAddPosition from "./ReviewAddPosition";
 
 type DepositProps = {
     token0: TokenType;
@@ -35,6 +36,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
     const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '10', token1: '10'})
     const {tokenPrices, getTokenBalance} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
+    const [openModal, setOpenModal] = useState(false)
 
     const disabled = new Decimal(amount0 ? amount0 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && new Decimal(amount1 ? amount1 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token1)) ? false : true
     console.log('disabled=', disabled)
@@ -191,9 +193,11 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             // we check both of tokens
             disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && dec0.greaterThan(0) && dec1.lessThanOrEqualTo(new Decimal(tokenBalances.token1)) && dec1.greaterThan(0)? false : true
         }
-        
-        console.log('disabled=', disabled)
         return disabled
+    }
+
+    const handleAddPosition = () => {
+        setOpenModal(true)
     }
 
     return (
@@ -275,10 +279,15 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                 <Button 
                     className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
                     disabled={checkDisabled()}
+                    onClick={handleAddPosition}
                     > 
                     <span>Add position</span>
                 </Button>
             </div>
+            {
+                openModal && <ReviewAddPosition 
+                                setOpenModal={setOpenModal}/>
+            }
         </div>
         
     )
