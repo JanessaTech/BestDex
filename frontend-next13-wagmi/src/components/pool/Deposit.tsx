@@ -5,7 +5,7 @@ import {
     Position,
     Pool} from '@uniswap/v3-sdk';
 import {Token} from '@uniswap/sdk-core';
-import { fromReadableAmount } from "@/lib/utils";
+import { fromReadableAmount2 } from "@/lib/utils";
 import { Decimal } from 'decimal.js';
 import { useEffect, useState } from "react";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
@@ -32,13 +32,15 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [whoInput, setWhoInput] = useState(0) // indicate which token is as the major input: 0 for token0, 1 for token1
-    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
+    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const {tokenPrices, getTokenBalance} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
 
+    const disabled = new Decimal(amount0 ? amount0 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && new Decimal(amount1 ? amount1 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token1)) ? false : true
+    console.log('disabled=', disabled)
     useEffect(() => {
         (async () => {
-            let balance0 = '', balance1 = ''
+            let balance0 = '0', balance1 = '0'
             if (address) {
                 try {
                     if (token0) {
@@ -123,7 +125,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             pool: configuredPool,
             tickLower: lowerTick,
             tickUpper: upperTick,
-            amount0: fromReadableAmount(Number(value), token0.decimal),
+            amount0: fromReadableAmount2(value, token0.decimal),
             useFullPrecision: true,
         })
 
@@ -144,7 +146,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             pool: configuredPool,
             tickLower: lowerTick,
             tickUpper: upperTick,
-            amount1: fromReadableAmount(Number(value), token1.decimal)
+            amount1: fromReadableAmount2(value, token1.decimal)
         })
 
         return position
@@ -251,8 +253,15 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                 }
             </div>
             <div className='pt-4'>
-                <Button className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'>
-                    <span>New Position</span>
+                <Button 
+                    className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
+                    disabled={disabled}
+                    > 
+                    {
+                        disabled 
+                        ?  <span>Insufficient balance</span>
+                        :  <span>Add position</span>
+                    }
                 </Button>
             </div>
         </div>
