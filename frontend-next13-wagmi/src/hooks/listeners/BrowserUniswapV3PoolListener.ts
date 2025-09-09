@@ -62,8 +62,6 @@ class BrowserUniswapV3PoolListener {
                     // received a swap event
                     console.log('Pool State Changed! A swap occurred.');
                     console.log(JSON.stringify(message, null, 2));
-                    //this.latestResult = message.params?.result;
-                    // get pool info here
                     (async () => {
                         await this.fetchPoolData(); 
                     })()
