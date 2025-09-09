@@ -1,4 +1,5 @@
 'use client'
+import { ethers} from 'ethers'
 import SVGMinus from "@/lib/svgs/svg_minus";
 import SVGPlus from "@/lib/svgs/svg_plus";
 import SVGZoomIn from "@/lib/svgs/svg_zoom_in";
@@ -67,7 +68,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
 
     useEffect(() => {
         updateTicks(lowerVal, currentTick, upperVal)
-    }, [lowerVal, upperVal])
+    }, [lowerVal, currentTick, upperVal])
 
     useEffect(() => {
         if (setCurrentPriceRef.current) {
@@ -78,7 +79,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 setCurrentPriceLabelRef.current.style.left = `${percent}%`
             }
         }
-    }, [currentTick])
+    }, [currentTick, min, max])
     
     useEffect(() => {
         if (upperValInputRef.current) {

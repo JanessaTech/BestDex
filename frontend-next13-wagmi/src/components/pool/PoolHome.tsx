@@ -124,6 +124,24 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setTicks({lower: _lower, cur: _cur, upper: _upper})
     }, [])
 
+    /**
+        We need to check if the poolInfo used by the current page is not matched in the poolInfo in websocket
+        If not, refresh the page using the latest poolInfo in websocket
+        Here is the place where we define what the matching means: different matching strategy has the different user experience.
+        For example, we could use slot0.tick or slot.sqrtPriceX96 in UniswapV3Pool as the factor to decide the matching.
+        Here is why:
+        - With slot.sqrtPriceX96, it means we have the best price accuracy, however, it also means
+          we would be faced with the higher chance of the bad user experience expecially for the pool with the high frequent transactons
+          because we need to refresh the page frequently
+        - With slot0.tick, it means we have a better user experience, but we should accept the potential risk of 
+          using the stale pool data
+    **/
+    const checkPriceChange = () => {
+         
+
+        
+    }
+
     
  
     return (
