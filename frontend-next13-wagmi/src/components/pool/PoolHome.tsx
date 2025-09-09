@@ -29,6 +29,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [feeAmount, setFeeAmount] = useState(3000)
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
     const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
+    const [openDepositModal, setOpenDepositModal] = useState(false)
 
     const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo, getTokenBalance} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
@@ -136,14 +137,19 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         - With slot0.tick, it means we have a better user experience, but we should accept the potential risk of 
           using the stale pool data
     **/
-    const checkPriceChange = () => {
-         
-
-        
+    const checkRefresh = () => {
+        console.log('check price change')
+        const refresh = false
+        if (refresh) {
+            console.log('refresh page...')
+        }
+        setOpenDepositModal(true) 
     }
 
-    
- 
+    const closeDepositModal = () => {
+        setOpenDepositModal(false)
+    }
+
     return (
         <div>
             <div className='font-semibold text-xl my-10 md:hidden capitalize'>Pool</div>
@@ -208,6 +214,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             <PositionRange
                                 token0={isToken0Base ? token0! : token1!} 
                                 token1={isToken0Base ? token1! : token0!}
+                                feeAmount={feeAmount}
                                 poolInfo={state.poolInfo!}
                                 updateTicks={updateTicks}
                                 />
@@ -220,6 +227,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 lowerTick={ticks.lower}
                                 curTick={ticks.cur}
                                 upperTick={ticks.upper}
+                                openDepositModal={openDepositModal}
+                                closeDepositModal={closeDepositModal}
+                                checkRefresh={checkRefresh}
                                 handleDepositChanges={handleDepositChanges}/>
                         </>
                     }

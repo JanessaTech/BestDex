@@ -24,10 +24,14 @@ type DepositProps = {
     lowerTick: number;
     curTick: number;
     upperTick: number;
+    openDepositModal: boolean;
+    closeDepositModal: () => void;
+    checkRefresh: () => void;
     handleDepositChanges: (amount0 : string, amount1: string) => void
 }
 const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1, 
                                         poolInfo, lowerTick, curTick, upperTick,
+                                        openDepositModal,closeDepositModal,checkRefresh,
                                         handleDepositChanges}) => {
     const {address} = useAccount()
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
@@ -36,7 +40,6 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
     const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '10', token1: '10'})
     const {tokenPrices, getTokenBalance} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
-    const [openModal, setOpenModal] = useState(false)
 
     const disabled = new Decimal(amount0 ? amount0 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && new Decimal(amount1 ? amount1 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token1)) ? false : true
     console.log('disabled=', disabled)
@@ -196,10 +199,6 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
         return disabled
     }
 
-    const handleAddPosition = () => {
-        setOpenModal(true)
-    }
-
     return (
         <div>
             <div className="py-5">
@@ -279,14 +278,14 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                 <Button 
                     className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
                     disabled={checkDisabled()}
-                    onClick={handleAddPosition}
+                    onClick={checkRefresh}
                     > 
                     <span>Add position</span>
                 </Button>
             </div>
             {
-                openModal && <ReviewAddPosition 
-                                setOpenModal={setOpenModal}/>
+                openDepositModal && <ReviewAddPosition 
+                                closeDepositModal={closeDepositModal}/>
             }
         </div>
         

@@ -47,12 +47,13 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                         })
     const [lowerVal, setLowerVal] = useState<number>(lower)
     const [upperVal, setUpperVal] = useState<number>(upper)
+    const [currentTick, setCurrentTick] = useState(cur) 
+
     const lowerValInputRef = useRef<HTMLInputElement>(null)
     const upperValInputRef = useRef<HTMLInputElement>(null)
     const range = useRef<HTMLDivElement>(null);
     const lowerValLabelRef = useRef<HTMLDivElement>(null)
     const upperValLabelRef = useRef<HTMLDivElement>(null)
-    const [currentTick, setCurrentTick] = useState(cur) 
     const setCurrentPriceRef = useRef<HTMLInputElement>(null)
     const setCurrentPriceLabelRef = useRef<HTMLInputElement>(null)
    
