@@ -25,7 +25,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
     const [token0InUSDC, setToken0InUSDC] = useState('')
 
     useEffect(() => {
-        const poolRange = getPoolRangeMaxMin(poolInfo, token0, token1)
+        const poolRange = getPoolRangeMaxMin(curPoolInfo, token0, token1)
         console.log('poolRange=', poolRange)
         updateUSD()
         setPoolState({...poolState, ... poolRange})
