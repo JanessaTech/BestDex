@@ -22,16 +22,15 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [curPoolInfo, setCurPoolInfo] = useState({...poolInfo})
     const [curPoolRange, setCurPoolRange] = useState<PoolRange | undefined>(undefined)
-    const [poolState, setPoolState] = useState<{max?: number, min?: number, lower?: number, upper?: number, poolInfo: PoolInfo}>({poolInfo: poolInfo})
     const [token0InUSDC, setToken0InUSDC] = useState('')
 
     useEffect(() => {
         const poolRange = calPoolRange(curPoolInfo, token0, token1)
         console.log('poolRange=', poolRange)
         updateUSD()
-        setPoolState({...poolState, ... poolRange})
+        //setPoolState({...poolState, ... poolRange})
         setCurPoolRange({...poolRange})
-    }, [poolState])  // it runs when the page is loaded initially or curPoolInfo is updated
+    }, [curPoolInfo])  // it runs when the page is loaded initially or curPoolInfo is updated
 
     const updateUSD = () => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
@@ -41,11 +40,6 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
             setToken0InUSDC(usdcValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())
         }
     }
-
-    const updateMinMax = useCallback((min: number, max: number) => {
-        console.log('updateMinMax:', 'min=', min, ' max=', max)
-        setPoolState({...poolState, max: max, min: min})
-    }, [])
 
     const updatePoolInfo = async () => {
         try {
@@ -88,19 +82,13 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
                         <Token token={token1} imageSize={25} textSize="text-xs"/>
                     </div> 
                     {
-                        poolState.max !== undefined && poolState.min !== undefined && curPoolRange
-                        ? <PriceSelector 
-                            min={poolState.min} 
-                            max={poolState.max} 
-                            lower={poolState.lower!}
-                            upper={poolState.upper!}
-                            cur={poolState.poolInfo.tick}
+                        curPoolRange
+                        ? <PriceSelector
                             poolRange={curPoolRange}
                             marketPrice={getPoolCurrentPrice(poolInfo, token0, token1)}
-                            tickSpacing={poolState.poolInfo.tickSpacing}
+                            tickSpacing={curPoolInfo.tickSpacing}
                             token0={token0}
                             token1={token1}
-                            updateMinMax={updateMinMax}
                             updateTicks={updateTicks}
                             /> 
                         : <div className="flex justify-center py-6 relative">

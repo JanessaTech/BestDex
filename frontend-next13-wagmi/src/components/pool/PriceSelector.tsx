@@ -24,33 +24,23 @@ const Axis = () => {
 }
 
 type PriceSelectorProps = {
-    min: number;
-    max: number;
-    lower: number;
-    upper: number;
-    cur: number;
     poolRange: PoolRange;
     marketPrice: string;
     tickSpacing: number;
     token0: TokenType;
-    token1: TokenType
-    updateMinMax: (min: number, max: number) => void;
-    updateTicks: (lower: number, cur: number, upper: number) => void
+    token1: TokenType;
+    updateTicks: (lower: number, cur: number, upper: number) => void;
 }
-const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cur, marketPrice, tickSpacing, 
-                                                        token0, token1, 
-                                                        updateMinMax, updateTicks}) => {
+const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, tickSpacing, token0, token1, 
+                                                      updateTicks}) => {
     const [initState, setInitState] = useState({
-                                            min: min, 
-                                            max: max, 
-                                            lowerVal: lower,
-                                            upperVal: upper
+                                            min: poolRange.max, 
+                                            max: poolRange.max, 
+                                            currentTick: poolRange.currentTick,
+                                            lower: poolRange.lower,
+                                            upper: poolRange.upper
                                         })
-    const [state, setState] = useState<{min: number, max: number, currentTick: number, lower: number, upper: number}>({min: min, max: max, currentTick: cur, lower: lower, upper: upper})          
-    //const [lowerVal, setLowerVal] = useState<number>(lower)
-    //const [upperVal, setUpperVal] = useState<number>(upper)
-    //const [currentTick, setCurrentTick] = useState(cur) 
-
+    const [state, setState] = useState<{min: number, max: number, currentTick: number, lower: number, upper: number}>({min: poolRange.min, max: poolRange.max, currentTick: poolRange.currentTick, lower: poolRange.lower, upper: poolRange.upper})
     const lowerValInputRef = useRef<HTMLInputElement>(null)
     const upperValInputRef = useRef<HTMLInputElement>(null)
     const range = useRef<HTMLDivElement>(null);
@@ -59,14 +49,18 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     const setCurrentPriceRef = useRef<HTMLInputElement>(null)
     const setCurrentPriceLabelRef = useRef<HTMLInputElement>(null)
    
-    //console.log('lowerVal=', lowerVal, 'upperVal=', upperVal)
-    console.log('min=', min, 'max=', max)
-    //console.log('currentTick=', currentTick)
+    console.log('state=', state)
     console.log('initState=', initState)
 
+    useEffect(() => {
+        console.log('poolRange is updated')
+        setInitState({...poolRange})
+        setState({...poolRange})
+    }, [poolRange])
+
     const getPercent = useCallback(
-        (value: number) => Math.max(Math.round(((value - min) / (max - min)) * 100), 0),
-        [min, max]
+        (value: number) => Math.max(Math.round(((value - state.min) / (state.max - state.min)) * 100), 0),
+        [state.min, state.max]
       );
 
     useEffect(() => {
@@ -75,27 +69,27 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
 
     useEffect(() => {
         if (setCurrentPriceRef.current) {
-            const percent = getPercent(state.currentTick)
+            const currentPricePercent = getPercent(state.currentTick)
             setCurrentPriceRef.current.style.left = `0%`;
-            setCurrentPriceRef.current.style.width = `${percent}%`
+            setCurrentPriceRef.current.style.width = `${currentPricePercent}%`
             if (setCurrentPriceLabelRef.current) {
-                setCurrentPriceLabelRef.current.style.left = `${percent}%`
+                setCurrentPriceLabelRef.current.style.left = `${currentPricePercent}%`
             }
         }
-    }, [state.currentTick, min, max])
+    }, [state.currentTick, state.min, state.max])
     
     useEffect(() => {
         if (upperValInputRef.current) {
-            const minPercent = getPercent(state.lower);
-            const maxPercent = getPercent(Number(upperValInputRef.current.value));
+            const lowerPercent = getPercent(state.lower);
+            const upperPercent = getPercent(Number(upperValInputRef.current.value));
 
             if (range.current) {
-            range.current.style.left = `${minPercent}%`;
-            range.current.style.width = `${maxPercent - minPercent}%`;
+            range.current.style.left = `${lowerPercent}%`;
+            range.current.style.width = `${upperPercent - lowerPercent}%`;
             
             }
             if (lowerValLabelRef.current) {
-                lowerValLabelRef.current.style.left = `${minPercent}%`;
+                lowerValLabelRef.current.style.left = `${lowerPercent}%`;
             }
         }
     }, [state.lower, getPercent]);
@@ -129,19 +123,18 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     }
 
     const handleReset = () => {
-        updateMinMax(initState.min, initState.max)
-        setState({...state, lower: initState.lowerVal, upper: initState.upperVal})
+        setState({...initState})
     }
 
     const handleZoomIn = () => {
-        const newMin = Math.min(state.lower, min + tickSpacing)
-        const newMax = Math.max(state.upper, max - tickSpacing)
-        updateMinMax(newMin, newMax)
+        const newMin = Math.min(state.lower, state.min + tickSpacing)
+        const newMax = Math.max(state.upper, state.max - tickSpacing)
+        setState({...state, min: newMin, max: newMax})
     }
     const handleZoomOut = () => {
-        const newMin = Math.max(min - tickSpacing, Math.ceil(MIN_TICK / tickSpacing) * tickSpacing)
-        const newMax = Math.min(max + tickSpacing, Math.floor(MAX_TICK / tickSpacing) * tickSpacing)
-        updateMinMax(newMin, newMax)
+        const newMin = Math.max(state.min - tickSpacing, Math.ceil(MIN_TICK / tickSpacing) * tickSpacing)
+        const newMax = Math.min(state.max + tickSpacing, Math.floor(MAX_TICK / tickSpacing) * tickSpacing)
+        setState({...state, min: newMin, max: newMax})
     }
 
     const plusLower = () => {
@@ -150,12 +143,12 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     }
 
     const minusLower = () => {
-        const newLower = Math.max(state.lower - tickSpacing, min)
+        const newLower = Math.max(state.lower - tickSpacing, state.min)
         setState({...state, lower: newLower});
     }
     
     const plusUpper = () => {
-        const newUpper = Math.min(max, state.upper + tickSpacing)
+        const newUpper = Math.min(state.max, state.upper + tickSpacing)
         setState({...state, upper: newUpper})
     }
     
@@ -180,8 +173,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                             <input 
                                 className="thumbbar w-[300px] z-10" 
                                 type="range" 
-                                min={min}
-                                max={max}
+                                min={state.min}
+                                max={state.max}
                                 value={state.lower}
                                 ref={lowerValInputRef}
                                 onChange={onChangeLeft}
@@ -189,8 +182,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                             <input 
                                 className="thumbbar w-[300px] z-20" 
                                 type="range" 
-                                min={min}
-                                max={max}
+                                min={state.min}
+                                max={state.max}
                                 value={state.upper}
                                 ref={upperValInputRef}
                                 onChange={onChangeRight}
