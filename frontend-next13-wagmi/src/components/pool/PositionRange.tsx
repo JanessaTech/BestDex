@@ -62,9 +62,13 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
             <div className="pb-2 flex justify-between items-center">
                 <span>Set position range</span>
                 <div>
-                    <ToolTipHelper content="Refresh">
-                    <SVGRefresh className="size-6 text-white hover:text-pink-600 active:text-pink-500 cursor-pointer" onClick={updatePoolInfo}/>
-                    </ToolTipHelper>
+                    <div className="flex items-center">
+                        <div className="text-xs text-white font-semibold">Refresh</div>
+                        <SVGRefresh className="size-6 text-white hover:text-pink-600 active:text-pink-500 cursor-pointer" onClick={updatePoolInfo}/>
+                    </div>
+                    {/* <ToolTipHelper content="Refresh">
+                    
+                    </ToolTipHelper> */}
                 </div>
             </div>
             <div className="flex items-center text-xs flex-wrap">
