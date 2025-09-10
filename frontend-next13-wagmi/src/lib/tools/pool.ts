@@ -7,15 +7,23 @@ import { isZeroAddress } from './common'
 import { Decimal } from 'decimal.js'
 
 export type PoolInfo = {
-    token0: string
-    token1: string
-    fee: number
-    tickSpacing: number
-    slot0: any[]
-    sqrtPriceX96: ethers.BigNumber
-    tick: number
-    liquidity: ethers.BigNumber
-    timeStamp: number
+    token0: string;
+    token1: string;
+    fee: number;
+    tickSpacing: number;
+    slot0: any[];
+    sqrtPriceX96: ethers.BigNumber;
+    tick: number;
+    liquidity: ethers.BigNumber;
+    timeStamp: number;
+}
+
+export type PoolRange = {
+    min: number;
+    max: number;
+    currentTick: number;
+    lower: number;
+    upper: number;
 }
 
 export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient?: PublicClient): Promise<PoolInfo> => {
@@ -148,7 +156,7 @@ const priceToTick = (price: Decimal,
     const adjustedTick = Math.max(MIN_TICK, Math.min(MAX_TICK, roundedTick));
     return adjustedTick
 }
-export const getPoolRangeMaxMin = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {
+export const calPoolRange = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType):PoolRange => {
     const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
     const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0.decimal, token1.decimal)
     console.log('currentPrice=', currentPrice.toString())
@@ -169,7 +177,7 @@ export const getPoolRangeMaxMin = (poolInfo: PoolInfo, token0 : TokenType, token
     console.log('quarterRange=', quarterRange)
     const max = Math.min(MAX_TICK, upperTick + quarterRange * poolInfo.tickSpacing)
     const min = Math.max(MIN_TICK, lowerTick - quarterRange * poolInfo.tickSpacing)
-    return {max: max, min: min, lower: lowerTick, upper: upperTick}
+    return {min: min, max: max, currentTick: poolInfo.tick, lower: lowerTick, upper: upperTick}
 }
 
 export const getPoolCurrentPrice = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {

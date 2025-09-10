@@ -6,7 +6,7 @@ import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import Decimal from "decimal.js";
-import { PoolInfo, getPoolCurrentPrice, getPoolRangeMaxMin } from "@/lib/tools/pool";
+import { PoolInfo, getPoolCurrentPrice, calPoolRange, PoolRange } from "@/lib/tools/pool";
 import SVGRefresh from "@/lib/svgs/svg_refresh";
 import ToolTipHelper from "../common/ToolTipHelper";
 
@@ -21,15 +21,17 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
     const {tokenPrices, getLatestPoolInfo, getPoolAddress} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [curPoolInfo, setCurPoolInfo] = useState({...poolInfo})
+    const [curPoolRange, setCurPoolRange] = useState<PoolRange | undefined>(undefined)
     const [poolState, setPoolState] = useState<{max?: number, min?: number, lower?: number, upper?: number, poolInfo: PoolInfo}>({poolInfo: poolInfo})
     const [token0InUSDC, setToken0InUSDC] = useState('')
 
     useEffect(() => {
-        const poolRange = getPoolRangeMaxMin(curPoolInfo, token0, token1)
+        const poolRange = calPoolRange(curPoolInfo, token0, token1)
         console.log('poolRange=', poolRange)
         updateUSD()
         setPoolState({...poolState, ... poolRange})
-    }, [curPoolInfo])  // it runs when the page is loaded initially or curPoolInfo is updated
+        setCurPoolRange({...poolRange})
+    }, [poolState])  // it runs when the page is loaded initially or curPoolInfo is updated
 
     const updateUSD = () => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
@@ -86,13 +88,14 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
                         <Token token={token1} imageSize={25} textSize="text-xs"/>
                     </div> 
                     {
-                        poolState.max !== undefined && poolState.min !== undefined 
+                        poolState.max !== undefined && poolState.min !== undefined && curPoolRange
                         ? <PriceSelector 
                             min={poolState.min} 
                             max={poolState.max} 
                             lower={poolState.lower!}
                             upper={poolState.upper!}
                             cur={poolState.poolInfo.tick}
+                            poolRange={curPoolRange}
                             marketPrice={getPoolCurrentPrice(poolInfo, token0, token1)}
                             tickSpacing={poolState.poolInfo.tickSpacing}
                             token0={token0}

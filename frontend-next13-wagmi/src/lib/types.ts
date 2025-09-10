@@ -5,7 +5,7 @@ export type TokenType = {
     decimal: number;
     alias: string;
     address: `0x${string}`;
-    company?: string
+    company?: string;
 }
 export type Network_Enum = 'eth-mainnet' | 'arb-mainnet' | 'bnb-mainnet' | 'polygon-mainnet' | 'localhost' | 'testnet'
 export type TokenListType = {chainId: number, network_enum: Network_Enum, tokens: TokenType[]}[]
@@ -21,11 +21,11 @@ export type QuotesParameterType = {
     chainId: number;
     rpcUrl: string;
     recipient: `0x${string}`;
-    slippage: number,
-    deadline: number,
-    amountIn: number,
-    tokenIn: TokenType,
-    tokenOut: TokenType
+    slippage: number;
+    deadline: number;
+    amountIn: number;
+    tokenIn: TokenType;
+    tokenOut: TokenType;
 }
 
 export type LocalChainIds = 31337

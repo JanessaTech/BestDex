@@ -12,7 +12,7 @@ import {
 import { MAX_TICK, MIN_TICK } from "@/config/constants";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { Decimal } from 'decimal.js'
-import { calcPoolPriceFromTick } from "@/lib/tools/pool";
+import { PoolRange, calcPoolPriceFromTick } from "@/lib/tools/pool";
 
 const calPercentage = (price: string, marketPrice: string) => {
     const percentage = new Decimal(price).minus(new Decimal(marketPrice)).div(new Decimal(marketPrice)).mul(100).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
@@ -29,6 +29,7 @@ type PriceSelectorProps = {
     lower: number;
     upper: number;
     cur: number;
+    poolRange: PoolRange;
     marketPrice: string;
     tickSpacing: number;
     token0: TokenType;
@@ -45,9 +46,10 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                             lowerVal: lower,
                                             upperVal: upper
                                         })
-    const [lowerVal, setLowerVal] = useState<number>(lower)
-    const [upperVal, setUpperVal] = useState<number>(upper)
-    const [currentTick, setCurrentTick] = useState(cur) 
+    const [state, setState] = useState<{min: number, max: number, currentTick: number, lower: number, upper: number}>({min: min, max: max, currentTick: cur, lower: lower, upper: upper})          
+    //const [lowerVal, setLowerVal] = useState<number>(lower)
+    //const [upperVal, setUpperVal] = useState<number>(upper)
+    //const [currentTick, setCurrentTick] = useState(cur) 
 
     const lowerValInputRef = useRef<HTMLInputElement>(null)
     const upperValInputRef = useRef<HTMLInputElement>(null)
@@ -57,9 +59,9 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     const setCurrentPriceRef = useRef<HTMLInputElement>(null)
     const setCurrentPriceLabelRef = useRef<HTMLInputElement>(null)
    
-    console.log('lowerVal=', lowerVal, 'upperVal=', upperVal)
+    //console.log('lowerVal=', lowerVal, 'upperVal=', upperVal)
     console.log('min=', min, 'max=', max)
-    console.log('currentTick=', currentTick)
+    //console.log('currentTick=', currentTick)
     console.log('initState=', initState)
 
     const getPercent = useCallback(
@@ -68,23 +70,23 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
       );
 
     useEffect(() => {
-        updateTicks(lowerVal, currentTick, upperVal)
-    }, [lowerVal, currentTick, upperVal])
+        updateTicks(state.lower, state.currentTick, state.upper)
+    }, [state.lower, state.currentTick, state.upper])
 
     useEffect(() => {
         if (setCurrentPriceRef.current) {
-            const percent = getPercent(currentTick)
+            const percent = getPercent(state.currentTick)
             setCurrentPriceRef.current.style.left = `0%`;
             setCurrentPriceRef.current.style.width = `${percent}%`
             if (setCurrentPriceLabelRef.current) {
                 setCurrentPriceLabelRef.current.style.left = `${percent}%`
             }
         }
-    }, [currentTick, min, max])
+    }, [state.currentTick, min, max])
     
     useEffect(() => {
         if (upperValInputRef.current) {
-            const minPercent = getPercent(lowerVal);
+            const minPercent = getPercent(state.lower);
             const maxPercent = getPercent(Number(upperValInputRef.current.value));
 
             if (range.current) {
@@ -96,45 +98,44 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 lowerValLabelRef.current.style.left = `${minPercent}%`;
             }
         }
-    }, [lowerVal, getPercent]);
+    }, [state.lower, getPercent]);
 
     useEffect(() => {
         if (lowerValInputRef.current) {
-            const minPercent = getPercent(Number(lowerValInputRef.current.value));
-            const maxPercent = getPercent(upperVal);
+            const lowerPercent = getPercent(Number(lowerValInputRef.current.value));
+            const upperPercent = getPercent(state.upper);
 
             if (range.current) {
-                range.current.style.left = `${minPercent}%`;
-                range.current.style.width = `${maxPercent - minPercent}%`;
+                range.current.style.left = `${lowerPercent}%`;
+                range.current.style.width = `${upperPercent - lowerPercent}%`;
             }
             if (upperValLabelRef.current) {
-                upperValLabelRef.current.style.left = `${maxPercent}%`;
+                upperValLabelRef.current.style.left = `${upperPercent}%`;
             }
         }
-    }, [upperVal, getPercent]);
+    }, [state.upper, getPercent]);
 
     const onChangeLeft = (e: React.ChangeEvent<HTMLInputElement>) => {
         // why using nearestUsableTick?
         // make sure that the value is a valid usableTick
-        const newLowerVal = Math.min(nearestUsableTick(Number(e.target.value), tickSpacing), upperVal); 
-        setLowerVal(newLowerVal);
+        const newLower = Math.min(nearestUsableTick(Number(e.target.value), tickSpacing), state.upper); 
+        setState({...state, lower: newLower});
         
     }
     const onChangeRight = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newUpperVal = Math.max(nearestUsableTick(Number(e.target.value), tickSpacing), lowerVal);
-        setUpperVal(newUpperVal)
+        const newUpper = Math.max(nearestUsableTick(Number(e.target.value), tickSpacing), state.lower);
+        setState({...state, upper: newUpper})
         
     }
 
     const handleReset = () => {
         updateMinMax(initState.min, initState.max)
-        setLowerVal(initState.lowerVal)
-        setUpperVal(initState.upperVal)
+        setState({...state, lower: initState.lowerVal, upper: initState.upperVal})
     }
 
     const handleZoomIn = () => {
-        const newMin = Math.min(lowerVal, min + tickSpacing)
-        const newMax = Math.max(upperVal, max - tickSpacing)
+        const newMin = Math.min(state.lower, min + tickSpacing)
+        const newMax = Math.max(state.upper, max - tickSpacing)
         updateMinMax(newMin, newMax)
     }
     const handleZoomOut = () => {
@@ -144,23 +145,23 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
     }
 
     const plusLower = () => {
-        const newLowerVal = Math.min(lowerVal + tickSpacing, upperVal)
-        setLowerVal(newLowerVal);
+        const newLower = Math.min(state.lower + tickSpacing, state.upper)
+        setState({...state, lower: newLower});
     }
 
     const minusLower = () => {
-        const newMinVal = Math.max(lowerVal - tickSpacing, min)
-        setLowerVal(newMinVal);
+        const newLower = Math.max(state.lower - tickSpacing, min)
+        setState({...state, lower: newLower});
     }
     
     const plusUpper = () => {
-        const newUpperVal = Math.min(max, upperVal + tickSpacing)
-        setUpperVal(newUpperVal)
+        const newUpper = Math.min(max, state.upper + tickSpacing)
+        setState({...state, upper: newUpper})
     }
     
     const minusUpper = () => {
-        const newUpperVal = Math.max(lowerVal, upperVal - tickSpacing)
-        setUpperVal(newUpperVal)
+        const newUpper = Math.max(state.lower, state.upper - tickSpacing)
+        setState({...state, upper: newUpper})
     }
 
     return (
@@ -173,15 +174,15 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                         <div className="w-[300px] h-0 relative bg-zinc-900">
                             <Axis/>
                             <div ref={range} className="bg-pink-600/30 h-[200px] absolute bottom-0 group" >
-                                <div className="text-white w-fit px-2 py-1 absolute top-20 left-[-50px]">{`${calPercentage(calcPoolPriceFromTick(lowerVal, token0, token1), marketPrice)}%`}</div>
-                                <div className="text-white w-fit px-2 py-1 absolute top-20 right-[-50px]">{`${calPercentage(calcPoolPriceFromTick(upperVal, token0, token1), marketPrice)}%`}</div>
+                                <div className="text-white w-fit px-2 py-1 absolute top-20 left-[-50px]">{`${calPercentage(calcPoolPriceFromTick(state.lower, token0, token1), marketPrice)}%`}</div>
+                                <div className="text-white w-fit px-2 py-1 absolute top-20 right-[-50px]">{`${calPercentage(calcPoolPriceFromTick(state.upper, token0, token1), marketPrice)}%`}</div>
                             </div>
                             <input 
                                 className="thumbbar w-[300px] z-10" 
                                 type="range" 
                                 min={min}
                                 max={max}
-                                value={lowerVal}
+                                value={state.lower}
                                 ref={lowerValInputRef}
                                 onChange={onChangeLeft}
                                 /> 
@@ -190,18 +191,18 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                                 type="range" 
                                 min={min}
                                 max={max}
-                                value={upperVal}
+                                value={state.upper}
                                 ref={upperValInputRef}
                                 onChange={onChangeRight}
                                 /> 
                             <div ref={setCurrentPriceLabelRef} className="text-white absolute bottom-[-10px]">
-                                <div className="absolute left-0 -translate-x-1/2">{calcPoolPriceFromTick(currentTick, token0, token1)}</div>  
+                                <div className="absolute left-0 -translate-x-1/2">{calcPoolPriceFromTick(state.currentTick, token0, token1)}</div>  
                             </div>
                             <div ref={lowerValLabelRef} className="text-white absolute bottom-[20px]">
-                                <div className="absolute left-0 -translate-x-1/2 bg-pink-600 border-[1px] border-zinc-200 rounded-full px-2 z-10">{calcPoolPriceFromTick(lowerVal, token0, token1)}</div>  
+                                <div className="absolute left-0 -translate-x-1/2 bg-pink-600 border-[1px] border-zinc-200 rounded-full px-2 z-10">{calcPoolPriceFromTick(state.lower, token0, token1)}</div>  
                             </div>
                             <div ref={upperValLabelRef} className="text-white absolute bottom-[40px]">
-                                <div className="absolute left-0 -translate-x-1/2 bg-pink-600 border-[1px] border-zinc-200 rounded-full px-2 z-20">{calcPoolPriceFromTick(upperVal, token0, token1)}</div> 
+                                <div className="absolute left-0 -translate-x-1/2 bg-pink-600 border-[1px] border-zinc-200 rounded-full px-2 z-20">{calcPoolPriceFromTick(state.upper, token0, token1)}</div> 
                             </div> 
                         </div>
                     </div>
@@ -222,7 +223,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 <div className="border-[1px] border-zinc-700 rounded-none md:rounded-bl-md flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
                         <div>Lower price</div>
-                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={calcPoolPriceFromTick(lowerVal, token0, token1)}/>
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={calcPoolPriceFromTick(state.lower, token0, token1)}/>
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
@@ -237,7 +238,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({min, max, lower, upper, cu
                 <div className="border-[1px] border-zinc-700 rounded-b-md md:rounded-br-md md:rounded-bl-none flex justify-between items-center p-4">
                     <div className="flex flex-col justify-between text-xs">
                         <div>Upper price</div>
-                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={calcPoolPriceFromTick(upperVal, token0, token1)} />
+                        <input type="text" className="w-28 bg-inherit text-base py-3" readOnly value={calcPoolPriceFromTick(state.upper, token0, token1)} />
                         <div>{token0 && token1 ? <span>{`${token1?.symbol} = 1 ${token0?.symbol}`}</span> : <span></span>}</div>
                     </div>
                     <div>
