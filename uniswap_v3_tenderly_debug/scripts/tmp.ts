@@ -6,6 +6,7 @@ import {
     } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
 import { Decimal } from 'decimal.js';
+import { ethers} from 'ethers'
 
 const USDC_TOKEN = new Token(
     ChainId.MAINNET,
@@ -30,34 +31,34 @@ const tokens =  {
     poolFee: FeeAmount.LOW,
 }
 
-// function fromReadableAmount(amount: number, decimals: number): JSBI {
-//     const extraDigits = Math.pow(10, countDecimals(amount))
-//     const adjustedAmount = amount * extraDigits
-//     return JSBI.divide(
-//       JSBI.multiply(
-//         JSBI.BigInt(adjustedAmount),
-//         JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
-//       ),
-//       JSBI.BigInt(extraDigits)
-//     )
-//   }
+function fromReadableAmount(amount: number, decimals: number): JSBI {
+    const extraDigits = Math.pow(10, countDecimals(amount))
+    const adjustedAmount = amount * extraDigits
+    return JSBI.divide(
+      JSBI.multiply(
+        JSBI.BigInt(adjustedAmount),
+        JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
+      ),
+      JSBI.BigInt(extraDigits)
+    )
+  }
 
-// function countDecimals(x: number) {
-//     if (Math.floor(x) === x) {
-//         return 0
-//     }
-//     return x.toString().split('.')[1].length || 0
-// }
-// function test_CurrencyAmount() {
-//     const token0Amount: CurrencyAmount<Token> = CurrencyAmount.fromRawAmount(
-//         tokens.token0,
-//         fromReadableAmount(
-//           tokens.token0Amount,
-//           tokens.token0.decimals
-//         ))
-//     const amount0 =  token0Amount.quotient
-//     console.log('amount0 =', amount0.toString())
-// }
+function countDecimals(x: number) {
+    if (Math.floor(x) === x) {
+        return 0
+    }
+    return x.toString().split('.')[1].length || 0
+}
+function test_CurrencyAmount() {
+    const token0Amount: CurrencyAmount<Token> = CurrencyAmount.fromRawAmount(
+        tokens.token0,
+        fromReadableAmount(
+          tokens.token0Amount,
+          tokens.token0.decimals
+        ))
+    const amount0 =  token0Amount.quotient
+    console.log('amount0 =', amount0.toString())
+}
 function test_nearestUsableTick() {
     const res = nearestUsableTick(7, 5)
     console.log('nearestUsableTick =', res)
@@ -218,16 +219,39 @@ function test_map() {
   console.log(map1)
 }
 
-function fromReadableAmount(amount: string, decimals: number): string {
+function fromReadableAmount1(amount: string, decimals: number): string {
   const res = new Decimal(amount ? amount : 0).mul(new Decimal(10).pow(decimals)).toDecimalPlaces(decimals, Decimal.ROUND_HALF_UP).toString()
   console.log(res)
   return res
 }
+const calOriginPriceBySqrtPriceX96 = (sqrtPriceX96: string) => {
+  const sqrtPriceX96Decimal = new Decimal(sqrtPriceX96)
+  const TWO_96 = new Decimal(2).pow(96)
+  // price = (sqrtPriceX96 / 2^96)^2
+  const sqrtRatio = sqrtPriceX96Decimal.dividedBy(TWO_96)
+  const ratio = sqrtRatio.pow(2)
+  return ratio
+}
+function test_isDataStale(oldSqrtPriceX96: ethers.BigNumber, newSqrtPriceX96: ethers.BigNumber, slipage: number) {
+  const price_old = calOriginPriceBySqrtPriceX96(oldSqrtPriceX96.toString())
+  const price_new = calOriginPriceBySqrtPriceX96(newSqrtPriceX96.toString())
+  const diff = price_new.minus(price_old).abs().dividedBy(price_old)
+  console.log('price_old=', price_old.toString(), ' price_new=', price_new.toString(), '  diff=', diff, '  slipage=', slipage)
+  const res = diff.greaterThan(slipage)
+  console.log(res)
+  return diff.greaterThan(slipage)
+}
+const oldSqrtPriceX96:ethers.BigNumber = ethers.BigNumber.from('1189223000483797660046958938382143')
+const newSqrtPriceX96:ethers.BigNumber = ethers.BigNumber.from('1289223000483797660047958938382143')
+const slipage = 0.1
+
+test_isDataStale(oldSqrtPriceX96, newSqrtPriceX96, slipage/100)
 
 function test_arbitrary() {
   const res = new Decimal('10.').greaterThanOrEqualTo(new Decimal('10'))
   console.log(res)
 }
+
 
 //test_decimal()
 //test_CurrencyAmount()
@@ -236,9 +260,9 @@ function test_arbitrary() {
 //test_computePoolAddress()
 //test_urls()
 //test_map()
-test_arbitrary()
+//test_arbitrary()
 
-fromReadableAmount('1.', 4)
+//fromReadableAmount1('1.', 4)
 
 // const sqrtPriceX96Str = '1300326548979566885653193588871961'
 // const token0Decimals: number = 6
