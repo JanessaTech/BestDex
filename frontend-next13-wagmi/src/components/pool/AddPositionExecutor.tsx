@@ -1,4 +1,6 @@
-
+import AddPositionApproveStep from "./AddPositionApproveStep"
+import AddPositionStep from "./AddPositionStep"
+import SimulateAddPositionStep from "./SimulateAddPositionStep"
 
 const Seperator = () => {
     return (
@@ -9,8 +11,14 @@ const Seperator = () => {
 type AddPositionExecutorProps = {}
 const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({}) => {
     return (
-        <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1 h-11">
-
+        <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
+            <SimulateAddPositionStep/>
+            <Seperator/>
+            <AddPositionApproveStep/>
+            <Seperator/>
+            <AddPositionApproveStep/>
+            <Seperator/>
+            <AddPositionStep/>
         </div>
     )
 }
