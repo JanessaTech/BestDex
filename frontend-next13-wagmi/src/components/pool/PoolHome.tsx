@@ -38,7 +38,6 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo, getTokenBalance} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
-    console.log('slipage=', slipage)
     // in case we change network via wallet connection button
     useEffect(() => {
         setToken0(undefined)
@@ -84,14 +83,6 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                 setToken1(token1)
             }
         }
-    }
-
-    const handleResult = async () => {
-        console.log('handleResult...')
-        const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-        console.log('poolAddress = ', poolAddress)
-        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
-        console.log('latestPoolInfo=', latestPoolInfo)
     }
 
     const handleNextStep = async () => {
@@ -181,6 +172,18 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setOpenRefreshModal(false)
     }
 
+    // below functions for test
+    const showAddPositionExecutor = () => {
+        setOpenDepositModal(true) 
+    }
+    const handleResult = async () => {
+        console.log('handleResult...')
+        const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
+        console.log('poolAddress = ', poolAddress)
+        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        console.log('latestPoolInfo=', latestPoolInfo)
+    }
+
     return (
         <div>
             <div className='font-semibold text-xl my-10 md:hidden capitalize'>Pool</div>
@@ -266,8 +269,13 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                         </>
                     }
                     <div>
-                        <Button onClick={handleResult}>Get latest poolInfo</Button>
+                        {/* this section is for test*/}
+                        <div>
+                            <Button onClick={handleResult}>Get latest poolInfo</Button>
+                        </div>
+                        <div><Button onClick={showAddPositionExecutor}>Show Add Position executor</Button></div>
                     </div>
+                    
                 </div>
             </div> 
             {

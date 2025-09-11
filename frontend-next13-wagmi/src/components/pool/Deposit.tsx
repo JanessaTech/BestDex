@@ -42,7 +42,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
     const chainId = useChainId() as (ChainId | LocalChainIds)
 
     const disabled = new Decimal(amount0 ? amount0 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && new Decimal(amount1 ? amount1 : '0').lessThanOrEqualTo(new Decimal(tokenBalances.token1)) ? false : true
-    console.log('disabled=', disabled)
+    
     useEffect(() => {
         // (async () => {
         //     let balance0 = '0', balance1 = '0'
@@ -285,7 +285,9 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             </div>
             {
                 openDepositModal && <ReviewAddPosition 
-                                closeDepositModal={closeDepositModal}/>
+                                    token0={token0}
+                                    token1={token1}
+                                    closeDepositModal={closeDepositModal}/>
             }
         </div>
         

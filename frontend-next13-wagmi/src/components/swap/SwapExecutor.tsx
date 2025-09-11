@@ -1,5 +1,5 @@
 import type { TokenType } from "@/lib/types";
-import { Dispatch, SetStateAction, memo, useCallback, useState} from "react";
+import { memo, useCallback, useState} from "react";
 import ApproveStep from "./ApproveStep";
 import SwapStep from "./SwapStep";
 import SimulateSwapStep from "./SimulateSwapStep";
