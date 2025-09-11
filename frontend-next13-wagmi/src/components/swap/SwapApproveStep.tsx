@@ -30,12 +30,12 @@ function countDecimals(x: number) {
     return x.toString().split('.')[1].length || 0
 }
 
-type ApproveStepProps = {
+type SwapApproveStepProps = {
     tokenFrom: TokenType;
     approveAmount: string;
     goNext: () => void
 }
-const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount, goNext}) => {
+const SwapApproveStep: React.FC<SwapApproveStepProps> = ({tokenFrom, approveAmount, goNext}) => {
 
     const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
 
@@ -94,4 +94,4 @@ const ApproveStep: React.FC<ApproveStepProps> = ({tokenFrom, approveAmount, goNe
     )
 }
 
-export default memo(ApproveStep)
+export default memo(SwapApproveStep)
