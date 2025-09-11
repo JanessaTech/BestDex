@@ -13,7 +13,9 @@ import Deposit from './Deposit'
 import SVGLeft from '@/lib/svgs/svg_left'
 import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import PositionRange from './PositionRange'
-import { PoolInfo } from '@/lib/tools/pool'
+import { PoolInfo, isDataStale } from '@/lib/tools/pool'
+import { useUpdateSetting } from '@/config/store'
+import RefreshDialog from './RefreshDialog'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -21,6 +23,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const { openConnectModal } = useConnectModal()
     const { isConnected, address} = useAccount()
     const [settingOpen, setSettingOpen] = useState(false)
+    const {slipage, deadline} = useUpdateSetting()
     const [token0Open, setToken0Open]  = useState(false)
     const [token1Open, setToken1Open]  = useState(false)
     const [token0, setToken0] = useState<TokenType | undefined>(undefined)
@@ -30,10 +33,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
     const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
     const [openDepositModal, setOpenDepositModal] = useState(false)
+    const [openRefreshModal, setOpenRefreshModal] = useState(false)
 
     const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo, getTokenBalance} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
+    console.log('slipage=', slipage)
     // in case we change network via wallet connection button
     useEffect(() => {
         setToken0(undefined)
@@ -137,17 +142,28 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         - With slot0.tick, it means we have a better user experience, but we should accept the potential risk of 
           using the stale pool data
     **/
-    const checkRefresh = () => {
+    const checkRefresh = async () => {
         console.log('check price change')
-        const refresh = false
-        if (refresh) {
-            console.log('refresh page...')
-        }
-        setOpenDepositModal(true) 
+        if (!state.poolInfo) throw new Error('No poolInfo found') //it shouldn't happen
+        const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
+        console.log('poolAddress = ', poolAddress)
+        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        if (!latestPoolInfo) return // it shouldn't happen after we move websockte to backend
+        //const isStale = isDataStale(state.poolInfo, latestPoolInfo, slipage/100)
+        const isStale = true
+        if (isStale) {
+            //console.log('data is stale')
+            setOpenRefreshModal(true)
+        } else {
+            setOpenDepositModal(true) 
+        }  
     }
 
     const closeDepositModal = () => {
         setOpenDepositModal(false)
+    }
+    const closeRefreshModal = () => {
+        setOpenRefreshModal(false)
     }
 
     return (
@@ -238,6 +254,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                     </div>
                 </div>
             </div> 
+            {
+                openRefreshModal && <RefreshDialog closeRefreshModal={closeRefreshModal}/>
+            }
 
         </div>
     )

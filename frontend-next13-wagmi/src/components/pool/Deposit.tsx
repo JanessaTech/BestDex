@@ -26,7 +26,7 @@ type DepositProps = {
     upperTick: number;
     openDepositModal: boolean;
     closeDepositModal: () => void;
-    checkRefresh: () => void;
+    checkRefresh: () => Promise<void>;
     handleDepositChanges: (amount0 : string, amount1: string) => void
 }
 const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1, 

@@ -132,6 +132,15 @@ export const calcPriceBySqrtPriceX96 = (isToken0Base: boolean, sqrtPriceX96: str
     const res  = isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio)
     return res.toDecimalPlaces(token1Decimals, Decimal.ROUND_HALF_UP)
 }
+
+const calOriginPriceBySqrtPriceX96 = (sqrtPriceX96: string) => {
+    const sqrtPriceX96Decimal = new Decimal(sqrtPriceX96)
+    const TWO_96 = new Decimal(2).pow(96)
+    // price = (sqrtPriceX96 / 2^96)^2
+    const sqrtRatio = sqrtPriceX96Decimal.dividedBy(TWO_96)
+    const ratio = sqrtRatio.pow(2)
+    return ratio
+}
 const priceToTick = (price: Decimal, 
     isToken0Base: boolean, 
     token0Decimals: number, token1Decimals: number,
@@ -194,4 +203,12 @@ export const calcPoolPriceFromTick = (tick: number, token0 : TokenType, token1: 
     const roundedPriceFromTick = adjustedPrice.toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP);
     //console.log('roundedPriceFromTick=', roundedPriceFromTick)
     return roundedPriceFromTick.toString()
+}
+
+export const isDataStale = (oldPoolInfo: PoolInfo, newPoolInfo: PoolInfo, slipage: number) => {
+    if (oldPoolInfo.tick !== newPoolInfo.tick) return true
+    const price_old = calOriginPriceBySqrtPriceX96(oldPoolInfo.sqrtPriceX96.toString())
+    const price_new = calOriginPriceBySqrtPriceX96(newPoolInfo.sqrtPriceX96.toString())
+    const diff = price_new.minus(price_old).abs().dividedBy(price_old)
+    return diff.greaterThan(slipage)
 }
