@@ -130,6 +130,22 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setTicks({lower: _lower, cur: _cur, upper: _upper})
     }, [])
 
+    const updatePoolInfo = async () => {
+        try {
+            const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
+            const poolInfo = await getLatestPoolInfo(poolAddress)
+            if (poolInfo) {
+                setState({...state, poolInfo: poolInfo})
+                console.log(`Get the latest poolInfo from the pool address ${poolAddress}`)
+                console.log('poolInfo =', poolInfo)
+            } else {
+                console.log('No cached poolInfo in websocket yet, try it later on...')
+            }
+        } catch (error) {
+            console.log('Failed to update poolInfo due to:', error)
+        }
+    }
+
     /**
         We need to check if the poolInfo used by the current page is not matched in the poolInfo in websocket
         If not, refresh the page using the latest poolInfo in websocket
@@ -149,8 +165,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         console.log('poolAddress = ', poolAddress)
         const latestPoolInfo = await getLatestPoolInfo(poolAddress)
         if (!latestPoolInfo) return // it shouldn't happen after we move websockte to backend
-        //const isStale = isDataStale(state.poolInfo, latestPoolInfo, slipage/100)
-        const isStale = true
+        const isStale = isDataStale(state.poolInfo, latestPoolInfo, slipage/100)
         if (isStale) {
             //console.log('data is stale')
             setOpenRefreshModal(true)
@@ -232,6 +247,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 token1={isToken0Base ? token1! : token0!}
                                 feeAmount={feeAmount}
                                 poolInfo={state.poolInfo!}
+                                updatePoolInfo={updatePoolInfo}
                                 updateTicks={updateTicks}
                                 />
                             <Deposit 

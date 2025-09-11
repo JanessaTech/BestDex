@@ -5,6 +5,7 @@ import { PublicClient } from 'viem'
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import { isZeroAddress } from './common'
 import { Decimal } from 'decimal.js'
+import { cookieToInitialState } from 'wagmi'
 
 export type PoolInfo = {
     token0: string;
@@ -206,9 +207,13 @@ export const calcPoolPriceFromTick = (tick: number, token0 : TokenType, token1: 
 }
 
 export const isDataStale = (oldPoolInfo: PoolInfo, newPoolInfo: PoolInfo, slipage: number) => {
+    console.log('oldPoolInfo=', oldPoolInfo)
+    console.log('newPoolInfo=', newPoolInfo)
     if (oldPoolInfo.tick !== newPoolInfo.tick) return true
     const price_old = calOriginPriceBySqrtPriceX96(oldPoolInfo.sqrtPriceX96.toString())
     const price_new = calOriginPriceBySqrtPriceX96(newPoolInfo.sqrtPriceX96.toString())
     const diff = price_new.minus(price_old).abs().dividedBy(price_old)
-    return diff.greaterThan(slipage)
+    const isStale = diff.greaterThan(slipage)
+    console.log('isStale=', isStale)
+    return isStale
 }
