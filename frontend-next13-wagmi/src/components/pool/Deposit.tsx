@@ -271,7 +271,6 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                                 <span>{tokenBalances.token1}</span><span className="text-pink-600 ml-1">{token1.symbol}</span>
                             </div>
                         </div>
-                        
                     </div>
                 }
             </div>
@@ -290,8 +289,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                                     token1={token1}
                                     token0Input={amount0}
                                     token1Input={amount1}
-                                    token0Desired={burnAmount.token0}
-                                    token1Desired={burnAmount.token1}
+                                    poolInfo={poolInfo}
                                     closeAddPositionModal={closeAddPositionModal}/>
             }
         </div>

@@ -1,6 +1,6 @@
 import SVGClose from "@/lib/svgs/svg_close"
 import { TokenType ,LocalChainIds} from "@/lib/types";
-import Token from "../common/Token";
+import { default as DexToken } from "../common/Token";
 import AddPositionExecutor from "./AddPositionExecutor";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useEffect, useState } from "react";
@@ -9,6 +9,13 @@ import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { Decimal } from 'decimal.js'
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip";
+import { 
+    FeeAmount,
+    Position,
+    Pool} from '@uniswap/v3-sdk';
+import {Token} from '@uniswap/sdk-core';
+import { PoolInfo } from "@/lib/tools/pool";
+
 
 type AddSuccessProps = {
     token0: TokenType;
@@ -33,11 +40,11 @@ const AddSuccess:React.FC<AddSuccessProps> = ({token0, token1}) => {
                 </div>
                 <div className="flex py-2">
                     <span className="text-pink-600 pr-2">0.00002457893999999999999999999</span>
-                    <Token token={token0} imageSize={20}/>
+                    <DexToken token={token0} imageSize={20}/>
                 </div>
                 <div className="flex">
                     <span className="text-pink-600 pr-2">157899</span>
-                    <Token token={token1} imageSize={20}/>
+                    <DexToken token={token1} imageSize={20}/>
                 </div>
             </div>
         </div>
@@ -49,14 +56,13 @@ type ReviewAddPositionProps = {
     token1: TokenType;
     token0Input:string;
     token1Input:string;
-    token0Desired:string;
-    token1Desired:string;
+    poolInfo: PoolInfo; 
     closeAddPositionModal: () => void
 }
 const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, token0Input, token1Input,
-                                                              token0Desired, token1Desired,
+                                                              poolInfo,
                                                               closeAddPositionModal}) => {
-    const [showSuccess, setShowSuccess] = useState(true)
+    const [showSuccess, setShowSuccess] = useState(false)
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
@@ -82,6 +88,19 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         setTokensUSD({token0: token0USD, token1: token1USD})
     }
 
+    const constructPosition = async () => {
+        const feeAmount_enum = Object.values(FeeAmount).includes(poolInfo.fee) ? poolInfo.fee as FeeAmount : FeeAmount.MEDIUM // bug?
+        const configuredPool = new Pool(
+            new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
+            new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
+            feeAmount_enum,
+            poolInfo.sqrtPriceX96.toString(),
+            poolInfo.liquidity.toString(),
+            poolInfo.tick
+        )
+        
+    }
+
     const handleAddSuccess = () => {
         setShowSuccess(true)
     }
@@ -102,14 +121,14 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                                 <div className="text-pink-600">${token0Input}</div>
                                 <div className="text-xs text-zinc-400">${tokensUSD.token0}</div>
                             </div>
-                            <div><Token token={token0} imageSize={30}/></div>
+                            <div><DexToken token={token0} imageSize={30}/></div>
                         </div>
                         <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">
                             <div className="text-sm p-2">
                                 <div className="text-pink-600">${token1Input}</div>
                                 <div className="text-xs text-zinc-400">${tokensUSD.token1}</div>
                             </div>
-                            <div><Token token={token1} imageSize={30}/></div>
+                            <div><DexToken token={token1} imageSize={30}/></div>
                         </div>
                         <AddPositionExecutor handleAddSuccess={handleAddSuccess}/>
                       </div>
