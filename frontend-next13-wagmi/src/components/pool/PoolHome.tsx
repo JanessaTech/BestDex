@@ -32,7 +32,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [feeAmount, setFeeAmount] = useState(3000)
     const [state, setState] = useState<{step: number, isLoading: boolean, poolInfo: PoolInfo | undefined}>({step:1, isLoading: false, poolInfo: undefined})
     const [ticks, setTicks] = useState<{lower: number, cur: number, upper: number}>({lower:0, cur: 0, upper: 0})
-    const [openDepositModal, setOpenDepositModal] = useState(false)
+    const [openAddPositionModal, setAddPositionModal] = useState(false)
     const [openRefreshModal, setOpenRefreshModal] = useState(false)
 
     const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo, getTokenBalance} = useContextUtil() as IContextUtil
@@ -161,12 +161,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
             //console.log('data is stale')
             setOpenRefreshModal(true)
         } else {
-            setOpenDepositModal(true) 
+            setAddPositionModal(true) 
         }  
     }
 
-    const closeDepositModal = () => {
-        setOpenDepositModal(false)
+    const closeAddPositionModal = () => {
+        setAddPositionModal(false)
     }
     const closeRefreshModal = () => {
         setOpenRefreshModal(false)
@@ -174,15 +174,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     // below functions for test
     const showAddPositionExecutor = () => {
-        setOpenDepositModal(true) 
+        setAddPositionModal(true) 
     }
-    const handleResult = async () => {
-        console.log('handleResult...')
-        const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-        console.log('poolAddress = ', poolAddress)
-        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
-        console.log('latestPoolInfo=', latestPoolInfo)
-    }
+    
 
     return (
         <div>
@@ -262,17 +256,14 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 lowerTick={ticks.lower}
                                 curTick={ticks.cur}
                                 upperTick={ticks.upper}
-                                openDepositModal={openDepositModal}
-                                closeDepositModal={closeDepositModal}
+                                openAddPositionModal={openAddPositionModal}
+                                closeAddPositionModal={closeAddPositionModal}
                                 checkRefresh={checkRefresh}
                                 handleDepositChanges={handleDepositChanges}/>
                         </>
                     }
                     <div>
                         {/* this section is for test*/}
-                        <div>
-                            <Button onClick={handleResult}>Get latest poolInfo</Button>
-                        </div>
                         <div><Button onClick={showAddPositionExecutor}>Show Add Position executor</Button></div>
                     </div>
                     

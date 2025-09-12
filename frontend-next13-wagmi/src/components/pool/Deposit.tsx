@@ -24,14 +24,14 @@ type DepositProps = {
     lowerTick: number;
     curTick: number;
     upperTick: number;
-    openDepositModal: boolean;
-    closeDepositModal: () => void;
+    openAddPositionModal: boolean;
+    closeAddPositionModal: () => void;
     checkRefresh: () => Promise<void>;
     handleDepositChanges: (amount0 : string, amount1: string) => void
 }
 const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1, 
                                         poolInfo, lowerTick, curTick, upperTick,
-                                        openDepositModal,closeDepositModal,checkRefresh,
+                                        openAddPositionModal,closeAddPositionModal,checkRefresh,
                                         handleDepositChanges}) => {
     const {address} = useAccount()
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
@@ -284,10 +284,14 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                 </Button>
             </div>
             {
-                openDepositModal && <ReviewAddPosition 
+                openAddPositionModal && <ReviewAddPosition 
                                     token0={token0}
                                     token1={token1}
-                                    closeDepositModal={closeDepositModal}/>
+                                    token0Input={amount0}
+                                    token1Input={amount1}
+                                    token0Desired={burnAmount.token0}
+                                    token1Desired={burnAmount.token1}
+                                    closeAddPositionModal={closeAddPositionModal}/>
             }
         </div>
         

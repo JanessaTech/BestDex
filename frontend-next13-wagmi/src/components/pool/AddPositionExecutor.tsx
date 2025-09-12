@@ -1,3 +1,4 @@
+import { memo } from "react"
 import AddPositionApproveStep from "./AddPositionApproveStep"
 import AddPositionStep from "./AddPositionStep"
 import SimulateAddPositionStep from "./SimulateAddPositionStep"
@@ -23,4 +24,4 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({}) => {
     )
 }
 
-export default AddPositionExecutor
+export default memo(AddPositionExecutor)

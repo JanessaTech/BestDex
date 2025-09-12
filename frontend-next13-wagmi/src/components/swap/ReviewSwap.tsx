@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react"
+import { memo, useCallback, useEffect } from "react"
 import SVGClose from "@/lib/svgs/svg_close"
 import type { LocalChainIds, TokenType } from "@/lib/types";
 import { Dispatch, SetStateAction, useState } from "react"
@@ -64,10 +64,10 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
     const handleClose = () => {
         setOpenModal(false)
     }
-    const handleSwapSuccess = (swapOut: string) => {
+    const handleSwapSuccess = useCallback((swapOut: string) => {
         setSwapOut(swapOut)
         setShowSwapSuccess(true)
-    }
+    },[])
 
     const checkApproveAmount = () => {
         if (!approveAmount || new Decimal(approveAmount).lessThan(new Decimal(swapAmount))) {

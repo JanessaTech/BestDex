@@ -19,7 +19,7 @@ type PositionRangeProps = {
 }
 const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount, poolInfo, 
                                                         updatePoolInfo, updateTicks}) => {
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {tokenPrices, getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [curPoolInfo, setCurPoolInfo] = useState({...poolInfo})
     const [curPoolRange, setCurPoolRange] = useState<PoolRange | undefined>(undefined)
@@ -43,8 +43,15 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
     }
 
     // for debug
-    const checkPoolInfo = () => {
-        console.log('poolInfo used in position=', poolInfo)
+    const checkOldPoolInfo = () => {
+        console.log('Old poolInfo used in position=', curPoolInfo)
+    }
+    const checkNewPoolInfo = async () => {
+        console.log('checkNewPoolInfo...')
+        const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
+        console.log('poolAddress = ', poolAddress)
+        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        console.log('latestPoolInfo=', latestPoolInfo)
     }
 
     return (
@@ -69,7 +76,8 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
             <div className="w-full h-fit rounded-md bg-zinc-600/30">
                 <div>
                     <div className="flex justify-end py-2 items-center text-xs">
-                        <div className="bg-zinc-500 text-white rounded-full px-1 border-[1px] cursor-pointer" onClick={checkPoolInfo}>poolInfo</div>
+                    <div className="bg-zinc-500 text-white rounded-full px-1 border-[1px] cursor-pointer" onClick={checkNewPoolInfo}>newPool</div>
+                        <div className="bg-zinc-500 text-white rounded-full px-1 border-[1px] cursor-pointer" onClick={checkOldPoolInfo}>oldPool</div>
                         <span className="px-1">fee={feeAmount/10000}%</span>
                         <Token token={token0} imageSize={25} textSize="text-xs"/>
                         <Token token={token1} imageSize={25} textSize="text-xs"/>

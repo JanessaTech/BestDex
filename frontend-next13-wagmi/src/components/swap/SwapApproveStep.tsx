@@ -62,8 +62,8 @@ const SwapApproveStep: React.FC<SwapApproveStepProps> = ({tokenFrom, approveAmou
             if (timer) clearTimeout(timer)
         }
     }, [isSuccess])
-    console.log('[ApproveStep] isSuccess=', isSuccess, ' isPending=', isPending)
-    console.log('[ApproveStep] Approve tx hash =', hash)
+    console.log('[SwapApproveStep] isSuccess=', isSuccess, ' isPending=', isPending)
+    console.log('[SwapApproveStep] Approve tx hash =', hash)
     
     return (
         <div className="flex justify-between items-center">
