@@ -46,13 +46,14 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         const price1 = tokenPrices[targetChainId]?.get(token1.address)
         let token0USD = '0'
         let token1USD = '0'
-        //console.log('price0=', price0, 'price1=', price1, '  amount0=', amount0, ' amount1=',amount1)
+        
         if (price0) {
             token0USD = new Decimal(price0).times(token0Input ? new Decimal(token0Input) : 0).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
         }
         if (price1) {
             token1USD = new Decimal(price1).times(token1Input ? new Decimal(token1Input) : 0).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
         }
+        console.log(`token0Input=${token0Input}, token1Input=${token1Input}, price0=${price0?.toString()}, price1=${price1?.toString()}`)
         setTokensUSD({token0: token0USD, token1: token1USD})
     }
 
@@ -81,7 +82,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                         <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">
                             <div className="text-sm p-2">
                                 <div className="text-pink-600">${token1Input}</div>
-                                <div className="text-xs text-zinc-400">${tokensUSD.token0}</div>
+                                <div className="text-xs text-zinc-400">${tokensUSD.token1}</div>
                             </div>
                             <div><Token token={token1} imageSize={30}/></div>
                         </div>

@@ -106,7 +106,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
         const price1 = tokenPrices[targetChainId]?.get(token1.address)
         let token0USD = '0'
         let token1USD = '0'
-        console.log('price0=', price0, 'price1=', price1, '  amount0=', amount0, ' amount1=',amount1)
+        console.log('price0=', price0?.toString(), 'price1=', price1?.toString(), '  amount0=', amount0, ' amount1=',amount1)
         if (price0) {
             token0USD = new Decimal(price0).times(amount0 ? new Decimal(amount0) : 0).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
         }
