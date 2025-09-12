@@ -46,8 +46,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
     const range = useRef<HTMLDivElement>(null);
     const lowerValLabelRef = useRef<HTMLDivElement>(null)
     const upperValLabelRef = useRef<HTMLDivElement>(null)
-    const setCurrentPriceRef = useRef<HTMLInputElement>(null)
-    const setCurrentPriceLabelRef = useRef<HTMLInputElement>(null)
+    const currentPriceRef = useRef<HTMLInputElement>(null)
+    const currentPriceLabelRef = useRef<HTMLInputElement>(null)
    
     console.log('state=', state)
     console.log('initState=', initState)
@@ -68,18 +68,21 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
     }, [state.lower, state.currentTick, state.upper])
 
     useEffect(() => {
-        if (setCurrentPriceRef.current) {
-            const currentPricePercent = getPercent(state.currentTick)
-            setCurrentPriceRef.current.style.left = `0%`;
-            setCurrentPriceRef.current.style.width = `${currentPricePercent}%`
-            if (setCurrentPriceLabelRef.current) {
-                setCurrentPriceLabelRef.current.style.left = `${currentPricePercent}%`
-            }
-        }
+        updateLower()
+        updateCurrentTick()
+        updateUpper()
     }, [state.currentTick, state.min, state.max])
-    
+
     useEffect(() => {
-        if (upperValInputRef.current) {
+        updateLower()
+    }, [state.lower, getPercent]);
+
+    useEffect(() => {
+        updateUpper()
+    }, [state.upper, getPercent]);
+
+    const updateLower = () => {
+        if (upperValInputRef.current) { // update for lower
             const lowerPercent = getPercent(state.lower);
             const upperPercent = getPercent(Number(upperValInputRef.current.value));
 
@@ -92,10 +95,21 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
                 lowerValLabelRef.current.style.left = `${lowerPercent}%`;
             }
         }
-    }, [state.lower, getPercent]);
+    }
 
-    useEffect(() => {
-        if (lowerValInputRef.current) {
+    const updateCurrentTick = () => {
+        if (currentPriceRef.current) { // update for currentTick
+            const currentPricePercent = getPercent(state.currentTick)
+            currentPriceRef.current.style.left = `0%`;
+            currentPriceRef.current.style.width = `${currentPricePercent}%`
+            if (currentPriceLabelRef.current) {
+                currentPriceLabelRef.current.style.left = `${currentPricePercent}%`
+            }
+        }
+    }
+
+    const updateUpper = () => {
+        if (lowerValInputRef.current) {// update for upper
             const lowerPercent = getPercent(Number(lowerValInputRef.current.value));
             const upperPercent = getPercent(state.upper);
 
@@ -107,8 +121,8 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
                 upperValLabelRef.current.style.left = `${upperPercent}%`;
             }
         }
-    }, [state.upper, getPercent]);
-
+    }
+    
     const onChangeLeft = (e: React.ChangeEvent<HTMLInputElement>) => {
         // why using nearestUsableTick?
         // make sure that the value is a valid usableTick
@@ -162,7 +176,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
             <div className="flex justify-center">
                 <div className="w-[300px] h-[200px] flex justify-center items-center flex-col relative text-xs">
                     <div className="w-[300px] h-[200px] bg-zinc-600/30 absolute bottom-0"></div> 
-                    <div ref={setCurrentPriceRef} className="border-dashed border-r-[1px] border-white h-[200px] box-border absolute bottom-0"></div>
+                    <div ref={currentPriceRef} className="border-dashed border-r-[1px] border-white h-[200px] box-border absolute bottom-0"></div>
                     <div className="absolute bottom-0">
                         <div className="w-[300px] h-0 relative bg-zinc-900">
                             <Axis/>
@@ -188,7 +202,7 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
                                 ref={upperValInputRef}
                                 onChange={onChangeRight}
                                 /> 
-                            <div ref={setCurrentPriceLabelRef} className="text-white absolute bottom-[-10px]">
+                            <div ref={currentPriceLabelRef} className="text-white absolute bottom-[-10px]">
                                 <div className="absolute left-0 -translate-x-1/2">{calcPoolPriceFromTick(state.currentTick, token0, token1)}</div>  
                             </div>
                             <div ref={lowerValLabelRef} className="text-white absolute bottom-[20px]">
@@ -250,5 +264,5 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
 
 export default memo(PriceSelector)
 
-// for a good understanding for the price selector, pls check the original codes
+// for a good understanding of the price selector, pls check the original codes
 // at : https://github.com/JanessaTech/exercises/blob/master/nextjs/next-toolkits/src/app/slider/range3/PriceSelector.tsx

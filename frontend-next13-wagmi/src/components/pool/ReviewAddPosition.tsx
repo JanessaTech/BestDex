@@ -8,15 +8,40 @@ import SVGCheck from "@/lib/svgs/svg_check";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { Decimal } from 'decimal.js'
+import QuestionMarkToolTip from "../common/QuestionMarkToolTip";
 
-const AddSuccess = () => {
+type AddSuccessProps = {
+    token0: TokenType;
+    token1: TokenType;
+}
+const AddSuccess:React.FC<AddSuccessProps> = ({token0, token1}) => {
     return (
-        <div className="flex flex-col gap-y-4 items-center">
-            <div className="py-3">
-                <SVGCheck className="text-white bg-green-600 size-14 p-2 rounded-full"/>
+        <div>
+            <div className="flex flex-col gap-y-4 items-center">
+                <div className="py-3">
+                    <SVGCheck className="text-white bg-green-600 size-14 p-2 rounded-full"/>
+                </div>
+                <div className="font-semibold">A new position was added!</div>
+                
             </div>
-            <div className="font-semibold">A new position was added!</div>
+            <div className="border-t-[1px] border-zinc-600 my-4 text-sm">
+                <div className="py-2 flex items-center">
+                    <span>You deposited:</span>
+                    <QuestionMarkToolTip>
+                        <div className="w-48">The actual amounts are determined by the live data in the UniswapV3Pool</div>
+                    </QuestionMarkToolTip>
+                </div>
+                <div className="flex py-2">
+                    <span className="text-pink-600 pr-2">0.00002457893999999999999999999</span>
+                    <Token token={token0} imageSize={20}/>
+                </div>
+                <div className="flex">
+                    <span className="text-pink-600 pr-2">157899</span>
+                    <Token token={token1} imageSize={20}/>
+                </div>
+            </div>
         </div>
+        
     )
 }
 type ReviewAddPositionProps = {
@@ -31,7 +56,7 @@ type ReviewAddPositionProps = {
 const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, token0Input, token1Input,
                                                               token0Desired, token1Desired,
                                                               closeAddPositionModal}) => {
-    const [showSuccess, setShowSuccess] = useState(false)
+    const [showSuccess, setShowSuccess] = useState(true)
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
@@ -69,7 +94,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                 </div>
                 {
                     showSuccess
-                    ? <AddSuccess/>
+                    ? <AddSuccess token0={token0} token1={token1}/>
                     : <div>
                         <div className="pb-2 text-sm">Deposit tokens:</div>
                         <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">

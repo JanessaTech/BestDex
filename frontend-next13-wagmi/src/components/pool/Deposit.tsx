@@ -31,7 +31,8 @@ type DepositProps = {
 }
 const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1, 
                                         poolInfo, lowerTick, curTick, upperTick,
-                                        openAddPositionModal,closeAddPositionModal,checkRefresh,
+                                        openAddPositionModal,
+                                        closeAddPositionModal,checkRefresh,
                                         handleDepositChanges}) => {
     const {address} = useAccount()
     const [burnAmount, setBurnAmount] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
@@ -93,7 +94,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                 handleDepositChanges(burnAmount0, amount1)
             }
         }
-    }, [lowerTick, upperTick])
+    }, [lowerTick, curTick, upperTick])
 
     useEffect(() => {
         console.log('update usd')

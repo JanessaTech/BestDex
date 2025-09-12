@@ -24,10 +24,10 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({handleAddSucces
             <SimulateAddPositionStep goNext={goNext}/>
             <Seperator/>
             <AddPositionApproveStep started={step === 2} done={step >=2} skip={false} goNext={goNext}/>
+            {/* <Seperator/>
+            <AddPositionApproveStep started={step === 3} done={step >=3} skip={false} goNext={goNext}/> */}
             <Seperator/>
-            <AddPositionApproveStep started={step === 3} done={step >=3} skip={false} goNext={goNext}/>
-            <Seperator/>
-            <AddPositionStep started={step === 4} handleAddSuccess={handleAddSuccess}/>
+            <AddPositionStep started={step === 3} handleAddSuccess={handleAddSuccess}/>
         </div>
     )
 }
