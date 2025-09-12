@@ -86,7 +86,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                             </div>
                             <div><Token token={token1} imageSize={30}/></div>
                         </div>
-                        <AddPositionExecutor/>
+                        <AddPositionExecutor handleAddSuccess={handleAddSuccess}/>
                       </div>
                 }
             </div>
