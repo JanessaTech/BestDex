@@ -2,7 +2,10 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import JSBI from 'jsbi'
 import { Decimal } from 'decimal.js';
-
+Decimal.set({
+  toExpNeg: -1e15, 
+  toExpPos: 1e15 
+});
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

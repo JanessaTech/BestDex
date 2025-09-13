@@ -8,7 +8,7 @@ import {SimulateContractErrorType} from "@wagmi/core"
 import {decodeFunctionData} from 'viem'
 import { SwapRouter02ABI, UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 
-export const parseCalldata = (calldata: `0x${string}`) => {
+const parseCalldata = (calldata: `0x${string}`) => {
     try {
         //console.log('calldata=', calldata)
         const decoded = decodeFunctionData({

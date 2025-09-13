@@ -31,7 +31,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
         updateUSD()
         setCurPoolInfo(poolInfo)
         setCurPoolRange({...poolRange})
-    }, [poolInfo])  // it runs when the page is loaded initially or curPoolInfo is refreshed
+    }, [poolInfo])  // it runs when the page is loaded initially or poolInfo is refreshed
 
     const updateUSD = () => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test

@@ -5,6 +5,7 @@ export const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5A
 export const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 export const READABLE_FORM_LEN = 4
 export const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS = '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
 export const SwapRouter02ABI = parseAbi(['function multicall(uint256,bytes[]) payable returns (bytes[])'])
 export const UNISWAP_ERRORS: Record<string, string> = {
     'TOO_LITTLE_RECEIVED': 'The received amount is less than the minimum',
@@ -62,3 +63,7 @@ export const UNISWAP_V3_FACTORY_ABI = parseAbi([
 ]);
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const UNISWAP_V3_POSITION_MANAGER_ABI = parseAbi([
+  'function mint((address token0, address token1, uint24 fee, int24 tickLower, int24 tickUpper, uint256 amount0Desired, uint256 amount1Desired, uint256 amount0Min, uint256 amount1Min, address recipient, uint256 deadline)) external payable returns (uint256 tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)',
+  'function approve(address to, uint256 tokenId)'
+])
