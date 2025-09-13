@@ -245,13 +245,20 @@ const oldSqrtPriceX96:ethers.BigNumber = ethers.BigNumber.from('1189223000483797
 const newSqrtPriceX96:ethers.BigNumber = ethers.BigNumber.from('1289223000483797660047958938382143')
 const slipage = 0.1
 
-test_isDataStale(oldSqrtPriceX96, newSqrtPriceX96, slipage/100)
+//test_isDataStale(oldSqrtPriceX96, newSqrtPriceX96, slipage/100)
 
 function test_arbitrary() {
-  const res = new Decimal('10.').greaterThanOrEqualTo(new Decimal('10'))
-  console.log(res)
+  Decimal.set({
+    toExpNeg: -1e15, // 设置一个非常小的负数
+    toExpPos: 1e15 // 设置一个非常大的正数
+  });
+  const decimals = 18
+  const amount = 999999999999999.9
+  const res = new Decimal(amount ? amount : 0).mul(new Decimal(10).pow(decimals)).toDecimalPlaces(decimals, Decimal.ROUND_HALF_UP).toPrecision()
+  console.log('res=', res)
+  return res
 }
-
+test_arbitrary()
 
 //test_decimal()
 //test_CurrencyAmount()
@@ -260,7 +267,7 @@ function test_arbitrary() {
 //test_computePoolAddress()
 //test_urls()
 //test_map()
-//test_arbitrary()
+
 
 //fromReadableAmount1('1.', 4)
 
