@@ -248,15 +248,17 @@ const slipage = 0.1
 //test_isDataStale(oldSqrtPriceX96, newSqrtPriceX96, slipage/100)
 
 function test_arbitrary() {
-  Decimal.set({
-    toExpNeg: -1e15, // 设置一个非常小的负数
-    toExpPos: 1e15 // 设置一个非常大的正数
-  });
-  const decimals = 18
-  const amount = 999999999999999.9
-  const res = new Decimal(amount ? amount : 0).mul(new Decimal(10).pow(decimals)).toDecimalPlaces(decimals, Decimal.ROUND_HALF_UP).toPrecision()
-  console.log('res=', res)
-  return res
+  const ans = {amount0Desired: 999999999852485718n,
+    amount0Min : 968133171435943399n,
+    amount1Desired : 4829520367n,
+    amount1Min : 4691337281n,
+    deadline : 1757777903n,
+    fee : 3000,
+    recipient : "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    tickLower : -193680,
+    tickUpper : -191640,
+    token0 : "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    token1 : "0xdAC17F958D2ee523a2206206994597C13D831ec7"} as {token0: `0x${string}`, token1: `0x${string}`, recipient: `0x${string}`, fee: number, tickLower: number, tickUpper: number, amount0Min: bigint, amount0Desired: bigint, amount1Desired: bigint, amount1Min: bigint, deadline: bigint}
 }
 test_arbitrary()
 

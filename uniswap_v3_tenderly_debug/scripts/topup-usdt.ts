@@ -1,26 +1,26 @@
 import { ethers } from "hardhat"
 
-const usdc_ABI = [
+const usdt_ABI = [
     "function balanceOf(address) view returns (uint256)",
     "function transfer(address to, uint256 amount) returns (bool)",
 ];
-const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-const USDC_WHALE = "0xf977814e90da44bfa03b6295a0616a897441acec"
+const USDT_ADDRESS = "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+const USDT_WHALE = "0xF977814e90dA44bFA03b6295A0616a897441aceC"
 const MY_ACCOUNT = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
 
 async function main() {
     const provider = ethers.provider;
     const feeData = await provider.getFeeData();
-    await ethers.provider.send("hardhat_impersonateAccount", [USDC_WHALE]);
-    const whale = await ethers.getSigner(USDC_WHALE);
-    const usdc = new ethers.Contract(USDC_ADDRESS, usdc_ABI, whale);
+    await ethers.provider.send("hardhat_impersonateAccount", [USDT_WHALE]);
+    const whale = await ethers.getSigner(USDT_WHALE);
+    const usdc = new ethers.Contract(USDT_ADDRESS, usdt_ABI, whale);
     const amount = ethers.utils.parseUnits("2000", 6);
     console.log(`Transferring ${ethers.utils.formatUnits(amount, 6)} USDC to ${MY_ACCOUNT}...`);
-    const whaleBalance = await usdc.balanceOf(USDC_WHALE);
+    const whaleBalance = await usdc.balanceOf(USDT_WHALE);
     console.log(
         "whale balance:",
         ethers.utils.formatUnits(whaleBalance, 6),
-        "USDC"
+        "USDT"
     );
     const tx = await usdc.transfer(MY_ACCOUNT, amount, {
         maxFeePerGas: feeData.maxFeePerGas? feeData.maxFeePerGas.mul(2): null,
@@ -30,11 +30,11 @@ async function main() {
 
     const myBalance = await usdc.balanceOf(MY_ACCOUNT);
     console.log(
-        "My USDC balance:",
+        "My USDT balance:",
         ethers.utils.formatUnits(myBalance, 6),
-        "USDC"
+        "USDT"
     );
-    await ethers.provider.send("hardhat_stopImpersonatingAccount", [USDC_WHALE]);
+    await ethers.provider.send("hardhat_stopImpersonatingAccount", [USDT_WHALE]);
 }
 
 main()
@@ -46,4 +46,4 @@ main()
     process.exit(1);
 });
 
-//npx hardhat run scripts/topup-usdc.ts --network localhost
+//npx hardhat run scripts/topup-usdt.ts --network localhost
