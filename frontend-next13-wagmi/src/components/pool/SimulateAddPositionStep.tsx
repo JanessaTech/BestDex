@@ -3,12 +3,14 @@ import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { memo, useEffect, useState } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
+import { MintPositionParamsType } from "@/lib/types"
 
 type SimulateAddPositionStepProps = {
+    parsedCalldata: MintPositionParamsType,
     goNext: () => void
 }
 
-const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({goNext}) => {
+const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({parsedCalldata, goNext}) => {
     const [isSuccess, setIsSuccess] = useState(false)
     const [isPending, setIsPending] = useState(true)
 

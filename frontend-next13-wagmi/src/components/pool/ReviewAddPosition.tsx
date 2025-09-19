@@ -1,11 +1,11 @@
 import SVGClose from "@/lib/svgs/svg_close"
-import { TokenType ,LocalChainIds} from "@/lib/types";
+import { TokenType ,LocalChainIds, MintPositionParamsType} from "@/lib/types";
 import { default as DexToken } from "../common/Token";
 import AddPositionExecutor from "./AddPositionExecutor";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useEffect, useState } from "react";
 import SVGCheck from "@/lib/svgs/svg_check";
-import { useChainId, useAccount} from 'wagmi'
+import { useChainId, useAccount, useSimulateContract} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { Decimal } from 'decimal.js'
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip";
@@ -20,21 +20,9 @@ import { PoolInfo } from "@/lib/tools/pool";
 import { fromReadableAmount2 } from "@/lib/utils";
 import { useUpdateSetting } from '@/config/store';
 import {decodeFunctionData} from 'viem'
-import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import { ethers} from 'ethers'
-
-type MintPositionParamsType = {
-    token0: `0x${string}`, 
-    token1: `0x${string}`, 
-    recipient: `0x${string}`, 
-    fee: number, 
-    tickLower: number, 
-    tickUpper: number, 
-    amount0Min: bigint, 
-    amount1Min: bigint, 
-    amount0Desired: bigint, 
-    amount1Desired: bigint, 
-    deadline: bigint}
+import { toast } from "sonner"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -115,6 +103,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                                                               closeAddPositionModal}) => {
     const [showSuccess, setShowSuccess] = useState(false)
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
+    const [data, setData] = useState<{calldata: string, parsedCalldata: MintPositionParamsType}>()
     const {slipage, deadline} = useUpdateSetting()
     const { address} = useAccount()
     const {tokenPrices} = useContextUtil() as IContextUtil
@@ -122,10 +111,24 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
 
     useEffect(() => {
         updateUSD()
-        const callData = generateCallData()
-        console.log('callData=', callData)
-        parseCalldata(callData as `0x${string}`)
+        updateCallData()
     }, [])
+
+    const updateCallData = () => {
+        try{
+            const callData = generateCallData()
+            console.log('callData=', callData)
+            const parsedCalldata = parseCalldata(callData as `0x${string}`)
+            console.log('parsedCalldata=', parsedCalldata)
+            if (!parsedCalldata) {
+                throw new Error('Failed to parse calldata')
+            }
+            setData({calldata: callData, parsedCalldata: parsedCalldata})
+        } catch (error) {
+            console.log('We failed to get calldata or parse calldata:', error)
+            toast.error('There is something wrong. Please try again')
+        }
+    }
 
     const updateUSD = () => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
@@ -237,7 +240,13 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                             </div>
                             <div><DexToken token={token1} imageSize={30}/></div>
                         </div>
-                        <AddPositionExecutor handleAddSuccess={handleAddSuccess}/>
+                        {
+                            data?.calldata && data.parsedCalldata &&
+                            <AddPositionExecutor 
+                                data={data}
+                                handleAddSuccess={handleAddSuccess}/>
+                        }
+                        
                       </div>
                 }
             </div>

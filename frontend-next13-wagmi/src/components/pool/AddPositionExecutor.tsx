@@ -2,6 +2,7 @@ import { memo, useCallback, useState } from "react"
 import AddPositionApproveStep from "./AddPositionApproveStep"
 import AddPositionStep from "./AddPositionStep"
 import SimulateAddPositionStep from "./SimulateAddPositionStep"
+import { MintPositionParamsType } from "@/lib/types"
 
 const Seperator = () => {
     return (
@@ -10,9 +11,10 @@ const Seperator = () => {
 }
 
 type AddPositionExecutorProps = {
+    data: {calldata: string, parsedCalldata: MintPositionParamsType},
     handleAddSuccess: () => void;
 }
-const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({handleAddSuccess}) => {
+const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, handleAddSuccess}) => {
     const [step, setStep] = useState(1)
 
     const goNext = useCallback(() => {
@@ -21,7 +23,7 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({handleAddSucces
     
     return (
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
-            <SimulateAddPositionStep goNext={goNext}/>
+            <SimulateAddPositionStep parsedCalldata={data.parsedCalldata} goNext={goNext}/>
             <Seperator/>
             <AddPositionApproveStep started={step === 2} done={step >=2} skip={false} goNext={goNext}/>
             {/* <Seperator/>

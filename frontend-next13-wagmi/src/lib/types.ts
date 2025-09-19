@@ -29,3 +29,16 @@ export type QuotesParameterType = {
 }
 
 export type LocalChainIds = 31337
+
+export type MintPositionParamsType = {
+    token0: `0x${string}`, 
+    token1: `0x${string}`, 
+    recipient: `0x${string}`, 
+    fee: number, 
+    tickLower: number, 
+    tickUpper: number, 
+    amount0Min: bigint, 
+    amount1Min: bigint, 
+    amount0Desired: bigint, 
+    amount1Desired: bigint, 
+    deadline: bigint}
