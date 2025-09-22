@@ -3,20 +3,34 @@ import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useEffect, useState } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
+import { useWriteContract} from 'wagmi'
+import { ERC20 } from "@/config/abis"
+import { TokenType } from "@/lib/types"
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS } from "@/config/constants"
+import { fromReadableAmount3 } from "@/lib/utils"
 
 type AddPositionApproveStepProps = {
+    token0: TokenType;
+    token1: TokenType;
+    token0Input:string;
+    token1Input:string;
     started: boolean;
     done: boolean;
     skip: boolean;
     goNext: () => void
 }
-const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({started, done, skip, goNext}) => {
-    const [isSuccess, setIsSuccess] = useState(false)
-    const [isPending, setIsPending] = useState(true)
+const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token0, token1, token0Input, token1Input, started, done, skip, goNext}) => {
+    const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
 
     const handleApprove = () => {
-        console.log('handleApprove...')
+        writeContract({
+            address: token0.address,
+            abi:ERC20,
+            functionName: 'approve',
+            args: [NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, fromReadableAmount3(token0Input, token0.decimal).toString()]
+        })
     }
+
 
     useEffect(() => {
         let timer = undefined
@@ -25,8 +39,8 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({started, 
             timer = setTimeout(() => {
                 console.log('[AddPositionApproveStep] it will run handleApprove')
                 handleApprove()
-                setIsPending(false)
-                setIsSuccess(true)
+                // setIsPending(false)
+                // setIsSuccess(true)
             }, 1000)
         }     
         return () => {

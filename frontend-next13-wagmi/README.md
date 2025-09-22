@@ -24,3 +24,8 @@ npx shadcn@latest add tooltip
 ```
 npm run dev
 ```
+
+
+## To do list
+1. Integrate Uniswap Permit2 to enhance user experience
+2. xxx

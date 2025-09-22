@@ -8,28 +8,9 @@ import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import { useWriteContract} from 'wagmi'
 import { ERC20 } from "@/config/abis"
 import { memo } from "react";
+import { fromReadableAmount, fromReadableAmount3 } from "@/lib/utils";
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
-
-function fromReadableAmount(amount: number, decimals: number): JSBI {
-    const extraDigits = Math.pow(10, countDecimals(amount))
-    const adjustedAmount = amount * extraDigits
-    return JSBI.divide(
-      JSBI.multiply(
-        JSBI.BigInt(adjustedAmount),
-        JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
-      ),
-      JSBI.BigInt(extraDigits)
-    )
-  }
-
-function countDecimals(x: number) {
-    if (Math.floor(x) === x) {
-        return 0
-    }
-    return x.toString().split('.')[1].length || 0
-}
-
 type SwapApproveStepProps = {
     tokenFrom: TokenType;
     approveAmount: string;
@@ -44,7 +25,7 @@ const SwapApproveStep: React.FC<SwapApproveStepProps> = ({tokenFrom, approveAmou
             address: tokenFrom.address,
             abi:ERC20,
             functionName: 'approve',
-            args: [V3_SWAP_ROUTER_ADDRESS, fromReadableAmount(Number(approveAmount), tokenFrom.decimal).toString()]
+            args: [V3_SWAP_ROUTER_ADDRESS, fromReadableAmount3(approveAmount, tokenFrom.decimal).toString()]
         })
     }
 

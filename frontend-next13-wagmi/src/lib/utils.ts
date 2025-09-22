@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import JSBI from 'jsbi'
 import { Decimal } from 'decimal.js';
+import { parseUnits} from 'viem'
 Decimal.set({
   toExpNeg: -1e15, 
   toExpPos: 1e15 
@@ -33,6 +34,10 @@ function countDecimals(x: number) {
 export function fromReadableAmount2(amount: string, decimals: number) : string {
   const res = new Decimal(amount ? amount : 0).mul(new Decimal(10).pow(decimals)).toDecimalPlaces(decimals, Decimal.ROUND_HALF_UP).toString()
   return res
+}
+
+export function fromReadableAmount3(amount: string, decimals: number) : JSBI {
+  return JSBI.BigInt(parseUnits(amount, decimals).toString())
 }
 
 

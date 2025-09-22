@@ -1,9 +1,11 @@
 import SVGSign from "@/lib/svgs/svg_sign"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
-import { memo, useEffect, useState } from "react"
+import { memo, useEffect } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
 import { MintPositionParamsType } from "@/lib/types"
+import {useSimulateContract} from 'wagmi'
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 
 type SimulateAddPositionStepProps = {
     parsedCalldata: MintPositionParamsType,
@@ -11,19 +13,27 @@ type SimulateAddPositionStepProps = {
 }
 
 const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({parsedCalldata, goNext}) => {
-    const [isSuccess, setIsSuccess] = useState(false)
-    const [isPending, setIsPending] = useState(true)
-
-    const handleSimulate = () => {
-        console.log('handleSimulate() ....')
-    }
+    const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
+        address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+        abi: UNISWAP_V3_POSITION_MANAGER_ABI,
+        functionName: 'mint',
+        args: [parsedCalldata],
+        query: {
+            enabled: false,  // run refetchSimulation manually
+            gcTime: 0,  // disable cache
+            staleTime: 0  // disable cache
+        }
+    })
 
     useEffect(() => {
-        handleSimulate()
-        setTimeout(() => {
-            setIsPending(false)
-            setIsSuccess(true)
-        }, 2000);
+        let timer = setTimeout(() => {
+            console.log('It will run refetchSimulation()...')
+            refetchSimulation()
+        }, 100)
+
+        return () => {
+            if (timer) clearTimeout(timer)
+        }
     }, [])
 
     useEffect(() => {
@@ -37,7 +47,12 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({parsedC
         }
     }, [isSuccess])
 
-    console.log('[SimulateAddPositionStep] isSuccess=', isSuccess, ' isPending=', isPending)
+    console.log('[SimulateAddPositionStep] isSuccess=', isSuccess, ' isPending=', isPending, ' isFetching=', isFetching)
+    console.log('[SimulateAddPositionStep] simulationError=', simulationError)
+    if (simulation) {
+        console.log('simulation=', simulation)
+    }
+
     return (
         <div className="flex justify-between items-center">
             <div className="flex items-center relative">

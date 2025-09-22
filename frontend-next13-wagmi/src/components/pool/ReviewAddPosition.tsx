@@ -5,8 +5,7 @@ import AddPositionExecutor from "./AddPositionExecutor";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useEffect, useState } from "react";
 import SVGCheck from "@/lib/svgs/svg_check";
-import { useChainId, useAccount, useSimulateContract} from 'wagmi'
-import { ChainId } from '@uniswap/sdk-core'
+import { useChainId, useAccount} from 'wagmi'
 import { Decimal } from 'decimal.js'
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip";
 import { 
@@ -15,13 +14,12 @@ import {
     MintOptions,
     NonfungiblePositionManager,
     Pool} from '@uniswap/v3-sdk';
-import {Token, Percent} from '@uniswap/sdk-core';
+import {Token, Percent, ChainId} from '@uniswap/sdk-core';
 import { PoolInfo } from "@/lib/tools/pool";
 import { fromReadableAmount2 } from "@/lib/utils";
 import { useUpdateSetting } from '@/config/store';
 import {decodeFunctionData} from 'viem'
-import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
-import { ethers} from 'ethers'
+import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import { toast } from "sonner"
 
 const parseCalldata = (calldata: `0x${string}`) => {
@@ -36,18 +34,7 @@ const parseCalldata = (calldata: `0x${string}`) => {
         const args = decoded['args'][0] as MintPositionParamsType
         console.log('name=', name)
         console.log('args=', args)
-        const token0 = args['token0'] 
-        const token1 = args['token1']
-        const recipient =args['recipient']
-        const fee = args['fee']
-        const tickLower = args['tickLower']
-        const tickUpper = args['tickUpper']
-        const amount0Min = args['amount0Min']
-        const amount1Min = args['amount1Min']
-        const amount0Desired = args['amount0Desired']
-        const amount1Desired = args['amount1Desired']
-        const deadline = args['deadline']
-        console.log()
+      
         return  args
     } catch (error) {
         console.log('Failed to parse calldata due to:', error)
@@ -108,6 +95,8 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
     const { address} = useAccount()
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
+
+    console.log('[ReviewAddPosition] token0Input=', token0Input, '  token1Input=', token1Input)
 
     useEffect(() => {
         updateUSD()
@@ -244,6 +233,10 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                             data?.calldata && data.parsedCalldata &&
                             <AddPositionExecutor 
                                 data={data}
+                                token0={token0}
+                                token1={token1}
+                                token0Input={token0Input}
+                                token1Input={token1Input}
                                 handleAddSuccess={handleAddSuccess}/>
                         }
                         

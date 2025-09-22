@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from "react"
 import AddPositionApproveStep from "./AddPositionApproveStep"
 import AddPositionStep from "./AddPositionStep"
 import SimulateAddPositionStep from "./SimulateAddPositionStep"
-import { MintPositionParamsType } from "@/lib/types"
+import { MintPositionParamsType, TokenType } from "@/lib/types"
 
 const Seperator = () => {
     return (
@@ -10,11 +10,17 @@ const Seperator = () => {
     )
 }
 
+
 type AddPositionExecutorProps = {
     data: {calldata: string, parsedCalldata: MintPositionParamsType},
+    token0: TokenType;
+    token1: TokenType;
+    token0Input:string;
+    token1Input:string;
     handleAddSuccess: () => void;
 }
-const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, handleAddSuccess}) => {
+const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, token1, token0Input, token1Input,
+                                                                    handleAddSuccess}) => {
     const [step, setStep] = useState(1)
 
     const goNext = useCallback(() => {
@@ -25,7 +31,11 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, handleAdd
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
             <SimulateAddPositionStep parsedCalldata={data.parsedCalldata} goNext={goNext}/>
             <Seperator/>
-            <AddPositionApproveStep started={step === 2} done={step >=2} skip={false} goNext={goNext}/>
+            <AddPositionApproveStep 
+                token0={token0} token1={token1} 
+                token0Input={token0Input} token1Input={token1Input}
+                started={step === 2} done={step >=2} skip={false} 
+                goNext={goNext}/>
             {/* <Seperator/>
             <AddPositionApproveStep started={step === 3} done={step >=3} skip={false} goNext={goNext}/> */}
             <Seperator/>
