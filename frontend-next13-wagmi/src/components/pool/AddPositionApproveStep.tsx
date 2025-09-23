@@ -77,7 +77,7 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, to
                                                 : error
                                                     ? 'text-red-600'
                                                     : 'text-pink-600'}`}>{isSuccess
-                                                                                ? `Approved ${token.symbol}` 
+                                                                                ? `Approved ${token.symbol}${shouldSkip ? ' (skipped)' : ''}` 
                                                                                 :   error
                                                                                     ?  `Failed to approve ${token.symbol}`
                                                                                     : `Approve ${token.symbol} in wallet`                                                   
