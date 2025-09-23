@@ -34,7 +34,9 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, handleAddSucce
         let timer = undefined
         if (isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
-            timer = setTimeout(() => {handleAddSuccess()}, 1000)
+            timer = setTimeout(() => {
+                //handleAddSuccess()
+            }, 1000)
         }
         return () => {
             if (timer) clearTimeout(timer)

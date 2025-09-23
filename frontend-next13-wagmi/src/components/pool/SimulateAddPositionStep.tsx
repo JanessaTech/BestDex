@@ -62,17 +62,26 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
             <div className="flex items-center relative">
                 <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending  && started ? '' : 'hidden'}`}/>
                 <SVGSign className="text-white size-4 ml-[4px]"/>
-                <div className="text-xs pl-4 text-pink-600">Simulate adding a position</div>
+                <div className={`text-xs pl-4 ${isSuccess
+                                                ? 'text-zinc-400'  
+                                                : simulationError
+                                                    ? 'text-red-600'
+                                                    : 'text-pink-600'}`}>{isSuccess
+                                                                                ? `Simulation passed` 
+                                                                                :   simulationError
+                                                                                    ? `Failed to simulate adding a postion`
+                                                                                    : `Simulate adding a postion`                                                   
+                                                                                    }</div>
             </div>
             {
                 done
-                ? isPending
-                    ? <></>
-                    : isSuccess
-                        ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                        : <ToolTipHelper content={<div className="w-80">error?.message</div>}>
+                ? isSuccess
+                    ? <SVGCheck className="size-4 text-green-600 mx-3"/>
+                    : simulationError
+                        ? <ToolTipHelper content={<div className="w-80">error?.message</div>}>
                             <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                            </ToolTipHelper>
+                          </ToolTipHelper>
+                        : <></>
                 : <></> 
                 
             }  
