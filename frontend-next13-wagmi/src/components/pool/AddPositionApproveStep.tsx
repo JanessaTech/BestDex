@@ -1,4 +1,3 @@
-import SVGSign from "@/lib/svgs/svg_sign"
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useEffect, useState } from "react"
@@ -8,26 +7,29 @@ import { ERC20 } from "@/config/abis"
 import { TokenType } from "@/lib/types"
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS } from "@/config/constants"
 import { fromReadableAmount3 } from "@/lib/utils"
+import SVGLockOpen from "@/lib/svgs/svg_lock_open"
 
 type AddPositionApproveStepProps = {
-    token0: TokenType;
-    token1: TokenType;
-    token0Input:string;
-    token1Input:string;
+    token: TokenType;
+    tokenInput:string;
     started: boolean;
     done: boolean;
     skip: boolean;
     goNext: () => void
 }
-const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token0, token1, token0Input, token1Input, started, done, skip, goNext}) => {
-    const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
+const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, tokenInput, started, done, skip, goNext}) => {
+    const [localSuccess, setLocalSuccess] = useState(false);
+    const { data: hash, writeContract, isSuccess: isWriteSuccess, isPending, error } = useWriteContract()
+    
+    const shouldSkip  = tokenInput === '0' || !tokenInput 
+    const isSuccess = shouldSkip ? localSuccess : isWriteSuccess
 
-    const handleApprove = () => {
+    const handleApproveToken = () => {
         writeContract({
-            address: token0.address,
+            address: token.address,
             abi:ERC20,
             functionName: 'approve',
-            args: [NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, fromReadableAmount3(token0Input, token0.decimal).toString()]
+            args: [NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, fromReadableAmount3(tokenInput, token.decimal).toString()]
         })
     }
 
@@ -35,17 +37,20 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token0, t
     useEffect(() => {
         let timer = undefined
         if (started) {
-            console.log('[AddPositionApproveStep] it will run refetchSimulation in 1000 milliseconds')
             timer = setTimeout(() => {
-                console.log('[AddPositionApproveStep] it will run handleApprove')
-                handleApprove()
-                // setIsPending(false)
-                // setIsSuccess(true)
-            }, 1000)
-        }     
+                if (shouldSkip) {
+                    console.log('skip approval')
+                    setLocalSuccess(true)
+                } else {
+                    console.log('[AddPositionApproveStep] it will run handleApprove')
+                    handleApproveToken()
+                }
+            }, 1000);
+            
+        }
         return () => {
             if (timer) clearTimeout(timer)
-        }
+        }    
     }, [started])
 
     useEffect(() => {
@@ -58,25 +63,36 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token0, t
             if (timer) clearTimeout(timer)
         }
     }, [isSuccess])
-
-    console.log('[AddPositionApproveStep] isSuccess=', isSuccess, ' isPending=', isPending)
+    console.log('[AddPositionApproveStep] shouldSkip=', shouldSkip)
+    console.log('[AddPositionApproveStep]', 'isSuccess=', isSuccess, ' isPending=', isPending)
+    console.log('[AddPositionApproveStep] error=', error, ' hash=', hash)
 
     return (
         <div className="flex justify-between items-center">
             <div className="flex items-center relative">
-                <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending && started ? '' : 'hidden'}`}/>
-                <SVGSign className="text-white size-4 ml-[4px]"/>
-                <div className="text-xs pl-4 text-pink-600">Approve in wallet</div>
+                <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending ? '' : 'hidden'}`}/>
+                <SVGLockOpen className="text-white size-4 ml-[4px]"/>
+                <div className={`text-xs pl-4 ${isSuccess
+                                                ? 'text-zinc-400'  
+                                                : error
+                                                    ? 'text-red-600'
+                                                    : 'text-pink-600'}`}>{isSuccess
+                                                                                ? `Approved ${token.symbol}` 
+                                                                                :   error
+                                                                                    ?  `Failed to approve ${token.symbol}`
+                                                                                    : `Approve ${token.symbol} in wallet`                                                   
+                                                                                    }</div>
             </div>
             {
                 done
-                ? isPending
-                    ? <></>
-                    : isSuccess
-                        ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                        : <ToolTipHelper content={<div className="w-80">error?.message</div>}>
+                ?  isSuccess
+                   ? <SVGCheck className="size-4 text-green-600 mx-3"/>
+                   : error
+                        ? <ToolTipHelper content={<div className="w-80"></div>}>
                             <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                          </ToolTipHelper>
+                            </ToolTipHelper>
+                        : <></>
+                   
                 : <></>
             }  
         </div>

@@ -29,17 +29,26 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, t
     
     return (
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
-            <SimulateAddPositionStep parsedCalldata={data.parsedCalldata} goNext={goNext}/>
+            
+            <AddPositionApproveStep 
+                token={token0} 
+                tokenInput={token0Input}
+                started={step === 1} done={step >= 1} 
+                skip={false} 
+                goNext={goNext}/>
             <Seperator/>
             <AddPositionApproveStep 
-                token0={token0} token1={token1} 
-                token0Input={token0Input} token1Input={token1Input}
-                started={step === 2} done={step >=2} skip={false} 
+                token={token1} 
+                tokenInput={token1Input}
+                started={step === 2} done={step >= 2} 
+                skip={false} 
                 goNext={goNext}/>
-            {/* <Seperator/>
-            <AddPositionApproveStep started={step === 3} done={step >=3} skip={false} goNext={goNext}/> */}
             <Seperator/>
-            <AddPositionStep started={step === 3} handleAddSuccess={handleAddSuccess}/>
+            <SimulateAddPositionStep 
+                started={step === 3} done={step >= 3} 
+                parsedCalldata={data.parsedCalldata} goNext={goNext}/>
+            <Seperator/>
+            <AddPositionStep started={step === 4} handleAddSuccess={handleAddSuccess}/>
         </div>
     )
 }

@@ -2,13 +2,12 @@ import SVGCheck from "@/lib/svgs/svg_check";
 import SVGLockOpen from "@/lib/svgs/svg_lock_open";
 import { TokenType } from "@/lib/types";
 import { useEffect} from "react";
-import JSBI from 'jsbi'
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import { useWriteContract} from 'wagmi'
 import { ERC20 } from "@/config/abis"
 import { memo } from "react";
-import { fromReadableAmount, fromReadableAmount3 } from "@/lib/utils";
+import { fromReadableAmount3 } from "@/lib/utils";
 
 const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 type SwapApproveStepProps = {

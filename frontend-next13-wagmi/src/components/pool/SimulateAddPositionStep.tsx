@@ -8,11 +8,13 @@ import {useSimulateContract} from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 
 type SimulateAddPositionStepProps = {
+    started: boolean;
+    done: boolean;
     parsedCalldata: MintPositionParamsType,
     goNext: () => void
 }
 
-const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({parsedCalldata, goNext}) => {
+const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started, done, parsedCalldata, goNext}) => {
     const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
         address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
         abi: UNISWAP_V3_POSITION_MANAGER_ABI,
@@ -26,15 +28,17 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({parsedC
     })
 
     useEffect(() => {
-        let timer = setTimeout(() => {
-            console.log('It will run refetchSimulation()...')
-            refetchSimulation()
-        }, 100)
-
+        let timer = undefined
+        if (started) {
+            timer = setTimeout(() => {
+                console.log('It will run refetchSimulation()...')
+                refetchSimulation()
+            }, 1000)
+        }
         return () => {
             if (timer) clearTimeout(timer)
         }
-    }, [])
+    }, [started])
 
     useEffect(() => {
         let timer = undefined
@@ -56,18 +60,21 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({parsedC
     return (
         <div className="flex justify-between items-center">
             <div className="flex items-center relative">
-                <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending ? '' : 'hidden'}`}/>
+                <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending  && started ? '' : 'hidden'}`}/>
                 <SVGSign className="text-white size-4 ml-[4px]"/>
                 <div className="text-xs pl-4 text-pink-600">Simulate adding a position</div>
             </div>
             {
-                isPending
-                ? <></>
-                : isSuccess
-                    ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                    : <ToolTipHelper content={<div className="w-80">error?.message</div>}>
-                        <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                        </ToolTipHelper>
+                done
+                ? isPending
+                    ? <></>
+                    : isSuccess
+                        ? <SVGCheck className="size-4 text-green-600 mx-3"/>
+                        : <ToolTipHelper content={<div className="w-80">error?.message</div>}>
+                            <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
+                            </ToolTipHelper>
+                : <></> 
+                
             }  
         </div>
     )
