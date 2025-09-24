@@ -47,8 +47,8 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
     const [state, setState] = useState<StateType>(defaultState)
     const {getTokenBalance} = useContextUtil() as IContextUtil
 
-    const { data: txHash, sendTransaction} = useSendTransaction()
-    const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
+    const {data: txHash, isPending, isSuccess, error:sendError, sendTransaction} = useSendTransaction()
+    const {data: receipt, isError: isReceiptError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: txHash,
         confirmations: 1,
         query: {
@@ -109,50 +109,47 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
     }, [state.isSuccess])
 
     useEffect(() => {
-        if(receiptError) {
-            const failedReason = getFailedReason(receiptError)
+        if(sendError || receiptError) {
+            //const failedReason = getFailedReason(receiptError) 
+            const failedReason = 'Failed to swap. Check your network or your account if it has enough currencies'
             setState({...state, isPending: false, isSuccess: false, reason: failedReason})
         }
-    }, [receiptError])
+    }, [sendError, receiptError])
 
     // output debug info
+    console.log('[SwapStep] ====== Latest state ========')
     console.log('[SwapStep] state=', state)
-    console.log('[SwapStep] swap tx hash =', txHash)
-    console.log('[SwapStep][useWaitForTransactionReceipt] isError =', isError)
-    console.log('[SwapStep][useWaitForTransactionReceipt] receiptStatus =', receiptStatus)
-    console.log('[SwapStep][useWaitForTransactionReceipt] receiptError =', receiptError)
-    console.log('[SwapStep][useWaitForTransactionReceipt] receipt =', receipt)
+    console.log('[SwapStep] txHash =', txHash)
+    console.log('[SwapStep] isPending =', isPending, ' isSuccess =', isSuccess, '  sendError =', sendError)
+    console.log('[SwapStep] isReceiptError =', isReceiptError)
+    console.log('[SwapStep] receiptStatus =', receiptStatus)
+    console.log('[SwapStep] receiptError =', receiptError)
+    console.log('[SwapStep] receipt =', receipt)
 
     return (
         <div className="flex justify-between items-center">
                 <div className="flex items-center relative">
                     <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${state.isPending && started ? '' : 'hidden'}`}/>
                     <SVGCheckCircle className="text-white size-5 ml-[2px]"/>
-                    <div className={`text-xs pl-3 ${started 
-                                                        ? state.isPending
-                                                            ? 'text-pink-600' 
-                                                            : state.isSuccess 
-                                                                ? 'text-zinc-400'
-                                                                : 'text-red-600'
-                                                        : 'text-zinc-400'}`}>{started
-                                                                                ? state.isPending
-                                                                                    ? 'Confirm swap in wallet'
-                                                                                    : state.isSuccess
-                                                                                        ? 'Confirmed swap'
-                                                                                        : 'Failed to swap'
-                                                                                : 'Confirm swap in wallet'}</div>
+                    <div className={`text-xs pl-3 ${ state.isSuccess
+                                                            ? 'text-zinc-400'
+                                                            : sendError || receiptError
+                                                                ? 'text-red-600'
+                                                                : 'text-pink-600'}`}>{state.isSuccess
+                                                                                            ? 'Confirmed swap'
+                                                                                            : sendError || receiptError
+                                                                                                ? 'Failed to swap'
+                                                                                                : 'Confirm swap in wallet'}</div>
                 </div>
                 <div>
                     {
-                        started
-                        ? state.isPending
-                            ? <></>
-                            : state.isSuccess
-                                ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                                : <ToolTipHelper content={<div className="w-80">{state.reason}</div>}>
-                                    <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                                  </ToolTipHelper>
-                        : <></>
+                        state.isPending
+                        ? <></>
+                        : state.isSuccess
+                            ? <SVGCheck className="size-4 text-green-600 mx-3"/>
+                            : <ToolTipHelper content={<div className="w-80">{state.reason}</div>}>
+                                <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
+                              </ToolTipHelper>
                         
                     }  
                 </div>

@@ -105,7 +105,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         if (state.isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
-                handleAddSuccess(state.token0ActualDeposit, state.token1ActualDeposit)
+                handleAddSuccess(state.token0ActualDeposit,state.token1ActualDeposit)
             }, 1000)
         }
         return () => {

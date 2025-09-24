@@ -100,44 +100,39 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, skip, done, 
         }
     }, [isSuccess])
 
+    console.log('[SimulateSwapStep] ======= Latest state =======')
     console.log('[SimulateSwapStep] simulationError=', simulationError)
     console.log('[SimulateSwapStep] isPending =', isPending, '   isSuccess=', isSuccess)
     console.log('[SimulateSwapStep] isFetching =', isFetching)
     console.log('[SimulateSwapStep] started =', started, '   done=', done)
-    if (simulation) {
-        console.log('simulation=', simulation)
-    }
-
+    console.log('[SimulateSwapStep] simulation =', simulation)
+    
     return (
         <div className="flex justify-between items-center">
                 <div className="flex items-center relative">
                     <div className={`size-6 border-[1px] rounded-full border-pink-600 border-t-transparent animate-spin absolute ${isPending && started ? '' : 'hidden'}`}/>
                     <SVGSign className="text-white size-4 ml-[4px]"/>
-                    <div className={`text-xs pl-4 ${started 
-                                                            ? isPending 
-                                                                ? 'text-pink-600' 
-                                                                : isSuccess
-                                                                    ? 'text-zinc-400'
-                                                                    : 'text-red-600'
-                                                            : 'text-zinc-400'}`}>{started
-                                                                                        ? isPending
-                                                                                            ? 'Simulating the swap'
-                                                                                            : isSuccess
-                                                                                                ? 'Simulation passed'
-                                                                                                : 'Simulation failed' 
-                                                                                        : 'Simulate the swap'
+                    <div className={`text-xs pl-4 ${isSuccess 
+                                                        ?  'text-zinc-400' 
+                                                        : simulationError
+                                                            ? 'text-red-600'
+                                                            : 'text-pink-600'}`}>{isSuccess
+                                                                                        ? 'Simulation passed'
+                                                                                        : simulationError
+                                                                                            ? 'Simulation failed'
+                                                                                            : 'Simulate the swap'
                                                                                                 }</div>
                 </div>
                 <div>
                     {
                         done 
-                        ? isPending
-                            ? <></>
-                            : isSuccess
-                                ? <SVGCheck className="size-4 text-green-600 mx-3"/>
-                                : <ToolTipHelper content={<div className="w-80">{reason}</div>}>
+                        ? isSuccess
+                            ? <SVGCheck className="size-4 text-green-600 mx-3"/>
+                            : simulationError
+                                ? <ToolTipHelper content={<div className="w-80">{reason}</div>}>
                                     <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                                </ToolTipHelper>
+                                  </ToolTipHelper>
+                                : <></>
                         : <></> 
                     }  
                 </div>
