@@ -7,6 +7,7 @@ import {
 import JSBI from 'jsbi'
 import { Decimal } from 'decimal.js';
 import { ethers} from 'ethers'
+import { parseUnits, formatUnits } from 'viem'
 
 const USDC_TOKEN = new Token(
     ChainId.MAINNET,
@@ -247,6 +248,14 @@ const slipage = 0.1
 
 //test_isDataStale(oldSqrtPriceX96, newSqrtPriceX96, slipage/100)
 
+function test_convertion() {
+  const input = '999999999999999.'
+  const decimal = 18
+  const res = JSBI.BigInt(parseUnits(input, decimal).toString())
+  console.log(res.toString())
+}
+test_convertion()
+
 function test_arbitrary() {
   const ans = {amount0Desired: 999999999852485718n,
     amount0Min : 968133171435943399n,
@@ -260,7 +269,7 @@ function test_arbitrary() {
     token0 : "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     token1 : "0xdAC17F958D2ee523a2206206994597C13D831ec7"} as {token0: `0x${string}`, token1: `0x${string}`, recipient: `0x${string}`, fee: number, tickLower: number, tickUpper: number, amount0Min: bigint, amount0Desired: bigint, amount1Desired: bigint, amount1Min: bigint, deadline: bigint}
 }
-test_arbitrary()
+//test_arbitrary()
 
 //test_decimal()
 //test_CurrencyAmount()

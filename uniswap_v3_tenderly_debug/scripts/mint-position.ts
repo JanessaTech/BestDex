@@ -14,6 +14,13 @@ import {CurrencyAmount, Token, ChainId, Percent } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 
+const WETH_TOKEN = new Token(
+  1,
+  '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  18,
+  'WETH',
+  'Wrapped Ether'
+)
 const USDC_TOKEN = new Token(
     ChainId.MAINNET,
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -51,10 +58,10 @@ const NONFUNGIBLE_POSITION_MANAGER_ABI = [
 ]
 const tokens =  {
     token0: USDC_TOKEN,
-    token0Amount: 1000,
-    token1: DAI_TOKEN,
-    token1Amount: 1000,
-    poolFee: FeeAmount.LOW,
+    token0Amount: 500,
+    token1: WETH_TOKEN,
+    token1Amount: 1,
+    poolFee: FeeAmount.MEDIUM,
     fractionToRemove: 1,
     fractionToAdd: 0.5,
     token0AmountToCollect: 10,
@@ -82,7 +89,7 @@ const POOL_FACTORY_CONTRACT_ADDRESS =
   '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS =
   '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
-const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 2000
+const TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER = 500
 
 // Transactions
 const MAX_FEE_PER_GAS = '100000000000'
@@ -532,11 +539,11 @@ async function constructPosition(
   }
 
   async function main() {
-    //await mintPosition()
+    await mintPosition()
     const positionIds = await getPositionIds()
     //await addLiquidity(positionIds[positionIds.length - 1])
     //await removeLiquidity(positionIds[positionIds.length - 1])
-    await collectFees(positionIds[positionIds.length - 1])
+    // await collectFees(positionIds[positionIds.length - 1])
     for (let id of positionIds) {
       const positionInfo = await getPositionInfo(id)
       console.log('=====position id:', id.toString(), '===========')
@@ -549,4 +556,4 @@ async function constructPosition(
   })
 
 
-  //npx hardhat run scripts\mint-position.ts
+  //npx hardhat run scripts\mint-position.ts   using blockNumber: 23396231

@@ -15,7 +15,7 @@ async function main() {
     const whale = await ethers.getSigner(USDT_WHALE);
     const usdc = new ethers.Contract(USDT_ADDRESS, usdt_ABI, whale);
     const amount = ethers.utils.parseUnits("2000", 6);
-    console.log(`Transferring ${ethers.utils.formatUnits(amount, 6)} USDC to ${MY_ACCOUNT}...`);
+    console.log(`Transferring ${ethers.utils.formatUnits(amount, 6)} USDT to ${MY_ACCOUNT}...`);
     const whaleBalance = await usdc.balanceOf(USDT_WHALE);
     console.log(
         "whale balance:",
@@ -46,4 +46,4 @@ main()
     process.exit(1);
 });
 
-//npx hardhat run scripts/topup-usdt.ts --network localhost
+//npx hardhat run scripts/topup-usdt.ts --network localhost    //blockNumber: 23396231
