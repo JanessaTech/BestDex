@@ -21,6 +21,7 @@ import { useUpdateSetting } from '@/config/store';
 import {decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import { toast } from "sonner"
+import Link from "next/link";
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -43,16 +44,17 @@ const parseCalldata = (calldata: `0x${string}`) => {
 type AddSuccessProps = {
     token0: TokenType;
     token1: TokenType;
+    depositedToken0: string;
+    depositedToken1: string;
 }
-const AddSuccess:React.FC<AddSuccessProps> = ({token0, token1}) => {
+const AddSuccess:React.FC<AddSuccessProps> = ({token0, token1, depositedToken0, depositedToken1}) => {
     return (
-        <div>
+        <div className="flex flex-col gap-y-4 items-center">
             <div className="flex flex-col gap-y-4 items-center">
                 <div className="py-3">
                     <SVGCheck className="text-white bg-green-600 size-14 p-2 rounded-full"/>
                 </div>
                 <div className="font-semibold">A new position was added!</div>
-                
             </div>
             <div className="border-t-[1px] border-zinc-600 my-4 text-sm">
                 <div className="py-2 flex items-center">
@@ -62,14 +64,15 @@ const AddSuccess:React.FC<AddSuccessProps> = ({token0, token1}) => {
                     </QuestionMarkToolTip>
                 </div>
                 <div className="flex py-2">
-                    <span className="text-pink-600 pr-2">0.00002457893999999999999999999</span>
+                    <span className="text-pink-600 pr-2">{depositedToken0}</span>
                     <DexToken token={token0} imageSize={20}/>
                 </div>
                 <div className="flex">
-                    <span className="text-pink-600 pr-2">157899</span>
+                    <span className="text-pink-600 pr-2">{depositedToken1}</span>
                     <DexToken token={token1} imageSize={20}/>
                 </div>
             </div>
+            <div><Link href="www.baidu.com" className="text-xs text-pink-600">View details</Link></div>
         </div>
         
     )
@@ -89,6 +92,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                                                               poolInfo,lowerTick, curTick, upperTick,
                                                               closeAddPositionModal}) => {
     const [showSuccess, setShowSuccess] = useState(false)
+    const [deposit, setDeposit] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [data, setData] = useState<{calldata: string, parsedCalldata: MintPositionParamsType}>()
     const {slipage, deadline} = useUpdateSetting()
@@ -199,8 +203,9 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         return calldata
     }
 
-    const handleAddSuccess = () => {
+    const handleAddSuccess = (token0ActualDeposit: string, token1ActualDeposit: string) => {
         setShowSuccess(true)
+        setDeposit({token0: token0ActualDeposit, token1: token1ActualDeposit})
     }
     return (
         <div className="fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/75 p-10 flex justify-center items-center z-50">
@@ -211,7 +216,8 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                 </div>
                 {
                     showSuccess
-                    ? <AddSuccess token0={token0} token1={token1}/>
+                    ? <AddSuccess token0={token0} token1={token1} 
+                                  depositedToken0={deposit.token0} depositedToken1={deposit.token1}/>
                     : <div>
                         <div className="pb-2 text-sm">Deposit tokens:</div>
                         <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">

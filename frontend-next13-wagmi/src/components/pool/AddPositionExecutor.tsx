@@ -17,7 +17,7 @@ type AddPositionExecutorProps = {
     token1: TokenType;
     token0Input:string;
     token1Input:string;
-    handleAddSuccess: () => void;
+    handleAddSuccess: (token0ActualDeposit: string, token1ActualDeposit: string) => void;
 }
 const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, token1, token0Input, token1Input,
                                                                     handleAddSuccess}) => {
@@ -40,10 +40,11 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, t
                 goNext={goNext}/>
             <Seperator/>
             <SimulateAddPositionStep 
-                started={step === 3} done={step >= 3} skip={true} 
+                started={step === 3} done={step >= 3} skip={false} 
                 parsedCalldata={data.parsedCalldata} goNext={goNext}/>
             <Seperator/>
             <AddPositionStep 
+                token0={token0} token1={token1}
                 started={step === 4} parsedCalldata={data.parsedCalldata} 
                 handleAddSuccess={handleAddSuccess}/>
         </div>

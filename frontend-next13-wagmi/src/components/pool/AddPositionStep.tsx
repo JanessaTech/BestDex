@@ -4,30 +4,45 @@ import { useEffect, useState } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
 import SVGPlusCircle from "@/lib/svgs/svg_plus_circle"
 import { useWriteContract,
-        useWaitForTransactionReceipt
+         useWaitForTransactionReceipt,
+         useAccount
        } from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
-import { MintPositionParamsType } from "@/lib/types"
+import { MintPositionParamsType, TokenType } from "@/lib/types"
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
+import { Decimal } from 'decimal.js'
 
 type AddPositionStepProps = {
+    token0: TokenType;
+    token1: TokenType;
     started: boolean;
     parsedCalldata: MintPositionParamsType,
-    handleAddSuccess: () => void;
+    handleAddSuccess: (token0ActualDeposit: string, token1ActualDeposit: string) => void;
 }
 type StateType = {
     reason: string;
     isSuccess: boolean;
     isPending: boolean;
+    token0PreBalance: string;
+    token0ActualDeposit: string;
+    token1PreBalance: string;
+    token1ActualDeposit: string
 }
 const defaultState: StateType = {
     reason: '',
     isSuccess: false,
     isPending: true,
+    token0PreBalance: '',
+    token0ActualDeposit: '',
+    token1PreBalance: '',
+    token1ActualDeposit: ''
 }
 
-const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata, 
+const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata, token0, token1,
                                                             handleAddSuccess}) => {
     const [state, setState] = useState<StateType>(defaultState)
+    const {address} = useAccount()
+    const {getTokenBalance} = useContextUtil() as IContextUtil
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: hash,
@@ -39,6 +54,14 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         }
     })
 
+    useEffect(() => {
+        (async () => {
+            const token0PreBalance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
+            const token1PreBalance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
+            setState({...state, token0PreBalance: token0PreBalance, token1PreBalance: token1PreBalance})
+        })()
+    }, [])
+
     const handleAddPosition = () => {
         writeContract({
             address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
@@ -49,16 +72,10 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
     }
 
     useEffect(() => {
-        let timer = undefined
         if (started) {
-            timer = setTimeout(() => {
-                console.log('[AddPositionStep] it will run handleAddPosition')
-                setState({...state, isPending: true})
-                handleAddPosition()
-            }, 1000)
-        }
-        return () => {
-            if (timer) clearTimeout(timer)
+            console.log('[AddPositionStep] it will run handleAddPosition')
+            setState({...state, isPending: true})
+            handleAddPosition()
         }
     }, [started])
 
@@ -74,7 +91,11 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 console.log('[AddPositionStep] A new position is added')
-                setState({...state, isPending: false, isSuccess: true})
+                const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
+                const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
+                const depositedToken0 = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
+                const depositedToken1 = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
+                setState({...state, isPending: false, isSuccess: true, token0ActualDeposit: depositedToken0, token1ActualDeposit: depositedToken1})
             }
         })() 
     }, [receipt, hash])
@@ -84,7 +105,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         if (state.isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
-                //handleAddSuccess()
+                handleAddSuccess(state.token0ActualDeposit, state.token1ActualDeposit)
             }, 1000)
         }
         return () => {
