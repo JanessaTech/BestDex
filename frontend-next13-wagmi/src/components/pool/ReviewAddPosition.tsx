@@ -106,7 +106,6 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
     const updateCallData = () => {
         try{
             const callData = generateCallData()
-            console.log('callData=', callData)
             const parsedCalldata = parseCalldata(callData as `0x${string}`)
             console.log('parsedCalldata=', parsedCalldata)
             if (!parsedCalldata) {

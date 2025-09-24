@@ -10,11 +10,12 @@ import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANA
 type SimulateAddPositionStepProps = {
     started: boolean;
     done: boolean;
+    skip: boolean; // for test
     parsedCalldata: MintPositionParamsType,
     goNext: () => void
 }
 
-const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started, done, parsedCalldata, goNext}) => {
+const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started, done, skip, parsedCalldata, goNext}) => {
     const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
         address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
         abi: UNISWAP_V3_POSITION_MANAGER_ABI,
@@ -30,8 +31,13 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
     useEffect(() => {
         let timer = undefined
         if (started) {
+            if (skip) {
+                console.log('[SimulateAddPositionStep] skip SimulateAddPositionStep')
+                goNext()
+                return
+            }
             timer = setTimeout(() => {
-                console.log('It will run refetchSimulation()...')
+                console.log('[SimulateAddPositionStep] It will run refetchSimulation()...')
                 refetchSimulation()
             }, 1000)
         }
@@ -43,7 +49,7 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
     useEffect(() => {
         let timer = undefined
         if (isSuccess) {
-            console.log('it will goNext in 1000 milliseconds')
+            console.log('[SimulateAddPositionStep] it will goNext in 1000 milliseconds')
             timer = setTimeout(() => {goNext()}, 1000)
         }
         return () => {
@@ -51,11 +57,10 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
         }
     }, [isSuccess])
 
+    console.log('[SimulateAddPositionStep] ====== Latest state ========')
     console.log('[SimulateAddPositionStep] isSuccess=', isSuccess, ' isPending=', isPending, ' isFetching=', isFetching)
     console.log('[SimulateAddPositionStep] simulationError=', simulationError)
-    if (simulation) {
-        console.log('simulation=', simulation)
-    }
+    console.log('[SimulateAddPositionStep] simulation=', simulation)
 
     return (
         <div className="flex justify-between items-center">
@@ -70,7 +75,7 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
                                                                                 ? `Simulation passed` 
                                                                                 :   simulationError
                                                                                     ? `Failed to simulate adding a postion`
-                                                                                    : `Simulate adding a postion`                                                   
+                                                                                    : `Simulate adding a postion ${skip ? '(skipped)' : ''}`                                                   
                                                                                     }</div>
             </div>
             {

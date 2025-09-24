@@ -99,11 +99,12 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
             setState({...state, isPending: false, isSuccess: false, reason: failedReason})
         }
     }, [receiptError])
-    console.log('[AddPositionStep] ================== Latest status ===============================')
+    
+    console.log('[AddPositionStep] ====== Latest state ========')
     console.log('[AddPositionStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
     console.log('[AddPositionStep]', ' hash=', hash)
     console.log('[AddPositionStep] writeError=', writeError)
-    console.log('[AddPositionStep] isWriteSuccess=', isWriteSuccess, ' writeError=', writeError)
+    console.log('[AddPositionStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
     console.log('[AddPositionStep] receipt=', receipt)
     console.log('[AddPositionStep] receiptStatus=', receiptStatus)
     console.log('[AddPositionStep] receiptError=', receiptError)
@@ -118,10 +119,10 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                                                 : receiptError
                                                     ? 'text-red-600'
                                                     : 'text-pink-600'}`}>{state.isSuccess
-                                                                                ? `Simulation passed` 
+                                                                                ? `A new position is added` 
                                                                                 :   receiptError
-                                                                                    ? `Failed to simulate adding a postion`
-                                                                                    : `Simulate adding a postion`                                                   
+                                                                                    ? `Failed to add a new postion`
+                                                                                    : `Add a new postion`                                                   
                                                                                     }</div>
             </div>
             {
@@ -131,7 +132,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                     ? <SVGCheck className="size-4 text-green-600 mx-3"/>
                     : <ToolTipHelper content={<div className="w-80">{state.reason}</div>}>
                         <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                        </ToolTipHelper>
+                      </ToolTipHelper>
             }  
         </div>
     )
