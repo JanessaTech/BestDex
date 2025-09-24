@@ -93,12 +93,11 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
     }, [state.isSuccess])
 
     useEffect(() => {
-        if(receiptError) {
-            //const failedReason = getFailedReason(receiptError)
-            const failedReason = 'xxx'
+        if(writeError || receiptError) {
+            const failedReason = 'Failed to add a new position. Check your network or your account if it has enough currencies'
             setState({...state, isPending: false, isSuccess: false, reason: failedReason})
         }
-    }, [receiptError])
+    }, [writeError, receiptError])
     
     console.log('[AddPositionStep] ====== Latest state ========')
     console.log('[AddPositionStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
@@ -116,11 +115,11 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                 <SVGPlusCircle className="text-white size-4 ml-[4px]"/>
                 <div className={`text-xs pl-4 ${state.isSuccess
                                                 ? 'text-zinc-400'  
-                                                : receiptError
+                                                : writeError || receiptError
                                                     ? 'text-red-600'
                                                     : 'text-pink-600'}`}>{state.isSuccess
                                                                                 ? `A new position is added` 
-                                                                                :   receiptError
+                                                                                :   writeError || receiptError
                                                                                     ? `Failed to add a new postion`
                                                                                     : `Add a new postion`                                                   
                                                                                     }</div>
