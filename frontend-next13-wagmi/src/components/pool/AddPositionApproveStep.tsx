@@ -1,6 +1,6 @@
 import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
 import { useWriteContract} from 'wagmi'
 import { ERC20 } from "@/config/abis"
@@ -88,9 +88,9 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, to
                 ?  isSuccess
                    ? <SVGCheck className="size-4 text-green-600 mx-3"/>
                    : error
-                        ? <ToolTipHelper content={<div className="w-80"></div>}>
+                        ? <ToolTipHelper content={<div className="w-80">{error.message}</div>}>
                             <SVGXCircle className="size-5 text-red-600 bg-inherit rounded-full cursor-pointer mx-3"/>
-                            </ToolTipHelper>
+                          </ToolTipHelper>
                         : <></>
                    
                 : <></>
@@ -99,4 +99,4 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, to
     )
 }
 
-export default AddPositionApproveStep
+export default memo(AddPositionApproveStep)

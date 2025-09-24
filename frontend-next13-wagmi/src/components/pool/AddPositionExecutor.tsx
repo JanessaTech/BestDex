@@ -48,7 +48,7 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, t
                 started={step === 3} done={step >= 3} 
                 parsedCalldata={data.parsedCalldata} goNext={goNext}/>
             <Seperator/>
-            <AddPositionStep started={step === 4} handleAddSuccess={handleAddSuccess}/>
+            <AddPositionStep started={step === 4} parsedCalldata={data.parsedCalldata} handleAddSuccess={handleAddSuccess}/>
         </div>
     )
 }
