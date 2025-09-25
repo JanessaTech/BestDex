@@ -1,9 +1,10 @@
 import type { SVGProps } from "./types"
 
-const SVGWithdraw:React.FC<SVGProps> = ({className}) => {
+const SVGWithdraw:React.FC<SVGProps> = ({className, onClick}) => {
     return (
         <svg 
             className={`${className ? className : ''}`}
+            onClick={onClick}
             xmlns="http://www.w3.org/2000/svg" 
             fill="none" 
             viewBox="0 0 24 24" 

@@ -15,7 +15,7 @@ import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider'
 import PositionRange from './PositionRange'
 import { PoolInfo, isDataStale } from '@/lib/tools/pool'
 import { useUpdateSetting } from '@/config/store'
-import RefreshDialog from './RefreshDialog'
+import RefreshModal from './RefreshModal'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -270,7 +270,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                 </div>
             </div> 
             {
-                openRefreshModal && <RefreshDialog closeRefreshModal={closeRefreshModal}/>
+                openRefreshModal && <RefreshModal closeRefreshModal={closeRefreshModal}/>
             }
 
         </div>

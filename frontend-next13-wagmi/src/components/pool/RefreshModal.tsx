@@ -1,10 +1,10 @@
 import SVGClose from "@/lib/svgs/svg_close"
 import SVGRefresh from "@/lib/svgs/svg_refresh"
 
-type RefreshDialogProps = {
+type RefreshModalProps = {
     closeRefreshModal: () => void
 }
-const RefreshDialog:React.FC<RefreshDialogProps> = ({closeRefreshModal}) => {
+const RefreshModal:React.FC<RefreshModalProps> = ({closeRefreshModal}) => {
     return (
         <div>
             <div className="fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/75 p-10 flex justify-center items-center z-50">
@@ -23,4 +23,4 @@ const RefreshDialog:React.FC<RefreshDialogProps> = ({closeRefreshModal}) => {
     )
 }
 
-export default RefreshDialog
+export default RefreshModal

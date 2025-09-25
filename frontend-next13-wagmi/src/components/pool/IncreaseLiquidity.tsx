@@ -1,8 +1,13 @@
+import DexModal from "../common/DexModal"
 
-type IncreaseLiquidityProps = {}
-const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = () => {
+type IncreaseLiquidityProps = {
+    closeDexModal: () => void
+}
+const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({closeDexModal}) => {
     return (
-        <div></div>
+        <DexModal onClick={closeDexModal}>
+            <div>IncreaseLiquidity</div>
+        </DexModal>
     )
 }
 

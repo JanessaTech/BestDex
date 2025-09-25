@@ -1,9 +1,9 @@
 import DexModal from "../common/DexModal"
 
-type DEcreaseLiquidityProps = {
+type CollectFeeProps = {
     closeDexModal: () => void
 }
-const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({closeDexModal}) => {
+const CollectFee: React.FC<CollectFeeProps> = ({closeDexModal}) => {
     return (
         <DexModal onClick={closeDexModal}>
             <div>IncreaseLiquidity</div>
@@ -11,4 +11,4 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({closeDexModal}) =>
     )
 }
 
-export default DecreaseLiquidity
+export default CollectFee
