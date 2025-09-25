@@ -5,8 +5,8 @@ type CollectFeeProps = {
 }
 const CollectFee: React.FC<CollectFeeProps> = ({closeDexModal}) => {
     return (
-        <DexModal onClick={closeDexModal}>
-            <div>IncreaseLiquidity</div>
+        <DexModal onClick={closeDexModal} title="Collecting fee">
+            <div>CollectFee</div>
         </DexModal>
     )
 }

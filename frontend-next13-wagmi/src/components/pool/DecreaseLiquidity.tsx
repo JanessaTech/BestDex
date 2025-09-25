@@ -5,8 +5,8 @@ type DEcreaseLiquidityProps = {
 }
 const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({closeDexModal}) => {
     return (
-        <DexModal onClick={closeDexModal}>
-            <div>IncreaseLiquidity</div>
+        <DexModal onClick={closeDexModal} title="Decreasing liquidity">
+            <div>DecreaseLiquidity</div>
         </DexModal>
     )
 }
