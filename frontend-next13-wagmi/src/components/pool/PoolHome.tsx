@@ -172,12 +172,6 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setOpenRefreshModal(false)
     }
 
-    // below functions for test
-    const showAddPositionExecutor = () => {
-        setAddPositionModal(true) 
-    }
-    
-
     return (
         <div>
             <div className='font-semibold text-xl my-10 md:hidden capitalize'>Pool</div>
@@ -262,11 +256,6 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                 handleDepositChanges={handleDepositChanges}/>
                         </>
                     }
-                    <div>
-                        {/* this section is for test*/}
-                        <div><Button onClick={showAddPositionExecutor}>Show Add Position executor</Button></div>
-                    </div>
-                    
                 </div>
             </div> 
             {

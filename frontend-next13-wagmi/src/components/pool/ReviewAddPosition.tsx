@@ -22,6 +22,7 @@ import {decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import { toast } from "sonner"
 import Link from "next/link";
+import DexModal from "../common/DexModal";
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -208,47 +209,41 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         setDeposit({token0: token0ActualDeposit, token1: token1ActualDeposit})
     }
     return (
-        <div className="fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/75 p-10 flex justify-center items-center z-50">
-            <div className="bg-zinc-800 rounded-xl p-4 border-[1px] border-zinc-500 flex gap-y-4 flex-col min-w-[300px]">
-                <div className="flex justify-between items-center">
-                    <div className="text-sm font-semibold">Adding position</div>
-                    <div><SVGClose className="w-7 h-7 hover:bg-zinc-700 active:bg-zinc-700/60 rounded-full p-1 cursor-pointer" onClick={closeAddPositionModal}/></div>
-                </div>
-                {
-                    showSuccess
-                    ? <AddSuccess token0={token0} token1={token1} 
-                                  depositedToken0={deposit.token0} depositedToken1={deposit.token1}/>
-                    : <div>
-                        <div className="pb-2 text-sm">Deposit tokens:</div>
-                        <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">
-                            <div className="text-sm p-2">
-                                <div className="text-pink-600">${token0Input}</div>
-                                <div className="text-xs text-zinc-400">${tokensUSD.token0}</div>
-                            </div>
-                            <div><DexToken token={token0} imageSize={30}/></div>
+        <DexModal onClick={closeAddPositionModal} title="Adding position">
+            {
+                showSuccess
+                ? <AddSuccess token0={token0} token1={token1} 
+                              depositedToken0={deposit.token0} depositedToken1={deposit.token1}/>
+                : <div>
+                    <div className="pb-2 text-sm">Deposit tokens:</div>
+                    <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">
+                        <div className="text-sm p-2">
+                            <div className="text-pink-600">${token0Input}</div>
+                            <div className="text-xs text-zinc-400">${tokensUSD.token0}</div>
                         </div>
-                        <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">
-                            <div className="text-sm p-2">
-                                <div className="text-pink-600">${token1Input}</div>
-                                <div className="text-xs text-zinc-400">${tokensUSD.token1}</div>
-                            </div>
-                            <div><DexToken token={token1} imageSize={30}/></div>
+                        <div><DexToken token={token0} imageSize={30}/></div>
+                    </div>
+                    <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">
+                        <div className="text-sm p-2">
+                            <div className="text-pink-600">${token1Input}</div>
+                            <div className="text-xs text-zinc-400">${tokensUSD.token1}</div>
                         </div>
-                        {
-                            data?.calldata && data.parsedCalldata &&
-                            <AddPositionExecutor 
-                                data={data}
-                                token0={token0}
-                                token1={token1}
-                                token0Input={token0Input}
-                                token1Input={token1Input}
-                                handleAddSuccess={handleAddSuccess}/>
-                        }
-                        
-                      </div>
-                }
-            </div>
-        </div>
+                        <div><DexToken token={token1} imageSize={30}/></div>
+                    </div>
+                    {
+                        data?.calldata && data.parsedCalldata &&
+                        <AddPositionExecutor 
+                            data={data}
+                            token0={token0}
+                            token1={token1}
+                            token0Input={token0Input}
+                            token1Input={token1Input}
+                            handleAddSuccess={handleAddSuccess}/>
+                    }
+                    
+                  </div>
+            }
+        </DexModal>
     )
 }
 

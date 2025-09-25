@@ -13,6 +13,7 @@ import SwapeExecutor from "./SwapExecutor";
 import SVGCheck from "@/lib/svgs/svg_check";
 import ArrowRight from "@/lib/svgs/svg_arrow_right";
 import Link from "next/link";
+import DexModal from "../common/DexModal";
 
 type SwapSuccessProps = {
     tokenFrom: TokenType;
@@ -102,81 +103,75 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
     }
 
     return (
-        <div className={`fixed left-0 right-0 top-0 bottom-0 mx-auto bg-black/75 p-10 flex justify-center items-center z-50`}>
-            <div className=" bg-zinc-800 rounded-xl p-4 border-[1px] border-zinc-500 flex gap-y-4 flex-col min-w-[300px]">
-                <div className="flex justify-between items-center">
-                    <div className="text-sm font-semibold">Review swap</div>
-                    <div><SVGClose className="w-7 h-7 hover:bg-zinc-700 active:bg-zinc-700/60 rounded-full p-1 cursor-pointer" onClick={handleClose}/></div>
-                </div>
-                {
-                    showSwapSuccess
-                    ? <SwapSuccess tokenFrom={tokenFrom} tokenTo={tokenTo} swapIn={approveAmount} swapOut={swapOut}/>
-                    :   <div className="flex flex-col gap-y-4">
-                            <div className="flex justify-between items-center bg-zinc-700/30 p-2 rounded-md">
-                                <div className="flex flex-col gap-1 ">
-                                    <div className="text-xs text-zinc-400">You approve</div>
-                                    <div className="flex items-center text-xl">
-                                        <input className="px-3 bg-inherit max-md:w-36"
-                                        value={approveAmount}
-                                        onChange={handleInputChange}
-                                        onKeyDown={(event) => {
-                                            const regex1 = new RegExp(`^[1-9]\\d{0,14}\\.\\d{0,${tokenFrom ? tokenFrom.decimal - 1 : '17'}}$`);
-                                            const regex2 = new RegExp(`^0\\.\\d{0,${tokenFrom ? tokenFrom.decimal - 1 : '17'}}$`);
-                                            const allow =  (event?.key === 'Backspace' || event?.key === 'Delete')
-                                                        || (approveAmount === '' && event?.key >= '0' && event?.key <= '9')
-                                                        || (approveAmount === '0' && event?.key === '.')
-                                                        || (/^[1-9]\d{0,13}$/.test(approveAmount) && event?.key >= '0' && event?.key <= '9')
-                                                        || (/^[1-9]\d{0,14}$/.test(approveAmount) && event?.key === '.')
-                                                        || (regex1.test(approveAmount) && event?.key >= '0' && event?.key <= '9') //(/^[1-9]\d{0,14}\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
-                                                        || (regex2.test(approveAmount) && event?.key >= '0' && event?.key <= '9')  //(/^0\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
-                                            if (!allow) {
-                                                event.preventDefault(); 
-                                            }
-                                        }}
-                                    >
-                                        </input>
-                                        <div className="px-2 text-sm">{tokenFrom.symbol}</div>
-                                    </div>
-                                    <div className="text-xs text-zinc-400">${inputUSD}</div>
+        <DexModal onClick={handleClose} title="Review swap">
+            {
+                showSwapSuccess
+                ? <SwapSuccess tokenFrom={tokenFrom} tokenTo={tokenTo} swapIn={approveAmount} swapOut={swapOut}/>
+                :   <div className="flex flex-col gap-y-4">
+                        <div className="flex justify-between items-center bg-zinc-700/30 p-2 rounded-md">
+                            <div className="flex flex-col gap-1 ">
+                                <div className="text-xs text-zinc-400">You approve</div>
+                                <div className="flex items-center text-xl">
+                                    <input className="px-3 bg-inherit max-md:w-36"
+                                    value={approveAmount}
+                                    onChange={handleInputChange}
+                                    onKeyDown={(event) => {
+                                        const regex1 = new RegExp(`^[1-9]\\d{0,14}\\.\\d{0,${tokenFrom ? tokenFrom.decimal - 1 : '17'}}$`);
+                                        const regex2 = new RegExp(`^0\\.\\d{0,${tokenFrom ? tokenFrom.decimal - 1 : '17'}}$`);
+                                        const allow =  (event?.key === 'Backspace' || event?.key === 'Delete')
+                                                    || (approveAmount === '' && event?.key >= '0' && event?.key <= '9')
+                                                    || (approveAmount === '0' && event?.key === '.')
+                                                    || (/^[1-9]\d{0,13}$/.test(approveAmount) && event?.key >= '0' && event?.key <= '9')
+                                                    || (/^[1-9]\d{0,14}$/.test(approveAmount) && event?.key === '.')
+                                                    || (regex1.test(approveAmount) && event?.key >= '0' && event?.key <= '9') //(/^[1-9]\d{0,14}\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                                                    || (regex2.test(approveAmount) && event?.key >= '0' && event?.key <= '9')  //(/^0\.\d{0,17}$/.test(amount) && event?.key >= '0' && event?.key <= '9')
+                                        if (!allow) {
+                                            event.preventDefault(); 
+                                        }
+                                    }}
+                                >
+                                    </input>
+                                    <div className="px-2 text-sm">{tokenFrom.symbol}</div>
                                 </div>
-                                <div>
-                                    <Token token={tokenFrom} imageSize={40} showText={false}/>
-                                </div>
+                                <div className="text-xs text-zinc-400">${inputUSD}</div>
                             </div>
-                            <div className="flex justify-between items-center bg-zinc-700/30 p-2 rounded-md">
-                                <div className="flex flex-col gap-1 ">
-                                    <div className="text-xs text-zinc-400">You will receive probably</div>
-                                    <div className="flex items-center">
-                                        <div className="text-xl max-md:w-36 truncate">{quote}</div>
-                                        <div className="px-2 text-sm">{tokenTo.symbol}</div>
-                                    </div>
-                                    
-                                    <div className="text-xs text-zinc-400">${tokenOutUSD}</div>
-                                </div>
-                                <div>
-                                    <Token token={tokenTo} imageSize={40} showText={false}/>
-                                </div>
+                            <div>
+                                <Token token={tokenFrom} imageSize={40} showText={false}/>
                             </div>
-                            {
-                                !approved
-                                ? <div className='flex justify-center'>
-                                    <Button 
-                                    className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600 active:bg-pink-700/80' 
-                                    onClick={handleApprove}>Approve and swap
-                                    </Button>
-                                </div>
-                                : <SwapeExecutor 
-                                        tokenFrom={tokenFrom} 
-                                        tokenTo={tokenTo}
-                                        approveAmount={approveAmount}
-                                        calldata={calldataSnapshot}
-                                        handleSwapSuccess={handleSwapSuccess}
-                                        />
-                            }
                         </div>
-                }
-            </div>
-        </div>
+                        <div className="flex justify-between items-center bg-zinc-700/30 p-2 rounded-md">
+                            <div className="flex flex-col gap-1 ">
+                                <div className="text-xs text-zinc-400">You will receive probably</div>
+                                <div className="flex items-center">
+                                    <div className="text-xl max-md:w-36 truncate">{quote}</div>
+                                    <div className="px-2 text-sm">{tokenTo.symbol}</div>
+                                </div>
+                                
+                                <div className="text-xs text-zinc-400">${tokenOutUSD}</div>
+                            </div>
+                            <div>
+                                <Token token={tokenTo} imageSize={40} showText={false}/>
+                            </div>
+                        </div>
+                        {
+                            !approved
+                            ? <div className='flex justify-center'>
+                                <Button 
+                                className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600 active:bg-pink-700/80' 
+                                onClick={handleApprove}>Approve and swap
+                                </Button>
+                            </div>
+                            : <SwapeExecutor 
+                                    tokenFrom={tokenFrom} 
+                                    tokenTo={tokenTo}
+                                    approveAmount={approveAmount}
+                                    calldata={calldataSnapshot}
+                                    handleSwapSuccess={handleSwapSuccess}
+                                    />
+                        }
+                    </div>
+            }
+        </DexModal>
     )
 }
 
