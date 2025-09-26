@@ -19,12 +19,20 @@ import { useState } from "react"
 import IncreaseLiquidity from "@/components/pool/IncreaseLiquidity"
 import DecreaseLiquidity from "@/components/pool/DecreaseLiquidity"
 import CollectFee from "@/components/pool/CollectFee"
+import { TokenType } from "@/lib/types"
 
+type GlobalType = {
+    token0?: TokenType;
+    token1?: TokenType
+}
 type PositionsHomeProps = {}
 const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const [openIncreaseLiquidity, setOpenIncreaseLiquidity] = useState(false)
     const [openDecreaseLiquidity, setOpenDecreaseLiquidity] = useState(false)
     const [openCollectFee, setOpenCollectFee] = useState(false)
+    const [global, setGlobal] = useState<GlobalType>({})
+
+    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
     
     const closeIncreaseLiquidityModal = () => {
         setOpenIncreaseLiquidity(false)
@@ -36,6 +44,11 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
 
     const closeCollectFee = () => {
         setOpenCollectFee(false)
+    }
+
+    const handleOpenIncreaseLiquidity = (token0: TokenType, token1: TokenType,) => {
+        setOpenIncreaseLiquidity(true)
+        setGlobal({...global, token0: token0, token1: token1})
     }
 
     return (
@@ -94,17 +107,20 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                         <div>
                                             <div>
                                                 <ToolTipHelper content="Increase liquidlity">
-                                                    <SVGPlus className="cursor-pointer w-5 h-5 hover:text-pink-600" onClick={() => setOpenIncreaseLiquidity(true)}/>
+                                                    <SVGPlus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
+                                                            onClick={() => handleOpenIncreaseLiquidity(position.token0, position.token1)}/>
                                                 </ToolTipHelper>                                                               
                                             </div>
                                             <div>
                                                 <ToolTipHelper content="Delete position">
-                                                    <SVGMinus className="cursor-pointer w-5 h-5 hover:text-pink-600" onClick={() => setOpenDecreaseLiquidity(true)}/>
+                                                    <SVGMinus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
+                                                            onClick={() => setOpenDecreaseLiquidity(true)}/>
                                                 </ToolTipHelper>
                                             </div>
                                             <div>
                                                 <ToolTipHelper content="Collect fee">
-                                                    <SVGWithdraw className="cursor-pointer w-5 h-5 hover:text-pink-600" onClick={() => setOpenCollectFee(true)}/>
+                                                    <SVGWithdraw className="cursor-pointer w-5 h-5 hover:text-pink-600" 
+                                                                onClick={() => setOpenCollectFee(true)}/>
                                                 </ToolTipHelper>                                            
                                             </div>
                                         </div>
@@ -117,16 +133,21 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                 </Table>
             </TabsContent>
             {
-                openIncreaseLiquidity && <IncreaseLiquidity closeDexModal={closeIncreaseLiquidityModal}/>
+                openIncreaseLiquidity  && global.token0 && global.token1 && <IncreaseLiquidity
+                                            token0={global.token0} token1={global.token1}
+                                            token0Balance={tokenBalances.token0} token1Balance={tokenBalances.token1}
+                                            closeDexModal={closeIncreaseLiquidityModal}/>
             }
             {
-                openDecreaseLiquidity && <DecreaseLiquidity closeDexModal={closeDecreaseLiquidity}/>
+                openDecreaseLiquidity && global.token0 && global.token1 &&<DecreaseLiquidity 
+                                            token0={global.token0} token1={global.token1}
+                                            token0Balance={tokenBalances.token0} token1Balance={tokenBalances.token1}
+                                            closeDexModal={closeDecreaseLiquidity}/>
             }
             {
                 openCollectFee && <CollectFee closeDexModal={closeCollectFee}/>
             }
         </div>
-        
     )
 }
 
