@@ -17,10 +17,10 @@ type AddPositionExecutorProps = {
     token1: TokenType;
     token0Input:string;
     token1Input:string;
-    handleAddSuccess: (token0ActualDeposit: string, token1ActualDeposit: string) => void;
+    handleAddLiquiditySuccess: (token0ActualDeposit: string, token1ActualDeposit: string) => void;
 }
 const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, token1, token0Input, token1Input,
-                                                                    handleAddSuccess}) => {
+                                                                handleAddLiquiditySuccess}) => {
     const [step, setStep] = useState(1)
 
     const goNext = useCallback(() => {
@@ -46,7 +46,7 @@ const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, t
             <AddPositionStep 
                 token0={token0} token1={token1}
                 started={step === 4} parsedCalldata={data.parsedCalldata} 
-                handleAddSuccess={handleAddSuccess}/>
+                handleAddLiquiditySuccess={handleAddLiquiditySuccess}/>
         </div>
     )
 }

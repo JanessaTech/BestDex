@@ -1,4 +1,4 @@
-import type { TokenListType, TokenType } from "./types"
+import type { PositionProps, TokenListType, TokenType } from "./types"
 import  {  TransactionType } from "./types"
 
 export const tokenList: TokenListType = [
@@ -48,129 +48,116 @@ export const tokenList: TokenListType = [
       ]
     }
   ]
-  
-
-type PositionProps = {
-    id: number,
-    token0: TokenType,
-    token1: TokenType,
-    lowTick: number,
-    highTick: number,
-    liquidity: number,
-    status: boolean,
-    fee: number,
-    wallet: string
-}
 
 export const PositionListData: PositionProps[] = [
     {
         id: 11111111, 
         token0: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
         token1: {chainId: 1, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}, 
-        lowTick: 12456,
-        highTick: 456787,
+        lowerTick: 12456,
+        upperTick: 456787,
         liquidity: 758845612347588,
         status: true,
-        fee: 0.03,
+        fee: 3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 222222, 
         token0: {chainId: 1, name: 'Wrapped BTC', symbol: 'WBTC', alias: 'wbtc', decimal: 8, address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'},
         token1: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: true,
-        fee: 0.03,
+        fee: 3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 222222, 
         token0: {chainId: 1, name: '0x Protocol Token', symbol: 'ZRX', alias: '0x', decimal: 18, address: '0xe41d2489571d322189246dafa5ebde1f4699f498', company: 'ZRX'},
         token1: {chainId: 1, name: 'AIOZ Network', symbol: 'AIOZ', alias: 'aioz', decimal: 18, address: '0x626e8036deb333b408be468f951bdb42433cbf18', company: 'AIOZ'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: false,
-        fee: 1.0,
+        fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 3333333, 
         token0: {chainId: 1, name: '0x Protocol Token', symbol: 'ZRX', alias: '0x', decimal: 18, address: '0xe41d2489571d322189246dafa5ebde1f4699f498', company: 'ZRX'},
         token1: {chainId: 1, name: 'AIOZ Network', symbol: 'AIOZ', alias: 'aioz', decimal: 18, address: '0x626e8036deb333b408be468f951bdb42433cbf18', company: 'AIOZ'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: false,
-        fee: 1.0,
+        fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 44444444, 
         token0: {chainId: 1, name: '0x Protocol Token', symbol: 'ZRX', alias: '0x', decimal: 18, address: '0xe41d2489571d322189246dafa5ebde1f4699f498', company: 'ZRX'},
         token1: {chainId: 1, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: false,
-        fee: 1.0,
+        fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 11111111, 
         token0: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
         token1:  {chainId: 1, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdac17f958d2ee523a2206206994597c13d831ec7'}, 
-        lowTick: 12456,
-        highTick: 456787,
+        lowerTick: 12456,
+        upperTick: 456787,
         liquidity: 758845612347588,
         status: true,
-        fee: 0.03,
+        fee: 3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 222222, 
         token0: {chainId: 1, name: 'Wrapped BTC', symbol: 'WBTC', alias: 'wbtc', decimal: 8, address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'},
         token1: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: true,
-        fee: 0.03,
+        fee:3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 222222, 
         token0:{chainId: 1, name: '0x Protocol Token', symbol: 'ZRX', alias: '0x', decimal: 18, address: '0xe41d2489571d322189246dafa5ebde1f4699f498', company: 'ZRX'},
         token1: {chainId: 1, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: false,
-        fee: 1.0,
+        fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 3333333, 
         token0: {chainId: 1, name: '0x Protocol Token', symbol: 'ZRX', alias: '0x', decimal: 18, address: '0xe41d2489571d322189246dafa5ebde1f4699f498', company: 'ZRX'},
         token1: {chainId: 1, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: false,
-        fee: 1.0,
+        fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     },
     {
         id: 44444444, 
         token0: {chainId: 1, name: '0x Protocol Token', symbol: 'ZRX', alias: '0x', decimal: 18, address: '0xe41d2489571d322189246dafa5ebde1f4699f498', company: 'ZRX'},
         token1: {chainId: 1, name: 'AIOZ Network', symbol: 'AIOZ', alias: 'aioz', decimal: 18, address: '0x626e8036deb333b408be468f951bdb42433cbf18', company: 'AIOZ'},
-        lowTick: 45661,
-        highTick: 986564,
+        lowerTick: 45661,
+        upperTick: 986564,
         liquidity: 8956471235467,
         status: false,
-        fee: 1.0,
+        fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
     }
 ]

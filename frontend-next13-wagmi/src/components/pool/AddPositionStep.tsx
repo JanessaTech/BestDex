@@ -17,7 +17,7 @@ type AddPositionStepProps = {
     token1: TokenType;
     started: boolean;
     parsedCalldata: MintPositionParamsType,
-    handleAddSuccess: (token0ActualDeposit: string, token1ActualDeposit: string) => void;
+    handleAddLiquiditySuccess: (token0ActualDeposit: string, token1ActualDeposit: string) => void;
 }
 type StateType = {
     reason: string;
@@ -39,7 +39,7 @@ const defaultState: StateType = {
 }
 
 const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata, token0, token1,
-                                                            handleAddSuccess}) => {
+                                                        handleAddLiquiditySuccess}) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
     const {getTokenBalance} = useContextUtil() as IContextUtil
@@ -105,7 +105,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         if (state.isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
-                handleAddSuccess(state.token0ActualDeposit,state.token1ActualDeposit)
+                handleAddLiquiditySuccess(state.token0ActualDeposit,state.token1ActualDeposit)
             }, 1000)
         }
         return () => {

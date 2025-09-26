@@ -19,20 +19,25 @@ import { useState } from "react"
 import IncreaseLiquidity from "@/components/pool/IncreaseLiquidity"
 import DecreaseLiquidity from "@/components/pool/DecreaseLiquidity"
 import CollectFee from "@/components/pool/CollectFee"
-import { TokenType } from "@/lib/types"
+import { PositionProps, TokenType } from "@/lib/types"
+import { PoolInfo } from "@/lib/tools/pool"
+import { IContextUtil, useContextUtil } from "@/components/providers/ContextUtilProvider"
+import { toast } from 'sonner'
 
-type GlobalType = {
-    token0?: TokenType;
-    token1?: TokenType
+type GlobalVariableType = {
+    poolInfo: PoolInfo;
+    position: PositionProps
 }
 type PositionsHomeProps = {}
 const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const [openIncreaseLiquidity, setOpenIncreaseLiquidity] = useState(false)
     const [openDecreaseLiquidity, setOpenDecreaseLiquidity] = useState(false)
     const [openCollectFee, setOpenCollectFee] = useState(false)
-    const [global, setGlobal] = useState<GlobalType>({})
 
+    const [global, setGlobal] = useState<GlobalVariableType>()
+    const [ticks, setTicks] = useState<{lower: number, upper: number}>({lower:0, upper: 0})
     const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
+    const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
     
     const closeIncreaseLiquidityModal = () => {
         setOpenIncreaseLiquidity(false)
@@ -46,9 +51,17 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
         setOpenCollectFee(false)
     }
 
-    const handleOpenIncreaseLiquidity = (token0: TokenType, token1: TokenType,) => {
-        setOpenIncreaseLiquidity(true)
-        setGlobal({...global, token0: token0, token1: token1})
+    const handleOpenIncreaseLiquidity = async (position: PositionProps) => {
+        try {
+            const poolAddress = await getPoolAddress(position.token0.address, position.token1.address, position.fee)
+            const poolInfo = await getLatestPoolInfo(poolAddress)
+            if (!poolInfo) throw new Error('Failed to get poolInfo')
+            setOpenIncreaseLiquidity(true)
+            setGlobal({poolInfo: poolInfo, position: position})
+        } catch (error) {
+            console.log(error)
+            toast.error('Failed to get the latest Uniswap Pool information. Please try again')
+        }
     }
 
     return (
@@ -82,8 +95,8 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                     </TableCell>
                                     <TableCell className={`max-md:hidden`}>
                                         <div>
-                                            <div><span className="font-bold">Low:</span>{position.lowTick}</div>
-                                            <div><span className="font-bold">High:</span>{position.highTick}</div>
+                                            <div><span className="font-bold">Low:</span>{position.lowerTick}</div>
+                                            <div><span className="font-bold">High:</span>{position.upperTick}</div>
                                         </div>
                                     </TableCell>
                                     <TableCell className={`max-md:hidden`}>
@@ -108,7 +121,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                             <div>
                                                 <ToolTipHelper content="Increase liquidlity">
                                                     <SVGPlus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                            onClick={() => handleOpenIncreaseLiquidity(position.token0, position.token1)}/>
+                                                            onClick={() => handleOpenIncreaseLiquidity(position)}/>
                                                 </ToolTipHelper>                                                               
                                             </div>
                                             <div>
@@ -133,14 +146,16 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                 </Table>
             </TabsContent>
             {
-                openIncreaseLiquidity  && global.token0 && global.token1 && <IncreaseLiquidity
-                                            token0={global.token0} token1={global.token1}
+                openIncreaseLiquidity  && global && <IncreaseLiquidity
+                                            token0={global.position.token0} token1={global.position.token1}
+                                            poolInfo={global.poolInfo}
+                                            lowerTick={global.position.lowerTick} upperTick={global.position.upperTick}
                                             token0Balance={tokenBalances.token0} token1Balance={tokenBalances.token1}
                                             closeDexModal={closeIncreaseLiquidityModal}/>
             }
             {
-                openDecreaseLiquidity && global.token0 && global.token1 &&<DecreaseLiquidity 
-                                            token0={global.token0} token1={global.token1}
+                openDecreaseLiquidity && global &&<DecreaseLiquidity 
+                                            token0={global.position.token0} token1={global.position.token1}
                                             token0Balance={tokenBalances.token0} token1Balance={tokenBalances.token1}
                                             closeDexModal={closeDecreaseLiquidity}/>
             }

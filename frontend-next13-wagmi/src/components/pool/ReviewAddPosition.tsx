@@ -1,10 +1,8 @@
 import { TokenType ,LocalChainIds, MintPositionParamsType} from "@/lib/types";
 import { fromReadableAmount2 } from "@/lib/utils";
 import { PoolInfo } from "@/lib/tools/pool";
-import SVGCheck from "@/lib/svgs/svg_check";
 import { default as DexToken } from "../common/Token";
 import DexModal from "../common/DexModal";
-import QuestionMarkToolTip from "../common/QuestionMarkToolTip";
 import AddPositionExecutor from "./AddPositionExecutor";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId, useAccount} from 'wagmi'
@@ -21,7 +19,7 @@ import { useUpdateSetting } from '@/config/store';
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import { toast } from "sonner"
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import AddLiquiditySuccess from "./AddLiquiditySuccess";
 
 
 const parseCalldata = (calldata: `0x${string}`) => {
@@ -42,42 +40,7 @@ const parseCalldata = (calldata: `0x${string}`) => {
         console.log('Failed to parse calldata due to:', error)
     }
 }
-type AddSuccessProps = {
-    token0: TokenType;
-    token1: TokenType;
-    depositedToken0: string;
-    depositedToken1: string;
-}
-const AddSuccess:React.FC<AddSuccessProps> = ({token0, token1, depositedToken0, depositedToken1}) => {
-    return (
-        <div className="flex flex-col gap-y-4 items-center">
-            <div className="flex flex-col gap-y-4 items-center">
-                <div className="py-3">
-                    <SVGCheck className="text-white bg-green-600 size-14 p-2 rounded-full"/>
-                </div>
-                <div className="font-semibold">A new position was added!</div>
-            </div>
-            <div className="border-t-[1px] border-zinc-600 my-4 text-sm">
-                <div className="py-2 flex items-center">
-                    <span>You deposited:</span>
-                    <QuestionMarkToolTip>
-                        <div className="w-48">The actual amounts are determined by the live data in the UniswapV3Pool</div>
-                    </QuestionMarkToolTip>
-                </div>
-                <div className="flex py-2">
-                    <span className="text-pink-600 pr-2">{depositedToken0}</span>
-                    <DexToken token={token0} imageSize={20}/>
-                </div>
-                <div className="flex">
-                    <span className="text-pink-600 pr-2">{depositedToken1}</span>
-                    <DexToken token={token1} imageSize={20}/>
-                </div>
-            </div>
-            <div><Link href="www.baidu.com" className="text-xs text-pink-600">View details</Link></div>
-        </div>
-        
-    )
-}
+
 type ReviewAddPositionProps = {
     token0: TokenType;
     token1: TokenType;
@@ -93,7 +56,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                                                               poolInfo,lowerTick, curTick, upperTick,
                                                               closeAddPositionModal}) => {
     const [showSuccess, setShowSuccess] = useState(false)
-    const [deposit, setDeposit] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
+    const [deposited, setDeposited] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [data, setData] = useState<{calldata: string, parsedCalldata: MintPositionParamsType}>()
     const {slipage, deadline} = useUpdateSetting()
@@ -204,16 +167,17 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         return calldata
     }
 
-    const handleAddSuccess = (token0ActualDeposit: string, token1ActualDeposit: string) => {
+    const handleAddLiquiditySuccess = (token0Deposited: string, token1Deposited: string) => {
         setShowSuccess(true)
-        setDeposit({token0: token0ActualDeposit, token1: token1ActualDeposit})
+        setDeposited({token0: token0Deposited, token1: token1Deposited})
     }
+
     return (
         <DexModal onClick={closeAddPositionModal} title="Adding position">
             {
                 showSuccess
-                ? <AddSuccess token0={token0} token1={token1} 
-                              depositedToken0={deposit.token0} depositedToken1={deposit.token1}/>
+                ? <AddLiquiditySuccess token0={token0} token1={token1} 
+                              depositedToken0={deposited.token0} depositedToken1={deposited.token1}/>
                 : <div>
                     <div className="pb-2 text-sm">Deposit tokens:</div>
                     <div className="rounded-md bg-zinc-700/30 flex justify-between items-center mb-2">
@@ -231,16 +195,14 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                         <div><DexToken token={token1} imageSize={30}/></div>
                     </div>
                     {
-                        data?.calldata && data.parsedCalldata &&
-                        <AddPositionExecutor 
-                            data={data}
-                            token0={token0}
-                            token1={token1}
-                            token0Input={token0Input}
-                            token1Input={token1Input}
-                            handleAddSuccess={handleAddSuccess}/>
+                        data && <AddPositionExecutor 
+                                    data={data}
+                                    token0={token0}
+                                    token1={token1}
+                                    token0Input={token0Input}
+                                    token1Input={token1Input}
+                                    handleAddLiquiditySuccess={handleAddLiquiditySuccess}/>
                     }
-                    
                   </div>
             }
         </DexModal>

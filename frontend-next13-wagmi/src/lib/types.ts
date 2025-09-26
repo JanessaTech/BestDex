@@ -42,3 +42,15 @@ export type MintPositionParamsType = {
     amount0Desired: bigint, 
     amount1Desired: bigint, 
     deadline: bigint}
+
+export type PositionProps = {
+    id: number,
+    token0: TokenType,
+    token1: TokenType,
+    lowerTick: number,
+    upperTick: number,
+    liquidity: number,
+    status: boolean,
+    fee: number,
+    wallet: string
+}

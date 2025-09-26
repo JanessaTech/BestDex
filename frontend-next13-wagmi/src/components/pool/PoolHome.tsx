@@ -35,7 +35,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [openAddPositionModal, setAddPositionModal] = useState(false)
     const [openRefreshModal, setOpenRefreshModal] = useState(false)
 
-    const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo, getTokenBalance} = useContextUtil() as IContextUtil
+    const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
