@@ -149,6 +149,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                 openIncreaseLiquidity  && global && <IncreaseLiquidity
                                             token0={global.position.token0} token1={global.position.token1}
                                             poolInfo={global.poolInfo}
+                                            positionId={global.position.id}
                                             lowerTick={global.position.lowerTick} upperTick={global.position.upperTick}
                                             token0Balance={tokenBalances.token0} token1Balance={tokenBalances.token1}
                                             closeDexModal={closeIncreaseLiquidityModal}/>

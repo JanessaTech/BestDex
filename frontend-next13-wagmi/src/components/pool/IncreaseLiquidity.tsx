@@ -45,12 +45,13 @@ type IncreaseLiquidityProps = {
     token0Balance: string;
     token1Balance: string;
     poolInfo: PoolInfo;
+    positionId: number;
     lowerTick: number;
     upperTick: number;
     closeDexModal: () => void
 }
 const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, token0Balance, token1Balance,
-                                                              poolInfo, lowerTick, upperTick,
+                                                              poolInfo, positionId, lowerTick, upperTick,
                                                               closeDexModal}) => {
     
     const { address} = useAccount()                                                         
@@ -63,7 +64,9 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
     const [deposited, setDeposited] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
 
     useEffect(() => {
-        updateCallData()
+        console.log('[IncreaseLiquidity] poolInfo=', poolInfo)
+        console.log('[IncreaseLiquidity] positionId=', positionId, ' lowerTick=', lowerTick, ' upperTick=', upperTick)
+        //updateCallData()
     }, [])
 
     const updateCallData = () => {
@@ -150,16 +153,27 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
     }
 
     const handleDepositChanges = (amount0: string, amount1: string) => {
-        setDeposit({...deposit, amount0: amount0, amount1: amount1})
+        setDeposit({amount0: amount0, amount1: amount1})
     }
 
     const updateToken0Change = (value: string) => {
-        handleDepositChanges(value, '')
+        const position = createPoistionFromToken0(value)
+        const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+        const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+
+        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+        console.log('value=', value)
+        handleDepositChanges(value, burnAmount1)
         setWhoInput(0)
     }
 
     const updateToken1Change = (value: string) => {
-        handleDepositChanges('', value)
+        const position = createPoistionFromToken1(value)
+        const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+        const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+
+        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+        handleDepositChanges(burnAmount0, value)
         setWhoInput(1)
     }
 
@@ -169,6 +183,47 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
 
     const handleIncreaseLiquidity = () => {
 
+    }
+
+    const createPoistionFromToken0 = (value: string) => {
+        const feeAmount_enum = poolInfo.fee as FeeAmount
+        const configuredPool = new Pool(
+            new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
+            new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
+            feeAmount_enum,
+            poolInfo.sqrtPriceX96.toString(),
+            poolInfo.liquidity.toString(),
+            poolInfo.tick
+        )
+        const position = Position.fromAmount0({
+            pool: configuredPool,
+            tickLower: lowerTick,
+            tickUpper: upperTick,
+            amount0: fromReadableAmount2(value, token0.decimal),
+            useFullPrecision: true,
+        })
+
+        return position
+    }
+
+    const createPoistionFromToken1 = (value: string) => {
+        const feeAmount_enum = poolInfo.fee as FeeAmount
+        const configuredPool = new Pool(
+            new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
+            new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
+            feeAmount_enum,
+            poolInfo.sqrtPriceX96.toString(),
+            poolInfo.liquidity.toString(),
+            poolInfo.tick
+        )
+        const position = Position.fromAmount1({
+            pool: configuredPool,
+            tickLower: lowerTick,
+            tickUpper: upperTick,
+            amount1: fromReadableAmount2(value, token1.decimal)
+        })
+
+        return position
     }
 
     const handleAddSuccess = (token0Deposited: string, token1Deposited: string) => {
@@ -182,7 +237,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
                 title="Increasing liquidity" 
                 other={<Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>}>
             <div>
-                <div className="text-sm"><span className="mr-2">Position ID:</span><span>123456</span></div>
+                <div className="text-sm"><span className="mr-2">Position ID:</span><span>{positionId}</span></div>
                 <div>
                     <div>  
                         <DepositInput 
