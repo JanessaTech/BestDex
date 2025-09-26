@@ -25,7 +25,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const [openIncreaseLiquidity, setOpenIncreaseLiquidity] = useState(false)
     const [openDecreaseLiquidity, setOpenDecreaseLiquidity] = useState(false)
     const [openCollectFee, setOpenCollectFee] = useState(false)
-
+    
     const closeIncreaseLiquidityModal = () => {
         setOpenIncreaseLiquidity(false)
     }

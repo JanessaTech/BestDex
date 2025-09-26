@@ -7,9 +7,9 @@ import {
 import {Token} from '@uniswap/sdk-core';
 import { fromReadableAmount2 } from "@/lib/utils";
 import { Decimal } from 'decimal.js';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
-import { useChainId, useAccount} from 'wagmi'
+import { useChainId, useAccount, useCall} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core';
 import { PoolInfo } from "@/lib/tools/pool";
 import { Button } from '../ui/button';
