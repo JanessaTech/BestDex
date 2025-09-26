@@ -1,6 +1,6 @@
 import { TokenType, LocalChainIds} from "@/lib/types";
 import { default as DexToken } from "../common/Token";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId } from "wagmi";
 import { ChainId } from '@uniswap/sdk-core';
@@ -28,7 +28,7 @@ const DepositInput: React.FC<DepositInputProps> = ({amount, token, tokenBalance,
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
         const price = tokenPrices[targetChainId]?.get(token.address)
         let tokenUSD = '0'
-        console.log('price0=', price?.toString(), '  amount=', amount)
+        console.log('price=', price?.toString(), '  amount=', amount)
         if (price) {
             tokenUSD = new Decimal(price).times(amount ? new Decimal(amount) : 0).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
         }
@@ -71,4 +71,4 @@ const DepositInput: React.FC<DepositInputProps> = ({amount, token, tokenBalance,
     )
 }
 
-export default DepositInput
+export default memo(DepositInput)
