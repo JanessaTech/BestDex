@@ -52,11 +52,11 @@ export const tokenList: TokenListType = [
 export const PositionListData: PositionProps[] = [
     {
         id: 11111111, 
-        token0: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
-        token1: {chainId: 1, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}, 
+        token0: {chainId: 1, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}, 
+        token1: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
         lowerTick: 12456,
         upperTick: 456787,
-        liquidity: 758845612347588,
+        liquidity: BigInt(758845612347588),
         status: true,
         fee: 3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -67,7 +67,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: true,
         fee: 3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -78,7 +78,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'AIOZ Network', symbol: 'AIOZ', alias: 'aioz', decimal: 18, address: '0x626e8036deb333b408be468f951bdb42433cbf18', company: 'AIOZ'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: false,
         fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -89,7 +89,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'AIOZ Network', symbol: 'AIOZ', alias: 'aioz', decimal: 18, address: '0x626e8036deb333b408be468f951bdb42433cbf18', company: 'AIOZ'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: false,
         fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -100,7 +100,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: false,
         fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -111,7 +111,7 @@ export const PositionListData: PositionProps[] = [
         token1:  {chainId: 1, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdac17f958d2ee523a2206206994597c13d831ec7'}, 
         lowerTick: 12456,
         upperTick: 456787,
-        liquidity: 758845612347588,
+        liquidity: BigInt(758845612347588),
         status: true,
         fee: 3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -122,7 +122,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: true,
         fee:3000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -133,7 +133,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: false,
         fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -144,7 +144,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: false,
         fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
@@ -155,7 +155,7 @@ export const PositionListData: PositionProps[] = [
         token1: {chainId: 1, name: 'AIOZ Network', symbol: 'AIOZ', alias: 'aioz', decimal: 18, address: '0x626e8036deb333b408be468f951bdb42433cbf18', company: 'AIOZ'},
         lowerTick: 45661,
         upperTick: 986564,
-        liquidity: 8956471235467,
+        liquidity: BigInt(8956471235467),
         status: false,
         fee: 10000,
         wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'

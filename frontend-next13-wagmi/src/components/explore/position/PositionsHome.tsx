@@ -23,6 +23,8 @@ import { PositionProps, TokenType } from "@/lib/types"
 import { PoolInfo } from "@/lib/tools/pool"
 import { IContextUtil, useContextUtil } from "@/components/providers/ContextUtilProvider"
 import { toast } from 'sonner'
+import { useChainId, usePublicClient} from 'wagmi'
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 
 type GlobalVariableType = {
     poolInfo: PoolInfo;
@@ -30,6 +32,10 @@ type GlobalVariableType = {
 }
 type PositionsHomeProps = {}
 const PositionsHome: React.FC<PositionsHomeProps> = () => {
+    //for test
+    const chainId = useChainId()    
+    const publicClient = usePublicClient({chainId})
+
     const [openIncreaseLiquidity, setOpenIncreaseLiquidity] = useState(false)
     const [openDecreaseLiquidity, setOpenDecreaseLiquidity] = useState(false)
     const [openCollectFee, setOpenCollectFee] = useState(false)
@@ -38,6 +44,24 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const [ticks, setTicks] = useState<{lower: number, upper: number}>({lower:0, upper: 0})
     const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
     const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    
+    // for test
+    const getPositionDetail = async (tokenId: number) => {
+        try {
+            if (!publicClient) throw new Error('publicClient is null')
+            const postion = await publicClient.readContract({
+                abi:UNISWAP_V3_POSITION_MANAGER_ABI,
+                address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+                functionName:'positions',
+                args:[BigInt(tokenId)]
+            }) 
+            console.log('[IncreaseLiquidity] postion=', postion)
+            return postion  
+        } catch (error) {
+          console.log('failed to get position details:', error) 
+          throw error 
+        } 
+    }
     
     const closeIncreaseLiquidityModal = () => {
         setOpenIncreaseLiquidity(false)
@@ -51,8 +75,15 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
         setOpenCollectFee(false)
     }
 
-    const handleOpenIncreaseLiquidity = async (position: PositionProps) => {
+    const handleOpenIncreaseLiquidity = async () => {
+        // we should call backend API instead
         try {
+            const tokenId = 1046268
+            const details = await getPositionDetail(tokenId)
+            console.log('details=', details)
+            const token0: TokenType = {chainId: 31337, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}
+            const token1: TokenType = {chainId: 31337, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'}
+            const position: PositionProps = {id: tokenId, token0: token0, token1: token1, lowerTick: details[5], upperTick: details[6], liquidity: details[7], status: false, fee: details[4], wallet: ''}
             const poolAddress = await getPoolAddress(position.token0.address, position.token1.address, position.fee)
             const poolInfo = await getLatestPoolInfo(poolAddress)
             if (!poolInfo) throw new Error('Failed to get poolInfo')
@@ -121,7 +152,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                             <div>
                                                 <ToolTipHelper content="Increase liquidlity">
                                                     <SVGPlus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                            onClick={() => handleOpenIncreaseLiquidity(position)}/>
+                                                            onClick={() => handleOpenIncreaseLiquidity()}/>
                                                 </ToolTipHelper>                                                               
                                             </div>
                                             <div>

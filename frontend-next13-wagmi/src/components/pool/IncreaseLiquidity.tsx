@@ -54,7 +54,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
                                                               poolInfo, positionId, lowerTick, upperTick,
                                                               closeDexModal}) => {
     
-    const { address} = useAccount()                                                         
+
+    const { address} = useAccount()   
     const [settingOpen, setSettingOpen] = useState(false)
     const {slipage, deadline} = useUpdateSetting()
     const [deposit, setDeposit] = useState({amount0: '0', amount1: '0'})
@@ -197,8 +198,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
         )
         const position = Position.fromAmount0({
             pool: configuredPool,
-            tickLower: lowerTick,
-            tickUpper: upperTick,
+            tickLower: 193020,
+            tickUpper: 194760,
             amount0: fromReadableAmount2(value, token0.decimal),
             useFullPrecision: true,
         })
@@ -218,8 +219,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
         )
         const position = Position.fromAmount1({
             pool: configuredPool,
-            tickLower: lowerTick,
-            tickUpper: upperTick,
+            tickLower: 193020,
+            tickUpper: 194760,
             amount1: fromReadableAmount2(value, token1.decimal)
         })
 

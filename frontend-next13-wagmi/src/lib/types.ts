@@ -49,7 +49,7 @@ export type PositionProps = {
     token1: TokenType,
     lowerTick: number,
     upperTick: number,
-    liquidity: number,
+    liquidity: bigint,
     status: boolean,
     fee: number,
     wallet: string
