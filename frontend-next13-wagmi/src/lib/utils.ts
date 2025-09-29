@@ -36,6 +36,7 @@ export function fromReadableAmount2(amount: string, decimals: number) : string {
   return res
 }
 
+// bug：fix when amount is empty or undefined
 export function fromReadableAmount3(amount: string, decimals: number) : JSBI {
   return JSBI.BigInt(parseUnits(amount, decimals).toString())
 }
