@@ -79,7 +79,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
         // we should call backend API instead
         try {
             const tokenId = 1046268
-            const details = await getPositionDetail(tokenId)
+            const details = await getPositionDetail(tokenId) as [bigint, `0x${string}`, `0x${string}`, `0x${string}`, number, number, number, bigint, bigint, bigint, bigint, bigint]
             console.log('details=', details)
             const token0: TokenType = {chainId: 31337, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}
             const token1: TokenType = {chainId: 31337, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'}

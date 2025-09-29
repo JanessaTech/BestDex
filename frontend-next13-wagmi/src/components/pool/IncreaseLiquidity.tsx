@@ -5,11 +5,11 @@ import { useUpdateSetting } from "@/config/store"
 import DepositInput from "./DepositInput"
 import { MintPositionParamsType, TokenType } from "@/lib/types"
 import { Button } from "../ui/button"
-import { PoolInfo } from "@/lib/tools/pool"
+import { PoolInfo, isDataStale } from "@/lib/tools/pool"
 import { 
     FeeAmount,
     Position,
-    MintOptions,
+    AddLiquidityOptions,
     NonfungiblePositionManager,
     Pool} from '@uniswap/v3-sdk';
 import {Token, Percent} from '@uniswap/sdk-core';
@@ -19,6 +19,7 @@ import { Decimal } from 'decimal.js'
 import { useAccount} from 'wagmi'
 import {decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -29,11 +30,11 @@ const parseCalldata = (calldata: `0x${string}`) => {
         })
         console.log('decoded', decoded)
         const name = decoded['functionName']
-        const args = decoded['args'][0] as MintPositionParamsType
-        console.log('name=', name)
-        console.log('args=', args)
+        // const args = decoded['args'][0] as MintPositionParamsType
+        // console.log('name=', name)
+        // console.log('args=', args)
       
-        return  args
+        //return  args
     } catch (error) {
         console.log('Failed to parse calldata due to:', error)
     }
@@ -53,7 +54,6 @@ type IncreaseLiquidityProps = {
 const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, token0Balance, token1Balance,
                                                               poolInfo, positionId, lowerTick, upperTick,
                                                               closeDexModal}) => {
-    
 
     const { address} = useAccount()   
     const [settingOpen, setSettingOpen] = useState(false)
@@ -63,23 +63,79 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
     const [whoInput, setWhoInput] = useState(0)
     const [data, setData] = useState<{calldata: string, parsedCalldata: MintPositionParamsType}>()
     const [showSuccess, setShowSuccess] = useState(false)
+    const [showDialog, setShowDialog] = useState(false)
     const [deposited, setDeposited] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
+    const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
 
     useEffect(() => {
         console.log('[IncreaseLiquidity] curPoolInfo=', curPoolInfo)
-        console.log('[IncreaseLiquidity] positionId=', positionId, ' lowerTick=', lowerTick, ' upperTick=', upperTick)
-        //updateCallData()
-    }, [])
+        console.log('[IncreaseLiquidity] positionId=', positionId, ' lowerTick=', lowerTick, ' curTick=', curPoolInfo.tick, ' upperTick=', upperTick)
+        updateDeposit()
+        setShowDialog(false)
+    }, [curPoolInfo])
+
+    const updatePooInfo = async () => {
+        console.log('[IncreaseLiquidity] updatePooInfo')
+        const poolAddress = await getPoolAddress(token0.address, token1.address, curPoolInfo.fee)
+        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        if (!latestPoolInfo) return // it shouldn't happen after we move websocket to backend
+        setCurPoolInfo(latestPoolInfo)
+    }
+
+    const updateDeposit = async () => {
+        if (upperTick <= curPoolInfo.tick ) {
+            console.log('token0 is hidden')
+            handleDepositChanges('0', '0')
+        } else if (lowerTick >=  curPoolInfo.tick) {
+            console.log('token1 is hidden')
+            handleDepositChanges('0', '0')
+        } else {
+            console.log('no tokens is hidden')
+            if (whoInput === 0) {
+                const position = createPoistionFromToken0(deposit.amount0)
+                const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+                const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+        
+                console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+                handleDepositChanges(deposit.amount0, burnAmount1)
+            } else if (whoInput === 1) {
+                const position = createPoistionFromToken1(deposit.amount1)
+                const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
+                const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
+        
+                console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+                handleDepositChanges(burnAmount0, deposit.amount1)
+            }
+        }
+    }
+
+    const checkRefresh = async () => {
+        const poolAddress = await getPoolAddress(token0.address, token1.address, curPoolInfo.fee)
+        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        if (!latestPoolInfo) return // it shouldn't happen after we move websocket to backend
+        const isStale = isDataStale(curPoolInfo, latestPoolInfo, slipage/100)
+        console.log('[IncreaseLiquidity] isStale=', isStale)
+        if (isStale) {
+            setShowDialog(true)
+        } else {
+            updateCallData()
+        }
+    }
+
+    const closeDialog = () => {
+        setShowDialog(false)
+    }
 
     const updateCallData = () => {
         try {
             const callData = generateCallData()
-            const parsedCalldata = parseCalldata(callData as `0x${string}`)
-            console.log('parsedCalldata=', parsedCalldata)
-            if (!parsedCalldata) {
-                throw new Error('Failed to parse calldata')
-            }
-            setData({calldata: callData, parsedCalldata: parsedCalldata})
+            console.log('callData=', callData)
+            // const parsedCalldata = parseCalldata(callData as `0x${string}`)
+            // console.log('parsedCalldata=', parsedCalldata)
+            // if (!parsedCalldata) {
+            //     throw new Error('Failed to parse calldata')
+            // }
+            // setData({calldata: callData, parsedCalldata: parsedCalldata})
         } catch (error) {
             console.log('We failed to get calldata or parse calldata:', error)
             toast.error('There is something wrong. Please try again')
@@ -87,42 +143,40 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
     }
 
     const generateCallData = () => {
-        const positionToMint = constructPosition()
-        const mintOptions: MintOptions = {
-            recipient: address!, 
+        const positionToIncrease = constructPosition()
+        const mintOptions: AddLiquidityOptions = {
+            tokenId: positionId,
             deadline: Math.floor(Date.now() / 1000) + (deadline === '' ? 1800 : deadline * 60),
             slippageTolerance: new Percent(slipage * 100, 10_000),
         }
         const { calldata } = NonfungiblePositionManager.addCallParameters(
-            positionToMint,
+            positionToIncrease,
             mintOptions
         )
         return calldata
     }
 
     const constructPosition = () => {
-        const feeAmount_enum = poolInfo.fee as FeeAmount
+        const feeAmount_enum = curPoolInfo.fee as FeeAmount
         const configuredPool = new Pool(
             new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
             new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
             feeAmount_enum,
-            poolInfo.sqrtPriceX96.toString(),
-            poolInfo.liquidity.toString(),
-            poolInfo.tick
+            curPoolInfo.sqrtPriceX96.toString(),
+            curPoolInfo.liquidity.toString(),
+            curPoolInfo.tick
         )
 
         let position = undefined
-        if (upperTick <= poolInfo.tick) { // token0 is hidden
+        if (upperTick <= curPoolInfo.tick) { // token0 is hidden
             position = Position.fromAmount1({
                 pool: configuredPool,
                 tickLower: lowerTick,
                 tickUpper: upperTick,
                 amount1: fromReadableAmount2(deposit.amount1, token1.decimal)
             })
-            const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
-            const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-            console.log('[token0 is hidden] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
-        } else if (lowerTick >= poolInfo.tick) { // token1 is hidden
+            console.log('[IncreaseLiquidity] token0 is hidden')
+        } else if (lowerTick >= curPoolInfo.tick) { // token1 is hidden
             position = Position.fromAmount0({
                 pool: configuredPool,
                 tickLower: lowerTick,
@@ -130,9 +184,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
                 amount0: fromReadableAmount2(deposit.amount0, token0.decimal),
                 useFullPrecision: true,
             })
-            const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
-            const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-            console.log('[token1 is hidden] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+            console.log('[IncreaseLiquidity] token1 is hidden')
         } else {
             // no tokens hidden
             position = Position.fromAmounts({
@@ -143,9 +195,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
                 amount1: fromReadableAmount2(deposit.amount1, token1.decimal),
                 useFullPrecision: true,
             })
-            const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
-            const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-            console.log('[no tokens hidden]burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+            console.log('[IncreaseLiquidity] no tokens hidden')
         }
         return position 
     }
@@ -194,22 +244,21 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
             disabled = dec0.lessThanOrEqualTo(new Decimal(token0Balance)) && dec0.greaterThan(0) && dec1.lessThanOrEqualTo(new Decimal(token1Balance)) && dec1.greaterThan(0)? false : true
         }
         return disabled
-        return false
     }
 
-    const handleIncreaseLiquidity = () => {
-
+    const handleIncreaseLiquidity = async () => {
+        await checkRefresh()
     }
 
     const createPoistionFromToken0 = (value: string) => {
-        const feeAmount_enum = poolInfo.fee as FeeAmount
+        const feeAmount_enum = curPoolInfo.fee as FeeAmount
         const configuredPool = new Pool(
             new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
             new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
             feeAmount_enum,
-            poolInfo.sqrtPriceX96.toString(),
-            poolInfo.liquidity.toString(),
-            poolInfo.tick
+            curPoolInfo.sqrtPriceX96.toString(),
+            curPoolInfo.liquidity.toString(),
+            curPoolInfo.tick
         )
         const position = Position.fromAmount0({
             pool: configuredPool,
@@ -223,14 +272,14 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
     }
 
     const createPoistionFromToken1 = (value: string) => {
-        const feeAmount_enum = poolInfo.fee as FeeAmount
+        const feeAmount_enum = curPoolInfo.fee as FeeAmount
         const configuredPool = new Pool(
             new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
             new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
             feeAmount_enum,
-            poolInfo.sqrtPriceX96.toString(),
-            poolInfo.liquidity.toString(),
-            poolInfo.tick
+            curPoolInfo.sqrtPriceX96.toString(),
+            curPoolInfo.liquidity.toString(),
+            curPoolInfo.tick
         )
         const position = Position.fromAmount1({
             pool: configuredPool,
@@ -274,6 +323,21 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({token0, token1, to
                         <span>Increase Liquidity</span>
                         </Button>
                     </div>
+                </div>
+                <div>
+                    {
+                        showDialog && <DexModal title={'Update deposits'} onClick={closeDialog}>
+                                        <div className="w-80 text-sm text-zinc-400 text-center">
+                                            <div>
+                                                <span>You have to adjust your inputs based on the latest uniswap pool data otherwise you may fail to increase the liquidity </span>
+                                            </div>
+                                            <div className="flex items-center justify-center gap-3 my-5">
+                                                <Button className='px-2 py-1 w-20 rounded-full bg-pink-600 hover:bg-pink-700 active:bg-pink-700/80' onClick={updatePooInfo}>OK</Button>
+                                                <Button className="px-2 py-1 w-20 rounded-full bg-zinc-600 hover:bg-zinc-500 active:bg-zinc-600" onClick={closeDialog}>Cancel</Button>
+                                            </div>   
+                                        </div>          
+                                       </DexModal>
+                    }
                 </div>
             </div>
         </DexModal>
