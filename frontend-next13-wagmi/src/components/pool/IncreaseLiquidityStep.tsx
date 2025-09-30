@@ -139,10 +139,10 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
     useEffect(() => {
         let timer = undefined
         if (state.isSuccess) {
-            console.log('it will handleAddSuccess in 1000 milliseconds')
+            console.log('it will handleAddSuccess in 2000 milliseconds')
             timer = setTimeout(() => {
                 handleIncreaseLiquiditySuccess(state.token0Deposited,state.token1Deposited, state.liquidity.toString())
-            }, 1000)
+            }, 2000)
         }
         return () => {
             if (timer) clearTimeout(timer)
