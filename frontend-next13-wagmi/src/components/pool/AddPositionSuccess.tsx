@@ -5,13 +5,13 @@ import { default as DexToken } from "../common/Token";
 import Link from "next/link";
 
 
-type AddLiquiditySuccessProps = {
+type AddPositionSuccessProps = {
     token0: TokenType;
     token1: TokenType;
     depositedToken0: string;
     depositedToken1: string;
 }
-const AddLiquiditySuccess:React.FC<AddLiquiditySuccessProps> = ({token0, token1, depositedToken0, depositedToken1}) => {
+const AddPositionSuccess:React.FC<AddPositionSuccessProps> = ({token0, token1, depositedToken0, depositedToken1}) => {
     return (
         <div className="flex flex-col gap-y-4 items-center">
             <div className="flex flex-col gap-y-4 items-center">
@@ -42,4 +42,4 @@ const AddLiquiditySuccess:React.FC<AddLiquiditySuccessProps> = ({token0, token1,
     )
 }
 
-export default AddLiquiditySuccess
+export default AddPositionSuccess

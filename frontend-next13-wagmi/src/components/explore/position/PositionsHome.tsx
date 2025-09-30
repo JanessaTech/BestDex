@@ -46,14 +46,14 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
     
     // for test
-    const getPositionDetail = async (tokenId: number) => {
+    const getPositionDetail = async (tokenId: bigint) => {
         try {
             if (!publicClient) throw new Error('publicClient is null')
             const postion = await publicClient.readContract({
                 abi:UNISWAP_V3_POSITION_MANAGER_ABI,
                 address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
                 functionName:'positions',
-                args:[BigInt(tokenId)]
+                args:[tokenId]
             }) 
             console.log('[IncreaseLiquidity] postion=', postion)
             return postion  
@@ -78,7 +78,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const handleOpenIncreaseLiquidity = async () => {
         // we should call backend API instead
         try {
-            const tokenId = 1046268
+            const tokenId = BigInt(1046268)
             const details = await getPositionDetail(tokenId) as [bigint, `0x${string}`, `0x${string}`, `0x${string}`, number, number, number, bigint, bigint, bigint, bigint, bigint]
             const token0: TokenType = {chainId: 31337, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}
             const token1: TokenType = {chainId: 31337, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'}

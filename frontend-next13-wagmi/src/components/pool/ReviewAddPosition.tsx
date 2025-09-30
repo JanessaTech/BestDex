@@ -19,7 +19,7 @@ import { useUpdateSetting } from '@/config/store';
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import { toast } from "sonner"
 import { useEffect, useState } from "react";
-import AddLiquiditySuccess from "./AddLiquiditySuccess";
+import AddPositionSuccess from "./AddPositionSuccess";
 
 
 const parseCalldata = (calldata: `0x${string}`) => {
@@ -176,7 +176,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         <DexModal onClick={closeAddPositionModal} title="Adding position">
             {
                 showSuccess
-                ? <AddLiquiditySuccess token0={token0} token1={token1} 
+                ? <AddPositionSuccess token0={token0} token1={token1} 
                               depositedToken0={deposited.token0} depositedToken1={deposited.token1}/>
                 : <div>
                     <div className="pb-2 text-sm">Deposit tokens:</div>

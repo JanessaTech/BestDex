@@ -20,7 +20,7 @@ import {decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import IncreaseLiquidityExecutor from "./IncreaseLiquidityExecutor"
-import AddLiquiditySuccess from "./AddLiquiditySuccess"
+import IncreaseLiquiditySuccess from "./IncreaseLiquiditySuccess"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -59,7 +59,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const [data, setData] = useState<{calldata: string, parsedCalldata: IncreasePositionParamsType}>()
     const [showSuccess, setShowSuccess] = useState(false)
     const [showDialog, setShowDialog] = useState(false)
-    const [deposited, setDeposited] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
+    const [deposited, setDeposited] = useState<{token0: string, token1: string, liquidity: string}>({token0: '', token1: '', liquidity: '0'})
     const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
     const [executed, setExecuted] = useState(false)
 
@@ -122,7 +122,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const generateCallData = () => {
         const positionToIncreaseBy = constructPosition()
         const addLiquidityOptions: AddLiquidityOptions = {
-            tokenId: dexPosition.id,
+            tokenId: dexPosition.id.toString(),
             deadline: Math.floor(Date.now() / 1000) + (deadline === '' ? 1800 : deadline * 60),
             slippageTolerance: new Percent(slipage * 100, 10_000),
         }
@@ -287,9 +287,9 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         return position
     }
 
-    const handleIncreaseLiquiditySuccess = (token0Deposited: string, token1Deposited: string) => {
+    const handleIncreaseLiquiditySuccess = (token0Deposited: string, token1Deposited: string, liquidity: string) => {
         setShowSuccess(true)
-        setDeposited({token0: token0Deposited, token1: token1Deposited})
+        setDeposited({token0: token0Deposited, token1: token1Deposited, liquidity: liquidity})
     }
 
     return (
@@ -299,8 +299,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 other={<Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>}>
             {
                 showSuccess
-                ? <AddLiquiditySuccess token0={dexPosition.token0} token1={dexPosition.token1} 
-                    depositedToken0={deposited.token0} depositedToken1={deposited.token1}/>
+                ? <IncreaseLiquiditySuccess positionId={dexPosition.id} token0={dexPosition.token0} token1={dexPosition.token1} 
+                    depositedToken0={deposited.token0} depositedToken1={deposited.token1} liquidity={deposited.liquidity}/>
                 :   <div>
                         <div className="text-sm"><span className="mr-2">Position ID:</span><span>{dexPosition.id}</span></div>
                         <div>

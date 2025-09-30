@@ -16,7 +16,7 @@ type IncreaseLiquidityExecutorProps = {
     token1: TokenType;
     token0Input:string;
     token1Input:string;
-    handleIncreaseLiquiditySuccess:(token0Deposited: string, token1Deposited: string) => void
+    handleIncreaseLiquiditySuccess:(token0Deposited: string, token1Deposited: string, liquidity: string) => void
 }
 const IncreaseLiquidityExecutor: React.FC<IncreaseLiquidityExecutorProps> = ({data, token0, token1, token0Input, token1Input,
                                                                 handleIncreaseLiquiditySuccess

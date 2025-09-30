@@ -53,7 +53,7 @@ export type IncreasePositionParamsType = {
 }
 
 export type PositionProps = {
-    id: number,
+    id: bigint,
     token0: TokenType,
     token1: TokenType,
     lowerTick: number,

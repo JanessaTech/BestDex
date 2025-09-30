@@ -5,12 +5,13 @@ import { useWriteContract,
     useAccount
   } from 'wagmi'
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
-import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI } from "@/config/constants";
 import { Decimal } from 'decimal.js'
 import SVGPlusCircle from "@/lib/svgs/svg_plus_circle";
 import SVGCheck from "@/lib/svgs/svg_check";
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
+import { decodeEventLog } from 'viem';
 
 
 type IncreaseLiquidityStepProps = {
@@ -18,7 +19,7 @@ type IncreaseLiquidityStepProps = {
     token1: TokenType;
     started: boolean;
     parsedCalldata: IncreasePositionParamsType;
-    handleIncreaseLiquiditySuccess:(token0Deposited: string, token1Deposited: string) => void
+    handleIncreaseLiquiditySuccess:(token0Deposited: string, token1Deposited: string, liquidity: string) => void
 }
 type StateType = {
     reason: string;
@@ -27,7 +28,8 @@ type StateType = {
     token0PreBalance: string;
     token0Deposited: string;
     token1PreBalance: string;
-    token1Deposited: string
+    token1Deposited: string;
+    liquidity: bigint;
 }
 const defaultState: StateType = {
     reason: '',
@@ -36,8 +38,10 @@ const defaultState: StateType = {
     token0PreBalance: '',
     token0Deposited: '',
     token1PreBalance: '',
-    token1Deposited: ''
+    token1Deposited: '',
+    liquidity: BigInt(0)
 }
+
 const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, parsedCalldata, token0, token1,
                                                                     handleIncreaseLiquiditySuccess
 }) => {
@@ -87,6 +91,35 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
         }
     }, [hash])
 
+    const getLiquidity = () => {
+        if (!receipt) return BigInt(0)
+        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
+            try {
+                const encoded = decodeEventLog({
+                    abi: UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI,
+                    data: log.data,
+                    topics: log.topics
+                })
+                return {
+                    ...log,
+                    decoded: encoded,
+                    ok: true
+                }
+            } catch (error: any) {
+                return {
+                    ...log,
+                    decoded: undefined,
+                    ok: false,
+                    error: error?.message
+                }
+            }
+        }).filter((log) => log.ok)
+        console.log('[IncreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
+        if (parsedOKLogs.length === 0) return BigInt(0)
+        if (!parsedOKLogs[0].decoded?.args) return BigInt(0)
+        return parsedOKLogs[0].decoded.args.liquidity
+    }
+
     useEffect(() => {
         (async () => {
             if (!hash || !receipt) return
@@ -96,7 +129,9 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
                 const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
                 const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
-                setState({...state, isPending: false, isSuccess: true, token0Deposited: token0Deposited, token1Deposited: token1Deposited})
+                const liquidity = getLiquidity()
+                console.log('[IncreaseLiquidityStep] liquidity=', liquidity)
+                setState({...state, isPending: false, isSuccess: true, token0Deposited: token0Deposited, token1Deposited: token1Deposited, liquidity: liquidity})
             }
         })() 
     }, [receipt, hash])
@@ -106,7 +141,7 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
         if (state.isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
-                handleIncreaseLiquiditySuccess(state.token0Deposited,state.token1Deposited)
+                handleIncreaseLiquiditySuccess(state.token0Deposited,state.token1Deposited, state.liquidity.toString())
             }, 1000)
         }
         return () => {
