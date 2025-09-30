@@ -84,6 +84,10 @@ interface PositionInfo {
   feeGrowthInside1LastX128: BigNumber
   tokensOwed0: BigNumber
   tokensOwed1: BigNumber
+  token0: string
+  token1: string
+  operator: string;
+  fee: number
 }
 const POOL_FACTORY_CONTRACT_ADDRESS =
   '0x1F98431c8aD98523631AE4a59f267346ea31F984'
@@ -388,6 +392,11 @@ async function constructPosition(
       feeGrowthInside1LastX128: position.feeGrowthInside1LastX128,
       tokensOwed0: position.tokensOwed0.toString(),
       tokensOwed1: position.tokensOwed1.toString(),
+      token0: position.token0,
+      token1:position.token1,
+      operator: position.operator,
+      fee: position.fee
+
     }
   }
 
@@ -539,7 +548,7 @@ async function constructPosition(
   }
 
   async function main() {
-    await mintPosition()
+    //await mintPosition()
     const positionIds = await getPositionIds()
     //await addLiquidity(positionIds[positionIds.length - 1])
     //await removeLiquidity(positionIds[positionIds.length - 1])
