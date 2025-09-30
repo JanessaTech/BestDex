@@ -1,23 +1,23 @@
-import ToolTipHelper from "../common/ToolTipHelper"
-import SVGXCircle from "@/lib/svgs/svg_x_circle"
-import { useEffect, useState } from "react"
-import SVGCheck from "@/lib/svgs/svg_check"
-import SVGPlusCircle from "@/lib/svgs/svg_plus_circle"
+import { IncreasePositionParamsType, TokenType } from "@/lib/types";
+import { useEffect, useState } from "react";
 import { useWriteContract,
-         useWaitForTransactionReceipt,
-         useAccount
-       } from 'wagmi'
-import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
-import { MintPositionParamsType, TokenType } from "@/lib/types"
-import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
+    useWaitForTransactionReceipt,
+    useAccount
+  } from 'wagmi'
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import { Decimal } from 'decimal.js'
+import SVGPlusCircle from "@/lib/svgs/svg_plus_circle";
+import SVGCheck from "@/lib/svgs/svg_check";
+import ToolTipHelper from "../common/ToolTipHelper";
+import SVGXCircle from "@/lib/svgs/svg_x_circle";
 
-type AddPositionStepProps = {
+
+type IncreaseLiquidityStepProps = {
     token0: TokenType;
     token1: TokenType;
     started: boolean;
-    parsedCalldata: MintPositionParamsType,
-    handleAddLiquiditySuccess: (token0Deposited: string, token1Deposited: string) => void;
+    parsedCalldata: IncreasePositionParamsType,
 }
 type StateType = {
     reason: string;
@@ -37,12 +37,11 @@ const defaultState: StateType = {
     token1PreBalance: '',
     token1Deposited: ''
 }
-
-const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata, token0, token1,
-                                                        handleAddLiquiditySuccess}) => {
+const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, parsedCalldata, token0, token1}) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
     const {getTokenBalance} = useContextUtil() as IContextUtil
+
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: hash,
@@ -62,26 +61,25 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         })()
     }, [])
 
-    const handleAddPosition = () => {
+    const handleIncreaseLiquidity = () => {
         writeContract({
             address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
-            functionName: 'mint',
+            functionName: 'increaseLiquidity',
             args: [parsedCalldata],
         })
     }
 
     useEffect(() => {
         if (started) {
-            console.log('[AddPositionStep] it will run handleAddPosition')
+            console.log('[IncreaseLiquidityStep] it will run handleIncreaseLiquidity')
             setState({...state, isPending: true})
-            handleAddPosition()
+            handleIncreaseLiquidity()
         }
     }, [started])
-
     useEffect(() => {
         if (hash) {
-            console.log('[AddPositionStep] it will fetch the receipt')
+            console.log('[IncreaseLiquidityStep] it will fetch the receipt')
             refetchReceipt()
         }
     }, [hash])
@@ -90,7 +88,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         (async () => {
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
-                console.log('[AddPositionStep] A new position is added')
+                console.log('[IncreaseLiquidityStep] The new liquidity is added')
                 const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
                 const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
                 const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
@@ -105,7 +103,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         if (state.isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
-                handleAddLiquiditySuccess(state.token0Deposited,state.token1Deposited)
+                //handleAddLiquiditySuccess(state.token0Deposited,state.token1Deposited)
             }, 1000)
         }
         return () => {
@@ -120,15 +118,16 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         }
     }, [writeError, receiptError])
     
-    console.log('[AddPositionStep] ====== Latest state ========')
-    console.log('[AddPositionStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
-    console.log('[AddPositionStep]', ' hash=', hash)
-    console.log('[AddPositionStep] writeError=', writeError)
-    console.log('[AddPositionStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
-    console.log('[AddPositionStep] receipt=', receipt)
-    console.log('[AddPositionStep] receiptStatus=', receiptStatus)
-    console.log('[AddPositionStep] receiptError=', receiptError)
+    console.log('[IncreaseLiquidityStep] ====== Latest state ========')
+    console.log('[IncreaseLiquidityStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
+    console.log('[IncreaseLiquidityStep]', ' hash=', hash)
+    console.log('[IncreaseLiquidityStep] writeError=', writeError)
+    console.log('[IncreaseLiquidityStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
+    console.log('[IncreaseLiquidityStep] receipt=', receipt)
+    console.log('[IncreaseLiquidityStep] receiptStatus=', receiptStatus)
+    console.log('[IncreaseLiquidityStep] receiptError=', receiptError)
     
+
     return (
         <div className="flex justify-between items-center">
             <div className="flex items-center relative">
@@ -158,4 +157,4 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
     )
 }
 
-export default AddPositionStep
+export default IncreaseLiquidityStep

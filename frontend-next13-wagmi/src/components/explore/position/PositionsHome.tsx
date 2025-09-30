@@ -80,7 +80,6 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
         try {
             const tokenId = 1046268
             const details = await getPositionDetail(tokenId) as [bigint, `0x${string}`, `0x${string}`, `0x${string}`, number, number, number, bigint, bigint, bigint, bigint, bigint]
-            console.log('details=', details)
             const token0: TokenType = {chainId: 31337, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}
             const token1: TokenType = {chainId: 31337, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'}
             const position: PositionProps = {id: tokenId, token0: token0, token1: token1, lowerTick: details[5], upperTick: details[6], liquidity: details[7], status: false, fee: details[4], wallet: ''}
@@ -178,10 +177,8 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
             </TabsContent>
             {
                 openIncreaseLiquidity  && global && <IncreaseLiquidity
-                                            token0={global.position.token0} token1={global.position.token1}
                                             poolInfo={global.poolInfo}
-                                            positionId={global.position.id}
-                                            lowerTick={global.position.lowerTick} upperTick={global.position.upperTick}
+                                            dexPosition={global.position}
                                             token0Balance={tokenBalances.token0} token1Balance={tokenBalances.token1}
                                             closeDexModal={closeIncreaseLiquidityModal}/>
             }

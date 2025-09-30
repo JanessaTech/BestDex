@@ -41,11 +41,15 @@ export type MintPositionParamsType = {
     amount1Min: bigint, 
     amount0Desired: bigint, 
     amount1Desired: bigint, 
-    deadline: bigint}
+    deadline: bigint
+}
 export type IncreasePositionParamsType = {
     tokenId: bigint,
     amount0Desired: bigint,
-    
+    amount1Desired: bigint,
+    amount0Min: bigint,
+    amount1Min: bigint,
+    deadline: bigint
 }
 
 export type PositionProps = {
