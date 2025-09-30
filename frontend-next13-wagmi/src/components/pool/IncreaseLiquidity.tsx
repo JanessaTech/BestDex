@@ -20,6 +20,7 @@ import {decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import IncreaseLiquidityExecutor from "./IncreaseLiquidityExecutor"
+import AddLiquiditySuccess from "./AddLiquiditySuccess"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -286,7 +287,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         return position
     }
 
-    const handleAddSuccess = (token0Deposited: string, token1Deposited: string) => {
+    const handleIncreaseLiquiditySuccess = (token0Deposited: string, token1Deposited: string) => {
         setShowSuccess(true)
         setDeposited({token0: token0Deposited, token1: token1Deposited})
     }
@@ -296,53 +297,59 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 onClick={closeDexModal} 
                 title="Increasing liquidity" 
                 other={<Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>}>
-            <div>
-                <div className="text-sm"><span className="mr-2">Position ID:</span><span>{dexPosition.id}</span></div>
-                <div>
-                    <div>  
-                        <DepositInput 
-                            token={dexPosition.token0} tokenBalance={token0Balance} amount={deposit.amount0}
-                            updateTokenChange={updateToken0Change}/>
+            {
+                showSuccess
+                ? <AddLiquiditySuccess token0={dexPosition.token0} token1={dexPosition.token1} 
+                    depositedToken0={deposited.token0} depositedToken1={deposited.token1}/>
+                :   <div>
+                        <div className="text-sm"><span className="mr-2">Position ID:</span><span>{dexPosition.id}</span></div>
+                        <div>
+                            <div>  
+                                <DepositInput 
+                                    token={dexPosition.token0} tokenBalance={token0Balance} amount={deposit.amount0}
+                                    updateTokenChange={updateToken0Change}/>
+                            </div>
+                            <div>  
+                                <DepositInput 
+                                    token={dexPosition.token1} tokenBalance={token1Balance} amount={deposit.amount1}
+                                    updateTokenChange={updateToken1Change}/>
+                            </div>
+                            <div className='pt-4'>
+                                <Button
+                                    className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
+                                    disabled={executed || checkDisabled()}
+                                    onClick={handleIncreaseLiquidity}
+                                > 
+                                <span>Increase Liquidity</span>
+                                </Button>
+                            </div>
+                            <div>
+                                {
+                                    data && <IncreaseLiquidityExecutor 
+                                            data={data}
+                                            token0={dexPosition.token0} token1={dexPosition.token1}
+                                            token0Input={deposit.amount0} token1Input={deposit.amount1}
+                                            handleIncreaseLiquiditySuccess={handleIncreaseLiquiditySuccess}/>
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            {
+                                showDialog && <DexModal title={'Update deposits'} onClick={closeDialog}>
+                                                <div className="w-80 text-sm text-zinc-400 text-center">
+                                                    <div>
+                                                        <span>You have to adjust your inputs based on the latest uniswap pool data otherwise you may fail to increase the liquidity </span>
+                                                    </div>
+                                                    <div className="flex items-center justify-center gap-3 my-5">
+                                                        <Button className='px-2 py-1 w-20 rounded-full bg-pink-600 hover:bg-pink-700 active:bg-pink-700/80' onClick={updatePooInfo}>OK</Button>
+                                                        <Button className="px-2 py-1 w-20 rounded-full bg-zinc-600 hover:bg-zinc-500 active:bg-zinc-600" onClick={closeDialog}>Cancel</Button>
+                                                    </div>   
+                                                </div>          
+                                            </DexModal>
+                            }
+                        </div>
                     </div>
-                    <div>  
-                        <DepositInput 
-                            token={dexPosition.token1} tokenBalance={token1Balance} amount={deposit.amount1}
-                            updateTokenChange={updateToken1Change}/>
-                    </div>
-                    <div className='pt-4'>
-                        <Button
-                            className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
-                            disabled={executed || checkDisabled()}
-                            onClick={handleIncreaseLiquidity}
-                        > 
-                        <span>Increase Liquidity</span>
-                        </Button>
-                    </div>
-                    <div>
-                        {
-                            data && <IncreaseLiquidityExecutor 
-                                    data={data}
-                                    token0={dexPosition.token0} token1={dexPosition.token1}
-                                    token0Input={deposit.amount0} token1Input={deposit.amount1}/>
-                        }
-                    </div>
-                </div>
-                <div>
-                    {
-                        showDialog && <DexModal title={'Update deposits'} onClick={closeDialog}>
-                                        <div className="w-80 text-sm text-zinc-400 text-center">
-                                            <div>
-                                                <span>You have to adjust your inputs based on the latest uniswap pool data otherwise you may fail to increase the liquidity </span>
-                                            </div>
-                                            <div className="flex items-center justify-center gap-3 my-5">
-                                                <Button className='px-2 py-1 w-20 rounded-full bg-pink-600 hover:bg-pink-700 active:bg-pink-700/80' onClick={updatePooInfo}>OK</Button>
-                                                <Button className="px-2 py-1 w-20 rounded-full bg-zinc-600 hover:bg-zinc-500 active:bg-zinc-600" onClick={closeDialog}>Cancel</Button>
-                                            </div>   
-                                        </div>          
-                                       </DexModal>
-                    }
-                </div>
-            </div>
+            } 
         </DexModal>
     )
 }

@@ -16,8 +16,11 @@ type IncreaseLiquidityExecutorProps = {
     token1: TokenType;
     token0Input:string;
     token1Input:string;
+    handleIncreaseLiquiditySuccess:(token0Deposited: string, token1Deposited: string) => void
 }
-const IncreaseLiquidityExecutor: React.FC<IncreaseLiquidityExecutorProps> = ({data, token0, token1, token0Input, token1Input,}) => {
+const IncreaseLiquidityExecutor: React.FC<IncreaseLiquidityExecutorProps> = ({data, token0, token1, token0Input, token1Input,
+                                                                handleIncreaseLiquiditySuccess
+}) => {
     const [step, setStep] = useState(1)
 
     const goNext = useCallback(() => {
@@ -43,6 +46,7 @@ const IncreaseLiquidityExecutor: React.FC<IncreaseLiquidityExecutorProps> = ({da
             <IncreaseLiquidityStep 
                 token0={token0} token1={token1}
                 started={step === 4} parsedCalldata={data.parsedCalldata} 
+                handleIncreaseLiquiditySuccess={handleIncreaseLiquiditySuccess}
                 />
         </div>
     )

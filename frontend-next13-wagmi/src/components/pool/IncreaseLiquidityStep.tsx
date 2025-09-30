@@ -17,7 +17,8 @@ type IncreaseLiquidityStepProps = {
     token0: TokenType;
     token1: TokenType;
     started: boolean;
-    parsedCalldata: IncreasePositionParamsType,
+    parsedCalldata: IncreasePositionParamsType;
+    handleIncreaseLiquiditySuccess:(token0Deposited: string, token1Deposited: string) => void
 }
 type StateType = {
     reason: string;
@@ -37,7 +38,9 @@ const defaultState: StateType = {
     token1PreBalance: '',
     token1Deposited: ''
 }
-const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, parsedCalldata, token0, token1}) => {
+const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, parsedCalldata, token0, token1,
+                                                                    handleIncreaseLiquiditySuccess
+}) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
     const {getTokenBalance} = useContextUtil() as IContextUtil
@@ -103,7 +106,7 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
         if (state.isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
-                //handleAddLiquiditySuccess(state.token0Deposited,state.token1Deposited)
+                handleIncreaseLiquiditySuccess(state.token0Deposited,state.token1Deposited)
             }, 1000)
         }
         return () => {
@@ -138,10 +141,10 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
                                                 : writeError || receiptError
                                                     ? 'text-red-600'
                                                     : 'text-pink-600'}`}>{state.isSuccess
-                                                                                ? `A new position is added` 
+                                                                                ? `New liquidity was added` 
                                                                                 :   writeError || receiptError
-                                                                                    ? `Failed to add a new postion`
-                                                                                    : `Add a new postion`                                                   
+                                                                                    ? `Failed to increase liquidity`
+                                                                                    : `Increasing liquidity`                                                   
                                                                                     }</div>
             </div>
             {

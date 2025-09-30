@@ -139,10 +139,10 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                                                 : writeError || receiptError
                                                     ? 'text-red-600'
                                                     : 'text-pink-600'}`}>{state.isSuccess
-                                                                                ? `A new position is added` 
+                                                                                ? `A new position was added` 
                                                                                 :   writeError || receiptError
                                                                                     ? `Failed to add a new postion`
-                                                                                    : `Add a new postion`                                                   
+                                                                                    : `Adding a new postion`                                                   
                                                                                     }</div>
             </div>
             {

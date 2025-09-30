@@ -73,8 +73,8 @@ const SimulateIncreaseLiquidityStep:React.FC<SimulateIncreaseLiquidityStepProps>
                                                     : 'text-pink-600'}`}>{isSuccess
                                                                                 ? `Simulation passed` 
                                                                                 :   simulationError
-                                                                                    ? `Failed to simulate adding a postion`
-                                                                                    : `Simulate adding a postion ${skip ? '(skipped)' : ''}`                                                   
+                                                                                    ? `Failed to simulate increasing liquidity`
+                                                                                    : `Simulating increasing liquidity ${skip ? '(skipped)' : ''}`                                                   
                                                                                     }</div>
             </div>
             {

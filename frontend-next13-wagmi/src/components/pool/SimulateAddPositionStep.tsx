@@ -75,7 +75,7 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
                                                                                 ? `Simulation passed` 
                                                                                 :   simulationError
                                                                                     ? `Failed to simulate adding a postion`
-                                                                                    : `Simulate adding a postion ${skip ? '(skipped)' : ''}`                                                   
+                                                                                    : `Simulating adding a postion ${skip ? '(skipped)' : ''}`                                                   
                                                                                     }</div>
             </div>
             {
