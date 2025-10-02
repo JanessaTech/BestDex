@@ -8,17 +8,18 @@ import Link from "next/link";
 type AddPositionSuccessProps = {
     token0: TokenType;
     token1: TokenType;
+    positionId: bigint;
     depositedToken0: string;
     depositedToken1: string;
 }
-const AddPositionSuccess:React.FC<AddPositionSuccessProps> = ({token0, token1, depositedToken0, depositedToken1}) => {
+const AddPositionSuccess:React.FC<AddPositionSuccessProps> = ({positionId, token0, token1, depositedToken0, depositedToken1}) => {
     return (
         <div className="flex flex-col gap-y-4 items-center">
             <div className="flex flex-col gap-y-4 items-center">
                 <div className="py-3">
                     <SVGCheck className="text-white bg-green-600 size-14 p-2 rounded-full"/>
                 </div>
-                <div className="font-semibold">A new position was added!</div>
+                <div>A new position <span className="text-pink-600">({positionId.toString()})</span> was added!</div>
             </div>
             <div className="border-t-[1px] border-zinc-600 my-4 text-sm">
                 <div className="py-2 flex items-center">

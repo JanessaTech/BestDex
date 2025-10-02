@@ -7,17 +7,18 @@ import { useWriteContract,
          useWaitForTransactionReceipt,
          useAccount
        } from 'wagmi'
-import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI } from "@/config/constants"
 import { MintPositionParamsType, TokenType } from "@/lib/types"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
+import { decodeEventLog } from 'viem';
 
 type AddPositionStepProps = {
     token0: TokenType;
     token1: TokenType;
     started: boolean;
     parsedCalldata: MintPositionParamsType,
-    handleAddLiquiditySuccess: (token0Deposited: string, token1Deposited: string) => void;
+    handleAddLiquiditySuccess: (positionId: bigint, token0Deposited: string, token1Deposited: string) => void;
 }
 type StateType = {
     reason: string;
@@ -26,7 +27,8 @@ type StateType = {
     token0PreBalance: string;
     token0Deposited: string;
     token1PreBalance: string;
-    token1Deposited: string
+    token1Deposited: string;
+    positionId: bigint;
 }
 const defaultState: StateType = {
     reason: '',
@@ -35,7 +37,8 @@ const defaultState: StateType = {
     token0PreBalance: '',
     token0Deposited: '',
     token1PreBalance: '',
-    token1Deposited: ''
+    token1Deposited: '',
+    positionId: BigInt(-1)
 }
 
 const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata, token0, token1,
@@ -86,6 +89,35 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         }
     }, [hash])
 
+    const getPositionId = () => {
+        if (!receipt) return BigInt(-1)
+        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
+            try {
+                const encoded = decodeEventLog({
+                    abi: UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI,
+                    data: log.data,
+                    topics: log.topics
+                })
+                return {
+                    ...log,
+                    decoded: encoded,
+                    ok: true
+                }
+            } catch (error: any) {
+                return {
+                    ...log,
+                    decoded: undefined,
+                    ok: false,
+                    error: error?.message
+                }
+            }
+        }).filter((log) => log.ok)
+        console.log('[IncreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
+        if (parsedOKLogs.length === 0) return BigInt(-1)
+        if (!parsedOKLogs[0].decoded?.args) return BigInt(-1)
+        return parsedOKLogs[0].decoded.args.tokenId
+    }
+
     useEffect(() => {
         (async () => {
             if (!hash || !receipt) return
@@ -95,7 +127,9 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                 const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
                 const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
-                setState({...state, isPending: false, isSuccess: true, token0Deposited: token0Deposited, token1Deposited: token1Deposited})
+                const positionId = getPositionId()
+                console.log('[AddPositionStep] positionId=', positionId)
+                setState({...state, isPending: false, isSuccess: true, positionId: positionId, token0Deposited: token0Deposited, token1Deposited: token1Deposited})
             }
         })() 
     }, [receipt, hash])
@@ -105,7 +139,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         if (state.isSuccess) {
             console.log('it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
-                handleAddLiquiditySuccess(state.token0Deposited,state.token1Deposited)
+                handleAddLiquiditySuccess(state.positionId, state.token0Deposited,state.token1Deposited)
             }, 1000)
         }
         return () => {

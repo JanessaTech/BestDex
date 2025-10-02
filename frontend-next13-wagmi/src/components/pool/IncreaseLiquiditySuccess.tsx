@@ -20,7 +20,7 @@ const IncreaseLiquiditySuccess:React.FC<IncreaseLiquiditySuccessProps> = ({posit
                 <div className="py-3">
                     <SVGCheck className="text-white bg-green-600 size-14 p-2 rounded-full"/>
                 </div>
-                <div className="font-semibold"><span className="text-pink-600">{liquidity}</span> liquidity was added!</div>
+                <div><span className="text-pink-600">{liquidity}</span> amount of liquidity was added!</div>
             </div>
             <div className="text-sm">PositionId: <span className="text-pink-600">{positionId.toString()}</span></div>
             <div className="border-t-[1px] border-zinc-600 my-1 text-sm">

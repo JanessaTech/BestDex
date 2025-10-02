@@ -56,7 +56,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                                                               poolInfo,lowerTick, curTick, upperTick,
                                                               closeAddPositionModal}) => {
     const [showSuccess, setShowSuccess] = useState(false)
-    const [deposited, setDeposited] = useState<{token0: string, token1: string}>({token0: '', token1: ''})
+    const [deposited, setDeposited] = useState<{positionId: bigint, token0: string, token1: string}>({positionId: BigInt(-1), token0: '', token1: ''})
     const [tokensUSD, setTokensUSD] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
     const [data, setData] = useState<{calldata: string, parsedCalldata: MintPositionParamsType}>()
     const {slipage, deadline} = useUpdateSetting()
@@ -167,9 +167,9 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         return calldata
     }
 
-    const handleAddLiquiditySuccess = (token0Deposited: string, token1Deposited: string) => {
+    const handleAddLiquiditySuccess = (positionId: bigint, token0Deposited: string, token1Deposited: string) => {
         setShowSuccess(true)
-        setDeposited({token0: token0Deposited, token1: token1Deposited})
+        setDeposited({positionId: positionId, token0: token0Deposited, token1: token1Deposited})
     }
 
     return (
@@ -177,6 +177,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
             {
                 showSuccess
                 ? <AddPositionSuccess token0={token0} token1={token1} 
+                              positionId={deposited.positionId}
                               depositedToken0={deposited.token0} depositedToken1={deposited.token1}/>
                 : <div>
                     <div className="pb-2 text-sm">Deposit tokens:</div>

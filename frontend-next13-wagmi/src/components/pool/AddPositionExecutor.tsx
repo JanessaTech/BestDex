@@ -17,7 +17,7 @@ type AddPositionExecutorProps = {
     token1: TokenType;
     token0Input:string;
     token1Input:string;
-    handleAddLiquiditySuccess: (token0Deposited: string, token1Deposited: string) => void;
+    handleAddLiquiditySuccess: (positionId: bigint, token0Deposited: string, token1Deposited: string) => void;
 }
 const AddPositionExecutor:React.FC<AddPositionExecutorProps> = ({data, token0, token1, token0Input, token1Input,
                                                                 handleAddLiquiditySuccess}) => {
