@@ -304,16 +304,22 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 :   <div>
                         <div className="text-sm"><span className="mr-2">Position ID:</span><span>{dexPosition.id}</span></div>
                         <div>
-                            <div>  
-                                <DepositInput 
-                                    token={dexPosition.token0} tokenBalance={token0Balance} amount={deposit.amount0}
-                                    updateTokenChange={updateToken0Change}/>
-                            </div>
-                            <div>  
-                                <DepositInput 
-                                    token={dexPosition.token1} tokenBalance={token1Balance} amount={deposit.amount1}
-                                    updateTokenChange={updateToken1Change}/>
-                            </div>
+                            {
+                                dexPosition.upperTick > curPoolInfo.tick &&
+                                <div>  
+                                    <DepositInput 
+                                        token={dexPosition.token0} tokenBalance={token0Balance} amount={deposit.amount0}
+                                        updateTokenChange={updateToken0Change}/>
+                                </div>
+                            }
+                            {
+                                dexPosition.lowerTick < curPoolInfo.tick &&
+                                <div>  
+                                    <DepositInput 
+                                        token={dexPosition.token1} tokenBalance={token1Balance} amount={deposit.amount1}
+                                        updateTokenChange={updateToken1Change}/>
+                                </div>
+                            }
                             <div className='pt-4'>
                                 <Button
                                     className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
