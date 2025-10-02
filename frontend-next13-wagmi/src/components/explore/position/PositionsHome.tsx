@@ -131,7 +131,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                     </TableCell>
                                     <TableCell className={`max-md:hidden`}>
                                         <ToolTipHelper content={`${position.liquidity}`}>
-                                            <div className="w-[100px] truncate">{position.liquidity}</div>
+                                            <div className="w-[100px] truncate">{position.liquidity.toString()}</div>
                                         </ToolTipHelper>
                                     </TableCell>
                                     <TableCell className={`max-md:hidden`}>   
