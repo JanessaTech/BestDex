@@ -59,6 +59,8 @@ export type PositionProps = {
     lowerTick: number,
     upperTick: number,
     liquidity: bigint,
+    tokensOwed0: bigint,
+    tokensOwed1:bigint,
     status: boolean,
     fee: number,
     wallet: string

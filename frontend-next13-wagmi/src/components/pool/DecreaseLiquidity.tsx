@@ -1,25 +1,55 @@
-import { TokenType } from "@/lib/types";
+import { PositionProps } from "@/lib/types";
 import DexModal from "../common/DexModal"
 import { useState } from "react";
 import Setting from "../common/Setting"
 import { Button } from "../ui/button"
+import { 
+    FeeAmount,
+    Position,
+    CollectOptions,
+    RemoveLiquidityOptions,
+    NonfungiblePositionManager,
+    Pool} from '@uniswap/v3-sdk';
+import {CurrencyAmount, Token, Percent} from '@uniswap/sdk-core';
+import { useAccount} from 'wagmi';
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
+import { Decimal } from 'decimal.js'
+import { useUpdateSetting } from "@/config/store";
+import { maxUint128, decodeFunctionData} from 'viem'
+import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 
-
+const parseCalldata = (calldata: `0x${string}`) => {
+    try {
+        const decoded = decodeFunctionData({
+            abi: UNISWAP_V3_POSITION_MANAGER_ABI,
+            data: calldata
+        })
+        console.log('decoded', decoded)
+        const name = decoded['functionName']
+        const args = decoded['args'][0] as `0x${string}`[]
+        console.log('name=', name)
+        console.log('args=', args)
+        return  args
+    } catch (error) {
+        console.log('Failed to parse calldata due to:', error)
+    }
+}
 
 type DEcreaseLiquidityProps = {
-    token0: TokenType;
-    token1: TokenType;
-    token0Balance: string;
-    token1Balance: string;
+    dexPosition: PositionProps;
     closeDexModal: () => void
 }
-const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({token0, token1, token0Balance, token1Balance,
+const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
                                                               closeDexModal}) => {
     const [settingOpen, setSettingOpen] = useState(false)
+    const {slipage, deadline} = useUpdateSetting()
+    const {address} = useAccount()
     const [removePercent, setRemovePercent] = useState<number | ''>(50)
     const [executed, setExecuted] = useState(false)
+    const [data, setData] = useState<{calldata: string, parsedCalldata: readonly `0x${string}`[]}>()
+    const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
 
-
+    console.log('[DecreaseLiquidity] slipage=', slipage)
     const onSettingOpenChange = (open: boolean) => {
         setSettingOpen(open)
     }
@@ -30,6 +60,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({token0, token1, to
             setRemovePercent('')
         } 
     }
+
     const handleRemovePercentOnBlur = () => {
         console.log('handleRemovePercentOnBlur')
         console.log('removePercent = ', removePercent)
@@ -43,9 +74,103 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({token0, token1, to
         return false
     }
 
-    const handlDecreaseLiquidity = () => {
-        setExecuted(true)
+    const handlDecreaseLiquidity = async () => {
+        try {
+            const calldata = await generateCallData()
+            const parsedCalldata = parseCalldata(calldata as `0x${string}`)
+            if (!parsedCalldata) {
+                throw new Error('Failed to parse calldata')
+            }
+            setData({calldata: calldata, parsedCalldata: parsedCalldata})
+            setExecuted(true)
+        } catch (error) {
+            console.log(error)
+        }
     }
+
+    const generateCallData = async () => {
+        const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, dexPosition.fee)
+        const curPoolInfo = await getLatestPoolInfo(poolAddress) // call backend api instead
+        if (!curPoolInfo) throw new Error('Failed to get poolInfo')
+        if (!address) throw new Error('Failed to get current wallet account')
+        const token0 = new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name)
+        const token1 = new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name)
+
+        const feeAmount_enum = curPoolInfo.fee as FeeAmount
+        const pool = new Pool(
+            token0,
+            token1,
+            feeAmount_enum,
+            curPoolInfo.sqrtPriceX96.toString(),
+            curPoolInfo.liquidity.toString(),
+            curPoolInfo.tick
+        )
+        const position = new Position({
+            pool,
+            liquidity: dexPosition.liquidity.toString(),
+            tickLower: dexPosition.lowerTick,
+            tickUpper: dexPosition.upperTick
+        })
+        const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token0.decimal)).toDecimalPlaces(dexPosition.token0.decimal, Decimal.ROUND_HALF_UP).toString()
+        const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
+
+        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+        
+        const collectOptions: Omit<CollectOptions, 'tokenId'> = {
+            expectedCurrencyOwed0: CurrencyAmount.fromRawAmount(token0, maxUint128.toString()),
+            expectedCurrencyOwed1: CurrencyAmount.fromRawAmount(token1, maxUint128.toString()),
+            recipient: address,
+        }
+        const removeLiquidityOptions: RemoveLiquidityOptions = {
+            deadline: Math.floor(Date.now() / 1000) + (deadline === '' ? 1800 : deadline * 60),
+            slippageTolerance: new Percent(slipage * 100, 10_000),
+            tokenId: dexPosition.id.toString(),
+            // percentage of liquidity to remove
+            liquidityPercentage: new Percent(removePercent, 100),
+            collectOptions,
+          }
+          // get calldata for decreasing a position
+        const { calldata, value } = NonfungiblePositionManager.removeCallParameters(
+            position,
+            removeLiquidityOptions
+        )
+        console.log('calldata:', calldata)
+        return calldata
+    }
+
+    // const calTotalExpectAmounts = async () => {
+    //     const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, dexPosition.fee)
+    //     const curPoolInfo = await getLatestPoolInfo(poolAddress)
+    //     if (!curPoolInfo) throw new Error('Failed to get poolInfo')
+    //     const feeAmount_enum = curPoolInfo.fee as FeeAmount
+    //     const pool = new Pool(
+    //         new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name),
+    //         new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name),
+    //         feeAmount_enum,
+    //         curPoolInfo.sqrtPriceX96.toString(),
+    //         curPoolInfo.liquidity.toString(),
+    //         curPoolInfo.tick
+    //     )
+    //     const liquidityToRemove = new Decimal(dexPosition.liquidity).mul(removePercent).div(100)
+    //     const position = new Position({
+    //             pool,
+    //             liquidity: liquidityToRemove.toString(),
+    //             tickLower: dexPosition.lowerTick,
+    //             tickUpper: dexPosition.upperTick
+    //             })
+        
+    //     const { amount0: expectedAmount0, amount1: expectedAmount1 } = position.burnAmountsWithSlippage(new Percent(slipage * 100, 10_000))
+    //     const tokensOwed0 = dexPosition.tokensOwed0
+    //     const tokensOwed1 = dexPosition.tokensOwed1
+    //     console.log('calTotalExpectAmounts: ', 'expectedAmount0 =', expectedAmount0.toString())
+    //     console.log('calTotalExpectAmounts: ', 'expectedAmount1 =', expectedAmount1.toString())
+    //     console.log('calTotalExpectAmounts: ', 'tokensOwed0 =', tokensOwed0.toString())
+    //     console.log('calTotalExpectAmounts: ', 'tokensOwed1 =', tokensOwed1.toString())
+    //     const totalExpectedAmount0  = JSBI.add(expectedAmount0, JSBI.BigInt(tokensOwed0.toString()))
+    //     const totalExpectedAmount1 = JSBI.add(expectedAmount1, JSBI.BigInt(tokensOwed1.toString()))
+    //     console.log('calTotalExpectAmounts: ', 'totalExpectedAmount0 =', totalExpectedAmount0.toString())
+    //     console.log('calTotalExpectAmounts: ', 'totalExpectedAmount1 =', totalExpectedAmount1.toString())
+    // }
 
     return (
         <DexModal 
@@ -53,8 +178,8 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({token0, token1, to
             title="Decreasing liquidity"
             other={<Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>}>
             <div className="text-sm flex flex-col gap-2">
-                <div><span className="mr-2">PositionId:</span><span>123456</span></div>
-                <div><span className="mr-2">Total liquidity:</span><span>45898966666664</span></div>
+                <div><span className="mr-2">PositionId:</span><span>{dexPosition.id}</span></div>
+                <div><span className="mr-2">Total liquidity:</span><span>{dexPosition.liquidity}</span></div>
                 <div className="flex items-center">
                     <span className="mr-2">Percentage to remove:</span>
                     <div className="flex items-center">
