@@ -73,3 +73,9 @@ export const UNISWAP_V3_POSITION_MANAGER_ABI = parseAbi([
 export const UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI = parseAbi([
   'event IncreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)',
 ])
+export const UNISWAP_V3_POSITION_MANAGER_DECREASE_LIQUIDITY_ABI = parseAbi([
+  'event DecreaseLiquidity(uint256 indexed tokenId, uint128 liquidity, uint256 amount0, uint256 amount1)',
+])
+export const UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI = parseAbi([
+  'event Collect(uint256 indexed tokenId, address recipient, uint256 amount0, uint256 amount1)',
+])

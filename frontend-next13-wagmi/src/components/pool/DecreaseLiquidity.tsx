@@ -1,6 +1,6 @@
 import { PositionProps } from "@/lib/types";
 import DexModal from "../common/DexModal"
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Setting from "../common/Setting"
 import { Button } from "../ui/button"
 import { 
@@ -17,6 +17,8 @@ import { Decimal } from 'decimal.js'
 import { useUpdateSetting } from "@/config/store";
 import { maxUint128, decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
+import DecreaseLiquidityExecutor from "./DecreaseLiquidityExecutor";
+import DecreaseLiquiditySuccess from "./DecreaseLiquiditySuccess";
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -46,10 +48,14 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
     const {address} = useAccount()
     const [removePercent, setRemovePercent] = useState<number | ''>(50)
     const [executed, setExecuted] = useState(false)
-    const [data, setData] = useState<{calldata: string, parsedCalldata: readonly `0x${string}`[]}>()
+    const [showSuccess, setShowSuccess] = useState(false)
+    const [deposited, setDeposited] = useState({token0: '0', token1: '0', removedLiquidity: ''})
+    const [data, setData] = useState<{calldata: `0x${string}`, parsedCalldata: readonly `0x${string}`[]}>()
     const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
 
     console.log('[DecreaseLiquidity] slipage=', slipage)
+
+
     const onSettingOpenChange = (open: boolean) => {
         setSettingOpen(open)
     }
@@ -105,7 +111,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
             curPoolInfo.liquidity.toString(),
             curPoolInfo.tick
         )
-        const position = new Position({
+        const position = new Position({ // reconstruct the position object
             pool,
             liquidity: dexPosition.liquidity.toString(),
             tickLower: dexPosition.lowerTick,
@@ -115,6 +121,10 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
         const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
 
         console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+
+        // const { amount0: amount0Min, amount1: amount1Min } = position.burnAmountsWithSlippage(
+        //     new Percent(slipage * 100, 10_000))
+        // console.log('amount0Min=', amount0Min, '   amount1Min=', amount1Min)
         
         const collectOptions: Omit<CollectOptions, 'tokenId'> = {
             expectedCurrencyOwed0: CurrencyAmount.fromRawAmount(token0, maxUint128.toString()),
@@ -135,84 +145,72 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
             removeLiquidityOptions
         )
         console.log('calldata:', calldata)
-        return calldata
+        return calldata as `0x${string}`
     }
 
-    // const calTotalExpectAmounts = async () => {
-    //     const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, dexPosition.fee)
-    //     const curPoolInfo = await getLatestPoolInfo(poolAddress)
-    //     if (!curPoolInfo) throw new Error('Failed to get poolInfo')
-    //     const feeAmount_enum = curPoolInfo.fee as FeeAmount
-    //     const pool = new Pool(
-    //         new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name),
-    //         new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name),
-    //         feeAmount_enum,
-    //         curPoolInfo.sqrtPriceX96.toString(),
-    //         curPoolInfo.liquidity.toString(),
-    //         curPoolInfo.tick
-    //     )
-    //     const liquidityToRemove = new Decimal(dexPosition.liquidity).mul(removePercent).div(100)
-    //     const position = new Position({
-    //             pool,
-    //             liquidity: liquidityToRemove.toString(),
-    //             tickLower: dexPosition.lowerTick,
-    //             tickUpper: dexPosition.upperTick
-    //             })
-        
-    //     const { amount0: expectedAmount0, amount1: expectedAmount1 } = position.burnAmountsWithSlippage(new Percent(slipage * 100, 10_000))
-    //     const tokensOwed0 = dexPosition.tokensOwed0
-    //     const tokensOwed1 = dexPosition.tokensOwed1
-    //     console.log('calTotalExpectAmounts: ', 'expectedAmount0 =', expectedAmount0.toString())
-    //     console.log('calTotalExpectAmounts: ', 'expectedAmount1 =', expectedAmount1.toString())
-    //     console.log('calTotalExpectAmounts: ', 'tokensOwed0 =', tokensOwed0.toString())
-    //     console.log('calTotalExpectAmounts: ', 'tokensOwed1 =', tokensOwed1.toString())
-    //     const totalExpectedAmount0  = JSBI.add(expectedAmount0, JSBI.BigInt(tokensOwed0.toString()))
-    //     const totalExpectedAmount1 = JSBI.add(expectedAmount1, JSBI.BigInt(tokensOwed1.toString()))
-    //     console.log('calTotalExpectAmounts: ', 'totalExpectedAmount0 =', totalExpectedAmount0.toString())
-    //     console.log('calTotalExpectAmounts: ', 'totalExpectedAmount1 =', totalExpectedAmount1.toString())
-    // }
+   const handleDecreaseLiquiditySuccess = useCallback((token0Deposited: string, token1Deposited: string) => {
+        setShowSuccess(true)
+        const removedLiquidity = new Percent(removePercent, 100).multiply(dexPosition.liquidity.toString()).quotient.toString()
+        console.log('[DecreaseLiquidity] RemovedLiquidity=', removedLiquidity)
+        setDeposited({token0: token0Deposited, token1: token1Deposited, removedLiquidity: removedLiquidity})
+    }, [slipage])
 
     return (
         <DexModal 
             onClick={closeDexModal} 
             title="Decreasing liquidity"
             other={<Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>}>
-            <div className="text-sm flex flex-col gap-2">
-                <div><span className="mr-2">PositionId:</span><span>{dexPosition.id}</span></div>
-                <div><span className="mr-2">Total liquidity:</span><span>{dexPosition.liquidity}</span></div>
-                <div className="flex items-center">
-                    <span className="mr-2">Percentage to remove:</span>
+            {
+                showSuccess
+                ? <DecreaseLiquiditySuccess positionId={dexPosition.id} token0={dexPosition.token0} token1={dexPosition.token1} 
+                    depositedToken0={deposited.token0} depositedToken1={deposited.token1} removedLiquidity={deposited.removedLiquidity}/>
+                : 
+                <div className="text-sm flex flex-col gap-3">
+                    <div><span className="mr-2">PositionId:</span><span>{dexPosition.id.toString()}</span></div>
+                    <div><span className="mr-2">Total liquidity:</span><span>{dexPosition.liquidity.toString()}</span></div>
                     <div className="flex items-center">
-                        <input type="number"
-                                placeholder="50"
-                                min={0}
-                                max={100}
-                                className="border-[1px] border-zinc-500 rounded-md w-10 px-2 py-1 text-xs text-pink-600 font-semibold mr-1"
-                                value={removePercent}
-                                onChange={handleRemovePercentChange}
-                                onKeyDown={(event) => {
-                                    const allow = (event?.key === 'Backspace' || event?.key === 'Delete')
-                                                || event?.key >= '0' && event?.key <= '9' && Number(`${removePercent}${event?.key}`) <= 100
-                                    if (!allow) {
-                                        event.preventDefault();
-                                    }
-                                }}
-                                onBlur={handleRemovePercentOnBlur}>
-                        </input>
-                        <span className="text-xs">% (0-100)</span>
-                    </div>
+                        <span className="mr-2">Percentage to remove:</span>
+                        <div className="flex items-center">
+                            <input type="number"
+                                    placeholder="50"
+                                    min={0}
+                                    max={100}
+                                    className="border-[1px] border-zinc-500 rounded-md w-10 px-2 py-1 text-xs text-pink-600 font-semibold mr-1"
+                                    value={removePercent}
+                                    onChange={handleRemovePercentChange}
+                                    onKeyDown={(event) => {
+                                        const allow = (event?.key === 'Backspace' || event?.key === 'Delete')
+                                                    || event?.key >= '0' && event?.key <= '9' && Number(`${removePercent}${event?.key}`) <= 100
+                                        if (!allow) {
+                                            event.preventDefault();
+                                        }
+                                    }}
+                                    onBlur={handleRemovePercentOnBlur}>
+                            </input>
+                            <span className="text-xs">% (0-100)</span>
+                        </div>
                     
+                    </div>
+                    <div className='pt-4'>
+                            <Button
+                                className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
+                                disabled={executed || checkDisabled()}
+                                onClick={handlDecreaseLiquidity}
+                            > 
+                            <span>Decrease Liquidity</span>
+                            </Button>
+                    </div>
+                    <div>
+                        {
+                            data && <DecreaseLiquidityExecutor
+                                    data={data}
+                                    token0={dexPosition.token0} token1={dexPosition.token1}
+                                    handleDecreaseLiquiditySuccess={handleDecreaseLiquiditySuccess}
+                                    />
+                        }
+                    </div>
                 </div>
-                <div className='pt-4'>
-                        <Button
-                            className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
-                            disabled={executed || checkDisabled()}
-                            onClick={handlDecreaseLiquidity}
-                        > 
-                        <span>Decrease Liquidity</span>
-                        </Button>
-                </div>
-            </div>
+            }  
         </DexModal>
     )
 }
