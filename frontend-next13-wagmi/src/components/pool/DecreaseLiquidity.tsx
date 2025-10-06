@@ -53,9 +53,6 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
     const [data, setData] = useState<{calldata: `0x${string}`, parsedCalldata: readonly `0x${string}`[]}>()
     const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
 
-    console.log('[DecreaseLiquidity] slipage=', slipage)
-
-
     const onSettingOpenChange = (open: boolean) => {
         setSettingOpen(open)
     }
@@ -80,7 +77,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
         return false
     }
 
-    const handlDecreaseLiquidity = async () => {
+    const handleDecreaseLiquidity = async () => {
         try {
             const calldata = await generateCallData()
             const parsedCalldata = parseCalldata(calldata as `0x${string}`)
@@ -121,10 +118,6 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
         const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
 
         console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
-
-        // const { amount0: amount0Min, amount1: amount1Min } = position.burnAmountsWithSlippage(
-        //     new Percent(slipage * 100, 10_000))
-        // console.log('amount0Min=', amount0Min, '   amount1Min=', amount1Min)
         
         const collectOptions: Omit<CollectOptions, 'tokenId'> = {
             expectedCurrencyOwed0: CurrencyAmount.fromRawAmount(token0, maxUint128.toString()),
@@ -195,7 +188,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
                             <Button
                                 className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
                                 disabled={executed || checkDisabled()}
-                                onClick={handlDecreaseLiquidity}
+                                onClick={handleDecreaseLiquidity}
                             > 
                             <span>Decrease Liquidity</span>
                             </Button>
