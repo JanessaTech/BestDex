@@ -2,7 +2,7 @@ import {
     NonfungiblePositionManager,
     CollectOptions
     } from '@uniswap/v3-sdk'
-import {CurrencyAmount, Token, ChainId, Percent } from '@uniswap/sdk-core'
+import {CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { maxUint128, decodeFunctionData} from 'viem'
 import { useAccount} from 'wagmi'
 import { CollectFeeParamsType, PositionProps } from "@/lib/types";
