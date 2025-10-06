@@ -52,6 +52,13 @@ export type IncreasePositionParamsType = {
     deadline: bigint
 }
 
+export type CollectFeeParamsType = {
+    tokenId: bigint,
+    recipient: `0x${string}`, 
+    amount0Max: bigint,
+    amount1Max: bigint,
+}
+
 export type PositionProps = {
     id: bigint,
     token0: TokenType,

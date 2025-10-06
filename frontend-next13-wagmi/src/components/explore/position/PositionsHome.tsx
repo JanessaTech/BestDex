@@ -105,7 +105,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
             setGlobal({poolInfo: poolInfo, position: position})
         } catch (error) {
             console.log(error)
-            toast.error('Failed to get the latest Uniswap Pool information. Please try again')
+            toast.error('Failed to increase liquidity. Please try again')
         }
     }
 
@@ -116,7 +116,18 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
             setGlobal({position: position})
         } catch (error) {
             console.log(error)
-            toast.error('Failed to get the latest Uniswap Pool information. Please try again')
+            toast.error('Failed to decrease liquidity. Please try again')
+        }
+    }
+
+    const handleOpenCollectFee = async () => {
+        try {
+            const position = await getPosition(BigInt(1046268))
+            setOpenCollectFee(true)
+            setGlobal({position: position})
+        } catch(error) {
+            console.log(error)
+            toast.error('Failed to collect fee. Please try again')
         }
     }
 
@@ -181,7 +192,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                                 </ToolTipHelper>                                                               
                                             </div>
                                             <div>
-                                                <ToolTipHelper content="Delete position">
+                                                <ToolTipHelper content="Decrease liquidlity">
                                                     <SVGMinus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
                                                             onClick={() => handleOpenDecreaseLiquidity()}/>
                                                 </ToolTipHelper>
@@ -189,7 +200,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                             <div>
                                                 <ToolTipHelper content="Collect fee">
                                                     <SVGWithdraw className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                                onClick={() => setOpenCollectFee(true)}/>
+                                                                onClick={() => handleOpenCollectFee()}/>
                                                 </ToolTipHelper>                                            
                                             </div>
                                         </div>
@@ -214,7 +225,9 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                                     closeDexModal={closeDecreaseLiquidity}/>
             }
             {
-                openCollectFee && <CollectFee closeDexModal={closeCollectFee}/>
+                openCollectFee && global && <CollectFee 
+                                    dexPosition={global.position}
+                                    closeDexModal={closeCollectFee}/>
             }
         </div>
     )

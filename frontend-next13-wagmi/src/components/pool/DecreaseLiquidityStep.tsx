@@ -5,13 +5,13 @@ import { TokenType } from "@/lib/types";
 import { memo, useEffect, useState } from "react";
 import { useSendTransaction, 
     useWaitForTransactionReceipt,
-    useAccount } from 'wagmi'
+    } from 'wagmi'
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import { decodeEventLog, formatUnits } from 'viem';
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, 
     UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI, 
-    UNISWAP_V3_POSITION_MANAGER_DECREASE_LIQUIDITY_ABI} from "@/config/constants";
+    } from "@/config/constants";
 
 
 type StateType = {
