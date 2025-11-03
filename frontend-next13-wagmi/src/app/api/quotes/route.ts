@@ -3,6 +3,7 @@ import {
     AlphaRouter,
     SwapOptionsSwapRouter02,
     SwapType,
+    AlphaRouterConfig 
   } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
 import { TradeType, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
@@ -29,9 +30,40 @@ export async function POST(request: Request) {
   console.log('POST - get quotes')
     try {
         const params = await parseDataFromRequest(request)
+        // const routerConfig: AlphaRouterConfig = {
+        //   maxSwapsPerPath: 3,
+        //   maxSplits: 2,
+        //   distributionPercent: 10, 
+        //   v2PoolSelection: {
+        //     topN: 2, // 只选择前2个V2池
+        //     topNDirectSwaps: 1,
+        //     topNTokenInOut: 1,
+        //     topNSecondHop: 1,
+        //     topNWithEachBaseToken: 1,
+        //     topNWithBaseToken: 1,},
+        //   v3PoolSelection: {
+        //     topN: 5, // 只选择前5个V3池
+        //     topNDirectSwaps: 1,
+        //     topNTokenInOut: 1,
+        //     topNSecondHop: 1,
+        //     topNWithEachBaseToken: 1,
+        //     topNWithBaseToken: 1,
+        //   },
+        //   v4PoolSelection: {
+        //     topN: 2, // 只选择前2个V4池
+        //     topNDirectSwaps: 1,
+        //     topNTokenInOut: 1,
+        //     topNSecondHop: 1,
+        //     topNWithEachBaseToken: 1,
+        //     topNWithBaseToken: 1,
+        //   },
+        //   minSplits: 1,
+        //   forceCrossProtocol: false
+        // }
         const router = new AlphaRouter({
           chainId: params.chainId,
           provider: params.provider,
+          //...routerConfig
       })
   
       const options: SwapOptionsSwapRouter02 = {
