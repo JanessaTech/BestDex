@@ -38,6 +38,10 @@ const message: MessageType = {
     siwe_verify_success: 'Verify siwe signature successfully',
     siwe_verify_failed: 'Failed to verify siwe signature',
 
+    // token price
+    token_price_success: 'Get token prices successfully',
+    token_price_failed: 'Failed to get token price due to {0}',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',
