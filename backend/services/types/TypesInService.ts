@@ -10,7 +10,9 @@ export interface AccountService {
     deleteAccountById: (id: string) => Promise<void>
 }
 
-export interface UserService {
-    
-    
+export interface UserService {  
+}
+
+export interface TokenPriceService {
+    getLatestPrices: () => Promise<any>
 }
