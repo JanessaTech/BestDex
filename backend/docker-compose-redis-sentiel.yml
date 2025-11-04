@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  redis-sentinel:
+    image: docker.io/bitnami/redis-sentinel:6.2
+    environment:
+      - REDIS_MASTER_HOST=192.168.1.200
+    ports:
+      - "26379:26379/tcp"
+  redis:
+    image: docker.io/bitnami/redis:6.2
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - REDIS_PASSWORD=password
+    ports:
+      - "6379:6379/tcp"

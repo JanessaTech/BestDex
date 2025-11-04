@@ -1,0 +1,1 @@
+export const TOKEN_PRICE_KEY = 'token_price'

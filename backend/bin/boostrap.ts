@@ -5,7 +5,8 @@ dotenv.config();
 import getConfig from '../config/configuration'
 import logger from '../helpers/logger'
 import banner from '../helpers/banner'
-import '../db/initDB'
+import '../db/initDB'  // connected to db
+import '../infra/RedisClient' // connected to redis
 
 const config = getConfig()
 logger.info(`Environment type: ${config?.env}`)
