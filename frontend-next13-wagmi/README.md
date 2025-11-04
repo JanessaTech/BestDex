@@ -29,7 +29,7 @@ npm run dev
 ## Enhancements
 1. Integrate Uniswap Permit2 to enhance user experience
 2. Read price from backend - done
-3. wesocket to monitor pool in bakcend
+3. wesocket to monitor pool in backend
 4. Speed up quotes in backend
 5. flashbot
 6. xxx
