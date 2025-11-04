@@ -8,7 +8,7 @@ import tokenPriceService from "../services/TokenPriceService"
 class TokenPriceController {
     async getLatestPrices(req: Request, res: Response, next: NextFunction) {
         try {
-            logger.info('get latest token price')
+            logger.debug('get the latest token price in TokenPriceController.getLatestPrices')
             const payload = await tokenPriceService.getLatestPrices()
             let message = messageHelper.getMessage('token_price_success')
             sendSuccess(res, message, payload)
