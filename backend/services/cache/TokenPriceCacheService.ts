@@ -1,4 +1,4 @@
-import { TOKEN_PRICE_KEY } from '../../helpers/common/constants';
+import { TOKEN_PRICE_KEY, TOKEN_PRICE_REDIS_EXPIRY } from '../../helpers/common/constants';
 import redis from '../../infra/RedisClient';
 
 class TokenPriceCacheService {
@@ -9,7 +9,7 @@ class TokenPriceCacheService {
     }
 
     async setLatestPrices(value: string) {
-        const res = await redis.set(TOKEN_PRICE_KEY, value)
+        const res = await redis.set(TOKEN_PRICE_KEY, value, TOKEN_PRICE_REDIS_EXPIRY)
         return res
     }
 }
