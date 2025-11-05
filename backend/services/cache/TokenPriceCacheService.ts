@@ -1,5 +1,5 @@
 import { TOKEN_PRICE_KEY, TOKEN_PRICE_REDIS_EXPIRY } from '../../helpers/common/constants';
-import redis from '../../infra/RedisClient';
+import redis from '../../infra/redis/RedisClient';
 
 class TokenPriceCacheService {
     

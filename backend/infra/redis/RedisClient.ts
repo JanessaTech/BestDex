@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
-import logger from "../helpers/logger";
+import logger from "../../helpers/logger";
 
 dotenv.config();
 
