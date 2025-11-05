@@ -8,6 +8,8 @@ import JSBI from 'jsbi'
 import { Decimal } from 'decimal.js';
 import { ethers} from 'ethers'
 import { parseUnits, formatUnits } from 'viem'
+import { mainnet, polygon, arbitrum, sepolia, hardhat} from 'viem/chains';
+import { Chain } from 'viem';
 
 const USDC_TOKEN = new Token(
     ChainId.MAINNET,
@@ -214,11 +216,19 @@ function test_urls() {
 }
 
 function test_map() {
-  const map0 = new Map([[1, 'aaa'], [2, 'bbb']])
-  const map1 = new Map(map0)
-  map1.set(3, 'ccc')
-  console.log(map1)
+  const chainUrls = new Map<number, [Chain, string]>([
+    [Number(mainnet.id), [mainnet, `https://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]], 
+    [Number(polygon.id), [polygon, `https://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+    [Number(arbitrum.id), [arbitrum, `https://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+    [Number(sepolia.id), [sepolia, `https://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+    [Number(hardhat.id), [hardhat, 'http://127.0.0.1:8545']]
+  ])
+
+  const found = chainUrls.get(1)
+  if (found) console.log(found[1]) 
+  
 }
+test_map()
 
 function fromReadableAmount1(amount: string, decimals: number): string {
   const res = new Decimal(amount ? amount : 0).mul(new Decimal(10).pow(decimals)).toDecimalPlaces(decimals, Decimal.ROUND_HALF_UP).toString()
@@ -254,7 +264,7 @@ function test_convertion() {
   const res = JSBI.BigInt(parseUnits(input, decimal).toString())
   console.log(res.toString())
 }
-test_convertion()
+//test_convertion()
 
 function test_arbitrary() {
   const ans = {amount0Desired: 999999999852485718n,
@@ -300,5 +310,6 @@ function test_arbitrary() {
 //priceToTick(priceToken0, isToken0Base, token0Decimals, token1Decimals, 'nearest')
 
 //rangeSelect(sqrtPriceX96Str, isToken0Base, token0Decimals, token1Decimals)
+
 
 //npx hardhat run scripts\tmp.ts
