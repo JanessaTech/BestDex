@@ -2,6 +2,7 @@ import { PublicClient } from 'viem'
 import { PoolInfo } from '../types/TypesInInfra';
 import WebSocket from 'ws'
 import logger from '../../helpers/logger';
+import { fetchPoolInfo } from '../utils/Pool';
 
 class UniswapV3PoolListener {
     private ws: WebSocket | null = null;
@@ -124,11 +125,13 @@ class UniswapV3PoolListener {
 
     private async fetchPoolData() {
         console.log(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
-        // const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
-        // this.latestPooInfo = poolInfo
+        const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
+        this.latestPooInfo = poolInfo
     }
 
     public getLatestPooInfo(): PoolInfo | undefined {
         return this.latestPooInfo
     }
 }
+
+export default UniswapV3PoolListener

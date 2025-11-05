@@ -11,3 +11,13 @@ export type PoolInfo = {
     liquidity: ethers.BigNumber;
     timeStamp: number;
 }
+
+export type TokenType = {
+    chainId: number;
+    name: string;
+    symbol: string;
+    decimal: number;
+    alias: string;
+    address: `0x${string}`;
+    company?: string;
+}

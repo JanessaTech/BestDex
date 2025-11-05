@@ -1,6 +1,7 @@
 import { PublicClient } from 'viem'
 import { PoolInfo } from '../types/TypesInInfra';
 import logger from '../../helpers/logger';
+import { fetchPoolInfo } from '../utils/Pool';
 
 class LocalUniswapV3PoolListener {
     private poolAddress!:`0x${string}`;
@@ -12,8 +13,8 @@ class LocalUniswapV3PoolListener {
 
     private pollSwapEvents = async () =>{ 
         logger.info('Start fetching pool info from local...')
-        // const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
-        // this.latestPooInfo = poolInfo
+        const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
+        this.latestPooInfo = poolInfo
     }
     constructor(poolAddress: `0x${string}`, wssURL: string, publicClient: PublicClient) {
         this.poolAddress = poolAddress;

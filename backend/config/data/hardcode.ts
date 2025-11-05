@@ -1,5 +1,6 @@
 import { TokenListType } from "./types";
-
+import { mainnet, polygon, arbitrum, sepolia, hardhat} from 'viem/chains';
+import { Chain } from 'viem';
 
 export const tokenList: TokenListType = [
     {
@@ -48,3 +49,11 @@ export const tokenList: TokenListType = [
       ]
     }
   ]
+
+  export const chainUrls = new Map<number, [Chain, string, string]>([
+    [Number(mainnet.id), [mainnet, `https://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]], 
+    [Number(polygon.id), [polygon, `https://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+    [Number(arbitrum.id), [arbitrum, `https://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+    [Number(sepolia.id), [sepolia, `https://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+    [Number(hardhat.id), [hardhat, 'http://127.0.0.1:8545', `http://127.0.0.1:8545`]]
+  ])
