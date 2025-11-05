@@ -1,7 +1,10 @@
 import { TokenListType } from "./types";
 import { mainnet, polygon, arbitrum, sepolia, hardhat} from 'viem/chains';
 import { Chain } from 'viem';
+import dotenv from 'dotenv';
+dotenv.config();
 
+// we need refactor the codes in the file by using mongodb
 export const tokenList: TokenListType = [
     {
       chainId: 1,  
@@ -49,11 +52,19 @@ export const tokenList: TokenListType = [
       ]
     }
   ]
+export const chainUrls = new Map<number, [Chain, string, string]>([
+  [Number(mainnet.id), [mainnet, `https://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(polygon.id), [polygon, `https://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(arbitrum.id), [arbitrum, `https://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(sepolia.id), [sepolia, `https://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(hardhat.id), [hardhat, 'http://127.0.0.1:8545', `http://127.0.0.1:8545`]]
+])
+export const FEE_TIERS = [
+  {value: 0.01, description: 'Best for very stable pairs.'}, 
+  {value: 0.05, description: 'Best for stable pairs.'},
+  {value: 0.3, description: 'Best for most pairs.'},
+  {value: 1, description: 'Best for exotic pairs.'},
+]
+  
 
-  export const chainUrls = new Map<number, [Chain, string, string]>([
-    [Number(mainnet.id), [mainnet, `https://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]], 
-    [Number(polygon.id), [polygon, `https://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
-    [Number(arbitrum.id), [arbitrum, `https://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
-    [Number(sepolia.id), [sepolia, `https://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
-    [Number(hardhat.id), [hardhat, 'http://127.0.0.1:8545', `http://127.0.0.1:8545`]]
-  ])
+

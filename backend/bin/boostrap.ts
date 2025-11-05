@@ -5,9 +5,10 @@ dotenv.config();
 import getConfig from '../config/configuration'
 import logger from '../helpers/logger'
 import banner from '../helpers/banner'
+import '../config/data/hardcode'
 import '../db/initDB'  // connected to db
 import '../infra/redis/RedisClient' // connected to redis
-import '../infra/websocket'
+import '../infra/websocket' // 
 
 const config = getConfig()
 logger.info(`Environment type: ${config?.env}`)

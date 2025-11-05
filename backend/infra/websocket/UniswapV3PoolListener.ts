@@ -124,7 +124,7 @@ class UniswapV3PoolListener {
     }
 
     private async fetchPoolData() {
-        console.log(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
+        logger.info(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
         const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
         this.latestPooInfo = poolInfo
     }
