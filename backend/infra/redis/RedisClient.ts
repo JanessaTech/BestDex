@@ -15,8 +15,11 @@ class RedisClient {
     private client: Redis;
 
     constructor(config: RedisConfig) {
-        
+        logger.debug('constructing Redis client ...')
         this.client = new Redis(config)
+    }
+
+    public init() {
         this.initEventListener()
     }
 
@@ -69,5 +72,5 @@ const config: RedisConfig = {
     password: process.env.REDIS_PASSWORD,
     db: parseInt(process.env.REDIS_DB || '0')
 };
-
-export default new RedisClient(config);
+const redisClient = new RedisClient(config)
+export default redisClient

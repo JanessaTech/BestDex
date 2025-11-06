@@ -1,13 +1,13 @@
 import { calcPoolAddress } from "../utils/Pool"
 import logger from '../../helpers/logger'
-import { TokenType } from "../types/TypesInInfra"
+import { PoolMetaData, TokenType } from "../types/TypesInInfra"
 import UniswapV3PoolListener from "./UniswapV3PoolListener"
 import LocalUniswapV3PoolListener from "./LocalUniswapV3PoolListener"
 import { FEE_TIERS, chainUrls, tokenList } from "../../config/data/hardcode"
 import { PublicClient } from 'viem'
 import { createBlockchainClient } from "../utils/Chain"
 
-const listenersMap: Map<number, Map<`0x${string}`, UniswapV3PoolListener | LocalUniswapV3PoolListener>> = new Map([])
+export const websocketsMap: Map<number, Map<`0x${string}`, PoolMetaData>> = new Map([])
 
 const addWebSocketListener = async (token0 : TokenType, token1: TokenType, feeAmount: number, publicClient: PublicClient) => {
     let poolAddress = undefined
@@ -27,17 +27,18 @@ const addWebSocketListener = async (token0 : TokenType, token1: TokenType, feeAm
     const wssURL = found[2]
 
     logger.debug(`poolAddress =${poolAddress}, wssURL=${wssURL}`)
-    if (!listenersMap.get(chainId)?.get(poolAddress)) { // add listener only when no listener
+    if (!websocketsMap.get(chainId)?.get(poolAddress)) { // add listener only when no listener
         let listener!: UniswapV3PoolListener | LocalUniswapV3PoolListener
         if (chainId === 31337) { //for test
             listener = new LocalUniswapV3PoolListener(poolAddress, wssURL, publicClient)
         } else {
             listener = new UniswapV3PoolListener(poolAddress, wssURL, publicClient)
         }
-        if (!listenersMap.has(chainId)) {
-            listenersMap.set(chainId, new Map())
+        if (!websocketsMap.has(chainId)) {
+            websocketsMap.set(chainId, new Map())
         }
-        listenersMap.get(chainId)?.set(poolAddress, listener)
+        const metaData = {listener: listener, token0: token0, token1: token1, feeAmount: feeAmount}
+        websocketsMap.get(chainId)?.set(poolAddress, metaData)
         logger.info('A new listener is added!')
     } else {
         logger.info('A new listener was already added!')
