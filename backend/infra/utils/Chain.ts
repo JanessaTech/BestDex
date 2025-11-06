@@ -3,6 +3,7 @@ import { chainUrls } from '../../config/data/hardcode';
 import logger from '../../helpers/logger';
 
 export const createBlockchainClient = (chainId: number) => {
+    logger.debug('creating publicClient fro chainId: ', chainId)
     const chainDetail = chainUrls.get(chainId)
     if (!chainDetail) {
         throw new Error(`Unsupported chainId: ${chainId}`)

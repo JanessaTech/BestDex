@@ -48,6 +48,7 @@ const addWebSocketListener = async (token0 : TokenType, token1: TokenType, feeAm
 const addAllWebSocketListeners = async (chainId: number) => {
     logger.info('Add all websocket listeners for chainId: ', chainId)
     const publicClient = createBlockchainClient(chainId)
+    let addedListeners = 0
     const found = tokenList.find((e) => e.chainId === chainId)
     if (found) {
         const tokens = found.tokens
@@ -55,20 +56,21 @@ const addAllWebSocketListeners = async (chainId: number) => {
             for (let j = i + 1; j < tokens.length; j++) {
                 const token0 = tokens[i]
                 const token1 = tokens[j]
-                //logger.debug(`Add listener for token0(${token0.address}) and token1(${token1.address}) in chainId ${chainId}`)
                 for (let k = 0; k < FEE_TIERS.length; k++) {
                     const feeAmount = FEE_TIERS[k].value * 10000
                     try {
                         await addWebSocketListener(token0, token1, feeAmount, publicClient)
+                        addedListeners++
                     } catch (error) {
-                        logger.warn(error)
+                        logger.error(error)
                     }
                 }
             }
         }
-        
+
+        logger.debug(`${addedListeners} listeners are added for chainId ${chainId}`)
     } else {
-        logger.error(`No found token list for chainId ${chainId}. Please add it`)
+        logger.warn(`No found token list for chainId ${chainId}. Please add it`)
     }
 } 
 
