@@ -44,6 +44,10 @@ const message: MessageType = {
     token_price_failed_others: 'Failed to get the token price due to {0}',
     token_price_redis_save_failed: 'Failed to save the token price to redis',
 
+    //pool
+    pool_info_get_success: 'Get the latest pool info for pool address {0} in chainId {1} successfully',
+    pool_info_get_failed: 'Failed to get the latest pool info for pool address {0} in chainId {1}',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',

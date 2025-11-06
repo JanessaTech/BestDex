@@ -57,10 +57,10 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient: Pu
                 token1: data[1].result,
                 fee: data[2].result,
                 tickSpacing: data[3].result,
-                slot0: data[4].result,
-                sqrtPriceX96 : slot0[0],
+                slot0: slot0.map((e) => e.toString()),
+                sqrtPriceX96 : slot0[0].toString(),
                 tick: slot0[1],
-                liquidity: data[5].result,
+                liquidity: data[5].result.toString(),
                 timeStamp: Date.now()
                 } as PoolInfo
     } catch (error) {

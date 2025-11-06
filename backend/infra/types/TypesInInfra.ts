@@ -8,9 +8,9 @@ export type PoolInfo = {
     fee: number;
     tickSpacing: number;
     slot0: any[];
-    sqrtPriceX96: ethers.BigNumber;
+    sqrtPriceX96: string;
     tick: number;
-    liquidity: ethers.BigNumber;
+    liquidity: string;
     timeStamp: number;
 }
 

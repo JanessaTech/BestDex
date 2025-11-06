@@ -64,7 +64,7 @@ class UniswapV3PoolListener {
                 if (this.subscriptionId && message.params.subscription === this.subscriptionId) {
                     // received a swap event
                     logger.info('Pool State Changed! A swap occurred.');
-                    logger.info(JSON.stringify(message, null, 2));
+                    //logger.info(JSON.stringify(message, null, 2));
                     (async () => {
                         await this.fetchPoolData(); 
                     })()

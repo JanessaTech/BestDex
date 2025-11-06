@@ -1,7 +1,7 @@
 import { PublicClient } from "viem"
 import { FEE_TIERS, chainUrls, tokenList } from "../../config/data/hardcode"
 import logger from "../../helpers/logger"
-import { PoolMetaData, TokenType } from "../types/TypesInInfra"
+import { PoolInfo, PoolMetaData, TokenType } from "../types/TypesInInfra"
 import { calcPoolAddress } from "../utils/Pool"
 import UniswapV3PoolListener from "./UniswapV3PoolListener"
 import LocalUniswapV3PoolListener from "./LocalUniswapV3PoolListener"
@@ -88,7 +88,15 @@ class WebSocketClient {
             process.exit(1)
         })
     }
+
+    public getLatestPoolInfo (chainId: number, poolAddress: `0x${string}`): PoolInfo | undefined {
+        console.log(`[Infra] Get latest pool info from poolAddress=${poolAddress} and chainId=${chainId}`)
+        const listener = this.websocketsMap.get(chainId)?.get(poolAddress)?.listener
+        const poolInfo = listener?.getLatestPooInfo()
+        return poolInfo
+    }
 }
+
 const config: WebsocketConfig = {}
 const webSocketClient = new WebSocketClient(config)
 export default webSocketClient

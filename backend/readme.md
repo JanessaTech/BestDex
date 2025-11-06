@@ -36,3 +36,8 @@ ping  => pong
 ## Run tests
 npm test
 ```
+
+## Enhancements
+1. using separate logger instead of only one log file
+2. refactor hardcode.ts
+3. Unify the config files, .env , constants.ts and hardcode.ts
