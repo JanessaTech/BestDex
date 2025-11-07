@@ -90,8 +90,8 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
             new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
             feeAmount_enum,
-            poolInfo.sqrtPriceX96.toString(),
-            poolInfo.liquidity.toString(),
+            poolInfo.sqrtPriceX96,
+            poolInfo.liquidity,
             poolInfo.tick
         )
         const position = Position.fromAmount0({
@@ -111,8 +111,8 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             new Token(token0.chainId, token0.address, token0.decimal, token0.symbol, token0.name),
             new Token(token1.chainId, token1.address, token1.decimal, token1.symbol, token1.name),
             feeAmount_enum,
-            poolInfo.sqrtPriceX96.toString(),
-            poolInfo.liquidity.toString(),
+            poolInfo.sqrtPriceX96,
+            poolInfo.liquidity,
             poolInfo.tick
         )
         const position = Position.fromAmount1({

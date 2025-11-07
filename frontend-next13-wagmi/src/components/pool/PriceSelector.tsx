@@ -1,5 +1,5 @@
 'use client'
-import { ethers} from 'ethers'
+
 import SVGMinus from "@/lib/svgs/svg_minus";
 import SVGPlus from "@/lib/svgs/svg_plus";
 import SVGZoomIn from "@/lib/svgs/svg_zoom_in";
@@ -10,7 +10,6 @@ import {
     nearestUsableTick
     } from '@uniswap/v3-sdk'
 import { MAX_TICK, MIN_TICK } from "@/config/constants";
-import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { Decimal } from 'decimal.js'
 import { PoolRange, calcPoolPriceFromTick } from "@/lib/tools/pool";
 

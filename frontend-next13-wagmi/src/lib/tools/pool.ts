@@ -12,9 +12,9 @@ export type PoolInfo = {
     fee: number;
     tickSpacing: number;
     slot0: any[];
-    sqrtPriceX96: ethers.BigNumber;
+    sqrtPriceX96: string;
     tick: number;
-    liquidity: ethers.BigNumber;
+    liquidity: string;
     timeStamp: number;
 }
 
@@ -64,12 +64,12 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient?: P
             ]
         })
         //console.log(data)
-        if (!data[0].result 
-            || !data[1].result
-            || !data[2].result
-            || !data[3].result
-            || !data[4].result
-            || !data[5].result
+        if (!(data[0].result && data[0].status === 'success')
+            || !(data[1].result && data[1].status === 'success')
+            || !(data[2].result && data[2].status === 'success')
+            || !(data[3].result && data[3].status === 'success')
+            || !(data[4].result && data[4].status === 'success')
+            || !(data[5].status === 'success')
             ) {
                 throw new Error('It failed to get full pool data')
             }
@@ -80,9 +80,9 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient?: P
                 fee: data[2].result,
                 tickSpacing: data[3].result,
                 slot0: data[4].result,
-                sqrtPriceX96 : slot0[0],
+                sqrtPriceX96 : slot0[0].toString(),
                 tick: slot0[1],
-                liquidity: data[5].result,
+                liquidity: (data[5].result as any).toString(),
                 timeStamp: Date.now()
                 } as PoolInfo
     } catch (error) {
@@ -167,7 +167,7 @@ const priceToTick = (price: Decimal,
 }
 export const calPoolRange = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType):PoolRange => {
     const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
-    const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0.decimal, token1.decimal)
+    const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96, token0.decimal, token1.decimal)
     console.log('currentPrice=', currentPrice.toString())
     const lowerPrice = currentPrice.mul(1 - TICK_RANG_PERCENTAGE)
     const upperPrice = currentPrice.mul(1 + TICK_RANG_PERCENTAGE)
@@ -191,7 +191,7 @@ export const calPoolRange = (poolInfo: PoolInfo, token0 : TokenType, token1: Tok
 
 export const getPoolCurrentPrice = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {
     const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
-    const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96.toString(), token0.decimal, token1.decimal)
+    const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96, token0.decimal, token1.decimal)
     return currentPrice.toString()
 }
 
@@ -209,8 +209,8 @@ export const isDataStale = (oldPoolInfo: PoolInfo, newPoolInfo: PoolInfo, slipag
     console.log('oldPoolInfo=', oldPoolInfo)
     console.log('newPoolInfo=', newPoolInfo)
     if (oldPoolInfo.tick !== newPoolInfo.tick) return true
-    const price_old = calOriginPriceBySqrtPriceX96(oldPoolInfo.sqrtPriceX96.toString())
-    const price_new = calOriginPriceBySqrtPriceX96(newPoolInfo.sqrtPriceX96.toString())
+    const price_old = calOriginPriceBySqrtPriceX96(oldPoolInfo.sqrtPriceX96)
+    const price_new = calOriginPriceBySqrtPriceX96(newPoolInfo.sqrtPriceX96)
     const diff = price_new.minus(price_old).abs().dividedBy(price_old)
     const isStale = diff.greaterThan(slipage)
     console.log('isStale=', isStale)

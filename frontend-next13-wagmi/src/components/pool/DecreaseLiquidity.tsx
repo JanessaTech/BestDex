@@ -104,8 +104,8 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
             token0,
             token1,
             feeAmount_enum,
-            curPoolInfo.sqrtPriceX96.toString(),
-            curPoolInfo.liquidity.toString(),
+            curPoolInfo.sqrtPriceX96,
+            curPoolInfo.liquidity,
             curPoolInfo.tick
         )
         const position = new Position({ // reconstruct the position object

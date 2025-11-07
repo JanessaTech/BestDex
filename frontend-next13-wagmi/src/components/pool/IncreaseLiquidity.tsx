@@ -139,8 +139,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
             new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name),
             new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name),
             feeAmount_enum,
-            curPoolInfo.sqrtPriceX96.toString(),
-            curPoolInfo.liquidity.toString(),
+            curPoolInfo.sqrtPriceX96,
+            curPoolInfo.liquidity,
             curPoolInfo.tick
         )
 
@@ -252,8 +252,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
             new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name),
             new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name),
             feeAmount_enum,
-            curPoolInfo.sqrtPriceX96.toString(),
-            curPoolInfo.liquidity.toString(),
+            curPoolInfo.sqrtPriceX96,
+            curPoolInfo.liquidity,
             curPoolInfo.tick
         )
         const position = Position.fromAmount0({
@@ -273,8 +273,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
             new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name),
             new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name),
             feeAmount_enum,
-            curPoolInfo.sqrtPriceX96.toString(),
-            curPoolInfo.liquidity.toString(),
+            curPoolInfo.sqrtPriceX96,
+            curPoolInfo.liquidity,
             curPoolInfo.tick
         )
         const position = Position.fromAmount1({

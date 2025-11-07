@@ -16,6 +16,7 @@ import PositionRange from './PositionRange'
 import { PoolInfo, isDataStale } from '@/lib/tools/pool'
 import { useUpdateSetting } from '@/config/store'
 import RefreshModal from './RefreshModal'
+import { fetchLatestPoolInfo } from '@/lib/client/pool'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -89,9 +90,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         if (token0 && token1) {
             try {
                 setState({...state, isLoading: true})
+                const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
+                console.log('poolAddress=', poolAddress)
+                //const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
                 const poolInfo = await getPoolInfo(token0, token1, feeAmount)
                 setState({...state, isLoading: false, step: state.step + 1, poolInfo: poolInfo})
-                await addWebSocketListener(token0, token1, feeAmount)
+                //await addWebSocketListener(token0, token1, feeAmount)
                 console.log('poolInfo=', poolInfo)
             } catch (error) {
                 console.log('failed to get pool info due to:', error)
