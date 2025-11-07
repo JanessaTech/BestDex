@@ -14,13 +14,13 @@ class UniswapV3PoolListener {
     private publicClient !: PublicClient;
     private latestPooInfo?:PoolInfo | undefined = undefined
     private fetchPoolData = async () => {
-        //try {
+        try {
             logger.info(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
             const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
             this.latestPooInfo = poolInfo
-        // } catch(error) {
-        //     logger.error('failed to fetch pool data due to: ', error)
-        // }
+        } catch(error) {
+            logger.error('failed to fetch pool data due to: ', error)
+        }
     }
 
     constructor(poolAddress: `0x${string}`, wssURL: string, publicClient: PublicClient) {
