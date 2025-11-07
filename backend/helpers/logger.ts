@@ -15,9 +15,16 @@ const isSet = (obj: any) => {
     return !!obj && obj.constructor === Set;
 }
 
+function replacer(key: any, value: any) {
+    if (typeof value === 'bigint') {
+      return value.toString();
+    }
+    return value;
+  }
+
 const convert = (obj: any): any => {
     if (isJson(obj)) {
-       return  '\n' + JSON.stringify(obj, null, 4)
+       return  '\n' + JSON.stringify(obj, replacer, 4)
     }
     if (isArray(obj)) {
         return obj.map((o: any) => convert(o))
