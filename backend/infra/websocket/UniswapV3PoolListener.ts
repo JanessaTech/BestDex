@@ -13,12 +13,22 @@ class UniswapV3PoolListener {
     private wssURL !:string;
     private publicClient !: PublicClient;
     private latestPooInfo?:PoolInfo | undefined = undefined
+    private fetchPoolData = async () => {
+        //try {
+            logger.info(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
+            const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
+            this.latestPooInfo = poolInfo
+        // } catch(error) {
+        //     logger.error('failed to fetch pool data due to: ', error)
+        // }
+    }
 
     constructor(poolAddress: `0x${string}`, wssURL: string, publicClient: PublicClient) {
         this.poolAddress = poolAddress;
         this.wssURL = wssURL;
         this.publicClient = publicClient;
         this.initWebSocket();
+        this.warmup()
     }
 
     private initWebSocket(): void {
@@ -40,10 +50,18 @@ class UniswapV3PoolListener {
                 logger.error('WebSocket error:', error)
                 this.handleReconnection();
             })
+
         } catch (error) {
-            console.error('Failed to initialize WebSocket:', error);
+            logger.error('Failed to initialize WebSocket:', error);
             this.handleReconnection();
         }
+    }
+
+    private warmup() {
+        (async () => {
+            logger.debug('run warm up to get poolInfo')
+            await this.fetchPoolData()
+        })()
     }
 
     private handleMessage(data: WebSocket.Data): void {
@@ -123,11 +141,11 @@ class UniswapV3PoolListener {
           }
     }
 
-    private async fetchPoolData() {
-        logger.info(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
-        const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
-        this.latestPooInfo = poolInfo
-    }
+    // private async fetchPoolData() {
+    //     logger.info(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
+    //     const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
+    //     this.latestPooInfo = poolInfo
+    // }
 
     public getLatestPooInfo(): PoolInfo | undefined {
         return this.latestPooInfo

@@ -41,13 +41,15 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient: Pu
                 }
             ]
         })
-        //console.log(data)
-        if (!data[0].result 
-            || !data[1].result
-            || !data[2].result
-            || !data[3].result
-            || !data[4].result
-            || !data[5].result
+        console.log('====================================')
+        console.log('poolAddress =', poolAddress)
+        console.log(data)
+        if (!(data[0].result && data[0].status === 'success')
+            || !(data[1].result && data[1].status === 'success')
+            || !(data[2].result && data[2].status === 'success')
+            || !(data[3].result && data[3].status === 'success')
+            || !(data[4].result && data[4].status === 'success')
+            || !(data[5].status === 'success')
             ) {
                 throw new Error('It failed to get full pool data')
             }
@@ -60,7 +62,7 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient: Pu
                 slot0: slot0.map((e) => e.toString()),
                 sqrtPriceX96 : slot0[0].toString(),
                 tick: slot0[1],
-                liquidity: data[5].result.toString(),
+                liquidity: (data[5].result as any).toString(),
                 timeStamp: Date.now()
                 } as PoolInfo
     } catch (error) {
