@@ -28,8 +28,13 @@ npm run dev
 
 ## Enhancements
 1. Integrate Uniswap Permit2 to enhance user experience
-2. Read price from backend - done
-3. wesocket to monitor pool in backend
+2. Read price from backend - [Done]
+3. websocket to monitor pool in backend - [Done]
+    - 3.1 check bugs for websockets
+    - 3.2 do performance tests
 4. Speed up quotes in backend
 5. flashbot
-6. xxx
+6. add logger for frontend
+7. Add curd for postions
+8. fix bugs:
+    6.1 exception when create a new position
