@@ -11,7 +11,7 @@ import {
     NonfungiblePositionManager,
     Pool} from '@uniswap/v3-sdk';
 import {CurrencyAmount, Token, Percent} from '@uniswap/sdk-core';
-import { useAccount} from 'wagmi';
+import { useAccount, useChainId} from 'wagmi';
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { Decimal } from 'decimal.js'
 import { useUpdateSetting } from "@/config/store";
@@ -19,6 +19,7 @@ import { maxUint128, decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import DecreaseLiquidityExecutor from "./DecreaseLiquidityExecutor";
 import DecreaseLiquiditySuccess from "./DecreaseLiquiditySuccess";
+import { fetchLatestPoolInfo } from "@/lib/client/pool";
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -43,6 +44,7 @@ type DEcreaseLiquidityProps = {
 }
 const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
                                                               closeDexModal}) => {
+    const chainId = useChainId()
     const [settingOpen, setSettingOpen] = useState(false)
     const {slipage, deadline} = useUpdateSetting()
     const {address} = useAccount()
@@ -51,7 +53,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
     const [showSuccess, setShowSuccess] = useState(false)
     const [deposited, setDeposited] = useState({token0: '0', token1: '0', removedLiquidity: ''})
     const [data, setData] = useState<{calldata: `0x${string}`, parsedCalldata: readonly `0x${string}`[]}>()
-    const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    const {getPoolAddress} = useContextUtil() as IContextUtil
 
     const onSettingOpenChange = (open: boolean) => {
         setSettingOpen(open)
@@ -93,7 +95,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
 
     const generateCallData = async () => {
         const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, dexPosition.fee)
-        const curPoolInfo = await getLatestPoolInfo(poolAddress) // call backend api instead
+        const curPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         if (!curPoolInfo) throw new Error('Failed to get poolInfo')
         if (!address) throw new Error('Failed to get current wallet account')
         const token0 = new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name)

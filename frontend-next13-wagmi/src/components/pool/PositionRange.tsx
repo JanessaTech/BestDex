@@ -8,6 +8,7 @@ import { ChainId } from '@uniswap/sdk-core'
 import Decimal from "decimal.js";
 import { PoolInfo, getPoolCurrentPrice, calPoolRange, PoolRange } from "@/lib/tools/pool";
 import SVGRefresh from "@/lib/svgs/svg_refresh";
+import { fetchLatestPoolInfo } from "@/lib/client/pool";
 
 type PositionRangeProps = {
     token0: TokenType;  //we have to make sure that token0 is the address of token0 in the pool;
@@ -19,7 +20,7 @@ type PositionRangeProps = {
 }
 const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount, poolInfo, 
                                                         updatePoolInfo, updateTicks}) => {
-    const {tokenPrices, getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    const {tokenPrices, getPoolAddress} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [curPoolInfo, setCurPoolInfo] = useState({...poolInfo})
     const [curPoolRange, setCurPoolRange] = useState<PoolRange | undefined>(undefined)
@@ -50,7 +51,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
         console.log('checkNewPoolInfo...')
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
         console.log('poolAddress = ', poolAddress)
-        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         console.log('latestPoolInfo=', latestPoolInfo)
     }
 

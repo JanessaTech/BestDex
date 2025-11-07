@@ -13,6 +13,7 @@ import {
     NonfungiblePositionManager,
     Pool} from '@uniswap/v3-sdk';
 import {Token, Percent} from '@uniswap/sdk-core';
+import { useChainId} from 'wagmi';
 import { toast } from "sonner"
 import { fromReadableAmount2 } from "@/lib/utils"
 import { Decimal } from 'decimal.js'
@@ -21,6 +22,7 @@ import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import IncreaseLiquidityExecutor from "./IncreaseLiquidityExecutor"
 import IncreaseLiquiditySuccess from "./IncreaseLiquiditySuccess"
+import { fetchLatestPoolInfo } from "@/lib/client/pool"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -51,6 +53,7 @@ type IncreaseLiquidityProps = {
 const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, token1Balance,
                                                               poolInfo, dexPosition,
                                                               closeDexModal}) => {
+    const chainId = useChainId()
     const [settingOpen, setSettingOpen] = useState(false)
     const {slipage, deadline} = useUpdateSetting()
     const [deposit, setDeposit] = useState({amount0: '0', amount1: '0'})
@@ -60,7 +63,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const [showSuccess, setShowSuccess] = useState(false)
     const [showDialog, setShowDialog] = useState(false)
     const [deposited, setDeposited] = useState<{token0: string, token1: string, liquidity: string}>({token0: '', token1: '', liquidity: '0'})
-    const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    const {getPoolAddress} = useContextUtil() as IContextUtil
     const [executed, setExecuted] = useState(false)
 
     useEffect(() => {
@@ -72,7 +75,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const updatePooInfo = async () => {
         console.log('[IncreaseLiquidity] updatePooInfo')
         const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, curPoolInfo.fee)
-        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         if (!latestPoolInfo) return // it shouldn't happen after we move websocket to backend
         setCurPoolInfo(latestPoolInfo)
         setShowDialog(false)
@@ -226,7 +229,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const handleIncreaseLiquidity = async () => {
         try {
             const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, curPoolInfo.fee)
-            const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+            const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
             if (!latestPoolInfo) {
                 console.log('no latest poolInfo found')
                 return // it shouldn't happen after we move websocket to backend

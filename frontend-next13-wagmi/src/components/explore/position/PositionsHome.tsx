@@ -25,6 +25,7 @@ import { IContextUtil, useContextUtil } from "@/components/providers/ContextUtil
 import { toast } from 'sonner'
 import { useChainId, usePublicClient} from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
+import { fetchLatestPoolInfo } from "@/lib/client/pool"
 
 
 type GlobalVariableType = {
@@ -43,7 +44,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
 
     const [global, setGlobal] = useState<GlobalVariableType>()
     const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
-    const {getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    const {getPoolAddress} = useContextUtil() as IContextUtil
     
     // for test
     const getPositionDetail = async (tokenId: bigint) => {
@@ -99,7 +100,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
         try {
             const position = await getPosition(BigInt(1046268))
             const poolAddress = await getPoolAddress(position.token0.address, position.token1.address, position.fee)
-            const poolInfo = await getLatestPoolInfo(poolAddress)
+            const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
             if (!poolInfo) throw new Error('Failed to get poolInfo')
             setOpenIncreaseLiquidity(true)
             setGlobal({poolInfo: poolInfo, position: position})

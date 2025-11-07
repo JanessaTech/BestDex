@@ -36,7 +36,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [openAddPositionModal, setAddPositionModal] = useState(false)
     const [openRefreshModal, setOpenRefreshModal] = useState(false)
 
-    const {getPoolInfo, getPoolAddress, addWebSocketListener, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    const {getPoolAddress} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
@@ -92,10 +92,8 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                 setState({...state, isLoading: true})
                 const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
                 console.log('poolAddress=', poolAddress)
-                //const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
-                const poolInfo = await getPoolInfo(token0, token1, feeAmount)
+                const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
                 setState({...state, isLoading: false, step: state.step + 1, poolInfo: poolInfo})
-                //await addWebSocketListener(token0, token1, feeAmount)
                 console.log('poolInfo=', poolInfo)
             } catch (error) {
                 console.log('failed to get pool info due to:', error)
@@ -128,7 +126,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const updatePoolInfo = async () => {
         try {
             const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-            const poolInfo = await getLatestPoolInfo(poolAddress)
+            const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
             if (poolInfo) {
                 setState({...state, poolInfo: poolInfo})
                 console.log(`Get the latest poolInfo from the pool address ${poolAddress}`)
@@ -158,7 +156,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         if (!state.poolInfo) throw new Error('No poolInfo found') //it shouldn't happen
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
         console.log('poolAddress = ', poolAddress)
-        const latestPoolInfo = await getLatestPoolInfo(poolAddress)
+        const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         if (!latestPoolInfo) return // it shouldn't happen after we move websockte to backend
         const isStale = isDataStale(state.poolInfo, latestPoolInfo, slipage/100)
         if (isStale) {
