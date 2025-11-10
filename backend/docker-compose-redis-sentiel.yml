@@ -4,7 +4,7 @@ services:
   redis-sentinel:
     image: docker.io/bitnami/redis-sentinel:6.2
     environment:
-      - REDIS_MASTER_HOST=192.168.1.200
+      - REDIS_MASTER_HOST=192.168.0.200
     ports:
       - "26379:26379/tcp"
   redis:

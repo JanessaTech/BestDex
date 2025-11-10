@@ -28,10 +28,12 @@ npm install @types/redis --save-dev
 -- Start redis in docker
   docker-compose -f docker-compose-redis-sentiel.yml up -d
 -- Test redis installation:
-redis-cli -h 192.168.1.200 -a password
+redis-cli -h 192.168.0.200 -a password
 SET runoobkey redis  => OK
 get runoobkey   => "redis"
 ping  => pong
+
+docker update --restart=always 8ffba59c3f60 3d4d27283b67
 
 ## Run tests
 npm test
