@@ -1,8 +1,8 @@
-import type { TokenType } from "@/lib/types";
 import { memo, useCallback, useState} from "react";
 import SwapStep from "./SwapStep";
 import SimulateSwapStep from "./SimulateSwapStep";
 import SwapApproveStep from "./SwapApproveStep";
+import { TokenType } from "@/common/types";
 
 const Seperator = () => {
     return (

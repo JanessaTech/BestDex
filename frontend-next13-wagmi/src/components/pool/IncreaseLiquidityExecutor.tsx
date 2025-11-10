@@ -1,8 +1,8 @@
-import { IncreasePositionParamsType, TokenType } from "@/lib/types";
 import { useCallback, useState } from "react"
 import AddPositionApproveStep from "./AddPositionApproveStep";
 import SimulateIncreaseLiquidityStep from "./SimulateIncreaseLiquidityStep";
 import IncreaseLiquidityStep from "./IncreaseLiquidityStep";
+import { IncreasePositionParamsType, TokenType } from "@/common/types";
 
 
 const Seperator = () => {

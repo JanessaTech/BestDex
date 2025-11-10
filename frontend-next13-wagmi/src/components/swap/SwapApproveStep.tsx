@@ -1,6 +1,5 @@
 import SVGCheck from "@/lib/svgs/svg_check";
 import SVGLockOpen from "@/lib/svgs/svg_lock_open";
-import { TokenType } from "@/lib/types";
 import { useEffect} from "react";
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
@@ -9,6 +8,7 @@ import { ERC20 } from "@/config/abis"
 import { memo } from "react";
 import { V3_SWAP_ROUTER_ADDRESS } from "@/config/constants";
 import { fromReadableAmount3 } from "@/common/utils";
+import { TokenType } from "@/common/types";
 
 type SwapApproveStepProps = {
     tokenFrom: TokenType;

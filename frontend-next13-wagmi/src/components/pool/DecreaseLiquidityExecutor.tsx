@@ -1,8 +1,7 @@
 import { useCallback, useState } from "react"
 import SimulateDecreaseLiquidityStep from "./SimulateDecreaseLiquidityStep"
 import DecreaseLiquidityStep from "./DecreaseLiquidityStep"
-import { TokenType } from "@/lib/types"
-
+import { TokenType } from "@/common/types"
 
 const Seperator = () => {
     return (

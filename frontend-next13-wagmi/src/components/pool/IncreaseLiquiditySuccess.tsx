@@ -1,8 +1,8 @@
 import SVGCheck from "@/lib/svgs/svg_check";
-import { TokenType } from "@/lib/types";
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip";
 import { default as DexToken } from "../common/Token";
 import Link from "next/link";
+import { TokenType } from "@/common/types";
 
 
 type IncreaseLiquiditySuccessProps = {

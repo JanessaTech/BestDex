@@ -1,5 +1,5 @@
+import { PoolInfo } from '@/common/types'
 import axios from 'axios'
-import { PoolInfo } from '../tools/pool'
 
 export const fetchLatestPoolInfo = async (poolAddress: `0x${string}`, chainId: number) => {
     console.log('[API client: pool]: fetchLatestPoolInfo. ')

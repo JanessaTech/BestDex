@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/popover"
 import Image from "next/image"
 import SVGArrowDown from "@/lib/svgs/svg_arrow_down"
-import type { TokenType } from "@/lib/types"
 import Token from "./Token"
 import { tokenList } from "@/lib/data"
+import type { TokenType } from "@/common/types"
 
 type TokenOptionProps = {
   tokenOpen: boolean;

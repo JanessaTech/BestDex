@@ -19,13 +19,12 @@ import { useState } from "react"
 import IncreaseLiquidity from "@/components/pool/IncreaseLiquidity"
 import DecreaseLiquidity from "@/components/pool/DecreaseLiquidity"
 import CollectFee from "@/components/pool/CollectFee"
-import { PositionProps, TokenType } from "@/lib/types"
-import { PoolInfo } from "@/lib/tools/pool"
 import { IContextUtil, useContextUtil } from "@/components/providers/ContextUtilProvider"
 import { toast } from 'sonner'
 import { useChainId, usePublicClient} from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 import { fetchLatestPoolInfo } from "@/lib/client/pool"
+import { PoolInfo, PositionProps, TokenType } from "@/common/types"
 
 
 type GlobalVariableType = {

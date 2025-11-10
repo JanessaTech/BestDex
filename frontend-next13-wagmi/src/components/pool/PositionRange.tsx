@@ -1,14 +1,14 @@
-import { TokenType, LocalChainIds } from "@/lib/types";
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import Token from "../common/Token";
 import PriceSelector from "./PriceSelector";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import Decimal from "decimal.js";
-import { PoolInfo, getPoolCurrentPrice, calPoolRange, PoolRange } from "@/lib/tools/pool";
 import SVGRefresh from "@/lib/svgs/svg_refresh";
 import { fetchLatestPoolInfo } from "@/lib/client/pool";
+import { LocalChainIds, PoolInfo, PoolRange, TokenType } from "@/common/types";
+import { calPoolRange, getPoolCurrentPrice } from "@/common/utils";
 
 type PositionRangeProps = {
     token0: TokenType;  //we have to make sure that token0 is the address of token0 in the pool;

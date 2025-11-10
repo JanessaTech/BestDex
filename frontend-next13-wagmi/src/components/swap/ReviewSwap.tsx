@@ -1,6 +1,4 @@
-import { memo, useCallback, useEffect } from "react"
-import SVGClose from "@/lib/svgs/svg_close"
-import type { LocalChainIds, TokenType } from "@/lib/types";
+import { memo, useCallback } from "react"
 import { Dispatch, SetStateAction, useState } from "react"
 import Token from "../common/Token";
 import { Button } from "@/components/ui/button"
@@ -14,6 +12,7 @@ import SVGCheck from "@/lib/svgs/svg_check";
 import ArrowRight from "@/lib/svgs/svg_arrow_right";
 import Link from "next/link";
 import DexModal from "../common/DexModal";
+import { LocalChainIds, TokenType } from "@/common/types";
 
 type SwapSuccessProps = {
     tokenFrom: TokenType;

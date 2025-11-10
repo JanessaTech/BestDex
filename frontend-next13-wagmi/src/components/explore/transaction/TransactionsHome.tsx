@@ -10,10 +10,10 @@ import {
   } from "@/components/ui/table"
 import ToolTipHelper from "@/components/common/ToolTipHelper"
 import Token from "@/components/common/Token"
-import { TransactionType } from "@/lib/types"
 import ArrowRightLeft from "@/lib/svgs/svg_arrow_rightleft"
 import ArrowRight from "@/lib/svgs/svg_arrow_right"
 import { TransactionListData } from "@/lib/data"
+import { TransactionType } from "@/common/types"
 
 
 type TransactionsHomeProps = {}

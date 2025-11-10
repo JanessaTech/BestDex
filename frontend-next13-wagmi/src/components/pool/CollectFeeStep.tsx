@@ -1,6 +1,5 @@
 import SVGCheck from "@/lib/svgs/svg_check";
 import SVGPlusCircle from "@/lib/svgs/svg_plus_circle";
-import { CollectFeeParamsType, TokenType } from "@/lib/types";
 import { memo, useEffect, useState } from "react";
 import { useWriteContract,
     useWaitForTransactionReceipt
@@ -11,6 +10,7 @@ import { decodeEventLog, formatUnits } from 'viem';
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, 
     UNISWAP_V3_POSITION_MANAGER_ABI, 
     UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI } from "@/config/constants";
+import { CollectFeeParamsType, TokenType } from "@/common/types";
 
 type CollectFeeStepProps = {
     token0: TokenType;

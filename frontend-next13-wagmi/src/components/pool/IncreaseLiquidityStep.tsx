@@ -1,4 +1,3 @@
-import { IncreasePositionParamsType, TokenType } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { useWriteContract,
     useWaitForTransactionReceipt,
@@ -12,6 +11,7 @@ import SVGCheck from "@/lib/svgs/svg_check";
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import { decodeEventLog } from 'viem';
+import { IncreasePositionParamsType, TokenType } from "@/common/types";
 
 
 type IncreaseLiquidityStepProps = {

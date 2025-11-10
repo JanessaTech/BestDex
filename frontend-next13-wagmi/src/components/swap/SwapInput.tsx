@@ -1,9 +1,9 @@
-import { LocalChainIds, TokenType } from "@/lib/types";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import { Decimal } from 'decimal.js';
 import { useEffect, useState } from "react";
+import { LocalChainIds, TokenType } from "@/common/types";
 
 type SwapInputProps = {
     tokenFrom: TokenType | undefined;

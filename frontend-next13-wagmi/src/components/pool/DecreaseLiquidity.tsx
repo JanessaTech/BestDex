@@ -1,4 +1,3 @@
-import { PositionProps } from "@/lib/types";
 import DexModal from "../common/DexModal"
 import { useCallback, useState } from "react";
 import Setting from "../common/Setting"
@@ -20,6 +19,7 @@ import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import DecreaseLiquidityExecutor from "./DecreaseLiquidityExecutor";
 import DecreaseLiquiditySuccess from "./DecreaseLiquiditySuccess";
 import { fetchLatestPoolInfo } from "@/lib/client/pool";
+import { PositionProps } from "@/common/types";
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {

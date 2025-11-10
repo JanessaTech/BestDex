@@ -1,4 +1,3 @@
-import type { TokenType } from "@/lib/types";
 import { 
     FeeAmount,
     Position,
@@ -7,11 +6,11 @@ import {Token} from '@uniswap/sdk-core';
 import { Decimal } from 'decimal.js';
 import { useEffect, useState } from "react";
 import { useAccount} from 'wagmi'
-import { PoolInfo } from "@/lib/tools/pool";
 import { Button } from '../ui/button';
 import ReviewAddPosition from "./ReviewAddPosition";
 import DepositInput from "./DepositInput";
 import { fromReadableAmount2 } from "@/common/utils";
+import { PoolInfo, TokenType } from '@/common/types';
 
 type DepositProps = {
     token0: TokenType;

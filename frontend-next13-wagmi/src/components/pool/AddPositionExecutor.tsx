@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from "react"
 import AddPositionApproveStep from "./AddPositionApproveStep"
 import AddPositionStep from "./AddPositionStep"
 import SimulateAddPositionStep from "./SimulateAddPositionStep"
-import { MintPositionParamsType, TokenType } from "@/lib/types"
+import { MintPositionParamsType, TokenType } from "@/common/types"
 
 const Seperator = () => {
     return (

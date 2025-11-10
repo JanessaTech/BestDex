@@ -4,14 +4,14 @@ import SVGMinus from "@/lib/svgs/svg_minus";
 import SVGPlus from "@/lib/svgs/svg_plus";
 import SVGZoomIn from "@/lib/svgs/svg_zoom_in";
 import SVGZoomOut from "@/lib/svgs/svg_zoom_out";
-import type { TokenType } from "@/lib/types";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { 
     nearestUsableTick
     } from '@uniswap/v3-sdk'
 import { MAX_TICK, MIN_TICK } from "@/config/constants";
 import { Decimal } from 'decimal.js'
-import { PoolRange, calcPoolPriceFromTick } from "@/lib/tools/pool";
+import { PoolRange, TokenType } from "@/common/types";
+import { calcPoolPriceFromTick } from "@/common/utils";
 
 const calPercentage = (price: string, marketPrice: string) => {
     const percentage = new Decimal(price).minus(new Decimal(marketPrice)).div(new Decimal(marketPrice)).mul(100).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()

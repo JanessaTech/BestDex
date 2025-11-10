@@ -7,9 +7,9 @@ import {
   } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
 import { TradeType, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import type { QuotesParameterType } from '@/lib/types'
 import { Decimal } from 'decimal.js'
 import { fromReadableAmount } from '@/common/utils';
+import { QuotesParameterType } from '@/common/types';
 
 async function parseDataFromRequest(request: Request) {
   const data = await request.json() as QuotesParameterType

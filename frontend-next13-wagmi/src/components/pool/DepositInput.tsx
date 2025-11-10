@@ -1,10 +1,11 @@
-import { TokenType, LocalChainIds} from "@/lib/types";
+
 import { default as DexToken } from "../common/Token";
 import { memo, useEffect, useState } from "react";
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { useChainId } from "wagmi";
 import { ChainId } from '@uniswap/sdk-core';
 import { Decimal } from 'decimal.js';
+import { LocalChainIds, TokenType } from "@/common/types";
 
 type DepositInputProps = {
     amount: string;

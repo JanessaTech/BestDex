@@ -3,9 +3,7 @@
 import usePriceHook, { TokenPriceInUSDType } from "@/hooks/usePriceHook"
 import useTokenBalanceHook from "@/hooks/useTokenBalanceHook";
 import { createContext, useContext } from "react"
-import { TokenType } from "@/lib/types";
 import usePoolHook from "@/hooks/usePoolHook";
-import { PoolInfo } from "@/lib/tools/pool";
 import { useChainId} from 'wagmi'
 
 export interface IContextUtil {

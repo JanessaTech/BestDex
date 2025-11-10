@@ -1,5 +1,4 @@
-import { TokenType ,LocalChainIds, MintPositionParamsType} from "@/lib/types";
-import { PoolInfo } from "@/lib/tools/pool";
+
 import { default as DexToken } from "../common/Token";
 import DexModal from "../common/DexModal";
 import AddPositionExecutor from "./AddPositionExecutor";
@@ -20,6 +19,7 @@ import { toast } from "sonner"
 import { useEffect, useState } from "react";
 import AddPositionSuccess from "./AddPositionSuccess";
 import { fromReadableAmount2 } from "@/common/utils";
+import { LocalChainIds, MintPositionParamsType, PoolInfo, TokenType } from "@/common/types";
 
 
 const parseCalldata = (calldata: `0x${string}`) => {

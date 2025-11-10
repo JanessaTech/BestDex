@@ -4,10 +4,10 @@ import { memo, useEffect, useState } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
 import { useWriteContract} from 'wagmi'
 import { ERC20 } from "@/config/abis"
-import { TokenType } from "@/lib/types"
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS } from "@/config/constants"
 import SVGLockOpen from "@/lib/svgs/svg_lock_open"
 import { fromReadableAmount3 } from "@/common/utils"
+import { TokenType } from "@/common/types"
 
 type AddPositionApproveStepProps = {
     token: TokenType;

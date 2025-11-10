@@ -5,13 +5,13 @@ import {
 import {CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { maxUint128, decodeFunctionData} from 'viem'
 import { useAccount} from 'wagmi'
-import { CollectFeeParamsType, PositionProps } from "@/lib/types";
 import DexModal from "../common/DexModal"
 import { useCallback, useEffect, useState } from 'react';
 import CollectFeeSuccess from './CollectFeeSuccess';
 import CollectFeeExecutor from './CollectFeeExecutor';
 import { toast } from "sonner"
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from '@/config/constants';
+import { CollectFeeParamsType, PositionProps } from '@/common/types'
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {

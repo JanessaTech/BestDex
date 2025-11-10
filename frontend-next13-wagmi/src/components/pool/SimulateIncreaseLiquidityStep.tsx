@@ -1,11 +1,11 @@
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import SVGCheck from "@/lib/svgs/svg_check";
-import { IncreasePositionParamsType } from "@/lib/types";
 import { memo, useEffect } from "react";
 import {useSimulateContract} from 'wagmi'
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import SVGSign from "@/lib/svgs/svg_sign";
+import { IncreasePositionParamsType } from "@/common/types";
 
 type SimulateIncreaseLiquidityStepProps = {
     started: boolean;

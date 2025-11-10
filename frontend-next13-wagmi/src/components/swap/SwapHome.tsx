@@ -4,7 +4,6 @@ import { useChainId, useSwitchChain} from 'wagmi'
 import NetworkOption from '../common/NetworkOption'
 import { useEffect, useState } from 'react'
 import TokenOption from '../common/TokenOption'
-import { TokenType } from '@/lib/types'
 import ArrowUpDown from '@/lib/svgs/svg_arrow_updown'
 import { Button } from "@/components/ui/button"
 import Setting from '../common/Setting'
@@ -14,6 +13,7 @@ import SVGLeft from '@/lib/svgs/svg_left'
 import Quotes from './Quotes'
 import { useUpdateSetting } from '@/config/store'
 import { ChainId } from '@uniswap/sdk-core'
+import { TokenType } from '@/common/types'
 
 type SwapHomeProps = {}
 const SwapHome: React.FC<SwapHomeProps> = () => {

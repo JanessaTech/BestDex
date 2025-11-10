@@ -1,5 +1,5 @@
-import type { PositionProps, TokenListType, TokenType } from "./types"
-import  {  TransactionType } from "./types"
+
+import { PositionProps, TokenListType, TokenType, TransactionType } from "@/common/types"
 
 export const tokenList: TokenListType = [
     {

@@ -1,7 +1,7 @@
+import { calcPoolAddress } from '@/common/utils'
 import { 
     usePublicClient
   } from 'wagmi'
-import {calcPoolAddress} from '@/lib/tools/pool'
 
 const usePoolHook = (chainId: number) => {
     const publicClient = usePublicClient({chainId})

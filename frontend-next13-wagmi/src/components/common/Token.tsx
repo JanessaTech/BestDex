@@ -1,4 +1,4 @@
-import type { TokenType } from "@/lib/types"
+import { TokenType } from "@/common/types";
 import Image from "next/image"
 
 type TokenProps = {

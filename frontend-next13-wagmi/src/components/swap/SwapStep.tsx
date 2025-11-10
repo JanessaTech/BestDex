@@ -9,8 +9,8 @@ import { useSendTransaction,
 import {WaitForTransactionReceiptErrorType} from "@wagmi/core"
 import { UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
-import type { TokenType } from "@/lib/types"
 import { Decimal } from 'decimal.js'
+import { TokenType } from "@/common/types"
 
 const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): string => {
     const defaultReason = 'Unknown reason'

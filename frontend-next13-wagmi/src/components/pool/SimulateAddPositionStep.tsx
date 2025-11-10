@@ -3,9 +3,9 @@ import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { memo, useEffect } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
-import { MintPositionParamsType } from "@/lib/types"
 import {useSimulateContract} from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
+import { MintPositionParamsType } from "@/common/types"
 
 type SimulateAddPositionStepProps = {
     started: boolean;

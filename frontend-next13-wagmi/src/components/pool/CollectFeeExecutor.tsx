@@ -1,6 +1,6 @@
-import { CollectFeeParamsType, TokenType } from "@/lib/types";
 import { memo, useState } from "react";
 import CollectFeeStep from "./CollectFeeStep";
+import { CollectFeeParamsType, TokenType } from "@/common/types";
 
 type CollectFeeExecutorProps = {
     data: {calldata: `0x${string}`, parsedCalldata: CollectFeeParamsType};

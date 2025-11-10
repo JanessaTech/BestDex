@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import type { LocalChainIds, QuotesParameterType, TokenType } from "@/lib/types"
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from "react"
 import Token from "../common/Token"
@@ -12,6 +11,7 @@ import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
 import { ChainId } from '@uniswap/sdk-core'
 import ReviewSwap from "./ReviewSwap"
+import { LocalChainIds, QuotesParameterType, TokenType } from "@/common/types"
 
 
 type NoQuotesProps = {

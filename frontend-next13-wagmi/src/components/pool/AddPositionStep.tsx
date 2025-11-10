@@ -8,10 +8,10 @@ import { useWriteContract,
          useAccount
        } from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI } from "@/config/constants"
-import { MintPositionParamsType, TokenType } from "@/lib/types"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
 import { decodeEventLog } from 'viem';
+import { MintPositionParamsType, TokenType } from "@/common/types"
 
 type AddPositionStepProps = {
     token0: TokenType;

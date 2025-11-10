@@ -3,9 +3,7 @@ import DexModal from "../common/DexModal"
 import Setting from "../common/Setting"
 import { useUpdateSetting } from "@/config/store"
 import DepositInput from "./DepositInput"
-import { IncreasePositionParamsType, PositionProps, TokenType } from "@/lib/types"
 import { Button } from "../ui/button"
-import { PoolInfo, isDataStale } from "@/lib/tools/pool"
 import { 
     FeeAmount,
     Position,
@@ -22,7 +20,8 @@ import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import IncreaseLiquidityExecutor from "./IncreaseLiquidityExecutor"
 import IncreaseLiquiditySuccess from "./IncreaseLiquiditySuccess"
 import { fetchLatestPoolInfo } from "@/lib/client/pool"
-import { fromReadableAmount2 } from "@/common/utils"
+import { fromReadableAmount2, isDataStale } from "@/common/utils"
+import { IncreasePositionParamsType, PoolInfo, PositionProps } from "@/common/types"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
