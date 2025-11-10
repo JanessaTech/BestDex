@@ -83,7 +83,7 @@ class WebSocketClient {
     }
 
     public init() {
-        this.addAllWebSocketListeners(1).catch((e) => {
+        this.addAllWebSocketListeners(31337).catch((e) => {
             logger.error(`Failed to add websocket listeners due to ${e}`)
             process.exit(1)
         })
