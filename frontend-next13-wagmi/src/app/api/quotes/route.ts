@@ -9,7 +9,7 @@ import { ethers } from 'ethers'
 import { TradeType, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import type { QuotesParameterType } from '@/lib/types'
 import { Decimal } from 'decimal.js'
-import { fromReadableAmount } from '@/lib/utils';
+import { fromReadableAmount } from '@/common/utils';
 
 async function parseDataFromRequest(request: Request) {
   const data = await request.json() as QuotesParameterType

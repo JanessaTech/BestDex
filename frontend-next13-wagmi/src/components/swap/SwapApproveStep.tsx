@@ -7,8 +7,8 @@ import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import { useWriteContract} from 'wagmi'
 import { ERC20 } from "@/config/abis"
 import { memo } from "react";
-import { fromReadableAmount3 } from "@/lib/utils";
 import { V3_SWAP_ROUTER_ADDRESS } from "@/config/constants";
+import { fromReadableAmount3 } from "@/common/utils";
 
 type SwapApproveStepProps = {
     tokenFrom: TokenType;

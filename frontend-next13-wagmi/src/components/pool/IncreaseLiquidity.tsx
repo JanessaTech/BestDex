@@ -15,7 +15,6 @@ import {
 import {Token, Percent} from '@uniswap/sdk-core';
 import { useChainId} from 'wagmi';
 import { toast } from "sonner"
-import { fromReadableAmount2 } from "@/lib/utils"
 import { Decimal } from 'decimal.js'
 import {decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
@@ -23,6 +22,7 @@ import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import IncreaseLiquidityExecutor from "./IncreaseLiquidityExecutor"
 import IncreaseLiquiditySuccess from "./IncreaseLiquiditySuccess"
 import { fetchLatestPoolInfo } from "@/lib/client/pool"
+import { fromReadableAmount2 } from "@/common/utils"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {

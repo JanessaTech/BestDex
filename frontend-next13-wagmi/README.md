@@ -36,5 +36,7 @@ npm run dev
 5. flashbot
 6. add logger for frontend
 7. Add curd for postions
-8. fix bugs:
+8. Refactor tokenList
+9. fix bugs:
     6.1 exception when create a new position
+10. Add UTs for frontend and backend

@@ -4,7 +4,6 @@ import {
     Position,
     Pool} from '@uniswap/v3-sdk';
 import {Token} from '@uniswap/sdk-core';
-import { fromReadableAmount2 } from "@/lib/utils";
 import { Decimal } from 'decimal.js';
 import { useEffect, useState } from "react";
 import { useAccount} from 'wagmi'
@@ -12,6 +11,7 @@ import { PoolInfo } from "@/lib/tools/pool";
 import { Button } from '../ui/button';
 import ReviewAddPosition from "./ReviewAddPosition";
 import DepositInput from "./DepositInput";
+import { fromReadableAmount2 } from "@/common/utils";
 
 type DepositProps = {
     token0: TokenType;

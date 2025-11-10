@@ -6,8 +6,8 @@ import { useWriteContract} from 'wagmi'
 import { ERC20 } from "@/config/abis"
 import { TokenType } from "@/lib/types"
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS } from "@/config/constants"
-import { fromReadableAmount3 } from "@/lib/utils"
 import SVGLockOpen from "@/lib/svgs/svg_lock_open"
+import { fromReadableAmount3 } from "@/common/utils"
 
 type AddPositionApproveStepProps = {
     token: TokenType;
