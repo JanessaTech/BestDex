@@ -8,6 +8,7 @@ import { useAuthState } from "@/config/store";
 import { setCookie, deleteCookie } from 'cookies-next';
 import { toast } from "sonner"
 import SVGClose from "@/lib/svgs/svg_close";
+import logger from "@/common/Logger";
 
 class NetworkError extends Error {
     constructor(message: string) {
@@ -33,11 +34,10 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
     const chainId = useChainId()
     const config = useConfig()
     const [showModal, setShowModal] = useState(false)
-
-    console.log('AuthenticationProvider.isConnected=', isConnected)
-    console.log('showModal:', showModal)
-    console.log('auth:', auth)
-    console.log('isDone:', isDone)
+    logger.debug('AuthenticationProvider.isConnected=', isConnected)
+    logger.debug('showModal:', showModal)
+    logger.debug('auth:', auth)
+    logger.debug('isDone:', isDone)
     useEffect(() => {
         if (isConnected) {
             if (auth !== 'authenticated') {
@@ -63,12 +63,12 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
                 'Content-Type': 'application/json'
                 },
               })
-              console.log('[AuthenticationProvider] rawResponse=', rawResponse)
+              logger.debug('[AuthenticationProvider] rawResponse=', rawResponse)
               const content = await rawResponse.json()
               if (!content?.success) {
                 throw new JsonError(content?.message)
               }
-              console.log('[AuthenticationProvider] getNonce ', content)
+              logger.info('[AuthenticationProvider] getNonce ', content)
               return content?.data?.nonce
         } catch(e) {
             if (e instanceof JsonError) {
@@ -93,7 +93,7 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
             if (!content?.success) {
                 throw new JsonError(content?.message)
             }
-            console.log('[AuthenticationProvider] verify ',content)
+            logger.info('[AuthenticationProvider] verify ',content)
             return content?.data?.verify
         } catch(e) {
             if ( e instanceof JsonError) {
@@ -106,7 +106,7 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
 
     const createSiweMessage = async(domain: string, origin: string, address: `0x${string}`, statement: string, chainId: number) => {
         const nonce = await getNonce()
-        console.log(`a new nonce : ${nonce} in createSiweMessage`)
+        logger.debug(`a new nonce : ${nonce} in createSiweMessage`)
         const siweMessage = new SiweMessage({
           domain,
           address,
@@ -124,13 +124,12 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
             const origin = window.location.origin
             const statement = `${process.env.NEXT_PUBLIC_APP_VERIFICATION}`
             const message = await createSiweMessage(domain, origin, address!, statement, chainId)
-            console.log(message)
+            logger.debug('[AuthenticationProvider]  handleVerify. message=', message)
             const signature = await signMessage(config, { message: message })
-            
-            console.log('signature:', signature)
+            logger.debug('[AuthenticationProvider]  handleVerify. signature=', signature)
             if (!signature) throw Error('Invalid signature')
             const verified = await verify({message: message, signature: signature})
-            console.log('[AuthenticationProvider] signInWithEthereu. verified:', verified)
+            logger.info('[AuthenticationProvider]  handleVerify. verified=', verified)
             if (verified) {
                 setShowModal(false)
                 setAuth('authenticated')

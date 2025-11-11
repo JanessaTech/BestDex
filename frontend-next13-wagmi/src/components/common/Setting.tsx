@@ -8,6 +8,7 @@ import SVGSetting from "@/lib/svgs/svg_setting"
 import { useEffect, useState } from "react"
 import QuestionMarkToolTip from "./QuestionMarkToolTip"
 import { useUpdateSetting } from "@/config/store"
+import logger from "@/common/Logger"
 
 type SettingProps = {
     settingOpen: boolean;
@@ -44,8 +45,7 @@ const Setting:React.FC<SettingProps> = ({settingOpen, onOpenChange}) => {
     }
 
     const handleDeadlineOnBlur = () => {
-        console.log('handleDeadlineOnBlur')
-        console.log('deadline = ', deadline)
+        logger.debug('deadline = ', deadline)
         if (deadline === 0 || deadline === '') {
             updateDeadline(10)
         }

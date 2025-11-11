@@ -1,4 +1,5 @@
 import logger from '@/common/Logger'
+import messageHelper from '@/common/internationalization/messageHelper'
 import { PoolInfo } from '@/common/types'
 import axios from 'axios'
 
@@ -11,8 +12,8 @@ export const fetchLatestPoolInfo = async (poolAddress: `0x${string}`, chainId: n
         return pooInfo
     } catch (error:any) {
         const reason = error?.response?.data?.message || error?.message || error
-        console.log(error)
-        console.log(reason)
+        logger.error('[API client: pool] fetchLatestPoolInfo.', messageHelper.getMessage('pool_fetch_latest_failed', poolAddress, chainId, reason))
+        logger.error(error)
         throw error
     }
 }

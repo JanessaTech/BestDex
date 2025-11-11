@@ -1,15 +1,16 @@
 import { SiweMessage } from 'siwe'
 import { NextResponse } from 'next/server';
+import logger from '@/common/Logger';
 
 export async function POST(request: Request) {
-  console.log('POST: verify')
+  logger.debug('POST: verify')
   try {
     const { message, signature } = await request.json();
-    console.log('verify message:', message)
-    console.log('verify signature:', signature)
+    logger.info('verify message:', message)
+    logger.info('verify signature:', signature)
     const siweMessage = new SiweMessage(message);
     const success = await siweMessage.verify({signature});
-    console.log('verify success:', success)
+    logger.info('verify success:', success)
     if (!success.success) return NextResponse.json({ ok: false })
     return NextResponse.json({ ok: true })
   } catch(err) {
