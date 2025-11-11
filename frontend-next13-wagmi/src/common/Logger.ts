@@ -1,0 +1,21 @@
+import * as log from 'loglevel'
+
+function getLogger() {
+    var logger = log.getLogger('cheap')
+    const env = process.env.NEXT_APP_ENV
+    if (env === 'prod') {
+        //logger.setLevel('error')
+        logger.setLevel('trace')
+    } else if (env === 'stage') {
+        logger.setLevel('trace')
+        //logger.setLevel('info')
+    } else {
+        logger.setLevel('trace')
+    }
+     //   'trace'| 'debug' | 'info' | 'warn' | 'error'
+    return logger
+}
+
+const logger = getLogger()
+
+export default logger

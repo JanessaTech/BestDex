@@ -1,3 +1,7 @@
+export type MessageType = {
+    [key: string]: string
+}
+
 export type TokenType = {
     chainId: number;
     name: string;
