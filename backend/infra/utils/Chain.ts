@@ -11,7 +11,7 @@ export const createBlockchainClient = (chainId: number) => {
     }
     logger.debug('transport:', chainDetail[1])
     let chain = chainDetail[0]
-    if (chainId = 31377) {
+    if (chainId === 31337) {
         chain = {
             ...hardhat,
             contracts: {
