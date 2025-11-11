@@ -7,9 +7,16 @@ const isArray = (obj: any) => {
     return !!obj && obj.constructor === Array;
 }
 
+function replacer(key: any, value: any) {
+    if (typeof value === 'bigint') {
+      return value.toString();
+    }
+    return value;
+  }
+
 const convert = (obj: any) => {
     if (isJson(obj)) {
-        return  '\n' + JSON.stringify(obj, null, 4) + '\n'
+        return  '\n' + JSON.stringify(obj, replacer, 4) + '\n'
     }
     if (isArray(obj)) {
         return obj.map((o: any) => convert(o))
