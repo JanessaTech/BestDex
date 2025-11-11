@@ -19,3 +19,5 @@ export const UNISWAP_V3_FACTORY_ADDRESSES: { [chainId: number]: `0x${string}`} =
 export const UNISWAP_V3_FACTORY_ABI = parseAbi([
 'function getPool(address tokenA, address tokenB, uint24 fee) external view returns (address pool)'
 ]);
+
+export const LISTENER_lOCAL_POLL_INTERVAL = 12000

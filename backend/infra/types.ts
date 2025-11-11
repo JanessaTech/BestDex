@@ -1,6 +1,5 @@
-import { ethers} from 'ethers'
-import UniswapV3PoolListener from '../websocket/UniswapV3PoolListener';
-import LocalUniswapV3PoolListener from '../websocket/LocalUniswapV3PoolListener';
+import UniswapV3PoolListener from './websocket/UniswapV3PoolListener';
+import LocalUniswapV3PoolListener from './websocket/LocalUniswapV3PoolListener';
 
 export type PoolInfo = {
     token0: string;
@@ -25,7 +24,7 @@ export type TokenType = {
 }
 
 export type PoolMetaData = {
-    listener: UniswapV3PoolListener | LocalUniswapV3PoolListener;
+    listener: UniswapV3PoolListener| LocalUniswapV3PoolListener;
     token0 : TokenType;
     token1: TokenType;
     feeAmount: number

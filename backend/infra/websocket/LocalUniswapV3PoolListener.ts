@@ -1,13 +1,14 @@
 import { PublicClient } from 'viem'
-import { PoolInfo } from '../types/TypesInInfra';
 import logger from '../../helpers/logger';
 import { fetchPoolInfo } from '../utils/Pool';
+import { LISTENER_lOCAL_POLL_INTERVAL } from '../../helpers/common/constants';
+import { PoolInfo } from '../types';
 
 class LocalUniswapV3PoolListener {
     private poolAddress!:`0x${string}`;
     private wssURL !:string;
     private publicClient!: PublicClient;
-    private POLL_INTERVAL = 12000;
+    private POLL_INTERVAL = LISTENER_lOCAL_POLL_INTERVAL;
     private interval !:NodeJS.Timeout | null;
     private latestPooInfo?:PoolInfo | undefined = undefined
 

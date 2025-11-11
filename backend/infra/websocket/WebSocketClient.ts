@@ -1,11 +1,11 @@
 import { PublicClient } from "viem"
 import { FEE_TIERS, chainUrls, tokenList } from "../../config/data/hardcode"
 import logger from "../../helpers/logger"
-import { PoolInfo, PoolMetaData, TokenType } from "../types/TypesInInfra"
 import { calcPoolAddress } from "../utils/Pool"
 import UniswapV3PoolListener from "./UniswapV3PoolListener"
 import LocalUniswapV3PoolListener from "./LocalUniswapV3PoolListener"
 import { createBlockchainClient } from "../utils/Chain"
+import { PoolInfo, PoolMetaData, TokenType } from "../types"
 
 interface WebsocketConfig {}
 
