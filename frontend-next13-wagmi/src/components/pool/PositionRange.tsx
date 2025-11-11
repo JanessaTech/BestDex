@@ -9,6 +9,7 @@ import SVGRefresh from "@/lib/svgs/svg_refresh";
 import { fetchLatestPoolInfo } from "@/lib/client/pool";
 import { LocalChainIds, PoolInfo, PoolRange, TokenType } from "@/common/types";
 import { calPoolRange, getPoolCurrentPrice } from "@/common/utils";
+import logger from "@/common/Logger";
 
 type PositionRangeProps = {
     token0: TokenType;  //we have to make sure that token0 is the address of token0 in the pool;
@@ -28,7 +29,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
 
     useEffect(() => {
         const poolRange = calPoolRange(poolInfo, token0, token1)
-        console.log('poolRange=', poolRange)
+        logger.debug('[PositionRange] poolRange=', poolRange)
         updateUSD()
         setCurPoolInfo(poolInfo)
         setCurPoolRange({...poolRange})
@@ -45,14 +46,14 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
 
     // for debug
     const checkOldPoolInfo = () => {
-        console.log('Old poolInfo used in position=', curPoolInfo)
+        logger.debug('[PositionRange] Old poolInfo used in position=', curPoolInfo)
     }
     const checkNewPoolInfo = async () => {
-        console.log('checkNewPoolInfo...')
+        logger.debug('[PositionRange] checkNewPoolInfo...')
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-        console.log('poolAddress = ', poolAddress)
+        logger.debug('[PositionRange] poolAddress = ', poolAddress)
         const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
-        console.log('latestPoolInfo=', latestPoolInfo)
+        logger.debug('[PositionRange] latestPoolInfo=', latestPoolInfo)
     }
 
     return (

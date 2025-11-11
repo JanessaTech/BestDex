@@ -25,6 +25,7 @@ import { useChainId, usePublicClient} from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 import { fetchLatestPoolInfo } from "@/lib/client/pool"
 import { PoolInfo, PositionProps, TokenType } from "@/common/types"
+import logger from "@/common/Logger"
 
 
 type GlobalVariableType = {
@@ -55,11 +56,11 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                 functionName:'positions',
                 args:[tokenId]
             }) 
-            console.log('[PositionsHome] postion=', postion)
+            logger.debug('[PositionsHome] postion=', postion)
             return postion  
         } catch (error) {
-          console.log('failed to get position details:', error) 
-          throw error 
+            logger.error('failed to get position details:', error)
+            throw error 
         } 
     }
     
@@ -104,7 +105,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
             setOpenIncreaseLiquidity(true)
             setGlobal({poolInfo: poolInfo, position: position})
         } catch (error) {
-            console.log(error)
+            logger.error(error)
             toast.error('Failed to increase liquidity. Please try again')
         }
     }
@@ -115,7 +116,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
             setOpenDecreaseLiquidity(true)
             setGlobal({position: position})
         } catch (error) {
-            console.log(error)
+            logger.error(error)
             toast.error('Failed to decrease liquidity. Please try again')
         }
     }
@@ -126,7 +127,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
             setOpenCollectFee(true)
             setGlobal({position: position})
         } catch(error) {
-            console.log(error)
+            logger.error(error)
             toast.error('Failed to collect fee. Please try again')
         }
     }

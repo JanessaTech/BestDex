@@ -22,23 +22,24 @@ import IncreaseLiquiditySuccess from "./IncreaseLiquiditySuccess"
 import { fetchLatestPoolInfo } from "@/lib/client/pool"
 import { fromReadableAmount2, isDataStale } from "@/common/utils"
 import { IncreasePositionParamsType, PoolInfo, PositionProps } from "@/common/types"
+import logger from "@/common/Logger"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
-        console.log('calldata:', calldata)
+        logger.debug('[IncreaseLiquidity] calldata:', calldata)
         const decoded = decodeFunctionData({
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
             data: calldata
         })
-        console.log('decoded', decoded)
+        logger.debug('[IncreaseLiquidity] decoded', decoded)
         const name = decoded['functionName']
         const args = decoded['args'][0] as IncreasePositionParamsType
-        console.log('name=', name)
-        console.log('args=', args)
+        logger.debug('[IncreaseLiquidity] name=', name)
+        logger.debug('[IncreaseLiquidity] args=', args)
       
         return  args
     } catch (error) {
-        console.log('Failed to parse calldata due to:', error)
+        logger.error('[IncreaseLiquidity] Failed to parse calldata due to:', error)
     }
 }
 
@@ -66,13 +67,13 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const [executed, setExecuted] = useState(false)
 
     useEffect(() => {
-        console.log('[IncreaseLiquidity] curPoolInfo=', curPoolInfo)
-        console.log('[IncreaseLiquidity] dexPosition=', dexPosition)
+        logger.debug('[IncreaseLiquidity] curPoolInfo=', curPoolInfo)
+        logger.debug('[IncreaseLiquidity] dexPosition=', dexPosition)
         updateDeposit()
     }, [curPoolInfo])
 
     const updatePooInfo = async () => {
-        console.log('[IncreaseLiquidity] updatePooInfo')
+        logger.info('[IncreaseLiquidity] updatePooInfo')
         const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, curPoolInfo.fee)
         const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         if (!latestPoolInfo) return // it shouldn't happen after we move websocket to backend
@@ -82,26 +83,26 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
 
     const updateDeposit = async () => {
         if (dexPosition.upperTick <= curPoolInfo.tick ) {
-            console.log('token0 is hidden')
+            logger.info('[IncreaseLiquidity] token0 is hidden')
             handleDepositChanges('0', '0')
         } else if (dexPosition.lowerTick >=  curPoolInfo.tick) {
-            console.log('token1 is hidden')
+            logger.info('[IncreaseLiquidity] token1 is hidden')
             handleDepositChanges('0', '0')
         } else {
-            console.log('no tokens is hidden')
+            logger.info('[IncreaseLiquidity] no tokens is hidden')
             if (whoInput === 0) {
                 const position = createPoistionFromToken0(deposit.amount0)
                 const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token0.decimal)).toDecimalPlaces(dexPosition.token0.decimal, Decimal.ROUND_HALF_UP).toString()
                 const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
         
-                console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+                logger.debug('[IncreaseLiquidity] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
                 handleDepositChanges(deposit.amount0, burnAmount1)
             } else if (whoInput === 1) {
                 const position = createPoistionFromToken1(deposit.amount1)
                 const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token0.decimal)).toDecimalPlaces(dexPosition.token0.decimal, Decimal.ROUND_HALF_UP).toString()
                 const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
         
-                console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+                logger.debug('[IncreaseLiquidity] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
                 handleDepositChanges(burnAmount0, deposit.amount1)
             }
         }
@@ -114,7 +115,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const updateCallData = () => {
         const callData = generateCallData()
         const parsedCalldata = parseCalldata(callData as `0x${string}`)
-        console.log('parsedCalldata=', parsedCalldata)
+        logger.debug('[IncreaseLiquidity] parsedCalldata=', parsedCalldata)
         if (!parsedCalldata) {
             throw new Error('Failed to parse calldata')
         }
@@ -154,7 +155,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 tickUpper: dexPosition.upperTick,
                 amount1: fromReadableAmount2(deposit.amount1, dexPosition.token1.decimal)
             })
-            console.log('[IncreaseLiquidity] token0 is hidden')
+            logger.debug('[IncreaseLiquidity] token0 is hidden')
         } else if (dexPosition.lowerTick >= curPoolInfo.tick) { // token1 is hidden
             position = Position.fromAmount0({
                 pool: configuredPool,
@@ -163,7 +164,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 amount0: fromReadableAmount2(deposit.amount0, dexPosition.token0.decimal),
                 useFullPrecision: true,
             })
-            console.log('[IncreaseLiquidity] token1 is hidden')
+            logger.debug('[IncreaseLiquidity] token1 is hidden')
         } else {
             // no tokens hidden
             position = Position.fromAmounts({
@@ -174,7 +175,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 amount1: fromReadableAmount2(deposit.amount1, dexPosition.token1.decimal),
                 useFullPrecision: true,
             })
-            console.log('[IncreaseLiquidity] no tokens hidden')
+            logger.debug('[IncreaseLiquidity] no tokens hidden')
         }
         return position 
     }
@@ -192,8 +193,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token0.decimal)).toDecimalPlaces(dexPosition.token0.decimal, Decimal.ROUND_HALF_UP).toString()
         const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
 
-        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
-        console.log('value=', value)
+        logger.debug('[IncreaseLiquidity] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+        logger.debug('[IncreaseLiquidity] value=', value)
         handleDepositChanges(value, burnAmount1)
         setWhoInput(0)
     }
@@ -203,7 +204,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token0.decimal)).toDecimalPlaces(dexPosition.token0.decimal, Decimal.ROUND_HALF_UP).toString()
         const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
 
-        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+        logger.debug('[IncreaseLiquidity] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
         handleDepositChanges(burnAmount0, value)
         setWhoInput(1)
     }
@@ -230,11 +231,11 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
             const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, curPoolInfo.fee)
             const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
             if (!latestPoolInfo) {
-                console.log('no latest poolInfo found')
+                logger.debug('[IncreaseLiquidity] no latest poolInfo found')
                 return // it shouldn't happen after we move websocket to backend
             } 
             const isStale = isDataStale(curPoolInfo, latestPoolInfo, slipage/100)
-            console.log('[IncreaseLiquidity] isStale=', isStale)
+            logger.info('[IncreaseLiquidity] isStale=', isStale)
             if (isStale) {
                 setShowDialog(true)
             } else {
@@ -242,8 +243,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 setExecuted(true)
             }
         } catch (error) {
-            toast.error('Failed to add liquidity. Please try again')
-            console.log('Failed to add liquidity due to:', error)
+            toast.error('[IncreaseLiquidity] Failed to add liquidity. Please try again')
+            logger.error('Failed to add liquidity due to:', error)
         }
          
     }

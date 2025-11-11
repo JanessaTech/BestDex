@@ -3,6 +3,7 @@ import { Decimal } from 'decimal.js';
 import { parseUnits, PublicClient} from 'viem'
 import { MAX_TICK, MIN_TICK, TICK_BASE, TICK_RANG_PERCENTAGE, UNISWAP_V3_FACTORY_ABI, UNISWAP_V3_FACTORY_ADDRESSES, ZERO_ADDRESS } from '@/config/constants';
 import { PoolInfo, PoolRange, TokenType } from './types';
+import logger from './Logger';
 
 Decimal.set({
     toExpNeg: -1e15, 
@@ -67,7 +68,7 @@ export const calcPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}
           }
           return poolAddress
       } catch (error)  {
-          console.log('Invalid pool address due to:', error)
+          logger.error('[util.calcPoolAddress] Invalid pool address due to:', error)
           throw error
       }
   }
@@ -130,22 +131,22 @@ const priceToTick = (price: Decimal,
 export const calPoolRange = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType):PoolRange => {
   const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
   const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96, token0.decimal, token1.decimal)
-  console.log('currentPrice=', currentPrice.toString())
+  logger.debug('[util.calPoolRange] currentPrice=', currentPrice.toString())
   const lowerPrice = currentPrice.mul(1 - TICK_RANG_PERCENTAGE)
   const upperPrice = currentPrice.mul(1 + TICK_RANG_PERCENTAGE)
-  console.log('lowerPrice=', lowerPrice.toString())
-  console.log('upperPrice=', upperPrice.toString())
+  logger.debug('[util.calPoolRange] lowerPrice=', lowerPrice.toString())
+  logger.debug('[util.calPoolRange] upperPrice=', upperPrice.toString())
   const _lowerTick = isToken0Base ? priceToTick(lowerPrice, isToken0Base, token0.decimal, token1.decimal, 'down') : priceToTick(upperPrice, isToken0Base, token0.decimal, token1.decimal, 'down')
   const _upperTick = isToken0Base ? priceToTick(upperPrice, isToken0Base, token0.decimal, token1.decimal, 'up') : priceToTick(lowerPrice, isToken0Base, token0.decimal, token1.decimal, 'up')
   const lowerTick =  Math.floor(_lowerTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
   const upperTick =  Math.ceil(_upperTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
-  console.log(`lowerTick=${lowerTick} tick=${poolInfo.tick} upperTick=${upperTick}`)
+  logger.debug(`[util.calPoolRange] lowerTick=${lowerTick} tick=${poolInfo.tick} upperTick=${upperTick}`)
   const absLower = Math.abs(_lowerTick - poolInfo.tick)
   const absUpper = Math.abs(upperTick - poolInfo.tick)
-  console.log('absLower=', absLower)
-  console.log('absUpper=', absUpper)
+  logger.debug('[util.calPoolRange] absLower=', absLower)
+  logger.debug('[util.calPoolRange] absUpper=', absUpper)
   const quarterRange = Math.ceil(Math.max(absLower, absUpper) / poolInfo.tickSpacing)
-  console.log('quarterRange=', quarterRange)
+  logger.debug('[util.calPoolRange] quarterRange=', quarterRange)
   const max = Math.min(MAX_TICK, upperTick + quarterRange * poolInfo.tickSpacing)
   const min = Math.max(MIN_TICK, lowerTick - quarterRange * poolInfo.tickSpacing)
   return {min: min, max: max, currentTick: poolInfo.tick, lower: lowerTick, upper: upperTick}
@@ -157,19 +158,19 @@ export const calcPoolPriceFromTick = (tick: number, token0 : TokenType, token1: 
   const priceRatio = new Decimal(1.0001).pow(tick)
   const adjustedPrice = isToken0Base ? priceRatio.mul(decimalsAdjustment) : new Decimal(1).dividedBy(priceRatio.mul(decimalsAdjustment))
   const roundedPriceFromTick = adjustedPrice.toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP);
-  //console.log('roundedPriceFromTick=', roundedPriceFromTick)
+  logger.debug('[util.calcPoolPriceFromTick] roundedPriceFromTick=', roundedPriceFromTick)
   return roundedPriceFromTick.toString()
 }
 
 export const isDataStale = (oldPoolInfo: PoolInfo, newPoolInfo: PoolInfo, slipage: number) => {
-  console.log('oldPoolInfo=', oldPoolInfo)
-  console.log('newPoolInfo=', newPoolInfo)
+  logger.debug('[util.isDataStale] oldPoolInfo=', oldPoolInfo)
+  logger.debug('[util.isDataStale] newPoolInfo=', newPoolInfo)
   if (oldPoolInfo.tick !== newPoolInfo.tick) return true
   const price_old = calOriginPriceBySqrtPriceX96(oldPoolInfo.sqrtPriceX96)
   const price_new = calOriginPriceBySqrtPriceX96(newPoolInfo.sqrtPriceX96)
   const diff = price_new.minus(price_old).abs().dividedBy(price_old)
   const isStale = diff.greaterThan(slipage)
-  console.log('isStale=', isStale)
+  logger.debug('[util.isDataStale] isStale=', isStale)
   return isStale
 }
 

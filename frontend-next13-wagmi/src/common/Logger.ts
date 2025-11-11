@@ -1,7 +1,7 @@
 import * as log from 'loglevel'
 
 function getLogger() {
-    var logger = log.getLogger('cheap')
+    var logger = log.getLogger('BestDex')
     const env = process.env.NEXT_APP_ENV
     if (env === 'prod') {
         //logger.setLevel('error')

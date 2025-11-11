@@ -9,7 +9,6 @@ type ToolTipSimpleToolProps = {
     children: React.ReactNode,
     align?: undefined | 'start' | 'center' | 'end',
     content: React.ReactNode
-
 }
 
 const ToolTipHelper: React.FC<ToolTipSimpleToolProps> = ({children, align, content}) => {

@@ -6,6 +6,7 @@ import { useChainId } from "wagmi";
 import { ChainId } from '@uniswap/sdk-core';
 import { Decimal } from 'decimal.js';
 import { LocalChainIds, TokenType } from "@/common/types";
+import logger from "@/common/Logger";
 
 type DepositInputProps = {
     amount: string;
@@ -21,7 +22,6 @@ const DepositInput: React.FC<DepositInputProps> = ({amount, token, tokenBalance,
 
 
     useEffect(() => {
-        console.log('update usd')
         updateUSD()
     }, [amount])
 
@@ -29,7 +29,7 @@ const DepositInput: React.FC<DepositInputProps> = ({amount, token, tokenBalance,
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
         const price = tokenPrices[targetChainId]?.get(token.address)
         let tokenUSD = '0'
-        console.log('price=', price?.toString(), '  amount=', amount)
+        logger.debug('price=', price?.toString(), '  amount=', amount)
         if (price) {
             tokenUSD = new Decimal(price).times(amount ? new Decimal(amount) : 0).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
         }

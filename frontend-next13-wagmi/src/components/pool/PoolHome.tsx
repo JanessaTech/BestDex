@@ -17,6 +17,7 @@ import RefreshModal from './RefreshModal'
 import { fetchLatestPoolInfo } from '@/lib/client/pool'
 import { PoolInfo, TokenType } from '@/common/types'
 import { isDataStale } from '@/common/utils'
+import logger from '@/common/Logger'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -91,12 +92,12 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
             try {
                 setState({...state, isLoading: true})
                 const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-                console.log('poolAddress=', poolAddress)
+                logger.debug('[PoolHome] poolAddress=', poolAddress)
                 const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
                 setState({...state, isLoading: false, step: state.step + 1, poolInfo: poolInfo})
-                console.log('poolInfo=', poolInfo)
+                logger.debug('[PoolHome] poolInfo=', poolInfo)
             } catch (error) {
-                console.log('failed to get pool info due to:', error)
+                logger.error('[PoolHome] failed to get pool info due to:', error)
                 setState({...state, isLoading: false})
                 toast.warning('Failed to get the pool info, Please choose the corret feeTier and token pairs, then try again')
             }  
@@ -129,13 +130,13 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
             const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
             if (poolInfo) {
                 setState({...state, poolInfo: poolInfo})
-                console.log(`Get the latest poolInfo from the pool address ${poolAddress}`)
-                console.log('poolInfo =', poolInfo)
+                logger.info(`[PoolHome] Get the latest poolInfo from the pool address ${poolAddress}`)
+                logger.debug('[PoolHome] poolInfo =', poolInfo)
             } else {
-                console.log('No cached poolInfo in websocket yet, try it later on...')
+                logger.warn('[PoolHome] No cached poolInfo in websocket yet, try it later on...')
             }
         } catch (error) {
-            console.log('Failed to update poolInfo due to:', error)
+            logger.error('[PoolHome] Failed to update poolInfo due to:', error)
         }
     }
 
@@ -152,15 +153,15 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
           using the stale pool data
     **/
     const checkRefresh = async () => {
-        console.log('check price change')
+        logger.info('[PoolHome] check price change')
         if (!state.poolInfo) throw new Error('No poolInfo found') //it shouldn't happen
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-        console.log('poolAddress = ', poolAddress)
+        logger.debug('[PoolHome] poolAddress = ', poolAddress)
         const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         if (!latestPoolInfo) return // it shouldn't happen after we move websockte to backend
         const isStale = isDataStale(state.poolInfo, latestPoolInfo, slipage/100)
         if (isStale) {
-            //console.log('data is stale')
+            logger.debug('[PoolHome] data is stale')
             setOpenRefreshModal(true)
         } else {
             setAddPositionModal(true) 

@@ -3,6 +3,7 @@ import {
   } from 'wagmi'
 import { formatUnits } from 'viem'
 import { ERC20_ABI } from '@/config/constants'
+import logger from '@/common/Logger'
 
 const useTokenBalanceHook = (chainId: number) => {
     const publicClient = usePublicClient({chainId})
@@ -30,7 +31,7 @@ const useTokenBalanceHook = (chainId: number) => {
             })
             return formatUnits(balance , decimals)
         } catch (err) {
-            console.log('[useTokenBalanceHook] Failed to get balance due to:', err)
+            logger.error('[useTokenBalanceHook] Failed to get balance due to:', err)
             throw new Error('Failed to get balance')
         }
     }

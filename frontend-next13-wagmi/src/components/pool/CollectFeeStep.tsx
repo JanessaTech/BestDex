@@ -11,6 +11,7 @@ import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
     UNISWAP_V3_POSITION_MANAGER_ABI, 
     UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI } from "@/config/constants";
 import { CollectFeeParamsType, TokenType } from "@/common/types";
+import logger from "@/common/Logger";
 
 type CollectFeeStepProps = {
     token0: TokenType;
@@ -59,7 +60,7 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata,
 
     useEffect(() => {
         if (started) {
-            console.log('[CollectFeeStep] it will run handleCollectFee')
+            logger.info('[CollectFeeStep] it will run handleCollectFee')
             setState({...state, isPending: true})
             handleCollectFee()
         }
@@ -67,7 +68,7 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata,
 
     useEffect(() => {
         if (hash) {
-            console.log('[CollectFeeStep] it will fetch the receipt')
+            logger.info('[CollectFeeStep] it will fetch the receipt')
             refetchReceipt()
         }
     }, [hash])
@@ -77,7 +78,7 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata,
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 const parsedLog = parseCollectEventLog()
-                console.log('[CollectFeeStep] parsedLog=', parsedLog)
+                logger.debug('[CollectFeeStep] parsedLog=', parsedLog)
                 setState({...state, 
                         isPending: false, isSuccess: true, 
                         token0Deposited: parsedLog.amount0, token1Deposited: parsedLog.amount1})
@@ -109,7 +110,7 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata,
                 }
             }
         }).filter((log) => log.ok)
-        console.log('[CollectFeeStep] parsedOKLogs=', parsedOKLogs)
+        logger.debug('[CollectFeeStep] parsedOKLogs=', parsedOKLogs)
         if (parsedOKLogs.length === 0) return emptyRes
         if (!parsedOKLogs[0].decoded?.args) return emptyRes
         return {
@@ -120,7 +121,7 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata,
     useEffect(() => {
         let timer = undefined
         if (state.isSuccess) {
-            console.log('it will handleCollectFeeSuccess in 1000 milliseconds')
+            logger.info('[CollectFeeStep] it will handleCollectFeeSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
                 handleCollectFeeSuccess(state.token0Deposited,state.token1Deposited)
             }, 1000)
@@ -137,14 +138,14 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata,
         }
     }, [writeError, receiptError])
 
-    console.log('[CollectFeeStep] ====== Latest state ========')
-    console.log('[CollectFeeStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
-    console.log('[CollectFeeStep]', ' hash=', hash)
-    console.log('[CollectFeeStep] writeError=', writeError)
-    console.log('[CollectFeeStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
-    console.log('[CollectFeeStep] receipt=', receipt)
-    console.log('[CollectFeeStep] receiptStatus=', receiptStatus)
-    console.log('[CollectFeeStep] receiptError=', receiptError)
+    logger.debug('[CollectFeeStep] ====== Latest state ========')
+    logger.debug('[CollectFeeStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
+    logger.debug('[CollectFeeStep]', ' hash=', hash)
+    logger.debug('[CollectFeeStep] writeError=', writeError)
+    logger.debug('[CollectFeeStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
+    logger.debug('[CollectFeeStep] receipt=', receipt)
+    logger.debug('[CollectFeeStep] receiptStatus=', receiptStatus)
+    logger.debug('[CollectFeeStep] receiptError=', receiptError)
 
     return (
         <div className="flex justify-between items-center">

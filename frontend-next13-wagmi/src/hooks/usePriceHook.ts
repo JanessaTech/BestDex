@@ -3,6 +3,7 @@ import { ChainId } from '@uniswap/sdk-core'
 import { tokenList } from "@/lib/data";
 import { getLatestPrices } from "@/lib/client/TokenPrices";
 import { LocalChainIds, Network_Enum } from "@/common/types";
+import logger from "@/common/Logger";
 
 
 const span = 10000
@@ -30,7 +31,7 @@ const usePriceHook = () => {
                 const res = await getLatestPrices()
                 updateTokenPrices(res['data'] as ReturnPriceType[])
             } catch(e) {
-                console.error('failed to get latest prices due to ', e)
+                logger.error('[usePriceHook] failed to get latest prices due to ', e)
             }
         }
 
@@ -57,7 +58,7 @@ const usePriceHook = () => {
                 }
                 setTokenPrice({...tokenPrices})
             } else {
-                console.error('cannot find chainId by network ', item.network, 'Please fix it')
+                logger.error('[usePriceHook] cannot find chainId by network ', item.network, 'Please fix it')
             }
         })
     }

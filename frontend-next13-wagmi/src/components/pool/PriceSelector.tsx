@@ -12,6 +12,7 @@ import { MAX_TICK, MIN_TICK } from "@/config/constants";
 import { Decimal } from 'decimal.js'
 import { PoolRange, TokenType } from "@/common/types";
 import { calcPoolPriceFromTick } from "@/common/utils";
+import logger from "@/common/Logger";
 
 const calPercentage = (price: string, marketPrice: string) => {
     const percentage = new Decimal(price).minus(new Decimal(marketPrice)).div(new Decimal(marketPrice)).mul(100).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
@@ -48,11 +49,11 @@ const PriceSelector: React.FC<PriceSelectorProps> = ({poolRange, marketPrice, ti
     const currentPriceRef = useRef<HTMLInputElement>(null)
     const currentPriceLabelRef = useRef<HTMLInputElement>(null)
    
-    console.log('state=', state)
-    console.log('initState=', initState)
+    logger.debug('[PriceSelector] state=', state)
+    logger.debug('[PriceSelector] initState=', initState)
 
     useEffect(() => {
-        console.log('poolRange is updated')
+        logger.info('[PriceSelector] poolRange is updated')
         setInitState({...poolRange})
         setState({...poolRange})
     }, [poolRange])

@@ -12,6 +12,7 @@ import { Decimal } from 'decimal.js'
 import { ChainId } from '@uniswap/sdk-core'
 import ReviewSwap from "./ReviewSwap"
 import { LocalChainIds, QuotesParameterType, TokenType } from "@/common/types"
+import logger from "@/common/Logger"
 
 
 type NoQuotesProps = {
@@ -66,7 +67,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const chain = chains.find((chain) => chain.id === chainId)
     const rpcUrl  = client?.transport.url // we can make sure rpcUrl is not empty
 
-    console.log('chainId=', chainId)
+    logger.debug('[Quotes] chainId=', chainId)
 
     const updateUSD = (quote: string) => {
       const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
@@ -80,9 +81,9 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         setTokenOutUSD(poolValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())
         const loss = heldValue.isZero() ? '' : poolValue.dividedBy(heldValue).minus(new Decimal(1)).times(100).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
         setLoss(loss)
-        console.log('poolValue:', poolValue.toString())
-        console.log('heldValue:', heldValue.toString())
-        console.log('loss:', loss)
+        logger.debug('[Quotes] poolValue:', poolValue.toString())
+        logger.debug('[Quotes] heldValue:', heldValue.toString())
+        logger.debug('[Quotes] loss:', loss)
       } else {
         setLoss('')
       }
@@ -103,10 +104,10 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
           interval = setInterval(() => setSeconds((prev) => prev - 1), 1000)
         } else if (seconds === 0) {
           (async () => {
-            console.log('running updateQuotes')
+            logger.debug('[Quotes] running updateQuotes')
             await updateQuotes(false)
             setSeconds(span)  // start a new time interval
-            console.log('done updateQuotes')
+            logger.debug('[Quotes] done updateQuotes')
           })()
         }
       }
@@ -130,7 +131,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         tokenOut: tokenTo
       }
 
-      console.info('data:', data)
+      logger.debug('[Quotes] data:', data)
       try {
         const response = await fetch('/api/quotes', {
           method: 'POST',
@@ -139,14 +140,14 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
         });
         const result = await response.json();
         if (!result.success) throw new Error('failed to read /api/quotes')
-        console.log('result:', result)
+        logger.debug('[Quotes] result:', result)
         setQuote(result.quote)
         updateUSD(result.quote)
         setEstimatedGasUsed(result.estimatedGasUsed)
         setEstimatedGasUsedUSD(result.estimatedGasUsedUSD)
         setCalldata(result.calldata)
       } catch (e) {
-        console.log('failed to get quotes due to:', e)
+        logger.error('[Quotes] failed to get quotes due to:', e)
         setIsError(true)
         setStartCountDown(false)
       }

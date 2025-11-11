@@ -12,6 +12,7 @@ import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
     UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI, 
     } from "@/config/constants";
 import { TokenType } from "@/common/types";
+import logger from "@/common/Logger";
 
 
 type StateType = {
@@ -62,7 +63,7 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
     useEffect(() => {
         (async () => {
             if (started) {
-                console.log('[DecreaseLiquidityStep] it will send the transaction for decreasing liquidity tx')
+                logger.info('[DecreaseLiquidityStep] it will send the transaction for decreasing liquidity tx')
                 setState({...state, isPending: true})
                 await handleSendTransation()  
             }
@@ -72,7 +73,7 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
 
     useEffect(() => {
         if (txHash) {
-            console.log('[DecreaseLiquidityStep] it will fetch the receipt')
+            logger.info('[DecreaseLiquidityStep] it will fetch the receipt')
             refetchReceipt()
         }
     }, [txHash])
@@ -101,7 +102,7 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
                 }
             }
         }).filter((log) => log.ok)
-        console.log('[DecreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
+        logger.debug('[DecreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
         if (parsedOKLogs.length === 0) return emptyRes
         if (!parsedOKLogs[0].decoded?.args) return emptyRes
         return {
@@ -113,9 +114,9 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
         (async () => {
             if (!txHash || !receipt) return
             if (receipt.status === 'success') {
-                console.log('[DecreaseLiquidityStep] Liquidity is decreased successful')
+                logger.info('[DecreaseLiquidityStep] Liquidity is decreased successful')
                 const parsedLog = parseCollectEventLog()
-                console.log('[DecreaseLiquidityStep] parsedLog=', parsedLog)
+                logger.debug('[DecreaseLiquidityStep] parsedLog=', parsedLog)
                 setState({...state, 
                     isPending: false, isSuccess: true, 
                     token0Deposited: parsedLog.amount0, token1Deposited: parsedLog.amount1
@@ -144,14 +145,14 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
     }, [sendError, receiptError])
 
      // output debug info
-     console.log('[DecreaseLiquidityStep] ====== Latest state ========')
-     console.log('[DecreaseLiquidityStep] state=', state)
-     console.log('[DecreaseLiquidityStep] txHash =', txHash)
-     console.log('[DecreaseLiquidityStep] isPending =', isPending, ' isSuccess =', isSuccess, '  sendError =', sendError)
-     console.log('[DecreaseLiquidityStep] isReceiptError =', isReceiptError)
-     console.log('[DecreaseLiquidityStep] receiptStatus =', receiptStatus)
-     console.log('[DecreaseLiquidityStep] receiptError =', receiptError)
-     console.log('[DecreaseLiquidityStep] receipt =', receipt)
+     logger.debug('[DecreaseLiquidityStep] ====== Latest state ========')
+     logger.debug('[DecreaseLiquidityStep] state=', state)
+     logger.debug('[DecreaseLiquidityStep] txHash =', txHash)
+     logger.debug('[DecreaseLiquidityStep] isPending =', isPending, ' isSuccess =', isSuccess, '  sendError =', sendError)
+     logger.debug('[DecreaseLiquidityStep] isReceiptError =', isReceiptError)
+     logger.debug('[DecreaseLiquidityStep] receiptStatus =', receiptStatus)
+     logger.debug('[DecreaseLiquidityStep] receiptError =', receiptError)
+     logger.debug('[DecreaseLiquidityStep] receipt =', receipt)
 
     return (
         <div className="flex justify-between items-center">

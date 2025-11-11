@@ -7,10 +7,11 @@ import { useSimulateContract,} from "wagmi"
 import {SimulateContractErrorType} from "@wagmi/core"
 import {decodeFunctionData} from 'viem'
 import { SwapRouter02ABI, UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
+import logger from "@/common/Logger"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
-        //console.log('calldata=', calldata)
+        logger.debug('[SimulateSwapStep] calldata=', calldata)
         const decoded = decodeFunctionData({
             abi: SwapRouter02ABI,
             data: calldata
@@ -21,11 +22,11 @@ const parseCalldata = (calldata: `0x${string}`) => {
             deadline = decoded.args[0]
             innerCalls = decoded?.args[1]
         }
-        //console.log('deadline=', deadline)
-        //console.log('innerCalls=', innerCalls)
+        logger.debug('[SimulateSwapStep] deadline=', deadline)
+        logger.debug('[SimulateSwapStep] innerCalls=', innerCalls)
         return {deadline, innerCalls}
     } catch(err) {
-        console.log('failed to parse calldata due to:', err)
+        logger.error('[SimulateSwapStep] failed to parse calldata due to:', err)
     }
     return {deadline: undefined, innerCalls: undefined}
 }
@@ -68,13 +69,13 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, skip, done, 
         let timer = undefined
         if (started) {
             if (skip) {
-                console.log('[SimulateSwapStep] skip SimulateSwapStep')
+                logger.info('[SimulateSwapStep] skip SimulateSwapStep')
                 goNext()
                 return
             }
-            console.log('[SimulateSwapStep] it will run refetchSimulation in 1000 milliseconds')
+            logger.info('[SimulateSwapStep] it will run refetchSimulation in 1000 milliseconds')
             timer = setTimeout(() => {
-                console.log('[SimulateSwapStep] it will run refetchSimulation')
+                logger.info('[SimulateSwapStep] it will run refetchSimulation')
                 refetchSimulation()
             }, 1000)
         }
@@ -92,7 +93,7 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, skip, done, 
     useEffect(() => {
         let timer = undefined
         if (isSuccess && started) {
-            console.log('it will goNext in 1000 milliseconds')
+            logger.info('[SimulateSwapStep] it will goNext in 1000 milliseconds')
             timer = setTimeout(() => {goNext()}, 1000)
         }
         return () => {
@@ -100,12 +101,12 @@ const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, skip, done, 
         }
     }, [isSuccess])
 
-    console.log('[SimulateSwapStep] ======= Latest state =======')
-    console.log('[SimulateSwapStep] simulationError=', simulationError)
-    console.log('[SimulateSwapStep] isPending =', isPending, '   isSuccess=', isSuccess)
-    console.log('[SimulateSwapStep] isFetching =', isFetching)
-    console.log('[SimulateSwapStep] started =', started, '   done=', done)
-    console.log('[SimulateSwapStep] simulation =', simulation)
+    logger.debug('[SimulateSwapStep] ======= Latest state =======')
+    logger.debug('[SimulateSwapStep] simulationError=', simulationError)
+    logger.debug('[SimulateSwapStep] isPending =', isPending, '   isSuccess=', isSuccess)
+    logger.debug('[SimulateSwapStep] isFetching =', isFetching)
+    logger.debug('[SimulateSwapStep] started =', started, '   done=', done)
+    logger.debug('[SimulateSwapStep] simulation =', simulation)
     
     return (
         <div className="flex justify-between items-center">

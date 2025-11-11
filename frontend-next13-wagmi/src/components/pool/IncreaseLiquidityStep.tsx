@@ -12,6 +12,7 @@ import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import { decodeEventLog } from 'viem';
 import { IncreasePositionParamsType, TokenType } from "@/common/types";
+import logger from "@/common/Logger";
 
 
 type IncreaseLiquidityStepProps = {
@@ -79,14 +80,14 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
 
     useEffect(() => {
         if (started) {
-            console.log('[IncreaseLiquidityStep] it will run handleIncreaseLiquidity')
+            logger.info('[IncreaseLiquidityStep] it will run handleIncreaseLiquidity')
             setState({...state, isPending: true})
             handleIncreaseLiquidity()
         }
     }, [started])
     useEffect(() => {
         if (hash) {
-            console.log('[IncreaseLiquidityStep] it will fetch the receipt')
+            logger.info('[IncreaseLiquidityStep] it will fetch the receipt')
             refetchReceipt()
         }
     }, [hash])
@@ -114,7 +115,7 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
                 }
             }
         }).filter((log) => log.ok)
-        console.log('[IncreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
+        logger.debug('[IncreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
         if (parsedOKLogs.length === 0) return BigInt(0)
         if (!parsedOKLogs[0].decoded?.args) return BigInt(0)
         return parsedOKLogs[0].decoded.args.liquidity
@@ -124,13 +125,13 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
         (async () => {
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
-                console.log('[IncreaseLiquidityStep] The new liquidity is added')
+                logger.info('[IncreaseLiquidityStep] The new liquidity is added')
                 const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
                 const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
                 const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const liquidity = getLiquidity()
-                console.log('[IncreaseLiquidityStep] liquidity=', liquidity)
+                logger.info('[IncreaseLiquidityStep] liquidity=', liquidity)
                 setState({...state, isPending: false, isSuccess: true, token0Deposited: token0Deposited, token1Deposited: token1Deposited, liquidity: liquidity})
             }
         })() 
@@ -139,7 +140,7 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
     useEffect(() => {
         let timer = undefined
         if (state.isSuccess) {
-            console.log('it will handleAddSuccess in 2000 milliseconds')
+            logger.info('it will handleAddSuccess in 2000 milliseconds')
             timer = setTimeout(() => {
                 handleIncreaseLiquiditySuccess(state.token0Deposited,state.token1Deposited, state.liquidity.toString())
             }, 2000)
@@ -156,14 +157,14 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
         }
     }, [writeError, receiptError])
     
-    console.log('[IncreaseLiquidityStep] ====== Latest state ========')
-    console.log('[IncreaseLiquidityStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
-    console.log('[IncreaseLiquidityStep]', ' hash=', hash)
-    console.log('[IncreaseLiquidityStep] writeError=', writeError)
-    console.log('[IncreaseLiquidityStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
-    console.log('[IncreaseLiquidityStep] receipt=', receipt)
-    console.log('[IncreaseLiquidityStep] receiptStatus=', receiptStatus)
-    console.log('[IncreaseLiquidityStep] receiptError=', receiptError)
+    logger.debug('[IncreaseLiquidityStep] ====== Latest state ========')
+    logger.debug('[IncreaseLiquidityStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
+    logger.debug('[IncreaseLiquidityStep]', ' hash=', hash)
+    logger.debug('[IncreaseLiquidityStep] writeError=', writeError)
+    logger.debug('[IncreaseLiquidityStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
+    logger.debug('[IncreaseLiquidityStep] receipt=', receipt)
+    logger.debug('[IncreaseLiquidityStep] receiptStatus=', receiptStatus)
+    logger.debug('[IncreaseLiquidityStep] receiptError=', receiptError)
     
 
     return (

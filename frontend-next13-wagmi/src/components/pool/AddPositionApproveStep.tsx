@@ -8,6 +8,7 @@ import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS } from "@/config/constant
 import SVGLockOpen from "@/lib/svgs/svg_lock_open"
 import { fromReadableAmount3 } from "@/common/utils"
 import { TokenType } from "@/common/types"
+import logger from "@/common/Logger"
 
 type AddPositionApproveStepProps = {
     token: TokenType;
@@ -39,10 +40,10 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, to
         if (started) {
             timer = setTimeout(() => {
                 if (shouldSkip) {
-                    console.log('skip approval')
+                    logger.info('[AddPositionApproveStep] skip approval')
                     setLocalSuccess(true)
                 } else {
-                    console.log('[AddPositionApproveStep] it will run handleApprove')
+                    logger.info('[AddPositionApproveStep] it will run handleApprove')
                     handleApproveToken()
                 }
             }, 1000);
@@ -56,16 +57,16 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, to
     useEffect(() => {
         let timer = undefined
         if (isSuccess) {
-            console.log('it will goNext in 1000 milliseconds')
+            logger.info('it will goNext in 1000 milliseconds')
             timer = setTimeout(() => {goNext()}, 1000)
         }
         return () => {
             if (timer) clearTimeout(timer)
         }
     }, [isSuccess])
-    console.log('[AddPositionApproveStep] shouldSkip=', shouldSkip)
-    console.log('[AddPositionApproveStep]', 'isSuccess=', isSuccess, ' isPending=', isPending)
-    console.log('[AddPositionApproveStep] error=', error, ' hash=', hash)
+    logger.debug('[AddPositionApproveStep] shouldSkip=', shouldSkip)
+    logger.debug('[AddPositionApproveStep]', 'isSuccess=', isSuccess, ' isPending=', isPending)
+    logger.debug('[AddPositionApproveStep] error=', error, ' hash=', hash)
 
     return (
         <div className="flex justify-between items-center">

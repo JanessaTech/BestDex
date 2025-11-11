@@ -24,7 +24,6 @@ const SwapInput: React.FC<SwapInputProps> = ({tokenFrom, amount, hidden, onChang
             const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId  // for test
             const price = tokenPrices[targetChainId]?.get(tokenFrom?.address)
             const estimatedUSD = new Decimal(price ? price : '0').times(new Decimal(amount)).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
-            //console.log('estimatedUSD = ', estimatedUSD)
             setUsd(estimatedUSD)
         } else {
             setUsd('')

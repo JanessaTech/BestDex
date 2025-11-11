@@ -6,6 +6,7 @@ import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import SVGSign from "@/lib/svgs/svg_sign";
 import { IncreasePositionParamsType } from "@/common/types";
+import logger from "@/common/Logger";
 
 type SimulateIncreaseLiquidityStepProps = {
     started: boolean;
@@ -31,12 +32,12 @@ const SimulateIncreaseLiquidityStep:React.FC<SimulateIncreaseLiquidityStepProps>
         let timer = undefined
         if (started) {
             if (skip) {
-                console.log('[SimulateIncreaseLiquidityStep] skip SimulateIncreaseLiquidityStep')
+                logger.info('[SimulateIncreaseLiquidityStep] skip SimulateIncreaseLiquidityStep')
                 goNext()
                 return
             }
             timer = setTimeout(() => {
-                console.log('[SimulateIncreaseLiquidityStep] It will run refetchSimulation()...')
+                logger.info('[SimulateIncreaseLiquidityStep] It will run refetchSimulation()...')
                 refetchSimulation()
             }, 1000)
         }
@@ -48,7 +49,7 @@ const SimulateIncreaseLiquidityStep:React.FC<SimulateIncreaseLiquidityStepProps>
     useEffect(() => {
         let timer = undefined
         if (isSuccess) {
-            console.log('[SimulateIncreaseLiquidityStep] it will goNext in 1000 milliseconds')
+            logger.info('[SimulateIncreaseLiquidityStep] it will goNext in 1000 milliseconds')
             timer = setTimeout(() => {goNext()}, 1000)
         }
         return () => {
@@ -56,10 +57,10 @@ const SimulateIncreaseLiquidityStep:React.FC<SimulateIncreaseLiquidityStepProps>
         }
     }, [isSuccess])
 
-    console.log('[SimulateIncreaseLiquidityStep] ====== Latest state ========')
-    console.log('[SimulateIncreaseLiquidityStep] isSuccess=', isSuccess, ' isPending=', isPending, ' isFetching=', isFetching)
-    console.log('[SimulateIncreaseLiquidityStep] simulationError=', simulationError)
-    console.log('[SimulateIncreaseLiquidityStep] simulation=', simulation)
+    logger.debug('[SimulateIncreaseLiquidityStep] ====== Latest state ========')
+    logger.debug('[SimulateIncreaseLiquidityStep] isSuccess=', isSuccess, ' isPending=', isPending, ' isFetching=', isFetching)
+    logger.debug('[SimulateIncreaseLiquidityStep] simulationError=', simulationError)
+    logger.debug('[SimulateIncreaseLiquidityStep] simulation=', simulation)
     
     return (
         <div className="flex justify-between items-center">

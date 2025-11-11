@@ -9,6 +9,7 @@ import { memo } from "react";
 import { V3_SWAP_ROUTER_ADDRESS } from "@/config/constants";
 import { fromReadableAmount3 } from "@/common/utils";
 import { TokenType } from "@/common/types";
+import logger from "@/common/Logger";
 
 type SwapApproveStepProps = {
     tokenFrom: TokenType;
@@ -35,7 +36,7 @@ const SwapApproveStep: React.FC<SwapApproveStepProps> = ({tokenFrom, approveAmou
     useEffect(() => {
         let timer = undefined
         if (isSuccess) {
-            console.log('[SwapApproveStep] it will goNext in 1000 milliseconds')
+            logger.info('[SwapApproveStep] it will goNext in 1000 milliseconds')
             timer = setTimeout(() => {goNext()}, 1000)
         }
         return () => {
@@ -43,10 +44,10 @@ const SwapApproveStep: React.FC<SwapApproveStepProps> = ({tokenFrom, approveAmou
         }
     }, [isSuccess])
 
-    console.log('[SwapApproveStep] ======= Latest state =======')
-    console.log('[SwapApproveStep] isSuccess=', isSuccess, ' isPending=', isPending)
-    console.log('[SwapApproveStep] hash =', hash)
-    console.log('[SwapApproveStep] error =', error)
+    logger.debug('[SwapApproveStep] ======= Latest state =======')
+    logger.debug('[SwapApproveStep] isSuccess=', isSuccess, ' isPending=', isPending)
+    logger.debug('[SwapApproveStep] hash =', hash)
+    logger.debug('[SwapApproveStep] error =', error)
     
     return (
         <div className="flex justify-between items-center">

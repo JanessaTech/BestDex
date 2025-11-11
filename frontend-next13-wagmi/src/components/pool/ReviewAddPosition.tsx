@@ -20,24 +20,25 @@ import { useEffect, useState } from "react";
 import AddPositionSuccess from "./AddPositionSuccess";
 import { fromReadableAmount2 } from "@/common/utils";
 import { LocalChainIds, MintPositionParamsType, PoolInfo, TokenType } from "@/common/types";
+import logger from "@/common/Logger";
 
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
-        console.log('calldata:', calldata)
+        logger.debug('[ReviewAddPosition] calldata:', calldata)
         const decoded = decodeFunctionData({
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
             data: calldata
         })
-        console.log('decoded', decoded)
+        logger.debug('[ReviewAddPosition] decoded', decoded)
         const name = decoded['functionName']
         const args = decoded['args'][0] as MintPositionParamsType
-        console.log('name=', name)
-        console.log('args=', args)
+        logger.debug('[ReviewAddPosition] name=', name)
+        logger.debug('[ReviewAddPosition] args=', args)
       
         return  args
     } catch (error) {
-        console.log('Failed to parse calldata due to:', error)
+        logger.error('[ReviewAddPosition] Failed to parse calldata due to:', error)
     }
 }
 
@@ -64,7 +65,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
     const {tokenPrices} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
 
-    console.log('[ReviewAddPosition] token0Input=', token0Input, '  token1Input=', token1Input)
+    logger.debug('[ReviewAddPosition] token0Input=', token0Input, '  token1Input=', token1Input)
 
     useEffect(() => {
         updateUSD()
@@ -75,13 +76,13 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         try{
             const callData = generateCallData()
             const parsedCalldata = parseCalldata(callData as `0x${string}`)
-            console.log('parsedCalldata=', parsedCalldata)
+            logger.debug('[ReviewAddPosition] parsedCalldata=', parsedCalldata)
             if (!parsedCalldata) {
                 throw new Error('Failed to parse calldata')
             }
             setData({calldata: callData, parsedCalldata: parsedCalldata})
         } catch (error) {
-            console.log('We failed to get calldata or parse calldata:', error)
+            logger.error('[ReviewAddPosition] We failed to get calldata or parse calldata:', error)
             toast.error('There is something wrong. Please try again')
         }
     }
@@ -99,7 +100,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
         if (price1) {
             token1USD = new Decimal(price1).times(token1Input ? new Decimal(token1Input) : 0).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
         }
-        console.log(`token0Input=${token0Input}, token1Input=${token1Input}, price0=${price0?.toString()}, price1=${price1?.toString()}`)
+        logger.debug(`[ReviewAddPosition] token0Input=${token0Input}, token1Input=${token1Input}, price0=${price0?.toString()}, price1=${price1?.toString()}`)
         setTokensUSD({token0: token0USD, token1: token1USD})
     }
 
@@ -124,7 +125,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
             })
             const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
             const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-            console.log('[token0 is hidden] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+            logger.debug('[ReviewAddPosition][token0 is hidden] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
         } else if (lowerTick >= curTick) { // token1 is hidden
             position = Position.fromAmount0({
                 pool: configuredPool,
@@ -135,7 +136,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
             })
             const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
             const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-            console.log('[token1 is hidden] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+            logger.debug('[ReviewAddPosition][token1 is hidden] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
         } else {
             // no tokens hidden
             position = Position.fromAmounts({
@@ -148,7 +149,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
             })
             const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(token0.decimal)).toDecimalPlaces(token0.decimal, Decimal.ROUND_HALF_UP).toString()
             const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(token1.decimal)).toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP).toString()
-            console.log('[no tokens hidden]burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+            logger.debug('[ReviewAddPosition][no tokens hidden] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
         }
         return position 
     }

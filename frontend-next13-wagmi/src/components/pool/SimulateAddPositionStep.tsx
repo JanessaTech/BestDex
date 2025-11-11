@@ -6,6 +6,7 @@ import SVGCheck from "@/lib/svgs/svg_check"
 import {useSimulateContract} from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 import { MintPositionParamsType } from "@/common/types"
+import logger from "@/common/Logger"
 
 type SimulateAddPositionStepProps = {
     started: boolean;
@@ -32,12 +33,12 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
         let timer = undefined
         if (started) {
             if (skip) {
-                console.log('[SimulateAddPositionStep] skip SimulateAddPositionStep')
+                logger.info('[SimulateAddPositionStep] skip SimulateAddPositionStep')
                 goNext()
                 return
             }
             timer = setTimeout(() => {
-                console.log('[SimulateAddPositionStep] It will run refetchSimulation()...')
+                logger.info('[SimulateAddPositionStep] It will run refetchSimulation()...')
                 refetchSimulation()
             }, 1000)
         }
@@ -49,7 +50,7 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
     useEffect(() => {
         let timer = undefined
         if (isSuccess) {
-            console.log('[SimulateAddPositionStep] it will goNext in 1000 milliseconds')
+            logger.info('[SimulateAddPositionStep] it will goNext in 1000 milliseconds')
             timer = setTimeout(() => {goNext()}, 1000)
         }
         return () => {
@@ -57,10 +58,10 @@ const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started
         }
     }, [isSuccess])
 
-    console.log('[SimulateAddPositionStep] ====== Latest state ========')
-    console.log('[SimulateAddPositionStep] isSuccess=', isSuccess, ' isPending=', isPending, ' isFetching=', isFetching)
-    console.log('[SimulateAddPositionStep] simulationError=', simulationError)
-    console.log('[SimulateAddPositionStep] simulation=', simulation)
+    logger.debug('[SimulateAddPositionStep] ====== Latest state ========')
+    logger.debug('[SimulateAddPositionStep] isSuccess=', isSuccess, ' isPending=', isPending, ' isFetching=', isFetching)
+    logger.debug('[SimulateAddPositionStep] simulationError=', simulationError)
+    logger.debug('[SimulateAddPositionStep] simulation=', simulation)
 
     return (
         <div className="flex justify-between items-center">

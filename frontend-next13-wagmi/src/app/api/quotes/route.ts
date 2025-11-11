@@ -9,10 +9,11 @@ import { TradeType, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Decimal } from 'decimal.js'
 import { fromReadableAmount } from '@/common/utils';
 import { QuotesParameterType } from '@/common/types';
+import logger from '@/common/Logger';
 
 async function parseDataFromRequest(request: Request) {
   const data = await request.json() as QuotesParameterType
-  console.log('data', data)
+  logger.debug('[API. quotes] data', data)
   return {
     chainId: data.chainId,
     provider: new ethers.providers.JsonRpcProvider(data.rpcUrl),
@@ -26,7 +27,7 @@ async function parseDataFromRequest(request: Request) {
 }
 
 export async function POST(request: Request) {
-  console.log('POST - get quotes')
+  logger.debug('[API. quotes] POST - get quotes')
     try {
         const params = await parseDataFromRequest(request)
         const router = new AlphaRouter({
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
       calldata: route.methodParameters?.calldata
       })
     } catch(e) {
-        console.log('failed to get quotes due to:', e)
+      logger.error('failed to get quotes due to:', e)
         return NextResponse.json({ success: false})
     }
 }

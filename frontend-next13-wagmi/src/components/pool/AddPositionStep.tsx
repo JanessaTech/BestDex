@@ -12,6 +12,7 @@ import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
 import { decodeEventLog } from 'viem';
 import { MintPositionParamsType, TokenType } from "@/common/types"
+import logger from "@/common/Logger"
 
 type AddPositionStepProps = {
     token0: TokenType;
@@ -76,7 +77,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
 
     useEffect(() => {
         if (started) {
-            console.log('[AddPositionStep] it will run handleAddPosition')
+            logger.info('[AddPositionStep] it will run handleAddPosition')
             setState({...state, isPending: true})
             handleAddPosition()
         }
@@ -84,7 +85,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
 
     useEffect(() => {
         if (hash) {
-            console.log('[AddPositionStep] it will fetch the receipt')
+            logger.info('[AddPositionStep] it will fetch the receipt')
             refetchReceipt()
         }
     }, [hash])
@@ -112,7 +113,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                 }
             }
         }).filter((log) => log.ok)
-        console.log('[IncreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
+        logger.info('[AddPositionStep] parsedOKLogs=', parsedOKLogs)
         if (parsedOKLogs.length === 0) return BigInt(-1)
         if (!parsedOKLogs[0].decoded?.args) return BigInt(-1)
         return parsedOKLogs[0].decoded.args.tokenId
@@ -122,13 +123,13 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         (async () => {
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
-                console.log('[AddPositionStep] A new position is added')
+                logger.info('[AddPositionStep] A new position is added')
                 const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
                 const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
                 const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const positionId = getPositionId()
-                console.log('[AddPositionStep] positionId=', positionId)
+                logger.info('[AddPositionStep] positionId=', positionId)
                 setState({...state, isPending: false, isSuccess: true, positionId: positionId, token0Deposited: token0Deposited, token1Deposited: token1Deposited})
             }
         })() 
@@ -137,7 +138,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
     useEffect(() => {
         let timer = undefined
         if (state.isSuccess) {
-            console.log('it will handleAddSuccess in 1000 milliseconds')
+            logger.info('[AddPositionStep] it will handleAddSuccess in 1000 milliseconds')
             timer = setTimeout(() => {
                 handleAddLiquiditySuccess(state.positionId, state.token0Deposited,state.token1Deposited)
             }, 1000)
@@ -154,14 +155,14 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         }
     }, [writeError, receiptError])
     
-    console.log('[AddPositionStep] ====== Latest state ========')
-    console.log('[AddPositionStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
-    console.log('[AddPositionStep]', ' hash=', hash)
-    console.log('[AddPositionStep] writeError=', writeError)
-    console.log('[AddPositionStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
-    console.log('[AddPositionStep] receipt=', receipt)
-    console.log('[AddPositionStep] receiptStatus=', receiptStatus)
-    console.log('[AddPositionStep] receiptError=', receiptError)
+    logger.debug('[AddPositionStep] ====== Latest state ========')
+    logger.debug('[AddPositionStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
+    logger.debug('[AddPositionStep]', ' hash=', hash)
+    logger.debug('[AddPositionStep] writeError=', writeError)
+    logger.debug('[AddPositionStep] isWriteSuccess=', isWriteSuccess, ' isWritePending=', isWritePending)
+    logger.debug('[AddPositionStep] receipt=', receipt)
+    logger.debug('[AddPositionStep] receiptStatus=', receiptStatus)
+    logger.debug('[AddPositionStep] receiptError=', receiptError)
     
     return (
         <div className="flex justify-between items-center">

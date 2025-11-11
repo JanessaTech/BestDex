@@ -12,22 +12,23 @@ import CollectFeeExecutor from './CollectFeeExecutor';
 import { toast } from "sonner"
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from '@/config/constants';
 import { CollectFeeParamsType, PositionProps } from '@/common/types'
+import logger from '@/common/Logger'
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
-        console.log('calldata:', calldata)
+        logger.debug('calldata:', calldata)
         const decoded = decodeFunctionData({
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
             data: calldata
         })
-        console.log('decoded', decoded)
+        logger.debug('decoded', decoded)
         const name = decoded['functionName']
         const args = decoded['args'][0] as CollectFeeParamsType
-        console.log('name=', name)
-        console.log('args=', args)
+        logger.debug('name=', name)
+        logger.debug('args=', args)
         return  args
     } catch (error) {
-        console.log('Failed to parse calldata due to:', error)
+        logger.error('[CollectFee] Failed to parse calldata due to:', error)
     }
 }
 
@@ -50,13 +51,13 @@ const CollectFee: React.FC<CollectFeeProps> = ({dexPosition, closeDexModal}) => 
         try {
             const callData = generateCallData()
             const parsedCalldata = parseCalldata(callData as `0x${string}`)
-            console.log('parsedCalldata=', parsedCalldata)
+            logger.debug('[CollectFee] parsedCalldata=', parsedCalldata)
             if (!parsedCalldata) {
                 throw new Error('Failed to parse calldata')
             }
             setData({calldata: callData, parsedCalldata: parsedCalldata})
         } catch (error) {
-            console.log('We failed to get calldata or parse calldata:', error)
+            logger.error('[CollectFee] We failed to get calldata or parse calldata:', error)
             toast.error('There is something wrong. Please try again')
         }
     }

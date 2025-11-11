@@ -20,6 +20,7 @@ import DecreaseLiquidityExecutor from "./DecreaseLiquidityExecutor";
 import DecreaseLiquiditySuccess from "./DecreaseLiquiditySuccess";
 import { fetchLatestPoolInfo } from "@/lib/client/pool";
 import { PositionProps } from "@/common/types";
+import logger from "@/common/Logger";
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -27,14 +28,14 @@ const parseCalldata = (calldata: `0x${string}`) => {
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
             data: calldata
         })
-        console.log('decoded', decoded)
+        logger.debug('decoded', decoded)
         const name = decoded['functionName']
         const args = decoded['args'][0] as `0x${string}`[]
-        console.log('name=', name)
-        console.log('args=', args)
+        logger.debug('name=', name)
+        logger.debug('args=', args)
         return  args
     } catch (error) {
-        console.log('Failed to parse calldata due to:', error)
+        logger.error('Failed to parse calldata due to:', error)
     }
 }
 
@@ -67,8 +68,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
     }
 
     const handleRemovePercentOnBlur = () => {
-        console.log('handleRemovePercentOnBlur')
-        console.log('removePercent = ', removePercent)
+        logger.debug('[DecreaseLiquidity] removePercent = ', removePercent)
         if (removePercent === 0 || removePercent === '') {
             setRemovePercent(50)
         }
@@ -89,7 +89,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
             setData({calldata: calldata, parsedCalldata: parsedCalldata})
             setExecuted(true)
         } catch (error) {
-            console.log(error)
+            logger.error(error)
         }
     }
 
@@ -119,7 +119,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
         const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token0.decimal)).toDecimalPlaces(dexPosition.token0.decimal, Decimal.ROUND_HALF_UP).toString()
         const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
 
-        console.log('burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
+        logger.debug('[DecreaseLiquidity] burnAmount0=', burnAmount0, '   burnAmount1=', burnAmount1)
         
         const collectOptions: Omit<CollectOptions, 'tokenId'> = {
             expectedCurrencyOwed0: CurrencyAmount.fromRawAmount(token0, maxUint128.toString()),
@@ -139,14 +139,14 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
             position,
             removeLiquidityOptions
         )
-        console.log('calldata:', calldata)
+        logger.debug('[DecreaseLiquidity] calldata:', calldata)
         return calldata as `0x${string}`
     }
 
    const handleDecreaseLiquiditySuccess = useCallback((token0Deposited: string, token1Deposited: string) => {
         setShowSuccess(true)
         const removedLiquidity = new Percent(removePercent, 100).multiply(dexPosition.liquidity.toString()).quotient.toString()
-        console.log('[DecreaseLiquidity] RemovedLiquidity=', removedLiquidity)
+        logger.debug('[DecreaseLiquidity] RemovedLiquidity=', removedLiquidity)
         setDeposited({token0: token0Deposited, token1: token1Deposited, removedLiquidity: removedLiquidity})
     }, [slipage])
 

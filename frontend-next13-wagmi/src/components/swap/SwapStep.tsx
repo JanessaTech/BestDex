@@ -11,6 +11,7 @@ import { UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
 import { TokenType } from "@/common/types"
+import logger from "@/common/Logger"
 
 const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): string => {
     const defaultReason = 'Unknown reason'
@@ -61,7 +62,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
     const handleSendTransation = async () => {
         const balance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
         setState({...state, preBalance: balance})
-        console.log('[SwapStep] pre balance: ',  balance, ' for ', tokenTo.address)
+        logger.debug('[SwapStep] pre balance: ',  balance, ' for ', tokenTo.address)
         sendTransaction({
             to: V3_SWAP_ROUTER_ADDRESS,
             data: calldata,
@@ -71,7 +72,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
     useEffect(() => {
         (async () => {
             if (started) {
-                console.log('[SwapStep] it will send swap tx')
+                logger.info('[SwapStep] it will send swap tx')
                 setState({...state, isPending: true})
                 await handleSendTransation()  
             }
@@ -81,7 +82,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
 
     useEffect(() => {
         if (txHash) {
-            console.log('[SwapStep] it will fetch the receipt')
+            logger.info('[SwapStep] it will fetch the receipt')
             refetchReceipt()
         }
     }, [txHash])
@@ -90,7 +91,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
         (async () => {
             if (!txHash || !receipt) return
             if (receipt.status === 'success') {
-                console.log('[SwapStep] swap is successful')
+                logger.info('[SwapStep] swap is successful')
                 const balance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
                 const inc = new Decimal(balance).minus(new Decimal(state.preBalance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 setState({...state, isPending: false, isSuccess: true, actualOutput: inc})
@@ -117,14 +118,14 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
     }, [sendError, receiptError])
 
     // output debug info
-    console.log('[SwapStep] ====== Latest state ========')
-    console.log('[SwapStep] state=', state)
-    console.log('[SwapStep] txHash =', txHash)
-    console.log('[SwapStep] isPending =', isPending, ' isSuccess =', isSuccess, '  sendError =', sendError)
-    console.log('[SwapStep] isReceiptError =', isReceiptError)
-    console.log('[SwapStep] receiptStatus =', receiptStatus)
-    console.log('[SwapStep] receiptError =', receiptError)
-    console.log('[SwapStep] receipt =', receipt)
+    logger.info('[SwapStep] ====== Latest state ========')
+    logger.info('[SwapStep] state=', state)
+    logger.info('[SwapStep] txHash =', txHash)
+    logger.info('[SwapStep] isPending =', isPending, ' isSuccess =', isSuccess, '  sendError =', sendError)
+    logger.info('[SwapStep] isReceiptError =', isReceiptError)
+    logger.info('[SwapStep] receiptStatus =', receiptStatus)
+    logger.info('[SwapStep] receiptError =', receiptError)
+    logger.info('[SwapStep] receipt =', receipt)
 
     return (
         <div className="flex justify-between items-center">
