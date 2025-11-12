@@ -16,3 +16,7 @@ export interface UserService {
 export interface TokenPriceService {
     getLatestPrices: () => Promise<any>
 }
+
+export interface PositionService {
+    getPositions: (chainId: number, owner: `0x${string}`) => Promise<any>
+}

@@ -10,7 +10,7 @@ class TokenPriceController {
         try {
             logger.debug('get the latest token price in TokenPriceController.getLatestPrices')
             const payload = await tokenPriceService.getLatestPrices()
-            let message = messageHelper.getMessage('token_price_success')
+            let message = messageHelper.getMessage('token_price_getLatest_success')
             sendSuccess(res, message, payload)
         } catch (error) {
             next(error)
