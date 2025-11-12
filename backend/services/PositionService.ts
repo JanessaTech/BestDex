@@ -17,7 +17,7 @@ class PositionServiceImpl implements PositionService {
         const balance: number = await positionContract.balanceOf(owner)
         const tokenIds = []
         for (let i = 0; i < balance; i++) {
-            const tokenOfOwnerByIndex: string =
+            const tokenOfOwnerByIndex: bigint =
               await positionContract.tokenOfOwnerByIndex(owner, i)
             tokenIds.push(tokenOfOwnerByIndex)
         }
@@ -25,7 +25,7 @@ class PositionServiceImpl implements PositionService {
     }
 
     private getPositionInfo = async (provider: ethers.providers.JsonRpcProvider, 
-        positionMangerAddress: `0x${string}`, tokenId: string, owner: `0x${string}`): Promise<PositionInfoType> => {
+        positionMangerAddress: `0x${string}`, tokenId: bigint, owner: `0x${string}`): Promise<PositionInfoType> => {
         const positionContract = new ethers.Contract(
             positionMangerAddress,
             UNISWAP_V3_POSITION_MANAGER_ABI,
@@ -34,9 +34,9 @@ class PositionServiceImpl implements PositionService {
         const position = await positionContract.positions(tokenId)
 
         return {
-            tokenId: tokenId,
+            tokenId: tokenId.toString(),
             tickLower: position.tickLower,
-            tickUpper: position.tickLower,
+            tickUpper: position.tickUpper,
             token0: position.token0,
             token1: position.token1,
             owner: owner,
