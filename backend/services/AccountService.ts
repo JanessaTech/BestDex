@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt'
 import logger from '../helpers/logger';
 import { AccountError } from '../routes/account/AccountErrors';
-import type { LoginInPutType, AccountInfoType } from '../controllers/types/TypesInController';
-import { AccountService } from './types/TypesInService';
+import { AccountInfoType, LoginInPutType } from '../controllers/types';
+import { AccountService } from './types';
 
 class AccountServiceImp implements AccountService {
     accountMap = new Map<string, AccountInfoType>()

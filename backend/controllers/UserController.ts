@@ -4,7 +4,7 @@ import { sendSuccess } from "../routes/ReponseHandler"
 import messageHelper from "../helpers/internationalization/messageHelper"
 import userService from "../services/UserService"
 import { UserError } from "../routes/user/UserErrors"
-import type { UserRegisterInputType, UserUpdateInputType } from "./types/TypesInController"
+import { UserRegisterInputType, UserUpdateInputType } from "./types"
 
 class UserController {
     async register(req: Request, res: Response, next: NextFunction) {

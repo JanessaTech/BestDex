@@ -7,7 +7,7 @@ import getConfig from "../config/configuration"
 import path from "path"
 import httpHelper from '../helpers/httpHelper'
 import yup from 'yup'
-import { AccountService } from "../services/types/TypesInService"
+import { AccountService } from "../services/types"
 
 
 const config = getConfig()

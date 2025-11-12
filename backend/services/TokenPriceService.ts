@@ -1,9 +1,9 @@
 import { tokenList } from "../config/data/hardcode";
 import logger from "../helpers/logger";
 import { TokenPriceError } from "../routes/tokenPrice/TokenPriceErrors";
-import { TokenPriceService } from "./types/TypesInService";
 import tokenPriceCacheService from "./cache/TokenPriceCacheService"
 import { TOKEN_PRICE_FETCH_INTERVAL } from "../helpers/common/constants";
+import { TokenPriceService } from "./types";
 
 class TokenPriceServiceImpl implements TokenPriceService {
     private interval !:NodeJS.Timeout | null;

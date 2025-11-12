@@ -1,4 +1,5 @@
-import type { LoginInPutType, AccountInfoType } from "../../controllers/types/TypesInController"
+import { AccountInfoType, LoginInPutType, PositionInfoType } from "../controllers/types"
+
 
 export interface AccountService {
     login: (acc: LoginInPutType) => Promise<AccountInfoType>
@@ -18,5 +19,5 @@ export interface TokenPriceService {
 }
 
 export interface PositionService {
-    getPositions: (chainId: number, owner: `0x${string}`) => Promise<any>
+    getPositions: (chainId: number, owner: `0x${string}`) => Promise<PositionInfoType[]>
 }

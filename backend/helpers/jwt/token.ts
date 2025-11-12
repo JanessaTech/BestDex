@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import getConfig from "../../config/configuration"
-import type { AccountInfoType } from "../../controllers/types/TypesInController"
+import { AccountInfoType } from "../../controllers/types"
 
 const generateToken = (params: AccountInfoType) => {
     const config = getConfig()

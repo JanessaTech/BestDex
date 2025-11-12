@@ -50,6 +50,7 @@ const message: MessageType = {
 
     //position
     positions_get_success: 'get the list of positions for owner {0} in chainId {1} successfully',
+    position_positionManager_not_found:'The position manager is not found for chainId {0}',
 
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',

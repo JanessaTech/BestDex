@@ -1,7 +1,17 @@
-import { createPublicClient, http, Chain} from 'viem'
+import { createPublicClient, http} from 'viem'
 import { hardhat} from 'viem/chains';
 import { chainUrls } from '../../config/data/hardcode';
 import logger from '../../helpers/logger';
+
+export const getHttpByChainId = (chainId: number) => {
+    logger.debug('get http url for chainId: ', chainId)
+    const chainDetail = chainUrls.get(chainId)
+    if (!chainDetail) {
+        throw new Error(`Unsupported chainId: ${chainId}`)
+    }
+    const http = chainDetail[1]
+    return http
+}
 
 export const createBlockchainClient = (chainId: number) => {
     logger.debug('creating publicClient for chainId: ', chainId)

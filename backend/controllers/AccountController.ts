@@ -4,8 +4,8 @@ import messageHelper from "../helpers/internationalization/messageHelper"
 import bcrypt from 'bcrypt'
 import tokenHelper from '../helpers/jwt/token'
 import { Request, Response, NextFunction } from "express"
-import type { LoginInPutType, AccountInfoType } from "./types/TypesInController"
 import accountService from "../services/AccountService"
+import { AccountInfoType, LoginInPutType } from "./types"
 
 class AccountController {
     async login(req: Request, res: Response, next: NextFunction) {

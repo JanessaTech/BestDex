@@ -1,9 +1,9 @@
 import logger from "../helpers/logger";
-import { UserService } from "./types/TypesInService";
 import { UserError } from "../routes/user/UserErrors";
 import messageHelper from "../helpers/internationalization/messageHelper";
-import type { UserRegisterInputType, UserUpdateInputType } from "../controllers/types/TypesInController";
 import userDao from "../db/dao/UserDAO";
+import { UserService } from "./types";
+import { UserRegisterInputType, UserUpdateInputType } from "../controllers/types";
 
 class UserServiceImp implements UserService {
     async register(user: UserRegisterInputType) {
