@@ -5,6 +5,11 @@ export const TOKEN_PRICE_FETCH_INTERVAL = 60000 // 10 seconds
 export const TOKEN_PRICE_REDIS_EXPIRY = 100 // 100 seconds
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const MULTICALL_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' //Multicall3
+
+export const MULTICALL_ABI = parseAbi([
+  'function aggregate((address target, bytes callData)[] calls) payable returns (uint256 blockNumber, bytes[] returnData)'
+])
 
 export const UNISWAP_V3_POSITION_MANAGER_ABI = parseAbi([
   'function balanceOf(address _owner) view returns (uint256)',

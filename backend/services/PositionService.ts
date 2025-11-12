@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import logger from "../helpers/logger";
 import { getHttpByChainId } from "../infra/utils/Chain";
-import { UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES, UNISWAP_V3_POSITION_MANAGER_ABI } from "../helpers/common/constants";
+import { UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES, UNISWAP_V3_POSITION_MANAGER_ABI, MULTICALL_ADDRESS, MULTICALL_ABI } from "../helpers/common/constants";
 import { PositionError } from "../routes/position/PositionErrors";
 import { PositionService } from "./types";
 import { PositionInfoType } from "../controllers/types";
@@ -44,7 +44,9 @@ class PositionServiceImpl implements PositionService {
         }
     }
 
+
     async getPositions(chainId: number, owner: `0x${string}`) {
+        logger.info('PositionService.getPositions. chainId=', chainId, ' owner=', owner)
         try {
             const http = getHttpByChainId(chainId)
             const provider = new ethers.providers.JsonRpcProvider(http)
