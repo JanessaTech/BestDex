@@ -28,6 +28,10 @@ export const UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES: { [chainId: number]
   31337: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // same as Ethereum Mainnet since we are using forking mainnet as the local for test
 }
 
+export const THEGRAPH_ENDPOINTS :  { [chainId: number]: string} = {
+  1: 'https://gateway.thegraph.com/api/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV' // Ethereum Mainnet
+}
+
 export const UNISWAP_V3_FACTORY_ADDRESSES: { [chainId: number]: `0x${string}`} = {
     1: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Ethereum Mainnet
     137: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Polygon
