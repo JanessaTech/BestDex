@@ -1,11 +1,11 @@
 import { ethers } from "ethers";
 import logger from "../helpers/logger";
 import { getHttpByChainId } from "../infra/utils/Chain";
-import { UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES, UNISWAP_V3_POSITION_MANAGER_ABI, MULTICALL_ADDRESS, MULTICALL_ABI, THEGRAPH_ENDPOINTS } from "../helpers/common/constants";
+import { UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES, UNISWAP_V3_POSITION_MANAGER_ABI, THEGRAPH_ENDPOINTS } from "../helpers/common/constants";
 import { PositionError } from "../routes/position/PositionErrors";
 import { PositionService } from "./types";
 import { PositionInfoType } from "../controllers/types";
-import { request, gql } from 'graphql-request'
+import { request } from 'graphql-request'
 import { positionListQuery } from "../helpers/common/queries";
 
 class PositionServiceImpl implements PositionService {
@@ -111,7 +111,8 @@ class PositionServiceImpl implements PositionService {
 
     async getPositions(chainId: number, owner: `0x${string}`) {
         logger.info('PositionService.getPositions. chainId=', chainId, ' owner=', owner)
-        const positions = this.getPositionListByRPC(chainId, owner)
+        //const positions = this.getPositionListByRPC(chainId, owner)
+        const positions = this.getPositionListByGraph(chainId, owner)
         return positions
     }
 }
