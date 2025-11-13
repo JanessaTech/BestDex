@@ -2,7 +2,8 @@ import WebSocket from 'ws'
 
 const ALCHEMY_WS_URL = 'wss://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk';
 const ALCHEMY_HTTP_URL = 'https://eth-mainnet.g.alchemy.com/v2/lFKEWE2Z7nkAXL73NSeAM2d5EbndwoQk';
-const POOL_ADDRESS = '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8'; // eg: pool USDC/ETH 0.3% 
+//const POOL_ADDRESS = '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8'; // eg: pool USDC/ETH 0.3% 
+const POOL_ADDRESS = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640'; // eg: pool USDC/WETH 0.05% 
 
 class UniswapV3PoolListener {
     private ws: WebSocket | null = null
@@ -12,6 +13,7 @@ class UniswapV3PoolListener {
 
     constructor() {
         this.initWebSocket()
+        this.warmup()
     }
 
     private initWebSocket(): void {
@@ -39,6 +41,13 @@ class UniswapV3PoolListener {
             console.error('Failed to initialize WebSocket:', error)
             this.handleReconnection()
         }
+    }
+
+    private warmup(): void {
+        (async () => {
+            console.log('run warm up')
+            await this.fetchPoolData(); 
+        })()
     }
 
     private handleMessage(data: WebSocket.Data): void {

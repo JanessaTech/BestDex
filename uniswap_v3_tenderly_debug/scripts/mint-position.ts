@@ -343,7 +343,7 @@ async function constructPosition(
       })
   }
 
-  export async function getPositionIds(): Promise<number[]> {
+  export async function getPositionIds(): Promise<string[]> {
     const provider = getProvider()
     const address = wallet.address
     if (!provider || !address) {
@@ -362,7 +362,7 @@ async function constructPosition(
     // Get all positions
     const tokenIds = []
     for (let i = 0; i < balance; i++) {
-      const tokenOfOwnerByIndex: number =
+      const tokenOfOwnerByIndex: string =
         await positionContract.tokenOfOwnerByIndex(address, i)
       tokenIds.push(tokenOfOwnerByIndex)
     }
@@ -370,7 +370,7 @@ async function constructPosition(
     return tokenIds
   }
 
-  async function getPositionInfo(tokenId: number): Promise<PositionInfo> {
+  async function getPositionInfo(tokenId: string): Promise<PositionInfo> {
     const provider = getProvider()
     if (!provider) {
       throw new Error('No provider available')

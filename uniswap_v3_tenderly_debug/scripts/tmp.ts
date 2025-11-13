@@ -281,6 +281,13 @@ function test_arbitrary() {
 }
 //test_arbitrary()
 
+function test_convertBigInt () {
+  const value = { result: 2012807071839452794n, status: 'success' }
+  const res = JSON.stringify(value)
+  console.log(res)
+}
+test_convertBigInt()
+
 //test_decimal()
 //test_CurrencyAmount()
 //test_nearestUsableTick()
