@@ -54,6 +54,7 @@ const message: MessageType = {
     position_thegraph_url_not_found: 'The graph url is not found for chainId {0}',
     positions_get_by_rpc_failed: 'Failed to get the list of positions by the RPC due to {0}',
     positions_get_by_theGraph_failed: 'Failed to get the list of positions by the graph due to {0}',
+    positions_redis_save_failed: 'Failed to save the position list to redis',
 
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',

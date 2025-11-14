@@ -19,5 +19,5 @@ export interface TokenPriceService {
 }
 
 export interface PositionService {
-    getPositions: (chainId: number, owner: `0x${string}`) => Promise<PositionInfoType[]>
+    getPositions: (chainId: number, owner: `0x${string}`, page: number, pageSize: number) => Promise<PositionInfoType[]>
 }
