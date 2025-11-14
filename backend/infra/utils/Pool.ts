@@ -41,7 +41,7 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient: Pu
                 }
             ]
         })
-        logger.debug('poolAddress', poolAddress, 'data=', data)
+        //logger.debug('poolAddress', poolAddress, 'data=', data)
         if (!(data[0].result && data[0].status === 'success')
             || !(data[1].result && data[1].status === 'success')
             || !(data[2].result && data[2].status === 'success')

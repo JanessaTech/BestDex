@@ -9,7 +9,7 @@ class PositionServiceImpl implements PositionService {
 
     async getPositions(chainId: number, owner: `0x${string}`, page: number, pageSize: number) {
         logger.info('PositionService.getPositions. chainId=', chainId, ' owner=', owner)
-        const positionListInPageKey = `positions:user:${owner}:page:${page}`
+        const positionListInPageKey = `positions:user:${owner}:chainId:${chainId}:page:${page}`
         try {
             const cachedPositions = await redisClient.get(positionListInPageKey)
             if (cachedPositions) {
@@ -17,7 +17,7 @@ class PositionServiceImpl implements PositionService {
                 return JSON.parse(cachedPositions) as PositionInfoType[]
             } 
             const skip = (page - 1) * pageSize
-            logger.debug(`Get position list from the graph. first=${pageSize} skip=${skip}`)
+            logger.debug(`Get position list. first=${pageSize} skip=${skip}`)
             const positions = await fetchPositionListInPage(chainId, owner, pageSize, skip)
             if (positions.length) {
                 const saveToRedis = await redisClient.set(positionListInPageKey, JSON.stringify(positions), 60 * 60)

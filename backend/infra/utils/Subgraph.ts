@@ -4,9 +4,11 @@ import messageHelper from "../../helpers/internationalization/messageHelper";
 import { request } from 'graphql-request'
 import { positionListQuery } from "./Queries";
 import { getHttpByChainId } from "./Chain";
-import { ethers } from "ethers";
+import { ethers} from "ethers";
+import logger from "../../helpers/logger";
 
 export const fetchPositionListInPageByGraph = async (chainId: number, owner: `0x${string}`, first: number, skip: number) => {
+    logger.debug('Get position list from graph')
     const endpoint = THEGRAPH_ENDPOINTS[chainId]
     if (!endpoint) {
         throw new Error(messageHelper.getMessage('position_thegraph_url_not_found', chainId))
@@ -74,6 +76,7 @@ const getPositionInfo = async (provider: ethers.providers.JsonRpcProvider,
     }
 }
 export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${string}`, first: number, skip: number) => {
+    logger.debug('Get position list from rpc')
     const http = getHttpByChainId(chainId)
     const provider = new ethers.providers.JsonRpcProvider(http)
     const positionMangerAddress = UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES[chainId]
@@ -82,7 +85,9 @@ export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${
     }
 
     const positionIds = await getPositionIds(provider, positionMangerAddress, owner)
+    logger.debug('positionIds = ', positionIds)
     const idsInPage = positionIds.slice(skip, skip + first)
+    logger.debug('idsInPage = ', idsInPage)
     const positions: PositionInfoType[] = []
     for (let tokenId of idsInPage) {
         const position = await getPositionInfo(provider, positionMangerAddress, tokenId, owner)
