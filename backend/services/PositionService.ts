@@ -1,9 +1,10 @@
 import logger from "../helpers/logger";
 import { PositionError } from "../routes/position/PositionErrors";
 import { PositionService } from "./types";
-import { PositionInfoType } from "../controllers/types";
+import { PositionProps } from "../controllers/types";
 import { redisClient } from "../infra";
 import { fetchPositionListInPage } from "../infra/utils/Subgraph";
+import { POSITION_REDIS_EXPIRY } from "../helpers/common/constants";
 
 class PositionServiceImpl implements PositionService {
 
@@ -14,13 +15,13 @@ class PositionServiceImpl implements PositionService {
             const cachedPositions = await redisClient.get(positionListInPageKey)
             if (cachedPositions) {
                 logger.debug('Get position list from redis')
-                return JSON.parse(cachedPositions) as PositionInfoType[]
+                return JSON.parse(cachedPositions) as PositionProps[]
             } 
             const skip = (page - 1) * pageSize
             logger.debug(`Get position list. first=${pageSize} skip=${skip}`)
             const positions = await fetchPositionListInPage(chainId, owner, pageSize, skip)
             if (positions.length) {
-                const saveToRedis = await redisClient.set(positionListInPageKey, JSON.stringify(positions), 60 * 60)
+                const saveToRedis = await redisClient.set(positionListInPageKey, JSON.stringify(positions), POSITION_REDIS_EXPIRY)
                 if (!saveToRedis) throw new PositionError({key: 'positions_redis_save_failed'})
             }
             return positions

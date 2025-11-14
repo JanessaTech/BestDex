@@ -1,4 +1,4 @@
-import { PositionInfoType } from "../../controllers/types";
+import { PositionProps } from "../../controllers/types";
 import { THEGRAPH_ENDPOINTS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES } from "../../helpers/common/constants";
 import messageHelper from "../../helpers/internationalization/messageHelper";
 import { request } from 'graphql-request'
@@ -17,7 +17,7 @@ export const fetchPositionListInPageByGraph = async (chainId: number, owner: `0x
     const headers = {
         Authorization: `Bearer ${process.env.THEGRAPH_API_KEY}`,
     };
-    const positions: PositionInfoType[] = []
+    const positions: PositionProps[] = []
     const variables = {owner: owner, first: first, skip: skip}
     const data = await request(endpoint, positionListQuery, variables, headers);
     for (let pos of data['positions']) {
@@ -57,7 +57,7 @@ const getPositionIds = async (provider: ethers.providers.JsonRpcProvider, positi
 }
 
 const getPositionInfo = async (provider: ethers.providers.JsonRpcProvider, 
-    positionMangerAddress: `0x${string}`, tokenId: bigint, owner: `0x${string}`): Promise<PositionInfoType> => {
+    positionMangerAddress: `0x${string}`, tokenId: bigint, owner: `0x${string}`): Promise<PositionProps> => {
     const positionContract = new ethers.Contract(
         positionMangerAddress,
         UNISWAP_V3_POSITION_MANAGER_ABI,
@@ -88,7 +88,7 @@ export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${
     logger.debug('positionIds = ', positionIds)
     const idsInPage = positionIds.slice(skip, skip + first)
     logger.debug('idsInPage = ', idsInPage)
-    const positions: PositionInfoType[] = []
+    const positions: PositionProps[] = []
     for (let tokenId of idsInPage) {
         const position = await getPositionInfo(provider, positionMangerAddress, tokenId, owner)
         positions.push(position)

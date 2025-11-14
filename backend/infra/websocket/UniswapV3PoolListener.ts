@@ -2,7 +2,7 @@ import { PublicClient } from 'viem'
 import WebSocket from 'ws'
 import logger from '../../helpers/logger';
 import { fetchPoolInfo } from '../utils/Pool';
-import { PoolInfo } from '../types';
+import { PoolInfo } from '../../controllers/types';
 
 class UniswapV3PoolListener {
     private ws: WebSocket | null = null;

@@ -5,7 +5,8 @@ import { calcPoolAddress } from "../utils/Pool"
 import UniswapV3PoolListener from "./UniswapV3PoolListener"
 import LocalUniswapV3PoolListener from "./LocalUniswapV3PoolListener"
 import { createBlockchainClient } from "../utils/Chain"
-import { PoolInfo, PoolMetaData, TokenType } from "../types"
+import { PoolInfo, TokenType } from "../../controllers/types"
+import { PoolMetaData } from "../types"
 
 interface WebsocketConfig {}
 

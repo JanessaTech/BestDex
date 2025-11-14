@@ -27,13 +27,36 @@ export type UserUpdateInputType = {
     intro?: string
 }
 
+export type TokenType = {
+    chainId: number;
+    name: string;
+    symbol: string;
+    decimal: number;
+    alias: string;
+    address: `0x${string}`;
+    company?: string;
+}
+
+//pool
+export type PoolInfo = {
+    token0: string;
+    token1: string;
+    fee: number;
+    tickSpacing: number;
+    slot0: any[];
+    sqrtPriceX96: string;
+    tick: number;
+    liquidity: string;
+    timeStamp: number;
+}
+
 //position
-export type PositionInfoType = {
+export type PositionProps = {
     tokenId: string;
     tickLower: number;
     tickUpper: number;
-    token0: `0x${string}`;
-    token1: `0x${string}`;
+    token0: TokenType;
+    token1: TokenType;
     owner: `0x${string}`;
     fee: number
 }

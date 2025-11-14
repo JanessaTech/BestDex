@@ -41,4 +41,5 @@ export const UNISWAP_V3_FACTORY_ABI = parseAbi([
   'function getPool(address tokenA, address tokenB, uint24 fee) external view returns (address pool)'
 ]);
 
+export const POSITION_REDIS_EXPIRY = 3600 // 60 mins
 export const LISTENER_lOCAL_POLL_INTERVAL = 12000
