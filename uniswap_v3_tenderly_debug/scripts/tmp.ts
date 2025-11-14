@@ -267,26 +267,18 @@ function test_convertion() {
 //test_convertion()
 
 function test_arbitrary() {
-  const ans = {amount0Desired: 999999999852485718n,
-    amount0Min : 968133171435943399n,
-    amount1Desired : 4829520367n,
-    amount1Min : 4691337281n,
-    deadline : 1757777903n,
-    fee : 3000,
-    recipient : "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-    tickLower : -193680,
-    tickUpper : -191640,
-    token0 : "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    token1 : "0xdAC17F958D2ee523a2206206994597C13D831ec7"} as {token0: `0x${string}`, token1: `0x${string}`, recipient: `0x${string}`, fee: number, tickLower: number, tickUpper: number, amount0Min: bigint, amount0Desired: bigint, amount1Desired: bigint, amount1Min: bigint, deadline: bigint}
+  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  const sub = arr.slice(5, 5 + 3)
+  console.log(sub)
 }
-//test_arbitrary()
+test_arbitrary()
 
 function test_convertBigInt () {
   const value = { result: 2012807071839452794n, status: 'success' }
   const res = JSON.stringify(value)
   console.log(res)
 }
-test_convertBigInt()
+//test_convertBigInt()
 
 //test_decimal()
 //test_CurrencyAmount()
