@@ -1,4 +1,4 @@
-import { PositionProps } from "../../controllers/types";
+import { PositionProps, TokenType } from "../../controllers/types";
 import { THEGRAPH_ENDPOINTS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES } from "../../helpers/common/constants";
 import messageHelper from "../../helpers/internationalization/messageHelper";
 import { request } from 'graphql-request'
@@ -6,6 +6,7 @@ import { positionListQuery } from "./Queries";
 import { getHttpByChainId } from "./Chain";
 import { ethers} from "ethers";
 import logger from "../../helpers/logger";
+import { getTokenMeta } from "./Token";
 
 export const fetchPositionListInPageByGraph = async (chainId: number, owner: `0x${string}`, first: number, skip: number) => {
     logger.debug('Get position list from graph')
@@ -24,8 +25,22 @@ export const fetchPositionListInPageByGraph = async (chainId: number, owner: `0x
         const tokenId = pos['id']
         const owner = pos['owner']
         const fee = Number(pos['pool']['feeTier'])
-        const token0 = pos['token0']['id']
-        const token1 = pos['token1']['id']
+        const token0: TokenType = {
+                        chainId: chainId, 
+                        name: pos['token0']['name'], 
+                        symbol: pos['token0']['symbol'], 
+                        decimal: Number(pos['token0']['decimals']),
+                        alias: (pos['token0']['symbol'] as string).toLowerCase(),
+                        address: pos['token0']['id'] as `0x${string}`
+                    }
+        const token1: TokenType = {
+                        chainId: chainId, 
+                        name: pos['token1']['name'], 
+                        symbol: pos['token1']['symbol'], 
+                        decimal: Number(pos['token1']['decimals']),
+                        alias: (pos['token1']['symbol'] as string).toLowerCase(),
+                        address: pos['token1']['id'] as `0x${string}`
+                    }
         const tickLower = Number(pos['tickLower']['tickIdx'])
         const tickUpper = Number(pos['tickUpper']['tickIdx'])
         positions.push({
@@ -57,23 +72,31 @@ const getPositionIds = async (provider: ethers.providers.JsonRpcProvider, positi
 }
 
 const getPositionInfo = async (provider: ethers.providers.JsonRpcProvider, 
-    positionMangerAddress: `0x${string}`, tokenId: bigint, owner: `0x${string}`): Promise<PositionProps> => {
+    positionMangerAddress: `0x${string}`, tokenId: bigint, owner: `0x${string}`): Promise<PositionProps | undefined> => {
     const positionContract = new ethers.Contract(
         positionMangerAddress,
         UNISWAP_V3_POSITION_MANAGER_ABI,
         provider
       )
+    const chainId = (await provider.getNetwork()).chainId
     const position = await positionContract.positions(tokenId)
-
-    return {
-        tokenId: tokenId.toString(),
-        tickLower: position.tickLower,
-        tickUpper: position.tickUpper,
-        token0: position.token0,
-        token1: position.token1,
-        owner: owner,
-        fee: position.fee
+    const token0 = getTokenMeta(chainId, position.token0)
+    if (!token0) logger.error('Failed to get tokenMeta for token0 =', position.token0)
+    const token1 = getTokenMeta(chainId, position.token1)
+    if (token1) logger.error('Failed to get tokenMeta for token1 =', position.token1)
+    if (token0 && token1) {
+        return {
+            tokenId: tokenId.toString(),
+            tickLower: position.tickLower,
+            tickUpper: position.tickUpper,
+            token0: token0,
+            token1: token1,
+            owner: owner,
+            fee: position.fee
+        }
     }
+
+    return undefined
 }
 export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${string}`, first: number, skip: number) => {
     logger.debug('Get position list from rpc')
@@ -91,7 +114,10 @@ export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${
     const positions: PositionProps[] = []
     for (let tokenId of idsInPage) {
         const position = await getPositionInfo(provider, positionMangerAddress, tokenId, owner)
-        positions.push(position)
+        if (position) {
+            positions.push(position)
+        }
+        
     }
     return positions
 }

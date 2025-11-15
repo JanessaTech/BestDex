@@ -22,6 +22,8 @@ export const positionListQuery = gql`
             token0 {
                 symbol
                 id
+                name
+                decimals
             }
             pool {
                 feeTier
@@ -29,6 +31,8 @@ export const positionListQuery = gql`
             token1 {
                 symbol
                 id
+                name
+                decimals
             }
             owner
             }

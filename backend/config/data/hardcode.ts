@@ -4,7 +4,13 @@ import { Chain } from 'viem';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// we need refactor the codes in the file by using mongodb
+/**
+ * How to refactor this file: 
+ *  1. we should prepare an excel containing the inforation as below
+ *  2. There should be an administor portal to import this file
+ *  3. backend cannot start if tokenList is empty
+ *  */ 
+
 export const tokenList: TokenListType = [
     {
       chainId: 1,  

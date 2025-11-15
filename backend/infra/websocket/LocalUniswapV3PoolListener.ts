@@ -2,7 +2,7 @@ import { PublicClient } from 'viem'
 import logger from '../../helpers/logger';
 import { fetchPoolInfo } from '../utils/Pool';
 import { LISTENER_lOCAL_POLL_INTERVAL } from '../../helpers/common/constants';
-import { PoolInfo } from '../types';
+import { PoolInfo } from '../../controllers/types';
 
 class LocalUniswapV3PoolListener {
     private poolAddress!:`0x${string}`;
