@@ -117,7 +117,6 @@ export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${
         if (position) {
             positions.push(position)
         }
-        
     }
     return positions
 }

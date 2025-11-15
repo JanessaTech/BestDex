@@ -40,7 +40,6 @@ const message: MessageType = {
 
     // token price
     token_price_getLatest_success: 'Get the latest token prices successfully',
-    token_price_response_not_ok: 'Failed to get token price due to {0}',
     token_price_failed_others: 'Failed to get the token price due to {0}',
     token_price_redis_save_failed: 'Failed to save the token price to redis',
 
