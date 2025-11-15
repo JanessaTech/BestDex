@@ -51,7 +51,6 @@ const message: MessageType = {
     positions_get_success: 'get the list of positions for owner {0} in chainId {1} successfully',
     position_positionManager_not_found:'The position manager is not found for chainId {0}',
     position_thegraph_url_not_found: 'The graph url is not found for chainId {0}',
-    positions_get_by_rpc_failed: 'Failed to get the list of positions by the RPC due to {0}',
     positions_get_by_theGraph_failed: 'Failed to get the list of positions by the graph due to {0}',
     positions_redis_save_failed: 'Failed to save the position list to redis',
 
