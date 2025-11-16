@@ -25,6 +25,7 @@ export const fetchPositionListInPageByGraph = async (chainId: number, owner: `0x
         const tokenId = pos['id']
         const owner = pos['owner']
         const fee = Number(pos['pool']['feeTier'])
+        const liquidity = pos['liquidity']
         const token0: TokenType = {
                         chainId: chainId, 
                         name: pos['token0']['name'], 
@@ -50,6 +51,7 @@ export const fetchPositionListInPageByGraph = async (chainId: number, owner: `0x
                 token0: token0, 
                 token1: token1, 
                 fee: fee, 
+                liquidity: liquidity,
                 owner: owner})
     }
     return positions
@@ -91,6 +93,7 @@ const getPositionInfo = async (provider: ethers.providers.JsonRpcProvider,
             tickUpper: position.tickUpper,
             token0: token0,
             token1: token1,
+            liquidity: position.liquidity.toString(),
             owner: owner,
             fee: position.fee
         }

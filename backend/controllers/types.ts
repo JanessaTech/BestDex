@@ -55,6 +55,7 @@ export type PositionProps = {
     tokenId: string;
     tickLower: number;
     tickUpper: number;
+    liquidity: string;
     token0: TokenType;
     token1: TokenType;
     owner: `0x${string}`;

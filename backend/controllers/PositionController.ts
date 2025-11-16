@@ -8,7 +8,7 @@ class PositionController {
     async getPositions(req: Request, res: Response, next: NextFunction)  {
         const chainId = Number(req.params.chainId)
         const owner = req.query.owner as `0x${string}`
-        const page = Number(req.query.page)
+        const page = Number(req.query.page ? req.query.page : 1)
         const pageSize = Number(req.query.pageSize)
         logger.debug('chainId =', chainId)
         logger.debug('owner =', owner)

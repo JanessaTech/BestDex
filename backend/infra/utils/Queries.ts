@@ -25,6 +25,7 @@ export const positionListQuery = gql`
                 name
                 decimals
             }
+            liquidity
             pool {
                 feeTier
             }
