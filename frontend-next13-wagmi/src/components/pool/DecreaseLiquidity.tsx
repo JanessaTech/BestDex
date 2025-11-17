@@ -18,7 +18,7 @@ import { maxUint128, decodeFunctionData} from 'viem'
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants";
 import DecreaseLiquidityExecutor from "./DecreaseLiquidityExecutor";
 import DecreaseLiquiditySuccess from "./DecreaseLiquiditySuccess";
-import { fetchLatestPoolInfo } from "@/lib/client/pool";
+import { fetchLatestPoolInfo } from "@/lib/client/Pool";
 import { PositionProps } from "@/common/types";
 import logger from "@/common/Logger";
 
@@ -129,7 +129,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
         const removeLiquidityOptions: RemoveLiquidityOptions = {
             deadline: Math.floor(Date.now() / 1000) + (deadline === '' ? 1800 : deadline * 60),
             slippageTolerance: new Percent(slipage * 100, 10_000),
-            tokenId: dexPosition.id.toString(),
+            tokenId: dexPosition.tokenId,
             // percentage of liquidity to remove
             liquidityPercentage: new Percent(removePercent, 100),
             collectOptions,
@@ -157,11 +157,11 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
             other={<Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>}>
             {
                 showSuccess
-                ? <DecreaseLiquiditySuccess positionId={dexPosition.id} token0={dexPosition.token0} token1={dexPosition.token1} 
+                ? <DecreaseLiquiditySuccess positionId={dexPosition.tokenId} token0={dexPosition.token0} token1={dexPosition.token1} 
                     depositedToken0={deposited.token0} depositedToken1={deposited.token1} removedLiquidity={deposited.removedLiquidity}/>
                 : 
                 <div className="text-sm flex flex-col gap-3">
-                    <div><span className="mr-2">PositionId:</span><span>{dexPosition.id.toString()}</span></div>
+                    <div><span className="mr-2">PositionId:</span><span>{dexPosition.tokenId}</span></div>
                     <div><span className="mr-2">Total liquidity:</span><span>{dexPosition.liquidity.toString()}</span></div>
                     <div className="flex items-center">
                         <span className="mr-2">Percentage to remove:</span>

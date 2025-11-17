@@ -19,7 +19,7 @@ import { UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import IncreaseLiquidityExecutor from "./IncreaseLiquidityExecutor"
 import IncreaseLiquiditySuccess from "./IncreaseLiquiditySuccess"
-import { fetchLatestPoolInfo } from "@/lib/client/pool"
+import { fetchLatestPoolInfo } from "@/lib/client/Pool"
 import { fromReadableAmount2, isDataStale } from "@/common/utils"
 import { IncreasePositionParamsType, PoolInfo, PositionProps } from "@/common/types"
 import logger from "@/common/Logger"
@@ -125,7 +125,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const generateCallData = () => {
         const positionToIncreaseBy = constructPosition()
         const addLiquidityOptions: AddLiquidityOptions = {
-            tokenId: dexPosition.id.toString(),
+            tokenId: dexPosition.tokenId,
             deadline: Math.floor(Date.now() / 1000) + (deadline === '' ? 1800 : deadline * 60),
             slippageTolerance: new Percent(slipage * 100, 10_000),
         }
@@ -302,10 +302,10 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                 other={<Setting settingOpen={settingOpen} onOpenChange={onSettingOpenChange}/>}>
             {
                 showSuccess
-                ? <IncreaseLiquiditySuccess positionId={dexPosition.id} token0={dexPosition.token0} token1={dexPosition.token1} 
+                ? <IncreaseLiquiditySuccess positionId={dexPosition.tokenId} token0={dexPosition.token0} token1={dexPosition.token1} 
                     depositedToken0={deposited.token0} depositedToken1={deposited.token1} liquidity={deposited.liquidity}/>
                 :   <div>
-                        <div className="text-sm"><span className="mr-2">Position ID:</span><span>{dexPosition.id}</span></div>
+                        <div className="text-sm"><span className="mr-2">Position ID:</span><span>{dexPosition.tokenId}</span></div>
                         <div>
                             {
                                 dexPosition.upperTick > curPoolInfo.tick &&

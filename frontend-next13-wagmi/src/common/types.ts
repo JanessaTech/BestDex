@@ -85,15 +85,12 @@ export type CollectFeeParamsType = {
 }
 
 export type PositionProps = {
-    id: bigint,
+    tokenId: string,
     token0: TokenType,
     token1: TokenType,
-    lowerTick: number,
-    upperTick: number,
+    tickLower: number,
+    tickUpper: number,
     liquidity: bigint,
-    tokensOwed0: bigint,
-    tokensOwed1:bigint,
-    status: boolean,
     fee: number,
-    wallet: string
+    owner: string
 }

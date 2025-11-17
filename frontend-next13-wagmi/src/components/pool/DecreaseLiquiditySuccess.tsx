@@ -6,7 +6,7 @@ import { TokenType } from "@/common/types";
 
 
 type DecreaseLiquiditySuccessProps = {
-    positionId: bigint;
+    positionId: string;
     token0: TokenType;
     token1: TokenType;
     depositedToken0: string;
@@ -22,7 +22,7 @@ const DecreaseLiquiditySuccess:React.FC<DecreaseLiquiditySuccessProps> = ({posit
                 </div>
                 <div><span className="text-pink-600">{removedLiquidity}</span> amount of liquidity was removed!</div>
             </div>
-            <div className="text-sm">PositionId: <span className="text-pink-600">{positionId.toString()}</span></div>
+            <div className="text-sm">PositionId: <span className="text-pink-600">{positionId}</span></div>
             <div className="border-t-[1px] border-zinc-600 my-1 text-sm">
                 <div className="py-2 flex items-center">
                     <span>You deposited:</span>

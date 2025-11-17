@@ -158,7 +158,6 @@ export const calcPoolPriceFromTick = (tick: number, token0 : TokenType, token1: 
   const priceRatio = new Decimal(1.0001).pow(tick)
   const adjustedPrice = isToken0Base ? priceRatio.mul(decimalsAdjustment) : new Decimal(1).dividedBy(priceRatio.mul(decimalsAdjustment))
   const roundedPriceFromTick = adjustedPrice.toDecimalPlaces(token1.decimal, Decimal.ROUND_HALF_UP);
-  logger.debug('[util.calcPoolPriceFromTick] roundedPriceFromTick=', roundedPriceFromTick)
   return roundedPriceFromTick.toString()
 }
 

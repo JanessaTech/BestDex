@@ -6,7 +6,7 @@ import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import Decimal from "decimal.js";
 import SVGRefresh from "@/lib/svgs/svg_refresh";
-import { fetchLatestPoolInfo } from "@/lib/client/pool";
+import { fetchLatestPoolInfo } from "@/lib/client/Pool";
 import { LocalChainIds, PoolInfo, PoolRange, TokenType } from "@/common/types";
 import { calPoolRange, getPoolCurrentPrice } from "@/common/utils";
 import logger from "@/common/Logger";

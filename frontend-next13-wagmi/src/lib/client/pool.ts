@@ -4,7 +4,7 @@ import { PoolInfo } from '@/common/types'
 import axios from 'axios'
 
 export const fetchLatestPoolInfo = async (poolAddress: `0x${string}`, chainId: number) => {
-    logger.debug('[API client: pool] fetchLatestPoolInfo')
+    logger.debug('[API client: pool] fetchLatestPoolInfo. poolAddress=', poolAddress, ' chainId=', chainId)
     try {
         const response = await axios.get<DexResponseType<PoolInfo>>(`${process.env.NEXT_PUBLIC_BACKEND_ADDR}/apis/v1/pool/getLatestPoolInfo/${chainId}?poolAddress=${poolAddress}`)
         const pooInfo = response?.data.data

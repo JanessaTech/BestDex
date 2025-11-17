@@ -34,7 +34,7 @@ npm run dev
     - 3.2 do performance tests
 4. Speed up quotes in backend
 5. flashbot
-6. add logger for frontend
+6. add logger for frontend - [Done]
 7. Add curd for postions
 8. Refactor tokenList
 9. fix bugs:
