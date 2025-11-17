@@ -6,6 +6,7 @@ import siweRouter from './siwe'
 import tokenPriceRouter from './tokenPrice'
 import poolRouter from './pool'
 import positionRouter from './position'
+import transactionRouter from './transaction'
 
 const config = getConfig()
 const apiPrefix = config.apiPrefix
@@ -17,6 +18,7 @@ const initRoutes = (app: AppType) => {
     app.use(apiPrefix + '/price', tokenPriceRouter)
     app.use(apiPrefix + '/pool', poolRouter)
     app.use(apiPrefix + '/positions', positionRouter)
+    app.use(apiPrefix + '/transactions', transactionRouter)
 }
 
 export default initRoutes
