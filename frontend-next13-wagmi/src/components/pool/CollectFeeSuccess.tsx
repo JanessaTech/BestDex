@@ -6,7 +6,7 @@ import { TokenType } from "@/common/types";
 
 
 type CollectFeeSuccessProps = {
-    positionId: bigint;
+    positionId: string;
     token0: TokenType;
     token1: TokenType;
     depositedToken0: string;

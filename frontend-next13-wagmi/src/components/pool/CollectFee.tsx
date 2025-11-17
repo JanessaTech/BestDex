@@ -67,7 +67,7 @@ const CollectFee: React.FC<CollectFeeProps> = ({dexPosition, closeDexModal}) => 
         const token0 = new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name)
         const token1 = new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name)
         const collectOptions: CollectOptions = {
-            tokenId: dexPosition.id.toString(),
+            tokenId: dexPosition.tokenId,
             expectedCurrencyOwed0: CurrencyAmount.fromRawAmount(token0, maxUint128.toString()),
             expectedCurrencyOwed1: CurrencyAmount.fromRawAmount(token1, maxUint128.toString()),
             recipient: address,
@@ -88,11 +88,11 @@ const CollectFee: React.FC<CollectFeeProps> = ({dexPosition, closeDexModal}) => 
             title="Collecting fee">
                 {
                     showSuccess
-                    ? <CollectFeeSuccess positionId={dexPosition.id} token0={dexPosition.token0} token1={dexPosition.token1} 
+                    ? <CollectFeeSuccess positionId={dexPosition.tokenId} token0={dexPosition.token0} token1={dexPosition.token1} 
                     depositedToken0={deposited.token0} depositedToken1={deposited.token1}/>
                     : 
                     <div className="text-sm flex flex-col gap-3">
-                        <div><span className="mr-2">PositionId:</span><span>{dexPosition.id.toString()}</span></div>
+                        <div><span className="mr-2">PositionId:</span><span>{dexPosition.tokenId}</span></div>
                         <div><span className="mr-2">Total liquidity:</span><span>{dexPosition.liquidity.toString()}</span></div>
                         <div>
                             {

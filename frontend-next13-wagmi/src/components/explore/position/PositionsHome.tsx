@@ -115,7 +115,8 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                             <TableHead className="text-white font-bold">Token0<br/>Token1</TableHead>
                             <TableHead className={`text-white font-bold max-md:hidden`}>Ticks</TableHead>
                             <TableHead className="text-white font-bold">Fee</TableHead>
-                            <TableHead className={`text-white font-bold max-md:hidden`}>Wallet</TableHead>
+                            <TableHead className="text-white font-bold">Liquidity</TableHead>
+                            <TableHead className={`text-white font-bold max-md:hidden`}>Owner</TableHead>
                             <TableHead className="text-center text-white">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -137,7 +138,8 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                                             <div><span className="font-bold">High:</span>{position.tickUpper}</div>
                                         </div>
                                     </TableCell>
-                                    <TableCell>{position.fee}%</TableCell>
+                                    <TableCell>{position.fee/10000}%</TableCell>
+                                    <TableCell><span>{position.liquidity.toString()}</span></TableCell>
                                     <TableCell className={`max-md:hidden`}>
                                         <ToolTipHelper content={<p><strong>Address : </strong>{position.owner}</p>}>
                                             <div className="w-[78px] truncate">{position.owner}</div>

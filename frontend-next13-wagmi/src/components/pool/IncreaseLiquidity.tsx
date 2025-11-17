@@ -82,10 +82,10 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     }
 
     const updateDeposit = async () => {
-        if (dexPosition.upperTick <= curPoolInfo.tick ) {
+        if (dexPosition.tickUpper <= curPoolInfo.tick ) {
             logger.info('[IncreaseLiquidity] token0 is hidden')
             handleDepositChanges('0', '0')
-        } else if (dexPosition.lowerTick >=  curPoolInfo.tick) {
+        } else if (dexPosition.tickLower >=  curPoolInfo.tick) {
             logger.info('[IncreaseLiquidity] token1 is hidden')
             handleDepositChanges('0', '0')
         } else {
@@ -148,19 +148,19 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         )
 
         let position = undefined
-        if (dexPosition.upperTick <= curPoolInfo.tick) { // token0 is hidden
+        if (dexPosition.tickUpper <= curPoolInfo.tick) { // token0 is hidden
             position = Position.fromAmount1({
                 pool: configuredPool,
-                tickLower: dexPosition.lowerTick,
-                tickUpper: dexPosition.upperTick,
+                tickLower: dexPosition.tickLower,
+                tickUpper: dexPosition.tickUpper,
                 amount1: fromReadableAmount2(deposit.amount1, dexPosition.token1.decimal)
             })
             logger.debug('[IncreaseLiquidity] token0 is hidden')
-        } else if (dexPosition.lowerTick >= curPoolInfo.tick) { // token1 is hidden
+        } else if (dexPosition.tickLower >= curPoolInfo.tick) { // token1 is hidden
             position = Position.fromAmount0({
                 pool: configuredPool,
-                tickLower: dexPosition.lowerTick,
-                tickUpper: dexPosition.upperTick,
+                tickLower: dexPosition.tickLower,
+                tickUpper: dexPosition.tickUpper,
                 amount0: fromReadableAmount2(deposit.amount0, dexPosition.token0.decimal),
                 useFullPrecision: true,
             })
@@ -169,8 +169,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
             // no tokens hidden
             position = Position.fromAmounts({
                 pool: configuredPool,
-                tickLower: dexPosition.lowerTick,
-                tickUpper: dexPosition.upperTick,
+                tickLower: dexPosition.tickLower,
+                tickUpper: dexPosition.tickUpper,
                 amount0: fromReadableAmount2(deposit.amount0, dexPosition.token0.decimal),
                 amount1: fromReadableAmount2(deposit.amount1, dexPosition.token1.decimal),
                 useFullPrecision: true,
@@ -213,10 +213,10 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         let disabled = true
         const dec0 = new Decimal(deposit.amount0 ? deposit.amount0 : '0')
         const dec1 = new Decimal(deposit.amount1 ? deposit.amount1 : '0')
-        if (dexPosition.upperTick <= curPoolInfo.tick) { // token0 is hidden
+        if (dexPosition.tickUpper <= curPoolInfo.tick) { // token0 is hidden
             //we check token1 only
             disabled = dec1.lessThanOrEqualTo(new Decimal(token1Balance)) && dec1.greaterThan(0) ? false : true
-        } else if (dexPosition.lowerTick >= curPoolInfo.tick) { // token1 is hidden
+        } else if (dexPosition.tickLower >= curPoolInfo.tick) { // token1 is hidden
             //we check token0 only
             disabled = dec0.lessThanOrEqualTo(new Decimal(token0Balance)) && dec0.greaterThan(0) ? false : true
         } else { // no tokens hidden
@@ -261,8 +261,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         )
         const position = Position.fromAmount0({
             pool: configuredPool,
-            tickLower: dexPosition.lowerTick,
-            tickUpper: dexPosition.upperTick,
+            tickLower: dexPosition.tickLower,
+            tickUpper: dexPosition.tickUpper,
             amount0: fromReadableAmount2(value, dexPosition.token0.decimal),
             useFullPrecision: true,
         })
@@ -282,8 +282,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         )
         const position = Position.fromAmount1({
             pool: configuredPool,
-            tickLower: dexPosition.lowerTick,
-            tickUpper: dexPosition.upperTick,
+            tickLower: dexPosition.tickLower,
+            tickUpper: dexPosition.tickUpper,
             amount1: fromReadableAmount2(value, dexPosition.token1.decimal)
         })
 
@@ -308,7 +308,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                         <div className="text-sm"><span className="mr-2">Position ID:</span><span>{dexPosition.tokenId}</span></div>
                         <div>
                             {
-                                dexPosition.upperTick > curPoolInfo.tick &&
+                                dexPosition.tickUpper > curPoolInfo.tick &&
                                 <div>  
                                     <DepositInput 
                                         token={dexPosition.token0} tokenBalance={token0Balance} amount={deposit.amount0}
@@ -316,7 +316,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                                 </div>
                             }
                             {
-                                dexPosition.lowerTick < curPoolInfo.tick &&
+                                dexPosition.tickLower < curPoolInfo.tick &&
                                 <div>  
                                     <DepositInput 
                                         token={dexPosition.token1} tokenBalance={token1Balance} amount={deposit.amount1}

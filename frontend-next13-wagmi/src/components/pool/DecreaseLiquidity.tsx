@@ -113,8 +113,8 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
         const position = new Position({ // reconstruct the position object
             pool,
             liquidity: dexPosition.liquidity.toString(),
-            tickLower: dexPosition.lowerTick,
-            tickUpper: dexPosition.upperTick
+            tickLower: dexPosition.tickLower,
+            tickUpper: dexPosition.tickUpper
         })
         const burnAmount0 = new Decimal(position.amount0.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token0.decimal)).toDecimalPlaces(dexPosition.token0.decimal, Decimal.ROUND_HALF_UP).toString()
         const burnAmount1 = new Decimal(position.amount1.quotient.toString()).dividedBy(new Decimal(10).pow(dexPosition.token1.decimal)).toDecimalPlaces(dexPosition.token1.decimal, Decimal.ROUND_HALF_UP).toString()
