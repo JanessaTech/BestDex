@@ -4,12 +4,21 @@ import messageHelper from "../helpers/internationalization/messageHelper"
 
 class TransactionController {
 
-    async getTransactions(req: Request, res: Response, next: NextFunction) {
-
-    }
     async createTransaction(req: Request, res: Response, next: NextFunction) {
+        logger.info("TransactionController.createTransaction")
+        
+        try {
 
+        } catch (e) {
+            next(e)
+        }
     }
+
+    async getTransactions(req: Request, res: Response, next: NextFunction) {
+        
+    }
+
+
 }
 
 const controller = new TransactionController()

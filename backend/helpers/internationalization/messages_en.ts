@@ -54,6 +54,9 @@ const message: MessageType = {
     positions_get_by_theGraph_failed: 'Failed to get the list of positions by the graph due to {0}',
     positions_redis_save_failed: 'Failed to save the position list to redis',
 
+    //transaction
+    transaction_create_failed: 'Failed to create transaction for chainId {0} and from {1} due to validation failure',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',
