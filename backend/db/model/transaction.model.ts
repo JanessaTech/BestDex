@@ -1,5 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import { TRANSACTION_TYPE } from '../../helpers/common/constants';
+import Counter from './counter.model'
+import toJSON from './plugins/toJSON.plugin'
 
 export interface ITransaction extends Document {
     _id: number,
@@ -12,9 +14,7 @@ export interface ITransaction extends Document {
     amount0: number,
     amount1: number,
     usd: number,
-    from: string,
-    createdAt: Date;
-    updatedAt: Date;
+    from: string
 }
 
 const transactionSchema = new Schema<ITransaction>({
@@ -26,7 +26,7 @@ const transactionSchema = new Schema<ITransaction>({
             validator: function (v: number) {
                 return v >= 1 && Number.isInteger(v);
             },
-            message: (props: { value: number }) => `${props.value} should be a positive integer!`,
+            message: props => `${props.value} should be a positive integer!`,
         },
         required: [true, 'chainId is required'],
     },
@@ -42,11 +42,11 @@ const transactionSchema = new Schema<ITransaction>({
         type: String,
         trim: true,
         validate: {
-          validator: function(v: string): boolean {
+          validator: function(v): boolean {
             const re = /^0x[a-fA-F0-9]{40}$/;
             return re.test(v);
           },
-          message: (props: { value: string }) => `${props.value} is an invalid cryptocurrency address`
+          message: props => `${props.value} is an invalid cryptocurrency address`
         },
         required: [true, 'token0 is required'],
     },
@@ -54,11 +54,11 @@ const transactionSchema = new Schema<ITransaction>({
         type: String,
         trim: true,
         validate: {
-          validator: function(v: string): boolean {
+          validator: function(v): boolean {
             const re = /^0x[a-fA-F0-9]{40}$/;
             return re.test(v);
           },
-          message: (props: { value: string }) => `${props.value} is an invalid cryptocurrency address`
+          message: props => `${props.value} is an invalid cryptocurrency address`
         },
         required: [true, 'token1 is required'],
     },
@@ -90,12 +90,33 @@ const transactionSchema = new Schema<ITransaction>({
         type: String,
         trim: true,
         validate: {
-          validator: function(v: string): boolean {
+          validator: function(v): boolean {
             const re = /^0x[a-fA-F0-9]{40}$/;
             return re.test(v);
           },
-          message: (props: { value: string }) => `${props.value} is an invalid cryptocurrency address`
+          message: props => `${props.value} is an invalid cryptocurrency address`
         },
         required: [true, 'from is required'],
     }
 },{timestamps: true})
+
+transactionSchema.plugin(toJSON)
+
+transactionSchema.pre('save', async function (next) {
+    if (!this.isNew) {
+      next();
+      return;
+    }
+    
+    try {
+      const seq = await Counter.increment('transaction')
+      this._id = seq
+      next()
+    } catch(err: any) {
+      next(err)
+    }   
+});
+
+const Transaction = mongoose.model<ITransaction>('Transaction', transactionSchema)
+
+export default Transaction
