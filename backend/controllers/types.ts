@@ -81,11 +81,12 @@ export type TransactionInfoType = {
     chainId: number;
     tokenId: string;
     tx: string;
-    token0: string;
-    token1: string;
+    token0: TokenType;
+    token1: TokenType;
     txType: string;
     amount0: number;
     amount1: number;
     usd: number;
     from: string;
+    createdAt: Date;
 }

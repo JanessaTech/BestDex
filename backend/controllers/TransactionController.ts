@@ -4,7 +4,6 @@ import messageHelper from "../helpers/internationalization/messageHelper"
 import { TransactionCreateInputType } from "./types"
 import transactionService from '../services/TransactionService'
 import { sendSuccess } from "../routes/ReponseHandler"
-import { waitForCallsStatus } from "viem/_types/actions/wallet/waitForCallsStatus"
 
 class TransactionController {
 

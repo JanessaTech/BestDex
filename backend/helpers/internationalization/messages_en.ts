@@ -59,6 +59,10 @@ const message: MessageType = {
     transaction_create_success: 'A new transaction is created for chainId {0} from {1}',
     transaction_getlist_failed: 'Failed to get the transactions for chainId {0} from {1}',
     transaction_getlist_success: 'Get the list of transactions for chainId {0} from {1} successfully', 
+    transaction_conversion_failed: 'Failed to convert transaction list due to {0}',
+
+    //token
+    token_not_found: 'No token found for chainId {0} and address {1}',
 
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',

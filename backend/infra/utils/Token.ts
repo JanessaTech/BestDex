@@ -1,8 +1,10 @@
 import { tokenList } from "../../config/data/hardcode"
+import messageHelper from "../../helpers/internationalization/messageHelper"
 import logger from "../../helpers/logger"
 
 export const getTokenMeta = (chainId: number, address: `0x${string}`) => {
     const found = tokenList.find((e) => e.chainId === chainId)?.tokens?.find((token) => token.address.toLowerCase() === address.toLocaleLowerCase())
+    if (!found) throw new Error(messageHelper.getMessage('token_not_found', chainId, address))
     return found
 }
 

@@ -14,7 +14,9 @@ export interface ITransaction extends Document {
     amount0: number,
     amount1: number,
     usd: number,
-    from: string
+    from: string,
+    createdAt: Date,
+    updatedAt:Date
 }
 
 const transactionSchema = new Schema<ITransaction>({
