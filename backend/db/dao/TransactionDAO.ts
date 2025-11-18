@@ -27,10 +27,11 @@ class TransactionDAO {
         }
     }
 
-    async queryByFilter() {
-
+    async queryByFilter(filter: {[P in keyof TransactionDAOParamType]?: TransactionDAOParamType[P]}) {
+        const transactions = await Transaction.find(filter)
+        return transactions
     }
 }
 
-const transactionDAO = new TransactionDAO()
-export default transactionDAO
+const transactionDao = new TransactionDAO()
+export default transactionDao

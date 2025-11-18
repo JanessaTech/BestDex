@@ -61,3 +61,31 @@ export type PositionProps = {
     owner: `0x${string}`;
     fee: number
 }
+
+// transaction
+export type TransactionCreateInputType = {
+    chainId: number;
+    tokenId: string;
+    tx: string;
+    token0: string;
+    token1: string;
+    txType: string;
+    amount0: number;
+    amount1: number;
+    usd: number;
+    from: string;
+}
+
+export type TransactionInfoType = {
+    id: number;
+    chainId: number;
+    tokenId: string;
+    tx: string;
+    token0: string;
+    token1: string;
+    txType: string;
+    amount0: number;
+    amount1: number;
+    usd: number;
+    from: string;
+}

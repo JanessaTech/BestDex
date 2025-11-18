@@ -48,14 +48,17 @@ const message: MessageType = {
     pool_info_get_failed: 'Failed to get the latest pool info for pool address {0} in chainId {1}',
 
     //position
-    positions_get_success: 'get the list of positions for owner {0} in chainId {1} successfully',
+    positions_get_success: 'Get the list of positions for owner {0} in chainId {1} successfully',
     position_positionManager_not_found:'The position manager is not found for chainId {0}',
     position_thegraph_url_not_found: 'The graph url is not found for chainId {0}',
     positions_get_by_theGraph_failed: 'Failed to get the list of positions by the graph due to {0}',
     positions_redis_save_failed: 'Failed to save the position list to redis',
 
     //transaction
-    transaction_create_failed: 'Failed to create transaction for chainId {0} and from {1} due to validation failure',
+    transaction_create_failed: 'Failed to create transaction for chainId {0} from {1} due to validation failure',
+    transaction_create_success: 'A new transaction is created for chainId {0} from {1}',
+    transaction_getlist_failed: 'Failed to get the transactions for chainId {0} from {1}',
+    transaction_getlist_success: 'Get the list of transactions for chainId {0} from {1} successfully', 
 
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',

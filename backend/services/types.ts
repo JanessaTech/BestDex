@@ -1,4 +1,4 @@
-import { AccountInfoType, LoginInPutType, PositionInfoType } from "../controllers/types"
+import { AccountInfoType, LoginInPutType, PositionProps, TransactionCreateInputType } from "../controllers/types"
 
 
 export interface AccountService {
@@ -19,5 +19,11 @@ export interface TokenPriceService {
 }
 
 export interface PositionService {
-    getPositions: (chainId: number, owner: `0x${string}`, page: number, pageSize: number) => Promise<PositionInfoType[]>
+    getPositions: (chainId: number, owner: `0x${string}`, page: number, pageSize: number) => Promise<PositionProps[]>
+}
+
+export interface TransactionService {
+    create: (params: TransactionCreateInputType) => Promise<any>
+    getTransactions: (chainId: number, from: `0x${string}`,  page: number, pageSize: number) => Promise<any>
+
 }
