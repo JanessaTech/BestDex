@@ -12,12 +12,12 @@ import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANA
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
 import { decodeEventLog } from 'viem';
-import { MintPositionParamsType, TRANSACTION_TYPE, TokenType } from "@/common/types"
+import { LocalChainIds, MintPositionParamsType, TRANSACTION_TYPE, TokenType } from "@/common/types"
 import logger from "@/common/Logger"
 import { TransactionCreateInputType } from "@/lib/client/types"
 import messageHelper from "@/common/internationalization/messageHelper"
 import { createTransaction } from "@/lib/client/Transaction"
-import { AwardIcon } from "lucide-react"
+import {ChainId} from '@uniswap/sdk-core';
 
 type AddPositionStepProps = {
     token0: TokenType;
@@ -51,8 +51,8 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                                                         handleAddLiquiditySuccess}) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
-    const chainId = useChainId() 
-    const {getTokenBalance} = useContextUtil() as IContextUtil
+    const chainId = useChainId() as (ChainId | LocalChainIds)
+    const {getTokenBalance, tokenPrices} = useContextUtil() as IContextUtil
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: hash,
@@ -72,15 +72,6 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         })()
     }, [])
 
-    const handleAddPosition = () => {
-        writeContract({
-            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
-            abi: UNISWAP_V3_POSITION_MANAGER_ABI,
-            functionName: 'mint',
-            args: [parsedCalldata],
-        })
-    }
-
     useEffect(() => {
         if (started) {
             logger.info('[AddPositionStep] it will run handleAddPosition')
@@ -95,35 +86,6 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
             refetchReceipt()
         }
     }, [hash])
-
-    const getPositionId = () => {
-        if (!receipt) return BigInt(-1)
-        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
-            try {
-                const encoded = decodeEventLog({
-                    abi: UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI,
-                    data: log.data,
-                    topics: log.topics
-                })
-                return {
-                    ...log,
-                    decoded: encoded,
-                    ok: true
-                }
-            } catch (error: any) {
-                return {
-                    ...log,
-                    decoded: undefined,
-                    ok: false,
-                    error: error?.message
-                }
-            }
-        }).filter((log) => log.ok)
-        logger.info('[AddPositionStep] parsedOKLogs=', parsedOKLogs)
-        if (parsedOKLogs.length === 0) return BigInt(-1)
-        if (!parsedOKLogs[0].decoded?.args) return BigInt(-1)
-        return parsedOKLogs[0].decoded.args.tokenId
-    }
 
     useEffect(() => {
         (async () => {
@@ -162,32 +124,84 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
         }
     }, [writeError, receiptError])
 
+    const handleAddPosition = () => {
+        writeContract({
+            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+            abi: UNISWAP_V3_POSITION_MANAGER_ABI,
+            functionName: 'mint',
+            args: [parsedCalldata],
+        })
+    }
+
+    const getPositionId = () => {
+        if (!receipt) return BigInt(-1)
+        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
+            try {
+                const encoded = decodeEventLog({
+                    abi: UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI,
+                    data: log.data,
+                    topics: log.topics
+                })
+                return {
+                    ...log,
+                    decoded: encoded,
+                    ok: true
+                }
+            } catch (error: any) {
+                return {
+                    ...log,
+                    decoded: undefined,
+                    ok: false,
+                    error: error?.message
+                }
+            }
+        }).filter((log) => log.ok)
+        logger.info('[AddPositionStep] parsedOKLogs=', parsedOKLogs)
+        if (parsedOKLogs.length === 0) return BigInt(-1)
+        if (!parsedOKLogs[0].decoded?.args) return BigInt(-1)
+        return parsedOKLogs[0].decoded.args.tokenId
+    }
+
     const logTransaction = async (positionId: string, hash: `0x${string}`, token0: TokenType,
                                 token1: TokenType, amount0: string, amount1: string) => {
-        const usd = '0'
         if (address) {
-            const params: TransactionCreateInputType = {
-                chainId: chainId,
-                tokenId: positionId,
-                tx: hash,
-                token0: token0.address,
-                token1: token1.address,
-                txType: TRANSACTION_TYPE.Mint,
-                amount0: amount0,
-                amount1: amount1,
-                usd: usd,
-                from: address
-            }
             try {
+                const usd = calcUSD(amount0, amount1)
+                const params: TransactionCreateInputType = {
+                    chainId: chainId,
+                    tokenId: positionId,
+                    tx: hash,
+                    token0: token0.address,
+                    token1: token1.address,
+                    txType: TRANSACTION_TYPE.Mint,
+                    amount0: amount0,
+                    amount1: amount1,
+                    usd: usd,
+                    from: address
+                }
                 const createdTx = await createTransaction(params)
                 logger.debug('A new transaction is logged:', createdTx)
             } catch (error) {
                 logger.error(error) // Todo: how do we deal with the failed case?
             }  
         } else {
-            const message = messageHelper.getMessage('transaction_create_missing_from', TRANSACTION_TYPE.Mint, chainId, positionId, hash, token0.address, token1.address, amount0, amount1, usd)
+            const message = messageHelper.getMessage('transaction_create_missing_from', TRANSACTION_TYPE.Mint, chainId, positionId, hash, token0.address, token1.address, amount0, amount1)
             logger.error(message)
         }  
+    }
+
+    const calcUSD = (amount0: string, amount1: string) => {
+        const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
+        const price0 = tokenPrices[targetChainId]?.get(token0.address)
+        const price1 = tokenPrices[targetChainId]?.get(token1.address)
+        if (!price0) throw new Error(`Failed to get price for token0 ${token0.address}`)
+        if (!price1) throw new Error(`Failed to get price for token1 ${token1.address}`)
+        let token0USD = new Decimal(price0).times(new Decimal(amount0))
+        let token1USD = new Decimal(price1).times(new Decimal(amount1))
+        logger.debug(`${amount0} amount of token0 = ${token0USD.toString()} usd`)
+        logger.debug(`${amount1} amount of token1 = ${token1USD.toString()} usd`)
+        const sum = new Decimal(0).add(token0USD).add(token1USD).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
+        return sum
     }
     
     logger.debug('[AddPositionStep] ====== Latest state ========')

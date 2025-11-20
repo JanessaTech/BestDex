@@ -62,7 +62,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                                     <TableCell>{timeAgo(transaction.createdAt)}</TableCell>
                                     <TableCell>
                                         <ToolTipHelper content={transaction.tx}>
-                                            <div className="max-md:w-10 truncate">
+                                            <div className="w-10 truncate">
                                                 {transaction.tx}
                                             </div>
                                         </ToolTipHelper>
