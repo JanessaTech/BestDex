@@ -17,6 +17,7 @@ import logger from "@/common/Logger"
 import { TransactionCreateInputType } from "@/lib/client/types"
 import messageHelper from "@/common/internationalization/messageHelper"
 import { createTransaction } from "@/lib/client/Transaction"
+import { AwardIcon } from "lucide-react"
 
 type AddPositionStepProps = {
     token0: TokenType;
@@ -136,6 +137,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                 const positionId = getPositionId()
                 logger.info('[AddPositionStep] positionId=', positionId)
                 setState({...state, isPending: false, isSuccess: true, positionId: positionId, token0Deposited: token0Deposited, token1Deposited: token1Deposited})
+                await logTransaction(positionId.toString(), hash, token0, token1, token0Deposited, token1Deposited)
             }
         })() 
     }, [receipt, hash])
@@ -161,8 +163,8 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
     }, [writeError, receiptError])
 
     const logTransaction = async (positionId: string, hash: `0x${string}`, token0: TokenType,
-                                token1: TokenType, amount0: number, amount1: number) => {
-        const usd = 0
+                                token1: TokenType, amount0: string, amount1: string) => {
+        const usd = '0'
         if (address) {
             const params: TransactionCreateInputType = {
                 chainId: chainId,
@@ -180,7 +182,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                 const createdTx = await createTransaction(params)
                 logger.debug('A new transaction is logged:', createdTx)
             } catch (error) {
-                logger.error(error) // Todo: how do we deal with the faile case?
+                logger.error(error) // Todo: how do we deal with the failed case?
             }  
         } else {
             const message = messageHelper.getMessage('transaction_create_missing_from', TRANSACTION_TYPE.Mint, chainId, positionId, hash, token0.address, token1.address, amount0, amount1, usd)

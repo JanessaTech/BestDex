@@ -15,9 +15,9 @@ export type TransactionCreateInputType = {
     token0: `0x${string}`;
     token1: `0x${string}`;
     txType: string;
-    amount0: number;
-    amount1: number;
-    usd: number;
+    amount0: string;
+    amount1: string;
+    usd: string;
     from: string;
 }
 export type PaginationReturnType<T> = {
@@ -36,9 +36,9 @@ export type TransactionInfoType = {
     token0: TokenType;
     token1: TokenType;
     txType: string;
-    amount0: number;
-    amount1: number;
-    usd: number;
+    amount0: string;
+    amount1: string;
+    usd: string;
     from: string;
     createdAt: Date;
 }
