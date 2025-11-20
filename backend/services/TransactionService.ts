@@ -7,26 +7,31 @@ import { getTokenMeta } from "../infra/utils/Token";
 
 
 class TransactionServiceImp implements TransactionService {
+    private validateToken(chainId: number, token: `0x${string}`) {
+        getTokenMeta(chainId, token)
+    }
     async create(params: TransactionCreateInputType) {
         logger.info('TransactionService.create')
         try {
+            this.validateToken(params.chainId, params.token0 as `0x${string}`)
+            this.validateToken(params.chainId, params.token1 as `0x${string}`)
             const raw = await transactionDao.create({...params})
             return {
                 id: raw._id,
-                chainId: raw.chainId,
-                tokenId: raw.tokenId,
-                tx: raw.tx,
-                token0: getTokenMeta(params.chainId, raw.token0 as `0x${string}`),
-                token1: getTokenMeta(params.chainId, raw.token1 as `0x${string}`),
-                txType: raw.txType,
-                amount0: raw.amount0,
-                amount1: raw.amount1,
-                usd: raw.usd,
-                from: raw.from,
+                chainId: params.chainId,
+                tokenId: params.tokenId,
+                tx: params.tx,
+                token0: getTokenMeta(params.chainId, params.token0 as `0x${string}`),
+                token1: getTokenMeta(params.chainId, params.token1 as `0x${string}`),
+                txType: params.txType,
+                amount0: params.amount0,
+                amount1: params.amount1,
+                usd: params.usd,
+                from: params.from,
                 createdAt: raw.createdAt
             } as TransactionInfoType
         } catch (error: any) {
-            logger.error('Failed to create transaction: ', params)
+            logger.error('Failed to create transaction: ', params, ' due to ', error)
             if (!(error instanceof TransactionError)) {
                 throw new TransactionError({key: 'transaction_create_failed', params: [params.chainId, params.from],errors: error.errors ? error.errors : error.message, code: 400})
             }
@@ -41,22 +46,20 @@ class TransactionServiceImp implements TransactionService {
             const options: PaginationOptionType = {page: page, pageSize: pageSize}
             const pagination = await transactionDao.queryByPagination(filter, options)
             try {
-                
-                // const transactions = rawTransactions.map((raw) => ({
-                //     id: raw._id,
-                //     chainId: raw.chainId,
-                //     tokenId: raw.tokenId,
-                //     tx: raw.tx,
-                //     token0: getTokenMeta(chainId, raw.token0 as `0x${string}`),
-                //     token1: getTokenMeta(chainId, raw.token1 as `0x${string}`),
-                //     txType: raw.txType,
-                //     amount0: raw.amount0,
-                //     amount1: raw.amount1,
-                //     usd: raw.usd,
-                //     from: raw.from,
-                //     createdAt: raw.createdAt
-                // } as TransactionInfoType))
-                // return transactions
+                pagination.results = (pagination.results as any[]).map((result) => ({
+                    id: result._id,
+                    chainId: result.chainId,
+                    tokenId: result.tokenId,
+                    tx: result.tx,
+                    token0: getTokenMeta(chainId, result.token0 as `0x${string}`),
+                    token1: getTokenMeta(chainId, result.token1 as `0x${string}`),
+                    txType: result.txType,
+                    amount0: result.amount0,
+                    amount1: result.amount1,
+                    usd: result.usd,
+                    from: result.from,
+                    createdAt: result.createdAt
+                } as TransactionInfoType))
                 return pagination
             } catch (error: any) {
                 throw new TransactionError({key: 'transaction_conversion_failed', params: [error.message]})
