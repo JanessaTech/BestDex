@@ -14,7 +14,7 @@ import ArrowRightLeft from "@/lib/svgs/svg_arrow_rightleft"
 import ArrowRight from "@/lib/svgs/svg_arrow_right"
 import { TRANSACTION_TYPE } from "@/common/types"
 import { useEffect, useState } from "react"
-import { TransactionInfoType } from "@/lib/client/types"
+import { PaginationReturnType, TransactionInfoType } from "@/lib/client/types"
 import logger from "@/common/Logger"
 import { getTransactionsByPage } from "@/lib/client/Transaction"
 import { useChainId, useAccount} from 'wagmi'
@@ -26,7 +26,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
     const chainId = useChainId()  
     const { address} = useAccount()
 
-    const [transactions, setTransactions] = useState<TransactionInfoType[]>([])
+    const [pagination, setPagination] = useState<PaginationReturnType<TransactionInfoType[]>>()
     const [page, setPage] = useState(1)
     
     useEffect(() => {
@@ -35,8 +35,8 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
 
     const loadTransactionList = async () => {
         logger.debug('[TransactionsHome] loadTransactionList. page=', page)
-        const transactions = await getTransactionsByPage(chainId, address!, page)
-        if (transactions) setTransactions(transactions)
+        const pagination = await getTransactionsByPage(chainId, address!, page)
+        if (pagination) setPagination(pagination)
     }
 
     return (
@@ -56,7 +56,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                 </TableHeader>
                 <TableBody>
                     {
-                        transactions.map((transaction, index) => (
+                        pagination?.results.map((transaction, index) => (
                             <>
                                 <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
                                     <TableCell>{timeAgo(transaction.createdAt)}</TableCell>

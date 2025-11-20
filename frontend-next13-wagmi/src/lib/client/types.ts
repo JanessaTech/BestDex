@@ -20,6 +20,13 @@ export type TransactionCreateInputType = {
     usd: number;
     from: string;
 }
+export type PaginationReturnType<T> = {
+    results: T,
+    page: number,
+    pageSize: number,
+    totalPages: number,
+    totalResults: number,
+  }
 
 export type TransactionInfoType = {
     id: number;

@@ -3,7 +3,7 @@ import logger from "@/common/Logger"
 import messageHelper from "@/common/internationalization/messageHelper"
 import { PAGE_SIZE } from "@/config/constants"
 import axios from 'axios'
-import { DexResponseType, TransactionCreateInputType, TransactionInfoType } from "./types"
+import { DexResponseType, PaginationReturnType, TransactionCreateInputType, TransactionInfoType } from "./types"
 
 export const createTransaction = async (transaction: TransactionCreateInputType) => {
     logger.debug('[API client: transaction] createTransaction. transaction=', transaction)
@@ -23,7 +23,7 @@ export const createTransaction = async (transaction: TransactionCreateInputType)
 export const getTransactionsByPage = async (chainId: number, from: `0x${string}`, page: number = 1) => {
     logger.debug('[API client: transaction] getTransactionsByPage. transaction=', 'chainId=', chainId, 'from=', from, 'page=', page)
     try {
-        const response = await axios.get<DexResponseType<TransactionInfoType[]>>(`${process.env.NEXT_PUBLIC_BACKEND_ADDR}/apis/v1/transactions/${chainId}?from=${from}&pageSize=${PAGE_SIZE}&page=${page}`)
+        const response = await axios.get<DexResponseType<PaginationReturnType<TransactionInfoType[]>>>(`${process.env.NEXT_PUBLIC_BACKEND_ADDR}/apis/v1/transactions/${chainId}?from=${from}&pageSize=${PAGE_SIZE}&page=${page}`)
         const transactions = response?.data.data
         return transactions
     } catch (error: any) {
