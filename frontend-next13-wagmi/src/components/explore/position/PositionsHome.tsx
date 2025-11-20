@@ -20,7 +20,7 @@ import DecreaseLiquidity from "@/components/pool/DecreaseLiquidity"
 import CollectFee from "@/components/pool/CollectFee"
 import { IContextUtil, useContextUtil } from "@/components/providers/ContextUtilProvider"
 import { toast } from 'sonner'
-import { useChainId, usePublicClient, useAccount} from 'wagmi'
+import { useChainId, useAccount} from 'wagmi'
 import { PoolInfo, PositionProps } from "@/common/types"
 import logger from "@/common/Logger"
 import { fetchLatestPoolInfo } from "@/lib/client/Pool"
@@ -33,9 +33,8 @@ type GlobalVariableType = {
 }
 type PositionsHomeProps = {}
 const PositionsHome: React.FC<PositionsHomeProps> = () => {
-    //for test
-    const chainId = useChainId()    
-    const publicClient = usePublicClient({chainId})
+    const chainId = useChainId()
+    const { address} = useAccount()
 
     const [openIncreaseLiquidity, setOpenIncreaseLiquidity] = useState(false)
     const [openDecreaseLiquidity, setOpenDecreaseLiquidity] = useState(false)
@@ -44,7 +43,6 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const [global, setGlobal] = useState<GlobalVariableType>()
     const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
     const {getPoolAddress} = useContextUtil() as IContextUtil
-    const { address} = useAccount()
     const [page, setPage] = useState(1)
     const [positions, setPositions] = useState<PositionProps[]>([])
     
@@ -55,7 +53,6 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)
         const positions = await getPositionsByPage(chainId, address!, page)
-        console.log(positions)
         if (positions) setPositions(positions)
     }
     

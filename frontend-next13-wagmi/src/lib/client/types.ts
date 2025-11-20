@@ -1,7 +1,37 @@
-type DexResponseType<T = any> = {
+import { TokenType } from "@/common/types";
+
+export type DexResponseType<T = any> = {
     success: boolean;
     code: number;
     message: string;
     data?: T;
     errors?: any
+}
+
+export type TransactionCreateInputType = {
+    chainId: number;
+    tokenId: string;
+    tx: string;
+    token0: string;
+    token1: string;
+    txType: string;
+    amount0: number;
+    amount1: number;
+    usd: number;
+    from: string;
+}
+
+export type TransactionInfoType = {
+    id: number;
+    chainId: number;
+    tokenId: string;
+    tx: string;
+    token0: TokenType;
+    token1: TokenType;
+    txType: string;
+    amount0: number;
+    amount1: number;
+    usd: number;
+    from: string;
+    createdAt: Date;
 }

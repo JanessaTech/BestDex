@@ -35,12 +35,13 @@ export type PoolRange = {
 export type Network_Enum = 'eth-mainnet' | 'arb-mainnet' | 'bnb-mainnet' | 'polygon-mainnet' | 'localhost' | 'testnet'
 export type TokenListType = {chainId: number, network_enum: Network_Enum, tokens: TokenType[]}[]
 
-export enum TransactionType {
-    Swap,
-    BurnPosition,
-    AddLiquidity,
-    MintPosition
-}
+export enum TRANSACTION_TYPE {
+    Swap = 'Swap',
+    Mint = 'Mint',
+    Increase = 'Increase',
+    Decrease = 'Decrease',
+    Collect = 'Collect'
+  }
 
 export type QuotesParameterType = {
     chainId: number;

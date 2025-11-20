@@ -12,12 +12,33 @@ import ToolTipHelper from "@/components/common/ToolTipHelper"
 import Token from "@/components/common/Token"
 import ArrowRightLeft from "@/lib/svgs/svg_arrow_rightleft"
 import ArrowRight from "@/lib/svgs/svg_arrow_right"
-import { TransactionListData } from "@/lib/data"
-import { TransactionType } from "@/common/types"
+import { TRANSACTION_TYPE } from "@/common/types"
+import { useEffect, useState } from "react"
+import { TransactionInfoType } from "@/lib/client/types"
+import logger from "@/common/Logger"
+import { getTransactionsByPage } from "@/lib/client/Transaction"
+import { useChainId, useAccount} from 'wagmi'
+import { timeAgo } from "@/common/utils"
 
 
 type TransactionsHomeProps = {}
 const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
+    const chainId = useChainId()  
+    const { address} = useAccount()
+
+    const [transactions, setTransactions] = useState<TransactionInfoType[]>([])
+    const [page, setPage] = useState(1)
+    
+    useEffect(() => {
+        loadTransactionList()
+    }, [])
+
+    const loadTransactionList = async () => {
+        logger.debug('[TransactionsHome] loadTransactionList. page=', page)
+        const transactions = await getTransactionsByPage(chainId, address!, page)
+        if (transactions) setTransactions(transactions)
+    }
+
     return (
         <TabsContent value="transactions">
             <Table>
@@ -35,10 +56,10 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                 </TableHeader>
                 <TableBody>
                     {
-                        TransactionListData.map((transaction, index) => (
+                        transactions.map((transaction, index) => (
                             <>
                                 <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
-                                    <TableCell>{transaction.time}</TableCell>
+                                    <TableCell>{timeAgo(transaction.createdAt)}</TableCell>
                                     <TableCell>
                                         <ToolTipHelper content={transaction.tx}>
                                             <div className="max-md:w-10 truncate">
@@ -48,12 +69,12 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex flex-col items-center min-w-44">
-                                            <span>{TransactionType[transaction.type]}</span>
+                                            <span>{transaction.txType}</span>
                                             <div className="flex items-center">
                                                 <span>(</span>
                                                     <Token token={transaction.token0} imageSize={20}/>
                                                 {
-                                                    transaction.type as TransactionType === TransactionType.Swap ?  
+                                                    transaction.txType as TRANSACTION_TYPE === TRANSACTION_TYPE.Swap ?  
                                                         <ArrowRight className="w-3 h-3 mx-1"/> : <ArrowRightLeft className="w-5 h-5 mx-1"/>
                                                 }
                                                 <Token token={transaction.token1} imageSize={20}/>
@@ -64,23 +85,23 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                                     </TableCell>
                                     <TableCell className={`max-md:hidden`}>
                                         <div className="flex flex-col items-center">
-                                            <div>${transaction.token0Amount}</div>
-                                            <Token token={transaction.token1} imageSize={20}/>
+                                            <div>${transaction.amount0}</div>
+                                            <Token token={transaction.token0} imageSize={20}/>
                                         </div>
                                     </TableCell>
                                     <TableCell className={`max-md:hidden`}>
                                         <div className="flex flex-col items-center">
-                                            <div>${transaction.token1Amount}</div>
-                                            <Token token={transaction.token0} imageSize={20}/>
+                                            <div>${transaction.amount1}</div>
+                                            <Token token={transaction.token1} imageSize={20}/>
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right max-md:hidden">
                                         $123
                                     </TableCell>
                                     <TableCell className="text-center max-md:hidden">
-                                        <ToolTipHelper content={<p><strong>Address:</strong> {transaction.wallet}</p>}>
+                                        <ToolTipHelper content={<p><strong>Address:</strong> {transaction.from}</p>}>
                                             <div className="w-[100px] truncate">
-                                                {transaction.wallet}
+                                                {transaction.from}
                                             </div>
                                         </ToolTipHelper></TableCell>
                                 </TableRow>

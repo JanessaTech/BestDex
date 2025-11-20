@@ -1,5 +1,5 @@
 
-import { PositionProps, TokenListType, TokenType, TransactionType } from "@/common/types"
+import { TokenListType} from "@/common/types"
 
 export const tokenList: TokenListType = [
     {
@@ -48,57 +48,3 @@ export const tokenList: TokenListType = [
       ]
     }
   ]
-
-type TransactionProps = {
-  time: string,
-  tx: string,
-  type: TransactionType,
-  token0: TokenType,
-  token1: TokenType,
-  token0Amount: number,
-  token1Amount: number,
-  wallet: string
-}
-
-export const TransactionListData: TransactionProps[] = [
-  {
-      time: '6s ago', 
-      tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
-      type: TransactionType.Swap, 
-      token0: {chainId: 1, name: 'Wrapped BTC', symbol: 'WBTC', alias: 'wbtc', decimal: 8, address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'},
-      token1: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
-      token0Amount: 0.44,
-      token1Amount: 12.78,
-      wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
-  },
-  {
-      time: '1 day ago', 
-      tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
-      type: TransactionType.BurnPosition, 
-      token0: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
-      token1: {chainId: 1, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdac17f958d2ee523a2206206994597c13d831ec7'}, 
-      token0Amount: 0.44,
-      token1Amount: 12.78,
-      wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
-  },
-  {
-      time: '2 days ago', 
-      tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
-      type: TransactionType.AddLiquidity, 
-      token0: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
-      token1: {chainId: 1, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdac17f958d2ee523a2206206994597c13d831ec7'}, 
-      token0Amount: 0.44,
-      token1Amount: 12.78,
-      wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
-  },
-  {
-      time: '3 days ago', 
-      tx: '0xF74216B5D2bD226B08766E5274dd137232524224',
-      type: TransactionType.MintPosition, 
-      token0: {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
-      token1: {chainId: 1, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'},
-      token0Amount: 0.44,
-      token1Amount: 12.78,
-      wallet: '0xb129c8aD40e31bC421F37b5B418CF1Bfe1175536'
-  }
-]

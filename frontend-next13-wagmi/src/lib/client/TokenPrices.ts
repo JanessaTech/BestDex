@@ -1,6 +1,7 @@
 import logger from '@/common/Logger'
 import messageHelper from '@/common/internationalization/messageHelper'
 import axios from 'axios'
+import { DexResponseType } from './types'
 
 export const getLatestPrices = async () => {
     logger.debug('[API client: TokenPrices]: getLatestPrices')
