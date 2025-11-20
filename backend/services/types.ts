@@ -1,5 +1,4 @@
-import { AccountInfoType, LoginInPutType, PositionProps, TransactionCreateInputType, TransactionInfoType } from "../controllers/types"
-
+import { AccountInfoType, LoginInPutType, PaginationReturnType, PositionProps, TransactionCreateInputType, TransactionInfoType } from "../controllers/types"
 
 export interface AccountService {
     login: (acc: LoginInPutType) => Promise<AccountInfoType>
@@ -24,6 +23,6 @@ export interface PositionService {
 
 export interface TransactionService {
     create: (params: TransactionCreateInputType) => Promise<TransactionInfoType>
-    getTransactions: (chainId: number, from: `0x${string}`,  page: number, pageSize: number) => Promise<TransactionInfoType[]>
+    getTransactions: (chainId: number, from: `0x${string}`,  page: number, pageSize: number) => Promise<PaginationReturnType>
 
 }

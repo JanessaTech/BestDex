@@ -1,7 +1,9 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose'
 import { TRANSACTION_TYPE } from '../../helpers/common/constants';
 import Counter from './counter.model'
-import toJSON from './plugins/toJSON.plugin'
+import { toJSON, paginate } from './plugins';
+import { TransactionFilterType } from '../dao/types';
+import { PaginationOptionType, PaginationReturnType } from '../../controllers/types';
 
 export interface ITransaction extends Document {
     _id: number,
@@ -19,7 +21,11 @@ export interface ITransaction extends Document {
     updatedAt:Date
 }
 
-const transactionSchema = new Schema<ITransaction>({
+interface TransactionQueryHelper extends Model<ITransaction> {
+  paginate(filter: TransactionFilterType, options: PaginationOptionType): Promise<PaginationReturnType>
+}
+
+const transactionSchema = new Schema<ITransaction, TransactionQueryHelper>({
     _id: { type: Number,  min: 1 },
     chainId: {
         type: Number,
@@ -77,16 +83,19 @@ const transactionSchema = new Schema<ITransaction>({
         type: Number,
         default: 0,
         min: [0, 'amount0 cannot be a negative number'],
+        require: [true, 'amount0 is required']
     },
     amount1: {
         type: Number,
         default: 0,
         min: [0, 'amount1 cannot be a negative number'],
+        require: [true, 'amount1 is required']
     },
     usd: {
         type: Number,
         default: 0,
         min: [0, 'usd cannot be a negative number'],
+        require: [true, 'usd is required']
     },
     from: {
         type: String,
@@ -103,6 +112,7 @@ const transactionSchema = new Schema<ITransaction>({
 },{timestamps: true})
 
 transactionSchema.plugin(toJSON)
+transactionSchema.plugin(paginate)
 
 transactionSchema.pre('save', async function (next) {
     if (!this.isNew) {
@@ -119,6 +129,6 @@ transactionSchema.pre('save', async function (next) {
     }   
 });
 
-const Transaction = mongoose.model<ITransaction>('Transaction', transactionSchema)
+const Transaction = mongoose.model<ITransaction, TransactionQueryHelper>('Transaction', transactionSchema)
 
 export default Transaction

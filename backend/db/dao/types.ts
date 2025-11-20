@@ -1,3 +1,4 @@
+
 export type UserDAOParamType = {
     _id?: number,
     name?: string,
@@ -22,3 +23,5 @@ export type TransactionDAOParamType = {
     usd: number;
     from: string;
 }
+
+export type TransactionFilterType = {[P in keyof TransactionDAOParamType]?: TransactionDAOParamType[P]}

@@ -1,6 +1,6 @@
 import logger from "../helpers/logger";
 import { TransactionError } from "../routes/transaction/TransactionErros";
-import { TransactionCreateInputType, TransactionInfoType } from "../controllers/types";
+import { PaginationOptionType, TransactionCreateInputType, TransactionInfoType } from "../controllers/types";
 import { TransactionService } from "./types";
 import transactionDao from "../db/dao/TransactionDAO";
 import { getTokenMeta } from "../infra/utils/Token";
@@ -38,23 +38,26 @@ class TransactionServiceImp implements TransactionService {
         logger.info(`TransactionService.create. chainId=${chainId}, from=${from}, page=${page}, pageSize=${pageSize}`)
         try {
             const filter = {chainId: chainId, from: from}
-            const rawTransactions = await transactionDao.queryByFilter(filter)
+            const options: PaginationOptionType = {page: page, pageSize: pageSize}
+            const pagination = await transactionDao.queryByPagination(filter, options)
             try {
-                const transactions = rawTransactions.map((raw) => ({
-                    id: raw._id,
-                    chainId: raw.chainId,
-                    tokenId: raw.tokenId,
-                    tx: raw.tx,
-                    token0: getTokenMeta(chainId, raw.token0 as `0x${string}`),
-                    token1: getTokenMeta(chainId, raw.token1 as `0x${string}`),
-                    txType: raw.txType,
-                    amount0: raw.amount0,
-                    amount1: raw.amount1,
-                    usd: raw.usd,
-                    from: raw.from,
-                    createdAt: raw.createdAt
-                } as TransactionInfoType))
-                return transactions
+                
+                // const transactions = rawTransactions.map((raw) => ({
+                //     id: raw._id,
+                //     chainId: raw.chainId,
+                //     tokenId: raw.tokenId,
+                //     tx: raw.tx,
+                //     token0: getTokenMeta(chainId, raw.token0 as `0x${string}`),
+                //     token1: getTokenMeta(chainId, raw.token1 as `0x${string}`),
+                //     txType: raw.txType,
+                //     amount0: raw.amount0,
+                //     amount1: raw.amount1,
+                //     usd: raw.usd,
+                //     from: raw.from,
+                //     createdAt: raw.createdAt
+                // } as TransactionInfoType))
+                // return transactions
+                return pagination
             } catch (error: any) {
                 throw new TransactionError({key: 'transaction_conversion_failed', params: [error.message]})
             }

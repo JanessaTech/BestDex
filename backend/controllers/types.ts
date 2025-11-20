@@ -1,3 +1,18 @@
+// pagination
+export type PaginationOptionType = {
+    sortBy?: string,
+    populate?: string,
+    pageSize: number,
+    page: number
+}
+export type PaginationReturnType = {
+  results: any,
+  page: number,
+  pageSize: number,
+  totalPages: number,
+  totalResults: number,
+}
+
 // For Account
 export type LoginInPutType = {
     name: string,

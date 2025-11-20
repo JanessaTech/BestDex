@@ -1,11 +1,6 @@
-const logger = require('../../../helpers/logger')
+import { PaginationOptionType, PaginationReturnType } from "../../../controllers/types"
+import logger from "../../../helpers/logger"
 
-type PaginationOptionType = {
-    sortBy: string,
-    populate: string,
-    limit: string,
-    page: string
-}
 type SortCriteriaType = {[key: string]: 1 | -1}
 type PopulateOptionType = {
     path: string,
@@ -31,7 +26,7 @@ const paginate = (schema: any, options: any) => {
    * @returns 
    */
     schema.statics.paginate = async function (filter:any, options: PaginationOptionType) {
-        let sort: SortCriteriaType = {updatedAt: -1}
+        let sort: SortCriteriaType = {createdAt: -1}
         const sortingCriteria: SortCriteriaType = {}
         if (options.sortBy) {
           options.sortBy.split(',').forEach((sort) => {
@@ -45,12 +40,12 @@ const paginate = (schema: any, options: any) => {
             sort = sortingCriteria
         }
         logger.debug('paginate. sort = ', sort)
-        const limit = options.limit && parseInt(options.limit, 10) > 0 ? parseInt(options.limit, 10) : 10;
-        const page = options.page && parseInt(options.page, 10) > 0 ? parseInt(options.page, 10) : 1;
-        const skip = (page - 1) * limit;
+        const pageSize = options.pageSize > 0 ? options.pageSize : 10;
+        const page = options.page > 0 ? options.page : 1;
+        const skip = (page - 1) * pageSize;
     
         const countPromise = this.countDocuments(filter).exec();
-        let docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit);
+        let docsPromise = this.find(filter).sort(sort).skip(skip).limit(pageSize);
     
         if (options.populate) {
             options.populate.split(',').forEach((populateOption) => {
@@ -69,14 +64,14 @@ const paginate = (schema: any, options: any) => {
         docsPromise = docsPromise.exec();
         return Promise.all([countPromise, docsPromise]).then((values) => {
             const [totalResults, results] = values;
-            const totalPages = Math.ceil(totalResults / limit);
+            const totalPages = Math.ceil(totalResults / pageSize);
             const result = {
               results,
               page,
-              limit,
+              pageSize,
               totalPages,
               totalResults,
-            };
+            } as PaginationReturnType;
             return Promise.resolve(result);
           });
     }

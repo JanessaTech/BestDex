@@ -1,7 +1,8 @@
-import { TransactionDAOParamType } from "./types";
+import { TransactionDAOParamType, TransactionFilterType } from "./types";
 import { Transaction } from "../models";
 import logger from "../../helpers/logger";
 import { TransactionError } from "../../routes/transaction/TransactionErros";
+import { PaginationOptionType } from "../../controllers/types";
 
 class TransactionDAO {
     async create(params: TransactionDAOParamType) {
@@ -27,9 +28,13 @@ class TransactionDAO {
         }
     }
 
-    async queryByFilter(filter: {[P in keyof TransactionDAOParamType]?: TransactionDAOParamType[P]}) {
+    async queryByFilter(filter: TransactionFilterType) {
         const transactions = await Transaction.find(filter)
         return transactions
+    }
+    async queryByPagination(filter: TransactionFilterType, options: PaginationOptionType) {
+        const pagination = await Transaction.paginate(filter, options)
+        return pagination
     }
 }
 
