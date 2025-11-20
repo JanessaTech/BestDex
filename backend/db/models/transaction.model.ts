@@ -13,9 +13,9 @@ export interface ITransaction extends Document {
     token0: string,
     token1: string,
     txType: string,
-    amount0: number,
-    amount1: number,
-    usd: number,
+    amount0: string,
+    amount1: string,
+    usd: string,
     from: string,
     createdAt: Date,
     updatedAt:Date
@@ -80,22 +80,16 @@ const transactionSchema = new Schema<ITransaction, TransactionQueryHelper>({
         require: [true, 'txType is required']
     },
     amount0: {
-        type: Number,
-        default: 0,
-        min: [0, 'amount0 cannot be a negative number'],
-        require: [true, 'amount0 is required']
+      type: String,
+      required: [true, 'amount0 is required']
     },
     amount1: {
-        type: Number,
-        default: 0,
-        min: [0, 'amount1 cannot be a negative number'],
-        require: [true, 'amount1 is required']
+      type: String,
+      required: [true, 'amount1 is required']
     },
     usd: {
-        type: Number,
-        default: 0,
-        min: [0, 'usd cannot be a negative number'],
-        require: [true, 'usd is required']
+      type: String,
+      required: [true, 'usd is required']
     },
     from: {
         type: String,

@@ -18,9 +18,9 @@ export type TransactionDAOParamType = {
     token0: string;
     token1: string;
     txType: string;
-    amount0: number;
-    amount1: number;
-    usd: number;
+    amount0: string;
+    amount1: string;
+    usd: string;
     from: string;
 }
 

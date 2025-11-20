@@ -17,9 +17,9 @@ class TransactionController {
                 token0: req.body.token0.toString().toLowerCase(),
                 token1: req.body.token1.toString().toLowerCase(),
                 txType: req.body.txType,
-                amount0: Number(req.body.amount0),
-                amount1: Number(req.body.amount1),
-                usd: Number(req.body.usd),
+                amount0: req.body.amount0.toString(),
+                amount1: req.body.amount1.toString(),
+                usd: req.body.usd.toString(),
                 from: req.body.from.toString().toLowerCase(),
             }
             logger.debug('transaction=', transaction)

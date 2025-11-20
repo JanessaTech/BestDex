@@ -10,9 +10,9 @@ const transactionSchema = {
             txType:  yup.mixed().oneOf(Object.values(TRANSACTION_TYPE)),
             token0: yup.string().required('token0 is required').matches(/^0x[a-fA-F0-9]{40}$/, 'token0 is an invalid cryptocurrency address'),
             token1: yup.string().required('token1 is required').matches(/^0x[a-fA-F0-9]{40}$/, 'token1 is an invalid cryptocurrency address'),
-            amount0: yup.number().typeError('amount0 must be a non negative number').min(0, 'you must provide a non negative number for amount0'),
-            amount1: yup.number().typeError('amount1 must be a non negative number').min(0, 'you must provide a non negative number for amount1'),
-            usd: yup.number().typeError('usd must be a non negative number').min(0, 'you must provide a non negative number for usd'),
+            amount0: yup.string().required('amount0 is required'),
+            amount1: yup.string().required('amount0 is required'),
+            usd: yup.string().required('usd is required'),
             from: yup.string().required('from is required').matches(/^0x[a-fA-F0-9]{40}$/, 'from is an invalid cryptocurrency address'),
         })
     }),
