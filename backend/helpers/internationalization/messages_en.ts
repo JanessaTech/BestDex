@@ -55,7 +55,7 @@ const message: MessageType = {
     positions_redis_save_failed: 'Failed to save the position list to redis',
 
     //transaction
-    transaction_create_failed: 'Failed to create transaction for chainId {0} from {1} due to validation failure',
+    transaction_create_failed: 'Failed to create transaction for chainId {0} from {1}',
     transaction_create_success: 'A new transaction is created for chainId {0} from {1}',
     transaction_getlist_failed: 'Failed to get the transactions for chainId {0} from {1}',
     transaction_getlist_success: 'Get the list of transactions for chainId {0} from {1} successfully', 

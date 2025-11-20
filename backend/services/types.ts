@@ -1,4 +1,4 @@
-import { AccountInfoType, LoginInPutType, PositionProps, TransactionCreateInputType } from "../controllers/types"
+import { AccountInfoType, LoginInPutType, PositionProps, TransactionCreateInputType, TransactionInfoType } from "../controllers/types"
 
 
 export interface AccountService {
@@ -23,7 +23,7 @@ export interface PositionService {
 }
 
 export interface TransactionService {
-    create: (params: TransactionCreateInputType) => Promise<any>
-    getTransactions: (chainId: number, from: `0x${string}`,  page: number, pageSize: number) => Promise<any>
+    create: (params: TransactionCreateInputType) => Promise<TransactionInfoType>
+    getTransactions: (chainId: number, from: `0x${string}`,  page: number, pageSize: number) => Promise<TransactionInfoType[]>
 
 }

@@ -10,10 +10,26 @@ class TransactionServiceImp implements TransactionService {
     async create(params: TransactionCreateInputType) {
         logger.info('TransactionService.create')
         try {
-            const tx = await transactionDao.create({...params})
-            return tx
-        } catch (error) {
+            const raw = await transactionDao.create({...params})
+            return {
+                id: raw._id,
+                chainId: raw.chainId,
+                tokenId: raw.tokenId,
+                tx: raw.tx,
+                token0: getTokenMeta(params.chainId, raw.token0 as `0x${string}`),
+                token1: getTokenMeta(params.chainId, raw.token1 as `0x${string}`),
+                txType: raw.txType,
+                amount0: raw.amount0,
+                amount1: raw.amount1,
+                usd: raw.usd,
+                from: raw.from,
+                createdAt: raw.createdAt
+            } as TransactionInfoType
+        } catch (error: any) {
             logger.error('Failed to create transaction: ', params)
+            if (!(error instanceof TransactionError)) {
+                throw new TransactionError({key: 'transaction_create_failed', params: [params.chainId, params.from],errors: error.errors ? error.errors : error.message, code: 400})
+            }
             throw error
         }
     }
