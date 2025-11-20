@@ -96,7 +96,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right max-md:hidden">
-                                        $123
+                                        <span>${transaction.usd}</span>
                                     </TableCell>
                                     <TableCell className="text-center max-md:hidden">
                                         <ToolTipHelper content={<p><strong>Address:</strong> {transaction.from}</p>}>
