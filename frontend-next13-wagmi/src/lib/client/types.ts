@@ -11,9 +11,9 @@ export type DexResponseType<T = any> = {
 export type TransactionCreateInputType = {
     chainId: number;
     tokenId: string;
-    tx: string;
-    token0: string;
-    token1: string;
+    tx: `0x${string}`;
+    token0: `0x${string}`;
+    token1: `0x${string}`;
     txType: string;
     amount0: number;
     amount1: number;

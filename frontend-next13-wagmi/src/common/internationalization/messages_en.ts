@@ -12,7 +12,8 @@ const message: MessageType = {
     token_price_get_failed: 'Failed to get token prices due to {0}',
 
     //transaction
-    transaction_create_failed: 'Failed to create a new transaction {0} due to {1}'
+    transaction_create_failed: 'Failed to create a new transaction {0} due to {1}',
+    transaction_create_missing_from: 'Failed to log the new transaction beause of the missing from acount. Params: type={0} chainId={1} tokenId={2} tx={3} token0={4} token1={5} amount0={6} amount1={7} usd={8}'
 }
 
 export default message

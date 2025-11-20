@@ -5,14 +5,18 @@ import SVGCheck from "@/lib/svgs/svg_check"
 import SVGPlusCircle from "@/lib/svgs/svg_plus_circle"
 import { useWriteContract,
          useWaitForTransactionReceipt,
-         useAccount
+         useAccount,
+         useChainId
        } from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
 import { decodeEventLog } from 'viem';
-import { MintPositionParamsType, TokenType } from "@/common/types"
+import { MintPositionParamsType, TRANSACTION_TYPE, TokenType } from "@/common/types"
 import logger from "@/common/Logger"
+import { TransactionCreateInputType } from "@/lib/client/types"
+import messageHelper from "@/common/internationalization/messageHelper"
+import { createTransaction } from "@/lib/client/Transaction"
 
 type AddPositionStepProps = {
     token0: TokenType;
@@ -46,6 +50,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                                                         handleAddLiquiditySuccess}) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
+    const chainId = useChainId() 
     const {getTokenBalance} = useContextUtil() as IContextUtil
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
@@ -154,6 +159,34 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
             setState({...state, isPending: false, isSuccess: false, reason: failedReason})
         }
     }, [writeError, receiptError])
+
+    const logTransaction = async (positionId: string, hash: `0x${string}`, token0: TokenType,
+                                token1: TokenType, amount0: number, amount1: number) => {
+        const usd = 0
+        if (address) {
+            const params: TransactionCreateInputType = {
+                chainId: chainId,
+                tokenId: positionId,
+                tx: hash,
+                token0: token0.address,
+                token1: token1.address,
+                txType: TRANSACTION_TYPE.Mint,
+                amount0: amount0,
+                amount1: amount1,
+                usd: usd,
+                from: address
+            }
+            try {
+                const createdTx = await createTransaction(params)
+                logger.debug('A new transaction is logged:', createdTx)
+            } catch (error) {
+                logger.error(error) // Todo: how do we deal with the faile case?
+            }  
+        } else {
+            const message = messageHelper.getMessage('transaction_create_missing_from', TRANSACTION_TYPE.Mint, chainId, positionId, hash, token0.address, token1.address, amount0, amount1, usd)
+            logger.error(message)
+        }  
+    }
     
     logger.debug('[AddPositionStep] ====== Latest state ========')
     logger.debug('[AddPositionStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
