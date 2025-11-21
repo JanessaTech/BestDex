@@ -4,16 +4,23 @@ import SVGCheckCircle from "@/lib/svgs/svg_check_circle";
 import { memo, useEffect, useState } from "react";
 import { useSendTransaction, 
     useWaitForTransactionReceipt,
+    useChainId,
+    useAccount
     } from 'wagmi'
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import { decodeEventLog, formatUnits } from 'viem';
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, 
-    UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI, 
+    UNISWAP_V3_POSITION_MANAGER_DECREASE_LIQUIDITY_ABI, 
     } from "@/config/constants";
-import { TokenType } from "@/common/types";
+import { LocalChainIds, TRANSACTION_TYPE, TokenType } from "@/common/types";
 import logger from "@/common/Logger";
-
+import {ChainId} from '@uniswap/sdk-core';
+import { Decimal } from 'decimal.js'
+import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
+import messageHelper from "@/common/internationalization/messageHelper";
+import { TransactionCreateInputType } from "@/lib/client/types";
+import { createTransaction } from "@/lib/client/Transaction";
 
 type StateType = {
     reason: string;
@@ -41,10 +48,13 @@ type DecreaseLiquidityStepProps = {
 }
 const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, token0, token1, calldata,
                                                                     handleDecreaseLiquiditySuccess}) => {
+    const chainId = useChainId() as (ChainId | LocalChainIds)
+    const {address} = useAccount()
+    const {tokenPrices} = useContextUtil() as IContextUtil
     const [state, setState] = useState<StateType>(defaultState)
-    const {data: txHash, isPending, isSuccess, error:sendError, sendTransaction} = useSendTransaction()
+    const {data: hash, isPending, isSuccess, error:sendError, sendTransaction} = useSendTransaction()
     const {data: receipt, isError: isReceiptError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
-        hash: txHash,
+        hash: hash,
         confirmations: 1,
         query: {
             enabled: false,
@@ -72,58 +82,33 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
     }, [started])
 
     useEffect(() => {
-        if (txHash) {
+        if (hash) {
             logger.info('[DecreaseLiquidityStep] it will fetch the receipt')
             refetchReceipt()
         }
-    }, [txHash])
-
-    const parseCollectEventLog = () => {
-        const emptyRes = {amount0: '', amount1: '',}
-        if (!receipt) return emptyRes
-        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
-            try {
-                const encoded = decodeEventLog({
-                    abi: UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI,
-                    data: log.data,
-                    topics: log.topics
-                })
-                return {
-                    ...log,
-                    decoded: encoded,
-                    ok: true
-                }
-            } catch (error: any) {
-                return {
-                    ...log,
-                    decoded: undefined,
-                    ok: false,
-                    error: error?.message
-                }
-            }
-        }).filter((log) => log.ok)
-        logger.debug('[DecreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
-        if (parsedOKLogs.length === 0) return emptyRes
-        if (!parsedOKLogs[0].decoded?.args) return emptyRes
-        return {
-            amount0: formatUnits(parsedOKLogs[0].decoded.args.amount0, token0.decimal),
-            amount1: formatUnits(parsedOKLogs[0].decoded.args.amount1, token1.decimal)}
-    }
+    }, [hash])
 
     useEffect(() => {
         (async () => {
-            if (!txHash || !receipt) return
+            if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 logger.info('[DecreaseLiquidityStep] Liquidity is decreased successful')
-                const parsedLog = parseCollectEventLog()
-                logger.debug('[DecreaseLiquidityStep] parsedLog=', parsedLog)
-                setState({...state, 
-                    isPending: false, isSuccess: true, 
-                    token0Deposited: parsedLog.amount0, token1Deposited: parsedLog.amount1
-                })
+                const parsed = parseReceipt()
+                if (parsed) {
+                    const {tokenId, liquidity, amount0, amount1} = parsed
+                    logger.info('[DecreaseLiquidityStep] parsed=', parsed)
+                    setState({...state, 
+                        isPending: false, isSuccess: true, 
+                        token0Deposited: amount0, token1Deposited: amount1
+                        })
+                    await logTransaction(tokenId.toString(), hash, TRANSACTION_TYPE.Decrease, token0, token1, amount0, amount1)
+                } else {
+                    logger.error('[DecreaseLiquidityStep] Failed to parse receipt')
+                }
+                
             }
         })() 
-    }, [receipt, txHash])
+    }, [receipt, hash])
 
     useEffect(() => {
         let timer = undefined
@@ -144,10 +129,85 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
         }
     }, [sendError, receiptError])
 
+    const parseReceipt = () => {
+        if (!receipt) return undefined
+        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
+            try {
+                const encoded = decodeEventLog({
+                    abi: UNISWAP_V3_POSITION_MANAGER_DECREASE_LIQUIDITY_ABI,
+                    data: log.data,
+                    topics: log.topics
+                })
+                return {
+                    ...log,
+                    decoded: encoded,
+                    ok: true
+                }
+            } catch (error: any) {
+                return {
+                    ...log,
+                    decoded: undefined,
+                    ok: false,
+                    error: error?.message
+                }
+            }
+        }).filter((log) => log.ok)
+        logger.debug('[DecreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
+        if (parsedOKLogs.length === 0) return undefined
+        if (!parsedOKLogs[0].decoded?.args) return undefined
+        return {
+                tokenId: parsedOKLogs[0].decoded.args.tokenId, 
+                liquidity: parsedOKLogs[0].decoded.args.liquidity,
+                amount0: formatUnits(parsedOKLogs[0].decoded.args.amount0, token0.decimal),
+                amount1: formatUnits(parsedOKLogs[0].decoded.args.amount1, token1.decimal)
+            }
+    }
+
+    const logTransaction = async (tokenId: string, hash: `0x${string}`, txType: string, token0: TokenType,
+        token1: TokenType, amount0: string, amount1: string) => {
+        try {
+            if (!address) {
+                const message = messageHelper.getMessage('transaction_create_missing_from', txType, chainId, tokenId, hash, token0.address, token1.address, amount0, amount1)
+                throw Error(message)
+            }
+            const usd = calcUSD(amount0, amount1)
+            const params: TransactionCreateInputType = {
+                chainId: chainId,
+                tokenId: tokenId,
+                tx: hash,
+                token0: token0.address,
+                token1: token1.address,
+                txType: txType,
+                amount0: amount0,
+                amount1: amount1,
+                usd: usd,
+                from: address
+            }
+            const createdTx = await createTransaction(params)
+            logger.debug('A new transaction is logged:', createdTx)
+        } catch(error) {
+            logger.error('Failed to log a new transaction due to:', error)
+        }
+    }
+
+    const calcUSD = (amount0: string, amount1: string) => {
+        const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
+        const price0 = tokenPrices[targetChainId]?.get(token0.address)
+        const price1 = tokenPrices[targetChainId]?.get(token1.address)
+        if (!price0) throw new Error(`Failed to get price for token0 ${token0.address}`)
+        if (!price1) throw new Error(`Failed to get price for token1 ${token1.address}`)
+        let token0USD = new Decimal(price0).times(new Decimal(amount0))
+        let token1USD = new Decimal(price1).times(new Decimal(amount1))
+        logger.debug(`${amount0} amount of token0 = ${token0USD.toString()} usd`)
+        logger.debug(`${amount1} amount of token1 = ${token1USD.toString()} usd`)
+        const sum = new Decimal(0).add(token0USD).add(token1USD).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
+        return sum
+    }
+
      // output debug info
      logger.debug('[DecreaseLiquidityStep] ====== Latest state ========')
      logger.debug('[DecreaseLiquidityStep] state=', state)
-     logger.debug('[DecreaseLiquidityStep] txHash =', txHash)
+     logger.debug('[DecreaseLiquidityStep] hash =', hash)
      logger.debug('[DecreaseLiquidityStep] isPending =', isPending, ' isSuccess =', isSuccess, '  sendError =', sendError)
      logger.debug('[DecreaseLiquidityStep] isReceiptError =', isReceiptError)
      logger.debug('[DecreaseLiquidityStep] receiptStatus =', receiptStatus)

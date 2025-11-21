@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useWriteContract,
     useWaitForTransactionReceipt,
-    useAccount
+    useAccount,
+    useChainId
   } from 'wagmi'
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI } from "@/config/constants";
@@ -10,10 +11,13 @@ import SVGPlusCircle from "@/lib/svgs/svg_plus_circle";
 import SVGCheck from "@/lib/svgs/svg_check";
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
-import { decodeEventLog } from 'viem';
-import { IncreasePositionParamsType, TokenType } from "@/common/types";
+import { decodeEventLog, formatUnits} from 'viem';
+import { IncreasePositionParamsType, LocalChainIds, TRANSACTION_TYPE, TokenType } from "@/common/types";
 import logger from "@/common/Logger";
-
+import {ChainId} from '@uniswap/sdk-core';
+import { TransactionCreateInputType } from "@/lib/client/types";
+import messageHelper from "@/common/internationalization/messageHelper";
+import { createTransaction } from "@/lib/client/Transaction";
 
 type IncreaseLiquidityStepProps = {
     token0: TokenType;
@@ -48,7 +52,8 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
 }) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
-    const {getTokenBalance} = useContextUtil() as IContextUtil
+    const chainId = useChainId() as (ChainId | LocalChainIds)
+    const {getTokenBalance, tokenPrices} = useContextUtil() as IContextUtil
 
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
@@ -69,15 +74,6 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
         })()
     }, [])
 
-    const handleIncreaseLiquidity = () => {
-        writeContract({
-            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
-            abi: UNISWAP_V3_POSITION_MANAGER_ABI,
-            functionName: 'increaseLiquidity',
-            args: [parsedCalldata],
-        })
-    }
-
     useEffect(() => {
         if (started) {
             logger.info('[IncreaseLiquidityStep] it will run handleIncreaseLiquidity')
@@ -92,35 +88,6 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
         }
     }, [hash])
 
-    const getLiquidity = () => {
-        if (!receipt) return BigInt(0)
-        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
-            try {
-                const encoded = decodeEventLog({
-                    abi: UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI,
-                    data: log.data,
-                    topics: log.topics
-                })
-                return {
-                    ...log,
-                    decoded: encoded,
-                    ok: true
-                }
-            } catch (error: any) {
-                return {
-                    ...log,
-                    decoded: undefined,
-                    ok: false,
-                    error: error?.message
-                }
-            }
-        }).filter((log) => log.ok)
-        logger.debug('[IncreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
-        if (parsedOKLogs.length === 0) return BigInt(0)
-        if (!parsedOKLogs[0].decoded?.args) return BigInt(0)
-        return parsedOKLogs[0].decoded.args.liquidity
-    }
-
     useEffect(() => {
         (async () => {
             if (!hash || !receipt) return
@@ -130,9 +97,17 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
                 const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
                 const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
-                const liquidity = getLiquidity()
-                logger.info('[IncreaseLiquidityStep] liquidity=', liquidity)
-                setState({...state, isPending: false, isSuccess: true, token0Deposited: token0Deposited, token1Deposited: token1Deposited, liquidity: liquidity})
+                const parsed = parseReceipt()
+                if (parsed) {
+                    const {tokenId, liquidity, amount0, amount1} = parsed
+                    logger.info('[IncreaseLiquidityStep] parsed=', parsed)
+                    logger.debug('[IncreaseLiquidityStep] token0Deposited=', token0Deposited, '  token1Deposited=', token1Deposited)
+                    setState({...state, isPending: false, isSuccess: true, token0Deposited: token0Deposited, token1Deposited: token1Deposited, liquidity: liquidity})
+                    await logTransaction(tokenId.toString(), hash, TRANSACTION_TYPE.Increase, token0, token1, amount0, amount1)
+                } else {
+                    logger.error('[IncreaseLiquidityStep] Failed to parse receipt')
+                }
+                
             }
         })() 
     }, [receipt, hash])
@@ -156,6 +131,91 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
             setState({...state, isPending: false, isSuccess: false, reason: failedReason})
         }
     }, [writeError, receiptError])
+
+    const handleIncreaseLiquidity = () => {
+        writeContract({
+            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+            abi: UNISWAP_V3_POSITION_MANAGER_ABI,
+            functionName: 'increaseLiquidity',
+            args: [parsedCalldata],
+        })
+    }
+
+    const parseReceipt = () => {
+        if (!receipt) return undefined
+        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
+            try {
+                const encoded = decodeEventLog({
+                    abi: UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI,
+                    data: log.data,
+                    topics: log.topics
+                })
+                return {
+                    ...log,
+                    decoded: encoded,
+                    ok: true
+                }
+            } catch (error: any) {
+                return {
+                    ...log,
+                    decoded: undefined,
+                    ok: false,
+                    error: error?.message
+                }
+            }
+        }).filter((log) => log.ok)
+        logger.debug('[IncreaseLiquidityStep] parsedOKLogs=', parsedOKLogs)
+        if (parsedOKLogs.length === 0) return undefined
+        if (!parsedOKLogs[0].decoded?.args) return undefined
+        return {
+                tokenId: parsedOKLogs[0].decoded.args.tokenId, 
+                liquidity: parsedOKLogs[0].decoded.args.liquidity,
+                amount0: formatUnits(parsedOKLogs[0].decoded.args.amount0, token0.decimal),
+                amount1: formatUnits(parsedOKLogs[0].decoded.args.amount1, token1.decimal)
+            }
+    }
+
+    const logTransaction = async (tokenId: string, hash: `0x${string}`, txType: string, token0: TokenType,
+        token1: TokenType, amount0: string, amount1: string) => {
+        try {
+            if (!address) {
+            const message = messageHelper.getMessage('transaction_create_missing_from', txType, chainId, tokenId, hash, token0.address, token1.address, amount0, amount1)
+            throw Error(message)
+        }
+        const usd = calcUSD(amount0, amount1)
+        const params: TransactionCreateInputType = {
+                chainId: chainId,
+                tokenId: tokenId,
+                tx: hash,
+                token0: token0.address,
+                token1: token1.address,
+                txType: txType,
+                amount0: amount0,
+                amount1: amount1,
+                usd: usd,
+                from: address
+            }
+        const createdTx = await createTransaction(params)
+        logger.debug('A new transaction is logged:', createdTx)
+        } catch(error) {
+            logger.error('Failed to log a new transaction due to:', error)
+        }
+    }
+
+    const calcUSD = (amount0: string, amount1: string) => {
+        const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
+        const price0 = tokenPrices[targetChainId]?.get(token0.address)
+        const price1 = tokenPrices[targetChainId]?.get(token1.address)
+        if (!price0) throw new Error(`Failed to get price for token0 ${token0.address}`)
+        if (!price1) throw new Error(`Failed to get price for token1 ${token1.address}`)
+        let token0USD = new Decimal(price0).times(new Decimal(amount0))
+        let token1USD = new Decimal(price1).times(new Decimal(amount1))
+        logger.debug(`${amount0} amount of token0 = ${token0USD.toString()} usd`)
+        logger.debug(`${amount1} amount of token1 = ${token1USD.toString()} usd`)
+        const sum = new Decimal(0).add(token0USD).add(token1USD).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
+        return sum
+    }
+
     
     logger.debug('[IncreaseLiquidityStep] ====== Latest state ========')
     logger.debug('[IncreaseLiquidityStep] isSuccess=', state.isSuccess, ' isPending=', state.isPending)
