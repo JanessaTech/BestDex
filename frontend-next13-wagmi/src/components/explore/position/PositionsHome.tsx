@@ -25,12 +25,117 @@ import { PoolInfo, PositionProps } from "@/common/types"
 import logger from "@/common/Logger"
 import { fetchLatestPoolInfo } from "@/lib/client/Pool"
 import { getPositionsByPage } from "@/lib/client/Position"
+import { Skeleton } from "@/components/ui/skeleton"
 
 
 type GlobalVariableType = {
     poolInfo?: PoolInfo;
     position: PositionProps
 }
+type ShowPositionsProps = {
+    positions: PositionProps[];
+    handleOpenIncreaseLiquidity: (position: PositionProps) => Promise<void>;
+    handleOpenDecreaseLiquidity: (position: PositionProps) => Promise<void>;
+    handleOpenCollectFee: (position: PositionProps) => Promise<void>
+}
+const ShowPositions: React.FC<ShowPositionsProps> = ({positions, handleOpenIncreaseLiquidity, handleOpenDecreaseLiquidity, handleOpenCollectFee}) => {
+    return (
+        <>
+        {
+            positions.map((position, index) => (
+                <>
+                    <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
+                        <TableCell className="font-medium ">{position.tokenId}</TableCell>
+                        <TableCell>
+                            <div className="flex flex-col space-y-1">
+                                <Token token={position.token0} imageSize={20}/>
+                                <Token token={position.token1} imageSize={20}/>
+                            </div>
+                        </TableCell>
+                        <TableCell className={`max-md:hidden`}>
+                            <div>
+                                <div><span className="font-bold">Low:</span>{position.tickLower}</div>
+                                <div><span className="font-bold">High:</span>{position.tickUpper}</div>
+                            </div>
+                        </TableCell>
+                        <TableCell>{position.fee/10000}%</TableCell>
+                        <TableCell><span>{position.liquidity.toString()}</span></TableCell>
+                        <TableCell className={`max-md:hidden`}>
+                            <ToolTipHelper content={<p><strong>Address : </strong>{position.owner}</p>}>
+                                <div className="w-[78px] truncate">{position.owner}</div>
+                            </ToolTipHelper>
+                        </TableCell>
+                        <TableCell className="text-center">
+                            <div>
+                                <div>
+                                    <ToolTipHelper content="Increase liquidlity">
+                                        <SVGPlus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
+                                                onClick={() => handleOpenIncreaseLiquidity(position)}/>
+                                    </ToolTipHelper>                                                               
+                                </div>
+                                <div>
+                                    <ToolTipHelper content="Decrease liquidlity">
+                                        <SVGMinus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
+                                                onClick={() => handleOpenDecreaseLiquidity(position)}/>
+                                    </ToolTipHelper>
+                                </div>
+                                <div>
+                                    <ToolTipHelper content="Collect fee">
+                                        <SVGWithdraw className="cursor-pointer w-5 h-5 hover:text-pink-600" 
+                                                    onClick={() => handleOpenCollectFee(position)}/>
+                                    </ToolTipHelper>                                            
+                                </div>
+                            </div>
+                        </TableCell>
+                    </TableRow>
+                </>
+            ))
+        }
+        </>
+    )
+}
+
+const ShowSkeleton:React.FC<{}> = () => {
+    return (
+        <>
+        {
+            Array(10).fill(undefined).map((_, index) => (
+                <>
+                 <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
+                    <TableCell className="font-medium "><Skeleton className="h-4 w-[100px]" /></TableCell>
+                    <TableCell>
+                            <div className="flex flex-col space-y-1">
+                                <Skeleton className="h-4 w-[80px]" />
+                                <Skeleton className="h-4 w-[80px]" />
+                            </div>
+                    </TableCell>
+                    <TableCell className={`max-md:hidden`}>
+                            <div className="flex flex-col space-y-1">
+                                <Skeleton className="h-4 w-[120px]" />
+                                <Skeleton className="h-4 w-[120px]" />
+                            </div>
+                    </TableCell>
+                    <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-[180px]"/></TableCell>
+                    <TableCell className={`max-md:hidden`}>
+                            <Skeleton className="h-4 w-[200px]" />
+                    </TableCell>
+                    <TableCell className="text-center">
+                        <div className="flex flex-col space-y-1">
+                            <div><Skeleton className="h-4 w-[120px]" /></div>
+                            <div><Skeleton className="h-4 w-[120px]" /></div>
+                            <div><Skeleton className="h-4 w-[120px]" /></div>
+                        </div>
+
+                    </TableCell>
+                 </TableRow>
+                </>
+            ))
+        }
+        </>
+    )
+}
+
 type PositionsHomeProps = {}
 const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const chainId = useChainId()
@@ -45,6 +150,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const {getPoolAddress} = useContextUtil() as IContextUtil
     const [page, setPage] = useState(1)
     const [positions, setPositions] = useState<PositionProps[]>([])
+    const [isLoading, setIsLoading] = useState(true)
     
     useEffect(() => {
         loadPositionList()
@@ -52,8 +158,12 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
 
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)
-        const positions = await getPositionsByPage(chainId, address!, page)
-        if (positions) setPositions(positions)
+        // setIsLoading(true)
+        // const positions = await getPositionsByPage(chainId, address!, page)
+        // if (positions) {
+        //     setPositions(positions) 
+        // } 
+        // setIsLoading(false)
     }
     
     const closeIncreaseLiquidityModal = () => {
@@ -119,55 +229,15 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                     </TableHeader>
                     <TableBody>
                     {
-                        positions.map((position, index) => (
-                            <>
-                                <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
-                                    <TableCell className="font-medium ">{position.tokenId}</TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col space-y-1">
-                                            <Token token={position.token0} imageSize={20}/>
-                                            <Token token={position.token1} imageSize={20}/>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className={`max-md:hidden`}>
-                                        <div>
-                                            <div><span className="font-bold">Low:</span>{position.tickLower}</div>
-                                            <div><span className="font-bold">High:</span>{position.tickUpper}</div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>{position.fee/10000}%</TableCell>
-                                    <TableCell><span>{position.liquidity.toString()}</span></TableCell>
-                                    <TableCell className={`max-md:hidden`}>
-                                        <ToolTipHelper content={<p><strong>Address : </strong>{position.owner}</p>}>
-                                            <div className="w-[78px] truncate">{position.owner}</div>
-                                        </ToolTipHelper>
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        <div>
-                                            <div>
-                                                <ToolTipHelper content="Increase liquidlity">
-                                                    <SVGPlus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                            onClick={() => handleOpenIncreaseLiquidity(position)}/>
-                                                </ToolTipHelper>                                                               
-                                            </div>
-                                            <div>
-                                                <ToolTipHelper content="Decrease liquidlity">
-                                                    <SVGMinus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                            onClick={() => handleOpenDecreaseLiquidity(position)}/>
-                                                </ToolTipHelper>
-                                            </div>
-                                            <div>
-                                                <ToolTipHelper content="Collect fee">
-                                                    <SVGWithdraw className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                                onClick={() => handleOpenCollectFee(position)}/>
-                                                </ToolTipHelper>                                            
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            </>
-                        ))
+                        isLoading  
+                        ? <ShowSkeleton/>
+                        : <ShowPositions 
+                                positions={positions} 
+                                handleOpenIncreaseLiquidity={handleOpenIncreaseLiquidity}
+                                handleOpenDecreaseLiquidity={handleOpenDecreaseLiquidity}
+                                handleOpenCollectFee={handleOpenCollectFee}/>
                     }
+                    
                     </TableBody>
                 </Table>
             </TabsContent>
