@@ -11,7 +11,7 @@ import {WaitForTransactionReceiptErrorType} from "@wagmi/core"
 import { UNISWAP_ERRORS, UNISWAP_V3_POOL_SWAP_ABI, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
-import { LocalChainIds, TokenType } from "@/common/types"
+import { LocalChainIds, TRANSACTION_TYPE, TokenType } from "@/common/types"
 import logger from "@/common/Logger"
 import { decodeEventLog, formatUnits} from 'viem';
 import {ChainId} from '@uniswap/sdk-core';
@@ -110,7 +110,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenFrom, tokenTo, calldata
                 if (parsed) {
                     const {sender, recipient, amount0, amount1, sqrtPriceX96, liquidity, tick} = parsed
                     logger.info('[SwapStep] parsed=', parsed)
-                    //await logTransaction
+                    await logTransaction(hash, TRANSACTION_TYPE.Swap, isTokenFromToken0 ? tokenFrom: tokenTo, isTokenFromToken0 ? tokenTo: tokenFrom, amount0, amount1, undefined)
                 } else {
                     logger.error('[SwapStep] Failed to parse receipt')
                 }
@@ -173,8 +173,8 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenFrom, tokenTo, calldata
             }
     }
 
-    const logTransaction = async (tokenId: string, hash: `0x${string}`, txType: string, token0: TokenType,
-        token1: TokenType, amount0: string, amount1: string) => {
+    const logTransaction = async (hash: `0x${string}`, txType: string, token0: TokenType,
+        token1: TokenType, amount0: string, amount1: string, tokenId?: string) => {
         try {
             if (!address) {
                 const message = messageHelper.getMessage('transaction_create_missing_from', txType, chainId, tokenId, hash, token0.address, token1.address, amount0, amount1)

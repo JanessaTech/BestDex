@@ -85,7 +85,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
                     const {tokenId, liquidity, amount0, amount1} = parsed
                     logger.info('[AddPositionStep] parsed=', parsed)
                     setState({...state, isPending: false, isSuccess: true, positionId: tokenId, token0Deposited: amount0, token1Deposited: amount1})
-                    await logTransaction(tokenId.toString(), hash, TRANSACTION_TYPE.Mint, token0, token1, amount0, amount1)
+                    await logTransaction(hash, TRANSACTION_TYPE.Mint, token0, token1, amount0, amount1, tokenId.toString())
                 } else {
                     logger.error('[AddPositionStep] Failed to parse receipt')
                 }
@@ -156,8 +156,8 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
             }
     }
 
-    const logTransaction = async (tokenId: string, hash: `0x${string}`, txType: string, token0: TokenType,
-                               token1: TokenType, amount0: string, amount1: string) => {
+    const logTransaction = async (hash: `0x${string}`, txType: string, token0: TokenType,
+        token1: TokenType, amount0: string, amount1: string, tokenId?: string) => {
         try {
             if (!address) {
                 const message = messageHelper.getMessage('transaction_create_missing_from', txType, chainId, tokenId, hash, token0.address, token1.address, amount0, amount1)

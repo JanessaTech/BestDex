@@ -49,7 +49,7 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
     const chainId = useChainId() as (ChainId | LocalChainIds)
-    const {getTokenBalance, tokenPrices} = useContextUtil() as IContextUtil
+    const {tokenPrices} = useContextUtil() as IContextUtil
 
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
@@ -81,17 +81,12 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 logger.info('[IncreaseLiquidityStep] The new liquidity is added')
-                // const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
-                // const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
-                // const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
-                // const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const parsed = parseReceipt()
                 if (parsed) {
                     const {tokenId, liquidity, amount0, amount1} = parsed
                     logger.info('[IncreaseLiquidityStep] parsed=', parsed)
-                    //logger.debug('[IncreaseLiquidityStep] token0Deposited=', token0Deposited, '  token1Deposited=', token1Deposited)
                     setState({...state, isPending: false, isSuccess: true, token0Deposited: amount0, token1Deposited: amount1, liquidity: liquidity})
-                    await logTransaction(tokenId.toString(), hash, TRANSACTION_TYPE.Increase, token0, token1, amount0, amount1)
+                    await logTransaction(hash, TRANSACTION_TYPE.Increase, token0, token1, amount0, amount1, tokenId.toString())
                 } else {
                     logger.error('[IncreaseLiquidityStep] Failed to parse receipt')
                 }
@@ -163,8 +158,8 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
             }
     }
 
-    const logTransaction = async (tokenId: string, hash: `0x${string}`, txType: string, token0: TokenType,
-        token1: TokenType, amount0: string, amount1: string) => {
+    const logTransaction = async (hash: `0x${string}`, txType: string, token0: TokenType,
+        token1: TokenType, amount0: string, amount1: string, tokenId?: string) => {
         try {
             if (!address) {
             const message = messageHelper.getMessage('transaction_create_missing_from', txType, chainId, tokenId, hash, token0.address, token1.address, amount0, amount1)

@@ -10,7 +10,7 @@ export type DexResponseType<T = any> = {
 
 export type TransactionCreateInputType = {
     chainId: number;
-    tokenId: string;
+    tokenId?: string;
     tx: `0x${string}`;
     token0: `0x${string}`;
     token1: `0x${string}`;
