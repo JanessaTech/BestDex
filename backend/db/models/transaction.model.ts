@@ -40,7 +40,7 @@ const transactionSchema = new Schema<ITransaction, TransactionQueryHelper>({
     },
     tokenId: {
         type: String,
-        required: [true, 'tokenId is required']
+        default: undefined
     },
     tx: {
         type: String,

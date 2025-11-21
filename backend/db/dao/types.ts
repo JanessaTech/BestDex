@@ -13,7 +13,7 @@ export type UserDAOParamType = {
 export type TransactionDAOParamType = {
     _id?: number;
     chainId: number;
-    tokenId: string;
+    tokenId?: string;
     tx: string;
     token0: string;
     token1: string;

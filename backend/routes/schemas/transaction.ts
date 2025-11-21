@@ -5,7 +5,7 @@ const transactionSchema = {
     create: yup.object({
         body: yup.object({
             chainId: yup.number().typeError('chainId should be an integer equal to or greater than 1!').min(1, "chainId should be an integer equal to or greater than 1!").integer('Please enter a valid integer for chainId!'),
-            tokenId: yup.number().min(1, 'tokenId should be equal to or greater than 1!').integer('Please enter a valid integer for tokenId!'),
+            tokenId: yup.number().min(1, 'tokenId should be equal to or greater than 1!').integer('Please enter a valid integer for tokenId!').optional(),
             tx: yup.string().required('tx is required'),
             txType:  yup.mixed().oneOf(Object.values(TRANSACTION_TYPE)),
             token0: yup.string().required('token0 is required').matches(/^0x[a-fA-F0-9]{40}$/, 'token0 is an invalid cryptocurrency address'),

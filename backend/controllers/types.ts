@@ -80,7 +80,7 @@ export type PositionProps = {
 // transaction
 export type TransactionCreateInputType = {
     chainId: number;
-    tokenId: string;
+    tokenId?: string;
     tx: string;
     token0: string;
     token1: string;
@@ -94,7 +94,7 @@ export type TransactionCreateInputType = {
 export type TransactionInfoType = {
     id: number;
     chainId: number;
-    tokenId: string;
+    tokenId?: string;
     tx: string;
     token0: TokenType;
     token1: TokenType;
