@@ -41,3 +41,4 @@ npm run dev
     6.1 exception when create a new position
 10. Add UTs for frontend and backend
 11. using Todo as the keyword to search the places which we should do the enhancements on
+12. Move logTransaction to backend (In future, must make sure the websocket service is robust)

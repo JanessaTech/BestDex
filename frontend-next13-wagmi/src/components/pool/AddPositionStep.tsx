@@ -30,9 +30,7 @@ type StateType = {
     reason: string;
     isSuccess: boolean;
     isPending: boolean;
-    token0PreBalance: string;
     token0Deposited: string;
-    token1PreBalance: string;
     token1Deposited: string;
     positionId: bigint;
 }
@@ -40,9 +38,7 @@ const defaultState: StateType = {
     reason: '',
     isSuccess: false,
     isPending: true,
-    token0PreBalance: '',
     token0Deposited: '',
-    token1PreBalance: '',
     token1Deposited: '',
     positionId: BigInt(-1)
 }
@@ -52,7 +48,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
     const chainId = useChainId() as (ChainId | LocalChainIds)
-    const {getTokenBalance, tokenPrices} = useContextUtil() as IContextUtil
+    const {tokenPrices} = useContextUtil() as IContextUtil
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
         hash: hash,
@@ -63,14 +59,6 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
             staleTime: 0  // disable cache
         }
     })
-
-    useEffect(() => {
-        (async () => {
-            const token0PreBalance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
-            const token1PreBalance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
-            setState({...state, token0PreBalance: token0PreBalance, token1PreBalance: token1PreBalance})
-        })()
-    }, [])
 
     useEffect(() => {
         if (started) {
@@ -92,17 +80,12 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 logger.info('[AddPositionStep] A new position is added')
-                const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
-                const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
-                const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
-                const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const parsed = parseReceipt()
                 if (parsed) {
                     const {tokenId, liquidity, amount0, amount1} = parsed
                     logger.info('[AddPositionStep] parsed=', parsed)
-                    logger.debug('[AddPositionStep] token0Deposited=', token0Deposited, '  token1Deposited=', token1Deposited)
-                    setState({...state, isPending: false, isSuccess: true, positionId: tokenId, token0Deposited: token0Deposited, token1Deposited: token1Deposited})
-                    await logTransaction(tokenId.toString(), hash, TRANSACTION_TYPE.Mint, token0, token1, token0Deposited, token1Deposited)
+                    setState({...state, isPending: false, isSuccess: true, positionId: tokenId, token0Deposited: amount0, token1Deposited: amount1})
+                    await logTransaction(tokenId.toString(), hash, TRANSACTION_TYPE.Mint, token0, token1, amount0, amount1)
                 } else {
                     logger.error('[AddPositionStep] Failed to parse receipt')
                 }

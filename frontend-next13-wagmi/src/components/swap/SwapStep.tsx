@@ -5,13 +5,19 @@ import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useSendTransaction, 
          useWaitForTransactionReceipt,
-         useAccount } from 'wagmi'
+         useAccount,
+         useChainId } from 'wagmi'
 import {WaitForTransactionReceiptErrorType} from "@wagmi/core"
-import { UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
+import { UNISWAP_ERRORS, UNISWAP_V3_POOL_SWAP_ABI, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
 import { Decimal } from 'decimal.js'
-import { TokenType } from "@/common/types"
+import { LocalChainIds, TokenType } from "@/common/types"
 import logger from "@/common/Logger"
+import { decodeEventLog, formatUnits} from 'viem';
+import {ChainId} from '@uniswap/sdk-core';
+import messageHelper from "@/common/internationalization/messageHelper"
+import { TransactionCreateInputType } from "@/lib/client/types"
+import { createTransaction } from "@/lib/client/Transaction"
 
 const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): string => {
     const defaultReason = 'Unknown reason'
@@ -25,6 +31,7 @@ const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): s
 
 type SwapStepProps = {
     started: boolean;
+    tokenFrom: TokenType;
     tokenTo: TokenType;
     calldata: `0x${string}`;
     handleSwapSuccess: (swapOut: string) => void
@@ -43,14 +50,18 @@ const defaultState: StateType = {
     preBalance: '',
     actualOutput: ''
 }
-const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwapSuccess}) => {
+const SwapStep:React.FC<SwapStepProps> = ({started, tokenFrom, tokenTo, calldata, handleSwapSuccess}) => {
     const {address} = useAccount()
+    const chainId = useChainId() as (ChainId | LocalChainIds)
     const [state, setState] = useState<StateType>(defaultState)
-    const {getTokenBalance} = useContextUtil() as IContextUtil
+    const {getTokenBalance, tokenPrices} = useContextUtil() as IContextUtil
+    const isTokenFromToken0 = tokenFrom.address.toLowerCase() < tokenTo.address.toLowerCase()
 
-    const {data: txHash, isPending, isSuccess, error:sendError, sendTransaction} = useSendTransaction()
+    logger.debug('[SwapStep] isTokenFromToken0=', isTokenFromToken0)
+
+    const {data: hash, isPending, isSuccess, error:sendError, sendTransaction} = useSendTransaction()
     const {data: receipt, isError: isReceiptError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
-        hash: txHash,
+        hash: hash,
         confirmations: 1,
         query: {
             enabled: false,
@@ -81,23 +92,31 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
     }, [started])
 
     useEffect(() => {
-        if (txHash) {
+        if (hash) {
             logger.info('[SwapStep] it will fetch the receipt')
             refetchReceipt()
         }
-    }, [txHash])
+    }, [hash])
 
     useEffect(() => {
         (async () => {
-            if (!txHash || !receipt) return
+            if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 logger.info('[SwapStep] swap is successful')
                 const balance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
                 const inc = new Decimal(balance).minus(new Decimal(state.preBalance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 setState({...state, isPending: false, isSuccess: true, actualOutput: inc})
+                const parsed = parseReceipt()
+                if (parsed) {
+                    const {sender, recipient, amount0, amount1, sqrtPriceX96, liquidity, tick} = parsed
+                    logger.info('[SwapStep] parsed=', parsed)
+                    //await logTransaction
+                } else {
+                    logger.error('[SwapStep] Failed to parse receipt')
+                }
             }
         })() 
-    }, [receipt, txHash])
+    }, [receipt, hash])
 
     useEffect(() => {
         let timer = undefined
@@ -117,10 +136,88 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenTo, calldata, handleSwa
         }
     }, [sendError, receiptError])
 
+    const parseReceipt = () => {
+        if (!receipt) return undefined
+        const parsedOKLogs = (receipt.logs || []).map((log, index) => {
+            try {
+                const encoded = decodeEventLog({
+                    abi: UNISWAP_V3_POOL_SWAP_ABI,
+                    data: log.data,
+                    topics: log.topics
+                })
+                return {
+                    ...log,
+                    decoded: encoded,
+                    ok: true
+                }
+            } catch (error: any) {
+                return {
+                    ...log,
+                    decoded: undefined,
+                    ok: false,
+                    error: error?.message
+                }
+            }
+        }).filter((log) => log.ok)
+        logger.debug('[SwapStep] parsedOKLogs=', parsedOKLogs)
+        if (parsedOKLogs.length === 0) return undefined
+        if (!parsedOKLogs[0].decoded?.args) return undefined
+        return {
+                sender: parsedOKLogs[0].decoded?.args.sender,
+                recipient: parsedOKLogs[0].decoded?.args.recipient,
+                amount0: formatUnits(parsedOKLogs[0].decoded?.args.amount0, isTokenFromToken0 ? tokenFrom.decimal: tokenTo.decimal),
+                amount1: formatUnits(parsedOKLogs[0].decoded?.args.amount1, isTokenFromToken0 ? tokenTo.decimal: tokenFrom.decimal),
+                sqrtPriceX96:  parsedOKLogs[0].decoded?.args.sqrtPriceX96,
+                liquidity:  parsedOKLogs[0].decoded?.args.liquidity,
+                tick: parsedOKLogs[0].decoded?.args.tick,
+            }
+    }
+
+    const logTransaction = async (tokenId: string, hash: `0x${string}`, txType: string, token0: TokenType,
+        token1: TokenType, amount0: string, amount1: string) => {
+        try {
+            if (!address) {
+                const message = messageHelper.getMessage('transaction_create_missing_from', txType, chainId, tokenId, hash, token0.address, token1.address, amount0, amount1)
+                throw Error(message)
+            }
+            const usd = calcUSD(amount0, amount1)
+            const params: TransactionCreateInputType = {
+                chainId: chainId,
+                tokenId: tokenId,
+                tx: hash,
+                token0: token0.address,
+                token1: token1.address,
+                txType: txType,
+                amount0: amount0,
+                amount1: amount1,
+                usd: usd,
+                from: address
+            }
+            const createdTx = await createTransaction(params)
+            logger.debug('A new transaction is logged:', createdTx)
+        } catch(error) {
+            logger.error('Failed to log a new transaction due to:', error)
+        }
+    }
+
+    const calcUSD = (amount0: string, amount1: string) => {
+        const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
+        const price0 = tokenPrices[targetChainId]?.get(tokenFrom.address)
+        const price1 = tokenPrices[targetChainId]?.get(tokenTo.address)
+        if (!price0) throw new Error(`Failed to get price for token0 ${tokenFrom.address}`)
+        if (!price1) throw new Error(`Failed to get price for token1 ${tokenTo.address}`)
+        let token0USD = new Decimal(price0).times(new Decimal(amount0))
+        let token1USD = new Decimal(price1).times(new Decimal(amount1))
+        logger.debug(`${amount0} amount of token0 = ${token0USD.toString()} usd`)
+        logger.debug(`${amount1} amount of token1 = ${token1USD.toString()} usd`)
+        const sum = new Decimal(0).add(token0USD).add(token1USD).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
+        return sum
+    }
+
     // output debug info
     logger.info('[SwapStep] ====== Latest state ========')
     logger.info('[SwapStep] state=', state)
-    logger.info('[SwapStep] txHash =', txHash)
+    logger.info('[SwapStep] hash =', hash)
     logger.info('[SwapStep] isPending =', isPending, ' isSuccess =', isSuccess, '  sendError =', sendError)
     logger.info('[SwapStep] isReceiptError =', isReceiptError)
     logger.info('[SwapStep] receiptStatus =', receiptStatus)

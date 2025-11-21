@@ -30,7 +30,10 @@ const SwapeExecutor: React.FC<SwapeExecutorProps> = ({tokenFrom, tokenTo, approv
             <Seperator/>
             <SimulateSwapStep started={step === 2} skip={false} done={step >= 2} calldata={calldata} goNext={goNext}/>
             <Seperator/>
-            <SwapStep started={step === 3} tokenTo={tokenTo} calldata={calldata} handleSwapSuccess={handleSwapSuccess}/> 
+            <SwapStep 
+                started={step === 3} 
+                tokenFrom={tokenFrom} tokenTo={tokenTo} 
+                calldata={calldata} handleSwapSuccess={handleSwapSuccess}/> 
         </div>
     )
 }

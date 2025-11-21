@@ -30,9 +30,7 @@ type StateType = {
     reason: string;
     isSuccess: boolean;
     isPending: boolean;
-    token0PreBalance: string;
     token0Deposited: string;
-    token1PreBalance: string;
     token1Deposited: string;
     liquidity: bigint;
 }
@@ -40,9 +38,7 @@ const defaultState: StateType = {
     reason: '',
     isSuccess: false,
     isPending: true,
-    token0PreBalance: '',
     token0Deposited: '',
-    token1PreBalance: '',
     token1Deposited: '',
     liquidity: BigInt(0)
 }
@@ -67,14 +63,6 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
     })
 
     useEffect(() => {
-        (async () => {
-            const token0PreBalance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
-            const token1PreBalance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
-            setState({...state, token0PreBalance: token0PreBalance, token1PreBalance: token1PreBalance})
-        })()
-    }, [])
-
-    useEffect(() => {
         if (started) {
             logger.info('[IncreaseLiquidityStep] it will run handleIncreaseLiquidity')
             setState({...state, isPending: true})
@@ -93,16 +81,16 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 logger.info('[IncreaseLiquidityStep] The new liquidity is added')
-                const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
-                const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
-                const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
-                const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
+                // const afterToken0Balance = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
+                // const afterToken1Balance = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
+                // const token0Deposited = new Decimal(state.token0PreBalance).minus(new Decimal(afterToken0Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
+                // const token1Deposited = new Decimal(state.token1PreBalance).minus(new Decimal(afterToken1Balance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
                 const parsed = parseReceipt()
                 if (parsed) {
                     const {tokenId, liquidity, amount0, amount1} = parsed
                     logger.info('[IncreaseLiquidityStep] parsed=', parsed)
-                    logger.debug('[IncreaseLiquidityStep] token0Deposited=', token0Deposited, '  token1Deposited=', token1Deposited)
-                    setState({...state, isPending: false, isSuccess: true, token0Deposited: token0Deposited, token1Deposited: token1Deposited, liquidity: liquidity})
+                    //logger.debug('[IncreaseLiquidityStep] token0Deposited=', token0Deposited, '  token1Deposited=', token1Deposited)
+                    setState({...state, isPending: false, isSuccess: true, token0Deposited: amount0, token1Deposited: amount1, liquidity: liquidity})
                     await logTransaction(tokenId.toString(), hash, TRANSACTION_TYPE.Increase, token0, token1, amount0, amount1)
                 } else {
                     logger.error('[IncreaseLiquidityStep] Failed to parse receipt')

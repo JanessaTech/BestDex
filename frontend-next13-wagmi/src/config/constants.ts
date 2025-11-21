@@ -80,5 +80,8 @@ export const UNISWAP_V3_POSITION_MANAGER_DECREASE_LIQUIDITY_ABI = parseAbi([
 export const UNISWAP_V3_POSITION_MANAGER_COLLECT_LIQUIDITY_ABI = parseAbi([
   'event Collect(uint256 indexed tokenId, address recipient, uint256 amount0, uint256 amount1)',
 ])
+export const UNISWAP_V3_POOL_SWAP_ABI = parseAbi([
+  'event Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)'
+])
 
 export const PAGE_SIZE = 50
