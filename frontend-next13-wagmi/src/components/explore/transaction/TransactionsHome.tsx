@@ -106,8 +106,10 @@ const ShowTransactionSkeleton:React.FC<{}> = () => {
     )
 }
 
-type TransactionsHomeProps = {}
-const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
+type TransactionsHomeProps = {
+    value: string
+}
+const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
     const chainId = useChainId()  
     const { address} = useAccount()
 
@@ -116,8 +118,11 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
     const [isLoading, setIsLoading] = useState(false)
     
     useEffect(() => {
-        loadTransactionList()
-    }, [])
+        if (value === 'transactions') {
+            console.log('loadTransactionList...')
+            loadTransactionList()
+        } 
+    }, [value])
 
     const loadTransactionList = async () => {
         logger.debug('[TransactionsHome] loadTransactionList. page=', page)
@@ -139,7 +144,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = () => {
                         <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token amount</TableHead>
                         <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token amount</TableHead>
                         <TableHead className={`text-white font-bold text-center max-md:hidden`}>USD</TableHead>
-                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Wallet</TableHead>
+                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>From</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

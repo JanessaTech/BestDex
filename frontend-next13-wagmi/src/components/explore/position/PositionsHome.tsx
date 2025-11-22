@@ -139,8 +139,10 @@ const ShowPositionSkeleton:React.FC<{}> = () => {
     )
 }
 
-type PositionsHomeProps = {}
-const PositionsHome: React.FC<PositionsHomeProps> = () => {
+type PositionsHomeProps = {
+    value: string
+}
+const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
     const chainId = useChainId()
     const { address} = useAccount()
 
@@ -156,8 +158,10 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const [isLoading, setIsLoading] = useState(false)
     
     useEffect(() => {
-        loadPositionList()
-    }, [])
+        if (value === 'positions') {
+            loadPositionList()
+        }   
+    }, [value])
 
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)
