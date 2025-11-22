@@ -102,29 +102,29 @@ const ShowSkeleton:React.FC<{}> = () => {
             Array(10).fill(undefined).map((_, index) => (
                 <>
                  <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
-                    <TableCell className="font-medium "><Skeleton className="h-4 w-[100px]" /></TableCell>
+                    <TableCell className="font-medium "><Skeleton className="h-4 w-[70px]" /></TableCell>
                     <TableCell>
                             <div className="flex flex-col space-y-1">
-                                <Skeleton className="h-4 w-[80px]" />
-                                <Skeleton className="h-4 w-[80px]" />
+                                <Skeleton className="h-4 w-[60px]" />
+                                <Skeleton className="h-4 w-[60px]" />
                             </div>
                     </TableCell>
                     <TableCell className={`max-md:hidden`}>
                             <div className="flex flex-col space-y-1">
-                                <Skeleton className="h-4 w-[120px]" />
-                                <Skeleton className="h-4 w-[120px]" />
+                                <Skeleton className="h-4 w-[50px]" />
+                                <Skeleton className="h-4 w-[50px]" />
                             </div>
                     </TableCell>
-                    <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-[180px]"/></TableCell>
+                    <TableCell><Skeleton className="h-4 w-[40px]" /></TableCell>
+                    <TableCell className={`max-md:hidden`}><Skeleton className="h-4 w-[100px]"/></TableCell>
                     <TableCell className={`max-md:hidden`}>
-                            <Skeleton className="h-4 w-[200px]" />
+                            <Skeleton className="h-4 w-[80px]" />
                     </TableCell>
                     <TableCell className="text-center">
                         <div className="flex flex-col space-y-1">
-                            <div><Skeleton className="h-4 w-[120px]" /></div>
-                            <div><Skeleton className="h-4 w-[120px]" /></div>
-                            <div><Skeleton className="h-4 w-[120px]" /></div>
+                            <div><Skeleton className="h-4 w-[80px]" /></div>
+                            <div><Skeleton className="h-4 w-[80px]" /></div>
+                            <div><Skeleton className="h-4 w-[80px]" /></div>
                         </div>
 
                     </TableCell>
@@ -222,7 +222,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                             <TableHead className="text-white font-bold">Token0<br/>Token1</TableHead>
                             <TableHead className={`text-white font-bold max-md:hidden`}>Ticks</TableHead>
                             <TableHead className="text-white font-bold">Fee</TableHead>
-                            <TableHead className="text-white font-bold">Liquidity</TableHead>
+                            <TableHead className="text-white font-bold max-md:hidden">Liquidity</TableHead>
                             <TableHead className={`text-white font-bold max-md:hidden`}>Owner</TableHead>
                             <TableHead className="text-center text-white">Actions</TableHead>
                         </TableRow>
