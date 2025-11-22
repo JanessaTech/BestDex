@@ -38,7 +38,10 @@ type ShowPositionsProps = {
     handleOpenDecreaseLiquidity: (position: PositionProps) => Promise<void>;
     handleOpenCollectFee: (position: PositionProps) => Promise<void>
 }
-const ShowPositions: React.FC<ShowPositionsProps> = ({positions, handleOpenIncreaseLiquidity, handleOpenDecreaseLiquidity, handleOpenCollectFee}) => {
+const ShowPositions: React.FC<ShowPositionsProps> = ({positions, 
+                                                    handleOpenIncreaseLiquidity, 
+                                                    handleOpenDecreaseLiquidity, 
+                                                    handleOpenCollectFee}) => {
     return (
         <>
         {
@@ -52,15 +55,15 @@ const ShowPositions: React.FC<ShowPositionsProps> = ({positions, handleOpenIncre
                                 <Token token={position.token1} imageSize={20}/>
                             </div>
                         </TableCell>
-                        <TableCell className={`max-md:hidden`}>
+                        <TableCell className="max-md:hidden">
                             <div>
                                 <div><span className="font-bold">Low:</span>{position.tickLower}</div>
                                 <div><span className="font-bold">High:</span>{position.tickUpper}</div>
                             </div>
                         </TableCell>
                         <TableCell>{position.fee/10000}%</TableCell>
-                        <TableCell><span>{position.liquidity.toString()}</span></TableCell>
-                        <TableCell className={`max-md:hidden`}>
+                        <TableCell className="max-md:hidden"><span>{position.liquidity.toString()}</span></TableCell>
+                        <TableCell className="max-md:hidden">
                             <ToolTipHelper content={<p><strong>Address : </strong>{position.owner}</p>}>
                                 <div className="w-[78px] truncate">{position.owner}</div>
                             </ToolTipHelper>
@@ -95,7 +98,7 @@ const ShowPositions: React.FC<ShowPositionsProps> = ({positions, handleOpenIncre
     )
 }
 
-const ShowSkeleton:React.FC<{}> = () => {
+const ShowPositionSkeleton:React.FC<{}> = () => {
     return (
         <>
         {
@@ -109,15 +112,15 @@ const ShowSkeleton:React.FC<{}> = () => {
                                 <Skeleton className="h-4 w-[60px]" />
                             </div>
                     </TableCell>
-                    <TableCell className={`max-md:hidden`}>
+                    <TableCell className="max-md:hidden">
                             <div className="flex flex-col space-y-1">
                                 <Skeleton className="h-4 w-[50px]" />
                                 <Skeleton className="h-4 w-[50px]" />
                             </div>
                     </TableCell>
                     <TableCell><Skeleton className="h-4 w-[40px]" /></TableCell>
-                    <TableCell className={`max-md:hidden`}><Skeleton className="h-4 w-[100px]"/></TableCell>
-                    <TableCell className={`max-md:hidden`}>
+                    <TableCell className="max-md:hidden"><Skeleton className="h-4 w-[100px]"/></TableCell>
+                    <TableCell className="max-md:hidden">
                             <Skeleton className="h-4 w-[80px]" />
                     </TableCell>
                     <TableCell className="text-center">
@@ -150,7 +153,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
     const {getPoolAddress} = useContextUtil() as IContextUtil
     const [page, setPage] = useState(1)
     const [positions, setPositions] = useState<PositionProps[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     
     useEffect(() => {
         loadPositionList()
@@ -158,12 +161,12 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
 
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)
-        // setIsLoading(true)
-        // const positions = await getPositionsByPage(chainId, address!, page)
-        // if (positions) {
-        //     setPositions(positions) 
-        // } 
-        // setIsLoading(false)
+        setIsLoading(true)
+        const positions = await getPositionsByPage(chainId, address!, page)
+        if (positions) {
+            setPositions(positions) 
+        } 
+        setIsLoading(false)
     }
     
     const closeIncreaseLiquidityModal = () => {
@@ -230,7 +233,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = () => {
                     <TableBody>
                     {
                         isLoading  
-                        ? <ShowSkeleton/>
+                        ? <ShowPositionSkeleton/>
                         : <ShowPositions 
                                 positions={positions} 
                                 handleOpenIncreaseLiquidity={handleOpenIncreaseLiquidity}
