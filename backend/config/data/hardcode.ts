@@ -1,7 +1,7 @@
-import { TokenListType } from "./types";
 import { mainnet, polygon, arbitrum, sepolia, hardhat} from 'viem/chains';
 import { Chain } from 'viem';
 import dotenv from 'dotenv';
+import { TokenListType } from '../../controllers/types';
 dotenv.config();
 
 /**

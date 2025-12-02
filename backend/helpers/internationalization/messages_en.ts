@@ -67,6 +67,9 @@ const message: MessageType = {
     //redis
     redis_delete_failed: 'Failed to delete redis value by key {0}',
 
+    //config
+    config_tokens_getList_success: 'Get the list of tokens from configuration successfully',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',
