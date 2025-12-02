@@ -26,6 +26,7 @@ import logger from "@/common/Logger"
 import { fetchLatestPoolInfo } from "@/lib/client/Pool"
 import { getPositionsByPage } from "@/lib/client/Position"
 import { Skeleton } from "@/components/ui/skeleton"
+import { PAGE_LOAD_SKETETON_SPAN } from "@/config/constants"
 
 
 type GlobalVariableType = {
@@ -38,6 +39,7 @@ type ShowPositionsProps = {
     handleOpenDecreaseLiquidity: (position: PositionProps) => Promise<void>;
     handleOpenCollectFee: (position: PositionProps) => Promise<void>
 }
+
 const ShowPositions: React.FC<ShowPositionsProps> = ({positions, 
                                                     handleOpenIncreaseLiquidity, 
                                                     handleOpenDecreaseLiquidity, 
@@ -165,12 +167,21 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
 
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)
+        const start = performance.now()
         setIsLoading(true)
         const positions = await getPositionsByPage(chainId, address!, page)
         if (positions) {
             setPositions(positions) 
-        } 
-        setIsLoading(false)
+        }
+        const end = performance.now()
+        const elapse = end - start
+        if (elapse < PAGE_LOAD_SKETETON_SPAN) {
+            setTimeout(() => {
+                setIsLoading(false) 
+            }, PAGE_LOAD_SKETETON_SPAN); 
+        } else {
+            setIsLoading(false) 
+        }
     }
     
     const closeIncreaseLiquidityModal = () => {
