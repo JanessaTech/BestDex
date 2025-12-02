@@ -4,18 +4,38 @@ import { PaginationOptionType, TransactionCreateInputType, TransactionInfoType }
 import { TransactionService } from "./types";
 import transactionDao from "../db/dao/TransactionDAO";
 import { getTokenMeta } from "../infra/utils/Token";
+import { TRANSACTION_TYPE } from "../helpers/common/constants";
+import { redisClient } from "../infra";
+import messageHelper from "../helpers/internationalization/messageHelper";
 
 
 class TransactionServiceImp implements TransactionService {
     private validateToken(chainId: number, token: `0x${string}`) {
         getTokenMeta(chainId, token)
     }
+
+    private async invalidateUserPositions(chainId: number, owner: `0x${string}`) {
+        const pattern = `positions:user:${owner}:chainId:${chainId}:page:*`
+        logger.debug('TransactionService.invalidateUserPositions. Delete redis values by key:', pattern)
+        const keys = await redisClient.getKeys(pattern)
+        for (let key of keys) {
+            const deleted = await redisClient.delete(key)
+            if (!deleted) {
+                logger.warning(messageHelper.getMessage('redis_delete_failed', key))
+            }
+        }
+    }
+
     async create(params: TransactionCreateInputType) {
         logger.info('TransactionService.create')
         try {
             this.validateToken(params.chainId, params.token0 as `0x${string}`)
             this.validateToken(params.chainId, params.token1 as `0x${string}`)
             const raw = await transactionDao.create({...params})
+            if (params.txType === TRANSACTION_TYPE.Mint) {
+                await this.invalidateUserPositions(params.chainId, params.from as `0x${string}`)
+            }
+            
             return {
                 id: raw._id,
                 chainId: params.chainId,

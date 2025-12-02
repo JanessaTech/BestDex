@@ -64,6 +64,9 @@ const message: MessageType = {
     //token
     token_not_found: 'No token found for chainId {0} and address {1}',
 
+    //redis
+    redis_delete_failed: 'Failed to delete redis value by key {0}',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',

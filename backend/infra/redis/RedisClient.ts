@@ -64,6 +64,15 @@ class RedisClient {
         }
     }
 
+    async getKeys(pattern: string): Promise<string[]> {
+        try {
+            const res = await this.client.keys(pattern)
+            return res
+        } catch(err) {
+            logger.error('Redis get keys error:', err)
+            return []
+        } 
+    }
 }
 
 const config: RedisConfig = {
