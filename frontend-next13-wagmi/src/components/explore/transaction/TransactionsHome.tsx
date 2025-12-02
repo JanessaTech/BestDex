@@ -145,7 +145,6 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
     return (
         <TabsContent value="transactions">
             <Table>
-                {/* <TableCaption>A list of recent transactions.</TableCaption> */}
                 <TableHeader className="bg-zinc-700 sticky top-16">
                     <TableRow>
                         <TableHead className="text-white font-bold">Time</TableHead>

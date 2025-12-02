@@ -27,6 +27,7 @@ import { fetchLatestPoolInfo } from "@/lib/client/Pool"
 import { getPositionsByPage } from "@/lib/client/Position"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PAGE_LOAD_SKETETON_SPAN } from "@/config/constants"
+import DexPagination from "@/components/common/DexPagination"
 
 
 type GlobalVariableType = {
@@ -162,7 +163,7 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
         if (value === 'positions' && address) {
             loadPositionList()
         }   
-    }, [value, address])
+    }, [value, address, page])
 
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)
@@ -232,7 +233,6 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
         <div>
             <TabsContent value="positions">
                 <Table>
-                    <TableCaption>A list of recent positions.</TableCaption>
                     <TableHeader className="bg-zinc-700 sticky top-20">
                         <TableRow>
                             <TableHead className="text-white font-bold">Position ID</TableHead>
@@ -257,6 +257,9 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
                     
                     </TableBody>
                 </Table>
+                <div className="py-10">
+                <DexPagination page={page} totalPages={1000} setPage={setPage}/> 
+            </div>
             </TabsContent>
             {
                 openIncreaseLiquidity  && global && global.poolInfo && <IncreaseLiquidity
