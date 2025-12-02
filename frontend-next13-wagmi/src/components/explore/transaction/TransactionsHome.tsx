@@ -20,7 +20,8 @@ import { getTransactionsByPage } from "@/lib/client/Transaction"
 import { useChainId, useAccount} from 'wagmi'
 import { timeAgo } from "@/common/utils"
 import { Skeleton } from "@/components/ui/skeleton"
-import { PAGE_LOAD_SKETETON_SPAN } from "@/config/constants"
+import { PAGE_LOAD_SKETETON_SPAN, PAGE_SIZE } from "@/config/constants"
+import DexPagination from "@/components/common/DexPagination"
 
 type ShowTransactionsProps = {
     pagination: PaginationReturnType<TransactionInfoType[]> | undefined
@@ -89,7 +90,7 @@ const ShowTransactionSkeleton:React.FC<{}> = () => {
     return (
         <> 
         {
-            Array(10).fill(undefined).map((_, index) => (
+            Array(PAGE_SIZE).fill(undefined).map((_, index) => (
                 <>
                 <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
                     <TableCell><Skeleton className="h-4 w-[100px]"/></TableCell>
@@ -120,10 +121,9 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
     
     useEffect(() => {
         if (value === 'transactions') {
-            console.log('loadTransactionList...')
             loadTransactionList()
         } 
-    }, [value])
+    }, [value, page])
 
     const loadTransactionList = async () => {
         logger.debug('[TransactionsHome] loadTransactionList. page=', page)
@@ -145,7 +145,7 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
     return (
         <TabsContent value="transactions">
             <Table>
-                <TableCaption>A list of recent transactions.</TableCaption>
+                {/* <TableCaption>A list of recent transactions.</TableCaption> */}
                 <TableHeader className="bg-zinc-700 sticky top-16">
                     <TableRow>
                         <TableHead className="text-white font-bold">Time</TableHead>
@@ -159,64 +159,16 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
                 </TableHeader>
                 <TableBody>
                     {
-                        // pagination?.results.map((transaction, index) => (
-                        //     <>
-                        //         <TableRow key={index} className="border-zinc-400/40 hover:bg-muted/20">
-                        //             <TableCell>{timeAgo(transaction.createdAt)}</TableCell>
-                        //             <TableCell>
-                        //                 <ToolTipHelper content={transaction.tx}>
-                        //                     <div className="w-10 truncate">
-                        //                         {transaction.tx}
-                        //                     </div>
-                        //                 </ToolTipHelper>
-                        //             </TableCell>
-                        //             <TableCell>
-                        //                 <div className="flex flex-col items-center min-w-44">
-                        //                     <span>{transaction.txType}</span>
-                        //                     <div className="flex items-center">
-                        //                         <span>(</span>
-                        //                             <Token token={transaction.token0} imageSize={20}/>
-                        //                         {
-                        //                             transaction.txType as TRANSACTION_TYPE === TRANSACTION_TYPE.Swap ?  
-                        //                                 <ArrowRight className="w-3 h-3 mx-1"/> : <ArrowRightLeft className="w-5 h-5 mx-1"/>
-                        //                         }
-                        //                         <Token token={transaction.token1} imageSize={20}/>
-                        //                         <span>)</span>
-                        //                     </div>
-                        //                 </div>
-                                        
-                        //             </TableCell>
-                        //             <TableCell className={`max-md:hidden`}>
-                        //                 <div className="flex flex-col items-center">
-                        //                     <div>${transaction.amount0}</div>
-                        //                     <Token token={transaction.token0} imageSize={20}/>
-                        //                 </div>
-                        //             </TableCell>
-                        //             <TableCell className={`max-md:hidden`}>
-                        //                 <div className="flex flex-col items-center">
-                        //                     <div>${transaction.amount1}</div>
-                        //                     <Token token={transaction.token1} imageSize={20}/>
-                        //                 </div>
-                        //             </TableCell>
-                        //             <TableCell className="text-right max-md:hidden">
-                        //                 <span>${transaction.usd}</span>
-                        //             </TableCell>
-                        //             <TableCell className="text-center max-md:hidden">
-                        //                 <ToolTipHelper content={<p><strong>Address:</strong> {transaction.from}</p>}>
-                        //                     <div className="w-[100px] truncate">
-                        //                         {transaction.from}
-                        //                     </div>
-                        //                 </ToolTipHelper></TableCell>
-                        //         </TableRow>
-                        //     </>
-                            
-                        // ))
                         isLoading
                         ? <ShowTransactionSkeleton/>
                         : <ShowTransactions pagination={pagination}/>
                     }
                 </TableBody>
             </Table>
+
+            <div className="py-10">
+                <DexPagination page={page} totalPages={pagination?.totalPages} setPage={setPage}/>
+            </div>
         </TabsContent>
     )
 }
