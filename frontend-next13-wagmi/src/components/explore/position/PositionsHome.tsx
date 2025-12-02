@@ -159,10 +159,10 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
     const [isLoading, setIsLoading] = useState(false)
     
     useEffect(() => {
-        if (value === 'positions') {
+        if (value === 'positions' && address) {
             loadPositionList()
         }   
-    }, [value])
+    }, [value, address])
 
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)

@@ -120,10 +120,10 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
     const [isLoading, setIsLoading] = useState(false)
     
     useEffect(() => {
-        if (value === 'transactions') {
+        if (value === 'transactions' && address) {
             loadTransactionList()
         } 
-    }, [value, page])
+    }, [value, page, address])
 
     const loadTransactionList = async () => {
         logger.debug('[TransactionsHome] loadTransactionList. page=', page)
