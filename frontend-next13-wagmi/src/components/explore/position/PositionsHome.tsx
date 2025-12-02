@@ -131,7 +131,6 @@ const ShowPositionSkeleton:React.FC<{}> = () => {
                             <div><Skeleton className="h-4 w-[80px]" /></div>
                             <div><Skeleton className="h-4 w-[80px]" /></div>
                         </div>
-
                     </TableCell>
                  </TableRow>
                 </>

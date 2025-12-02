@@ -20,6 +20,7 @@ import { getTransactionsByPage } from "@/lib/client/Transaction"
 import { useChainId, useAccount} from 'wagmi'
 import { timeAgo } from "@/common/utils"
 import { Skeleton } from "@/components/ui/skeleton"
+import { PAGE_LOAD_SKETETON_SPAN } from "@/config/constants"
 
 type ShowTransactionsProps = {
     pagination: PaginationReturnType<TransactionInfoType[]> | undefined
@@ -126,10 +127,19 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
 
     const loadTransactionList = async () => {
         logger.debug('[TransactionsHome] loadTransactionList. page=', page)
+        const start = performance.now()
         setIsLoading(true)
         const pagination = await getTransactionsByPage(chainId, address!, page)
         if (pagination) setPagination(pagination)
-        setIsLoading(false)
+        const end = performance.now()
+        const elapse = end - start
+        if (elapse < PAGE_LOAD_SKETETON_SPAN) {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, PAGE_LOAD_SKETETON_SPAN);
+        } else {
+            setIsLoading(false)
+        } 
     }
 
     return (
