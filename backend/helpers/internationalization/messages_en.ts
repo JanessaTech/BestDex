@@ -69,6 +69,7 @@ const message: MessageType = {
 
     //config
     config_tokens_getList_success: 'Get the list of tokens from configuration successfully',
+    config_feetiers_getList_success: 'Get the list of feetiers from configuration successfully',
 
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',

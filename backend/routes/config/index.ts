@@ -4,6 +4,7 @@ import initConfigErrorHandlers from './InitConfigErrorHandlers'
 
 const router = express.Router()
 router.get('/tokenList', controller.getTokenList)
+router.get('/feetiers', controller.getFeeTiers)
 
 initConfigErrorHandlers(router)
 
