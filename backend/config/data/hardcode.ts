@@ -65,6 +65,13 @@ export const chainUrls = new Map<number, [Chain, string, string]>([
   [Number(sepolia.id), [sepolia, `https://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
   [Number(hardhat.id), [hardhat, 'http://127.0.0.1:8545', `http://127.0.0.1:8545`]]
 ])
+
+/**
+ *  100 -> 100 / 1,000,000 = 0.0001 -> 0.01%
+ *  500 -> 500 / 1,000,000 = 0.0005 -> 0.05%
+    3000 -> 3000 / 1,000,000 = 0.003 -> 0.3%
+    10000 -> 10000 / 1,000,000 = 0.01 -> 1%
+ */
 export const FEE_TIERS = [
   {value: 0.01, description: 'Best for very stable pairs.'}, 
   {value: 0.05, description: 'Best for stable pairs.'},
