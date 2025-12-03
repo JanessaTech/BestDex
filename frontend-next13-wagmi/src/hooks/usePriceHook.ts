@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import { ChainId } from '@uniswap/sdk-core'
 import { tokenList } from "@/lib/data";
 import { getLatestPrices } from "@/lib/client/TokenPrices";
-import { LocalChainIds, Network_Enum } from "@/common/types";
+import { LocalChainIds} from "@/common/types";
 import logger from "@/common/Logger";
+import { Network_Enum } from "@/lib/client/types";
 
 
 const span = 10000

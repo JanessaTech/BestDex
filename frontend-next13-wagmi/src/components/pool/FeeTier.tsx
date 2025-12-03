@@ -1,5 +1,5 @@
 import logger from "@/common/Logger"
-import { FEE_TIERS } from "@/config/constants"
+import useFeeTiersHook from "@/hooks/useFeeTiersHook"
 import SVGCheck from "@/lib/svgs/svg_check"
 import { useState } from "react"
 
@@ -8,10 +8,11 @@ type FeeTierProps = {
 }
 const FeeTier: React.FC<FeeTierProps> = ({handleFeeAmountChange}) => {
     const [select, setSelect] = useState(2)
-    
+    const feeTiers = useFeeTiersHook()
+
     const handleFeeSelect = (id: number) => {
         setSelect(id)
-        const feeAmount = FEE_TIERS[id].value * 10000
+        const feeAmount = feeTiers[id].value * 10000
         logger.debug('[FeeTier] feeAmount=', feeAmount)
         handleFeeAmountChange(feeAmount)
     }
@@ -21,7 +22,7 @@ const FeeTier: React.FC<FeeTierProps> = ({handleFeeAmountChange}) => {
                         <div className='pb-2'>Fee tier</div>
                         <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
                             {
-                                FEE_TIERS.map((feeTier, id) => (
+                                feeTiers.map((feeTier, id) => (
                                     <div key={id} className='border-[1px] rounded-md border-zinc-700 p-3 cursor-pointer hover:bg-pink-600/15' onClick={() => handleFeeSelect(id)}>
                                         <div className='flex justify-between items-center'>
                                             <span className={`text-sm font-semibold ${select === id ? 'text-pink-600' : 'text-white'}`}>{feeTier.value}%</span>

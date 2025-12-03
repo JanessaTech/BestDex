@@ -35,18 +35,6 @@ export const MIN_TICK = -887272
 export const MAX_TICK = 887272
 export const TICK_RANG_PERCENTAGE = 0.1 
 export const TICK_BASE = new Decimal(1.0001);
-/**
- *  100 -> 100 / 1,000,000 = 0.0001 -> 0.01%
- *  500 -> 500 / 1,000,000 = 0.0005 -> 0.05%
-    3000 -> 3000 / 1,000,000 = 0.003 -> 0.3%
-    10000 -> 10000 / 1,000,000 = 0.01 -> 1%
- */
-export const FEE_TIERS = [
-    {value: 0.01, description: 'Best for very stable pairs.'}, 
-    {value: 0.05, description: 'Best for stable pairs.'},
-    {value: 0.3, description: 'Best for most pairs.'},
-    {value: 1, description: 'Best for exotic pairs.'},
-]
 
 export const UNISWAP_V3_FACTORY_ADDRESSES: { [chainId: number]: `0x${string}`} = {
   1: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Ethereum Mainnet
