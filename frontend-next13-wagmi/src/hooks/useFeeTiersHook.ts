@@ -1,10 +1,10 @@
 import logger from "@/common/Logger"
 import { getFeeTiersFromConfig } from "@/lib/client/Config"
-import { FeeTierType } from "@/lib/client/types"
+import { ConfiguredFeeTier } from "@/lib/client/types"
 import { useEffect, useState } from "react"
 
 const useFeeTiersHook = () => {
-    const [feeTiers, setFeeTiers] = useState<FeeTierType[]>([])
+    const [feeTiers, setFeeTiers] = useState<ConfiguredFeeTier[]>([])
 
     useEffect(() => {
         (async () => {

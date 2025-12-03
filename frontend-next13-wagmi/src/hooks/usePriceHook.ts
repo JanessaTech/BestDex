@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { ChainId } from '@uniswap/sdk-core'
-import { tokenList } from "@/lib/data";
 import { getLatestPrices } from "@/lib/client/TokenPrices";
 import { LocalChainIds} from "@/common/types";
 import logger from "@/common/Logger";
 import { Network_Enum } from "@/lib/client/types";
+import useTokenListHook from "./useTokenListHook";
 
 
 const span = 10000
@@ -24,30 +24,36 @@ type ReturnPriceType = {
 
 const usePriceHook = () => {
     const [tokenPrices, setTokenPrice] = useState<TokenPriceInUSDType>({})
-    const networkEnumIdMap = new Map(tokenList.map((chain) => [chain.network_enum, chain.chainId]))
+    const tokenList = useTokenListHook()
     
     useEffect(() => {
         const fetchTokenPrices = async () => {
             try {
-                const res = await getLatestPrices()
-                updateTokenPrices(res['data'] as ReturnPriceType[])
+                if (!tokenList.length) throw new Error('No token list found')
+                const networkChainMap = new Map(tokenList.map((chain) => [chain.network_enum, chain.chainId]))
+                const latestPricesRes = await getLatestPrices()
+                updateTokenPrices(latestPricesRes['data'] as ReturnPriceType[], networkChainMap)
             } catch(e) {
                 logger.error('[usePriceHook] failed to get latest prices due to ', e)
             }
         }
 
-        fetchTokenPrices()
+        let interval: NodeJS.Timeout
 
-        const interval = setInterval(fetchTokenPrices, span)
-
-        return () => {
-            clearInterval(interval)
+        if (tokenList.length) {
+            fetchTokenPrices()
+            interval = setInterval(fetchTokenPrices, span)
         }
-    }, []) 
+        return () => {
+            if (interval) {
+                clearInterval(interval)
+            }  
+        }
+    }, [tokenList]) 
 
-    const updateTokenPrices = (latestPrices: ReturnPriceType[]) => {
+    const updateTokenPrices = (latestPrices: ReturnPriceType[], networkChainMap: Map<Network_Enum, number>) => {
         latestPrices.forEach((item) => {
-            const chainId = networkEnumIdMap.get(item.network) as ChainId
+            const chainId = networkChainMap.get(item.network) as ChainId
             const address = item.address
             const usd =  item.prices.filter((price) => price.currency === 'usd')
             const value = usd && usd.length ? usd[0].value : ''

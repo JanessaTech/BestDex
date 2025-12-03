@@ -20,8 +20,8 @@ import {
 import Image from "next/image"
 import SVGArrowDown from "@/lib/svgs/svg_arrow_down"
 import Token from "./Token"
-import { tokenList } from "@/lib/data"
 import type { TokenType } from "@/common/types"
+import useTokenListHook from "@/hooks/useTokenListHook"
 
 type TokenOptionProps = {
   tokenOpen: boolean;
@@ -33,7 +33,8 @@ type TokenOptionProps = {
   updateToken: (from: TokenType | undefined) => void;
 }
 const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, showFull = true, onOpenChange, closeTokenOption, updateToken}) => {
-    const tokens = tokenList.filter((l) => l.chainId === chainId)[0].tokens
+    const tokenList = useTokenListHook()
+    const tokens = tokenList.length ? tokenList.filter((l) => l.chainId === chainId)[0].tokens : []
    
     return (
         <Popover open={tokenOpen} onOpenChange={onOpenChange}>
