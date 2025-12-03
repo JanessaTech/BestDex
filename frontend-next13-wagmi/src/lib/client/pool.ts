@@ -1,8 +1,7 @@
 import logger from '@/common/Logger'
 import messageHelper from '@/common/internationalization/messageHelper'
-import { PoolInfo } from '@/common/types'
 import axios from 'axios'
-import { DexResponseType } from './types'
+import { DexResponseType, PoolInfo } from './types'
 
 export const fetchLatestPoolInfo = async (poolAddress: `0x${string}`, chainId: number) => {
     logger.debug('[API client: pool] fetchLatestPoolInfo. poolAddress=', poolAddress, ' chainId=', chainId)

@@ -21,8 +21,9 @@ import IncreaseLiquidityExecutor from "./IncreaseLiquidityExecutor"
 import IncreaseLiquiditySuccess from "./IncreaseLiquiditySuccess"
 import { fetchLatestPoolInfo } from "@/lib/client/Pool"
 import { fromReadableAmount2, isDataStale } from "@/common/utils"
-import { IncreasePositionParamsType, PoolInfo, PositionProps } from "@/common/types"
+import { IncreasePositionParamsType,  PositionProps } from "@/common/types"
 import logger from "@/common/Logger"
+import { PoolInfo } from "@/lib/client/types"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {

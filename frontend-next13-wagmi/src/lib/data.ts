@@ -1,5 +1,5 @@
+import { TokenListType } from "./client/types";
 
-import { TokenListType} from "@/common/types"
 
 export const tokenList: TokenListType = [
     {

@@ -19,8 +19,9 @@ import { toast } from "sonner"
 import { useEffect, useState } from "react";
 import AddPositionSuccess from "./AddPositionSuccess";
 import { fromReadableAmount2 } from "@/common/utils";
-import { LocalChainIds, MintPositionParamsType, PoolInfo, TokenType } from "@/common/types";
+import { LocalChainIds, MintPositionParamsType,TokenType } from "@/common/types";
 import logger from "@/common/Logger";
+import { PoolInfo } from "@/lib/client/types";
 
 
 const parseCalldata = (calldata: `0x${string}`) => {

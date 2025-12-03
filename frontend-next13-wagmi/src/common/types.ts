@@ -12,18 +12,6 @@ export type TokenType = {
     company?: string;
 }
 
-export type PoolInfo = {
-    token0: string;
-    token1: string;
-    fee: number;
-    tickSpacing: number;
-    slot0: any[];
-    sqrtPriceX96: string;
-    tick: number;
-    liquidity: string;
-    timeStamp: number;
-}
-
 export type PoolRange = {
     min: number;
     max: number;
@@ -31,9 +19,6 @@ export type PoolRange = {
     lower: number;
     upper: number;
 }
-
-export type Network_Enum = 'eth-mainnet' | 'arb-mainnet' | 'bnb-mainnet' | 'polygon-mainnet' | 'localhost' | 'testnet'
-export type TokenListType = {chainId: number, network_enum: Network_Enum, tokens: TokenType[]}[]
 
 export enum TRANSACTION_TYPE {
     Swap = 'Swap',

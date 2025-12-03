@@ -21,13 +21,14 @@ import CollectFee from "@/components/pool/CollectFee"
 import { IContextUtil, useContextUtil } from "@/components/providers/ContextUtilProvider"
 import { toast } from 'sonner'
 import { useChainId, useAccount} from 'wagmi'
-import { PoolInfo, PositionProps } from "@/common/types"
+import { PositionProps } from "@/common/types"
 import logger from "@/common/Logger"
 import { fetchLatestPoolInfo } from "@/lib/client/Pool"
 import { getPositionsByPage } from "@/lib/client/Position"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PAGE_LOAD_SKETETON_SPAN } from "@/config/constants"
 import DexPagination from "@/components/common/DexPagination"
+import { PoolInfo } from "@/lib/client/types"
 
 
 type GlobalVariableType = {

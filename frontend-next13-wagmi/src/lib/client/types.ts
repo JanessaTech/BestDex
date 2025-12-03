@@ -8,6 +8,15 @@ export type DexResponseType<T = any> = {
     errors?: any
 }
 
+export type PaginationReturnType<T> = {
+    results: T,
+    page: number,
+    pageSize: number,
+    totalPages: number,
+    totalResults: number,
+}
+
+// transaction
 export type TransactionCreateInputType = {
     chainId: number;
     tokenId?: string;
@@ -20,13 +29,6 @@ export type TransactionCreateInputType = {
     usd: string;
     from: string;
 }
-export type PaginationReturnType<T> = {
-    results: T,
-    page: number,
-    pageSize: number,
-    totalPages: number,
-    totalResults: number,
-  }
 
 export type TransactionInfoType = {
     id: number;
@@ -42,3 +44,21 @@ export type TransactionInfoType = {
     from: string;
     createdAt: Date;
 }
+
+//pool
+export type PoolInfo = {
+    token0: string;
+    token1: string;
+    fee: number;
+    tickSpacing: number;
+    slot0: any[];
+    sqrtPriceX96: string;
+    tick: number;
+    liquidity: string;
+    timeStamp: number;
+}
+
+//config
+export type Network_Enum = 'eth-mainnet' | 'arb-mainnet' | 'bnb-mainnet' | 'polygon-mainnet' | 'localhost' | 'testnet'
+export type TokenListType = {chainId: number, network_enum: Network_Enum, tokens: TokenType[]}[]
+

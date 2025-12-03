@@ -7,9 +7,10 @@ import { ChainId } from '@uniswap/sdk-core'
 import Decimal from "decimal.js";
 import SVGRefresh from "@/lib/svgs/svg_refresh";
 import { fetchLatestPoolInfo } from "@/lib/client/Pool";
-import { LocalChainIds, PoolInfo, PoolRange, TokenType } from "@/common/types";
+import { LocalChainIds, PoolRange, TokenType } from "@/common/types";
 import { calPoolRange, getPoolCurrentPrice } from "@/common/utils";
 import logger from "@/common/Logger";
+import { PoolInfo } from "@/lib/client/types";
 
 type PositionRangeProps = {
     token0: TokenType;  //we have to make sure that token0 is the address of token0 in the pool;

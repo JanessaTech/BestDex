@@ -15,9 +15,10 @@ import PositionRange from './PositionRange'
 import { useUpdateSetting } from '@/config/store'
 import RefreshModal from './RefreshModal'
 import { fetchLatestPoolInfo } from '@/lib/client/Pool'
-import { PoolInfo, TokenType } from '@/common/types'
+import { TokenType } from '@/common/types'
 import { isDataStale } from '@/common/utils'
 import logger from '@/common/Logger'
+import { PoolInfo } from '@/lib/client/types'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {

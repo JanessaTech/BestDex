@@ -10,8 +10,9 @@ import { Button } from '../ui/button';
 import ReviewAddPosition from "./ReviewAddPosition";
 import DepositInput from "./DepositInput";
 import { fromReadableAmount2 } from "@/common/utils";
-import { PoolInfo, TokenType } from '@/common/types';
+import { TokenType } from '@/common/types';
 import logger from '@/common/Logger';
+import { PoolInfo } from '@/lib/client/types';
 
 type DepositProps = {
     token0: TokenType;
