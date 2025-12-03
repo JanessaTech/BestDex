@@ -1,4 +1,3 @@
-import logger from "@/common/Logger"
 import useFeeTiersHook from "@/hooks/useFeeTiersHook"
 import SVGCheck from "@/lib/svgs/svg_check"
 import { useState } from "react"
@@ -13,7 +12,6 @@ const FeeTier: React.FC<FeeTierProps> = ({handleFeeAmountChange}) => {
     const handleFeeSelect = (id: number) => {
         setSelect(id)
         const feeAmount = feeTiers[id].value * 10000
-        logger.debug('[FeeTier] feeAmount=', feeAmount)
         handleFeeAmountChange(feeAmount)
     }
 
