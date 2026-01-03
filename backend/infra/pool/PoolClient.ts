@@ -13,7 +13,7 @@ export interface PoolClient {
 }
 
 export class PoolClient extends EventEmitter {
-    public poolAddressMap: Map<number, Map<string, `0x${string}`>>
+    public poolAddressMap: Map<number, Map<`0x${string}`, {token0: `0x${string}`, token1: `0x${string}`, fee: number}>>
 
     constructor() {
         super()
@@ -29,6 +29,7 @@ export class PoolClient extends EventEmitter {
     private calculatePoolAddress = async () => {
         for (let chain of tokenList) {
             const chainId = chain.chainId
+            if (chainId === 31337) continue
             this.poolAddressMap.set(chainId,new Map())
             const tokens = chain.tokens
             const publicClient = createBlockchainClient(chainId)
@@ -40,14 +41,13 @@ export class PoolClient extends EventEmitter {
                         const feeAmount = FEE_TIERS[k].value * 10000
                         try {
                             const poolAddress = await calcPoolAddress(token0.address, token1.address, feeAmount, chainId, publicClient)
-                            const t0LowerCase = token0.address.toLowerCase()
-                            const t1LowerCase = token1.address.toLowerCase() 
+                            const t0LowerCase = token0.address.toLowerCase() as `0x${string}`
+                            const t1LowerCase = token1.address.toLowerCase() as `0x${string}`
                             const [t0, t1] = t0LowerCase < t1LowerCase 
                             ? [t0LowerCase , t1LowerCase]
                             : [t1LowerCase, t0LowerCase]
-                            const key = `${t0}-${t1}-${feeAmount}`
-                            this.poolAddressMap.get(chainId)?.set(key, poolAddress.toLowerCase() as `0x${string}`)
-                            logger.debug(`poolAddress=${poolAddress}, token0=${token0.symbol}, token1=${token1.symbol}, chainId=${chainId} ,feeAmount=${feeAmount}`)
+                            this.poolAddressMap.get(chainId)?.set(poolAddress.toLowerCase() as `0x${string}`, {token0: t0, token1: t1, fee: feeAmount})
+                            //logger.debug(`poolAddress=${poolAddress}, token0=${token0.symbol}, token1=${token1.symbol}, chainId=${chainId} ,feeAmount=${feeAmount}`)
                         } catch(error) {
                             logger.error('poolAddress is invalid due to:', error)
                         } 

@@ -57,7 +57,7 @@ export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient: Pu
                 token1: data[1].result,
                 fee: data[2].result,
                 tickSpacing: data[3].result,
-                slot0: slot0.map((e) => e.toString()),
+                //slot0: slot0.map((e) => e.toString()),
                 sqrtPriceX96 : slot0[0].toString(),
                 tick: slot0[1],
                 liquidity: (data[5].result as any).toString(),
@@ -97,4 +97,21 @@ export const calcPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}
 
 export function isZeroAddress(address: `0x${string}`) {
     return address.toLowerCase() === ZERO_ADDRESS.toLowerCase();
+}
+
+/**
+ * 
+ * @param feeTier : 100, 500, 3000, 10000
+ *  100 -> 1
+ *  500 -> 10
+ *  3000 -> 60
+ *  1000 -> 200
+ */
+export function getTickSpacing(feeTier: number) {
+    switch (feeTier) {
+        case 100: return 1
+        case 500: return 10
+        case 3000: return 60
+        default: return 200
+    }
 }

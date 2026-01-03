@@ -1,11 +1,15 @@
 import redisClient from './redis/RedisClient'
 import webSocketClient from './websocket/WebSocketClient'
-//import subGraphClient from './subgraph/SubGraphClient'
 import liveQueryClient from './subgraph/LiveQueryClient'
+import getConfig from '../config/configuration'
+
+const config = getConfig()
 
 redisClient.init()
-webSocketClient.init()
-//subGraphClient.init()
-liveQueryClient.init()
+if (config?.env === 'local') {
+    webSocketClient.init()
+} else {
+    liveQueryClient.init()
+}
 
 export {redisClient, webSocketClient, liveQueryClient}

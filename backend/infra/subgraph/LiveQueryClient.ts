@@ -1,3 +1,4 @@
+import getConfig from "../../config/configuration";
 import { PoolClient } from "../pool/PoolClient"
 import { ChainConfig, ChainMonitor } from "./ChainMonitor";
 import { MonitorConfig, MultiChainMonitor } from "./MultiChainMonitor";
@@ -12,12 +13,6 @@ class LiveQueryClient {
         this.config = _config
         this.poolClient = _poolClient
         this.poolClient.on('ready', async () => {
-            // for (let [chainId, subMap] of this.poolClient.poolAddressMap) {
-            //     console.log('chainId =', chainId)
-            //     for (let [key, value] of subMap) {
-            //         console.log(`${key} = ${value}`)
-            //     }
-            // }
             await this.startMultiChainMonitor()
         })
     }
@@ -28,10 +23,11 @@ class LiveQueryClient {
         const monitorConfig: MonitorConfig = {configs: []}
 
         if (this.poolClient.poolAddressMap.get(1)) {
-            const ethereumPoolIds = Array.from(this.poolClient.poolAddressMap.get(1)!.values())
+            const ethereumPoolIds = Array.from(this.poolClient.poolAddressMap.get(1)!.keys())
             //console.log('ethereumPoolIds=', ethereumPoolIds)
             const ethereumChainConfig: ChainConfig = {
                 chainName: 'ethereum',
+                chainId: 1,
                 enabled: true,
                 graphClientDir:'../graphclient/ethereum/.graphclient',
                 queryName: 'GetMultipleEthereumPoolLiveData',
@@ -43,9 +39,10 @@ class LiveQueryClient {
         }
 
         if (this.poolClient.poolAddressMap.get(11155111)) {
-            const ethereumSepoliaPoolIds = Array.from(this.poolClient.poolAddressMap.get(11155111)!.values())
+            const ethereumSepoliaPoolIds = Array.from(this.poolClient.poolAddressMap.get(11155111)!.keys())
             const ethereumSepoliaChainConfig: ChainConfig = {
                 chainName: 'ethereum_sepolia',
+                chainId: 11155111,
                 enabled: true,
                 graphClientDir:'../graphclient/ethereum_sepolia/.graphclient',
                 queryName: 'GetMultipleEthereumSepoliaPoolLiveData',
@@ -55,7 +52,7 @@ class LiveQueryClient {
             }
             monitorConfig.configs.push(ethereumSepoliaChainConfig)
         }
-        this.multiChainMonitor = new MultiChainMonitor(monitorConfig)
+        this.multiChainMonitor = new MultiChainMonitor(monitorConfig, this.poolClient)
         await this.multiChainMonitor.start()
     }
 
@@ -65,6 +62,10 @@ class LiveQueryClient {
 
     public async stop() {
         await this.multiChainMonitor.stop()
+    }
+
+    public getLatestPoolInfo(chainId: number, poolAddress: string) {
+        return this.multiChainMonitor.getLatestPoolInfo(chainId, poolAddress)
     }
 
     public getStatus(chainName: string) {
@@ -78,7 +79,12 @@ class LiveQueryClient {
 }
 
 const poolClient = new PoolClient()
-const config: LiveQueryClientConfig = {}
-const liveQueryClient = new LiveQueryClient(config, poolClient)
-poolClient.init()
+const liveConfig: LiveQueryClientConfig = {}
+const liveQueryClient = new LiveQueryClient(liveConfig, poolClient)
+
+const config = getConfig()
+if (config.env !== 'local') {
+    poolClient.init()
+}
+
 export default liveQueryClient

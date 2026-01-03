@@ -58,7 +58,7 @@ export type PoolInfo = {
     token1: string;
     fee: number;
     tickSpacing: number;
-    slot0: any[];
+    //slot0?: any[];
     sqrtPriceX96: string;
     tick: number;
     liquidity: string;

@@ -1,17 +1,29 @@
 import { EventEmitter } from "events";
 import logger from "../../helpers/logger";
 
-type PoolDetails = {
+type PoolAttrs = {
     id: string;
     liquidity: string;
     tick:number;
     sqrtPriceX96: string;
     fee: number;
 }
-type PoolUpdate  = {
+export type PoolUpdate  = {
+    chainId: number;
     chainName: string;
     timestamp: number;
-    pools: PoolDetails[]
+    pools: PoolAttrs[]
+}
+
+export interface ChainConfig {
+    chainName: string;
+    chainId: number;
+    enabled: boolean;
+    graphClientDir: string;
+    poolIds: string[];
+    queryName: string;
+    maxRetries: number;
+    retryInterval: number; 
 }
 
 interface ChainMonitorEvents {
@@ -22,21 +34,6 @@ export interface ChainMonitor {
     on<U extends keyof ChainMonitorEvents>(event: U, listener: ChainMonitorEvents[U]): this;
     emit<U extends keyof ChainMonitorEvents>(event: U, ...args: Parameters<ChainMonitorEvents[U]>): boolean
 }
-
-export interface ChainConfig {
-    chainName: string;
-    enabled: boolean;
-    graphClientDir: string;
-    poolIds: string[];
-    queryName: string;
-    maxRetries: number;
-    retryInterval: number; 
-}
-
-export interface MonitorConfig {
-    chains: ChainConfig[];  
-}
-
 
 export class ChainMonitor extends EventEmitter {
     private config: ChainConfig
@@ -106,6 +103,7 @@ export class ChainMonitor extends EventEmitter {
                 const poolData = result[chainKey] as any[]
                 const timeNow = Date.now()
                 const poolUpdate: PoolUpdate = {
+                    chainId: this.config.chainId,
                     chainName: this.config.chainName,
                     timestamp: timeNow,
                     pools: poolData.map((e) => ({id: e.id,

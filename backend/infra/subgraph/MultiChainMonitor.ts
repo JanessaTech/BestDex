@@ -1,7 +1,20 @@
 import EventEmitter from "events";
-import { ChainConfig, ChainMonitor } from "./ChainMonitor";
+import { ChainConfig, ChainMonitor, PoolUpdate } from "./ChainMonitor";
 import logger from "../../helpers/logger";
+import { PoolClient } from "../pool/PoolClient";
+import { getTickSpacing } from "../utils/Pool";
+import { ethers } from "ethers";
 
+export type PoolDetails = {
+    token0: string;
+    token1: string;
+    fee: number;
+    sqrtPriceX96: string;
+    tickSpacing: number,
+    tick: number;
+    liquidity: string;
+    timeStamp: number;
+}
 export interface MonitorConfig {
     configs: ChainConfig[]
 }
@@ -10,12 +23,15 @@ export class MultiChainMonitor extends EventEmitter {
     private mconfig: MonitorConfig
     private monitorMap: Map<string, ChainMonitor>
     private isRunning: boolean
+    private poolClient: PoolClient
+    private latestPoolInfoMap = new Map<number, Map<string, PoolDetails>>()
 
-    constructor(_mconfig: MonitorConfig) {
+    constructor(_mconfig: MonitorConfig, _poolClient: PoolClient) {
         super()
         this.mconfig = _mconfig
         this.monitorMap = new Map()
         this.isRunning = false
+        this.poolClient = _poolClient
         this.init()
     }
 
@@ -26,9 +42,7 @@ export class MultiChainMonitor extends EventEmitter {
             if (config.enabled) {
                 try {
                     const monitor = new ChainMonitor(config)
-                    monitor.on('data', (update) => {
-                        logger.info('Received update:', update)
-                    })
+                    monitor.on('data', this.updateLatestPoolInfoMap)
                     this.monitorMap.set(config.chainName, monitor)
                     cnt++
                 } catch(error) {
@@ -37,6 +51,29 @@ export class MultiChainMonitor extends EventEmitter {
             }
         }
         logger.info(`${cnt} ChainMonitors were created`)
+    }
+
+    private updateLatestPoolInfoMap = (update: PoolUpdate) => {
+        logger.info('Received update:', update)
+        const {chainId, timestamp, pools} = update
+        if (!this.latestPoolInfoMap.get(chainId)) {
+            this.latestPoolInfoMap.set(chainId, new Map())
+        }
+        for (let pool of pools) {
+            const {id, liquidity, tick, sqrtPriceX96, fee} = pool
+            const res = this.poolClient.poolAddressMap.get(chainId)!.get(id as `0x{string}`)!
+            const poolDetails: PoolDetails = {
+                token0: ethers.utils.getAddress(res.token0) ,
+                token1: ethers.utils.getAddress(res.token1),
+                liquidity: liquidity,
+                tick: tick,
+                sqrtPriceX96: sqrtPriceX96,
+                tickSpacing: getTickSpacing(tick),
+                fee: fee,
+                timeStamp: timestamp
+            }
+            this.latestPoolInfoMap.get(chainId)!.set(id, poolDetails)
+        }
     }
 
     public async start() {
@@ -74,6 +111,10 @@ export class MultiChainMonitor extends EventEmitter {
         const results = await Promise.allSettled(startPromises)
         const startedCnt  = results.filter((r) => r.status === 'fulfilled' && r.value === true).length
         logger.info(`${startedCnt} ChainMonitors were stopped`)
+    }
+
+    public getLatestPoolInfo(chainId: number, poolAddress: string) {
+        return this.latestPoolInfoMap.get(chainId)?.get(poolAddress)
     }
 
     public getStatus(chainName: string) {
