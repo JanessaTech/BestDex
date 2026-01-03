@@ -1,0 +1,3 @@
+{
+  "448b1c2697868fd7ac883a00bf4977c7f46108e3c605e68e52bc3f420230836b": "fragment PoolLiveDataFields on Pool {\n  liquidity\n  tick\n  sqrtPrice\n  feeTier\n  id\n}\n\nquery GetMultipleEthereumSepoliaPoolLiveData($poolIds: [Bytes!]!) @live(interval: 5000) {\n  uniswapv3_ethereum_sepolia: pools(where: {id_in: $poolIds}) {\n    ...PoolLiveDataFields\n  }\n}"
+}

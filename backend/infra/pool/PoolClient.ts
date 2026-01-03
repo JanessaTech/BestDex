@@ -56,7 +56,7 @@ export class PoolClient extends EventEmitter {
             }
         } 
 
-        console.log('send ready')
+        logger.info('Send emit: ready')
         this.emit('ready')
     }
 }

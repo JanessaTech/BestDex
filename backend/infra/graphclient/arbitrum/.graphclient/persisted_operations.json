@@ -1,0 +1,3 @@
+{
+  "d8b5d969390b1152cce478d22c1cb1ec4781ea532c0ec1b9b5a3ec94cfcccece": "fragment PoolLiveDataFields on Pool {\n  liquidity\n  tick\n  sqrtPrice\n  feeTier\n  id\n}\n\nquery GetMultipleArbitrumPoolLiveData($poolIds: [ID!]!) @live(interval: 5000) {\n  uniswapv3_arbitrum: pools(where: {id_in: $poolIds}) {\n    ...PoolLiveDataFields\n  }\n}"
+}

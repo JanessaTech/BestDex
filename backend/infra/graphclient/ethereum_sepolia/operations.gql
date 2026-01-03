@@ -1,0 +1,13 @@
+fragment PoolLiveDataFields on Pool {
+  liquidity
+  tick
+  sqrtPrice
+  feeTier
+  id
+}
+
+query GetMultipleEthereumSepoliaPoolLiveData($poolIds: [Bytes!]!) @live(interval: 5000) {
+  uniswapv3_ethereum_sepolia: pools(where: { id_in: $poolIds }) {
+    ...PoolLiveDataFields
+  }
+}
