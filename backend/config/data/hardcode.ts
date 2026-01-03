@@ -45,7 +45,12 @@ export const tokenList: TokenListType = [
     {
       chainId: 11155111,  
       network_enum: 'testnet',
-      tokens: []
+      tokens: [
+        {chainId: 11155111, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'}, 
+        {chainId: 11155111, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'},
+        {chainId: 11155111, name: 'USDZ', symbol: 'USDZ ', alias: 'usdz', decimal: 6, address: '0x3eDF60dd017aCe33A0220F78741b5581C385A1BA'},
+        {chainId: 11155111, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0x5ab10C716716f6F1a2a0848BB6B36B89d7F5A24d'}
+      ]
     },
     {
       chainId: 31337,  

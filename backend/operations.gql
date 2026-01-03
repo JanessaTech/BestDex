@@ -1,0 +1,13 @@
+fragment PoolLiveDataFields on Pool {
+  liquidity
+  tick
+  sqrtPrice
+  feeTier
+  id
+}
+
+query GetMultipleEthereumPoolLiveData($poolIds: [ID!]!) @live(interval: 5000) {
+  uniswapv3_ethereum: pools(where: { id_in: $poolIds }) {
+    ...PoolLiveDataFields
+  }
+}

@@ -1,0 +1,10 @@
+sources:
+  - name: uniswapv3_ethereum
+    handler:
+      graphql:
+        endpoint: https://gateway.thegraph.com/api/eada99c8eee80663db1e909b89c14a3f/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV
+plugins:
+  - pollingLive:
+      defaultInterval: 10000
+documents:
+  - operations.gql

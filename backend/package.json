@@ -9,6 +9,8 @@
     "ts-start-local": "set PLATFORM=local&&npx ts-node bin/boostrap.ts",
     "ts-start-testnet": "set PLATFORM=testnet&&npx ts-node bin/boostrap.ts",
     "ts-start-mainnet": "set PLATFORM=mainnet&&npx ts-node bin/boostrap.ts",
+    "codegen": "graphclient build",
+    "dev": "graphclient serve-dev",
     "test": "jest"
   },
   "keywords": [],
@@ -34,9 +36,10 @@
     "viem": "^2.38.6",
     "winston": "^3.14.2",
     "ws": "^8.18.3",
-    "yup": "^1.4.0"
+    "yup": "^1.7.1"
   },
   "devDependencies": {
+    "@graphprotocol/client-cli": "^3.0.7",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

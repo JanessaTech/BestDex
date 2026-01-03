@@ -12,6 +12,8 @@ npm run ts-start-local
 npm run ts-start-testnet
 npm run ts-start-mainnet
 npm run start
+npm run codegen // if you just need to generate the graphclient
+npm run dev // if you need to run/debug graphclient query locally
 ```
 
 ## How to install libs & config for test and run tests

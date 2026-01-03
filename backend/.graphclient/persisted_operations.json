@@ -1,0 +1,3 @@
+{
+  "025ac81b81be98e4cb8ed026778049f4f8841492676ee39b247c43787529b3dc": "fragment PoolLiveDataFields on Pool {\n  liquidity\n  tick\n  sqrtPrice\n  feeTier\n  id\n}\n\nquery GetMultipleEthereumPoolLiveData($poolIds: [ID!]!) @live(interval: 5000) {\n  uniswapv3_ethereum: pools(where: {id_in: $poolIds}) {\n    ...PoolLiveDataFields\n  }\n}"
+}
