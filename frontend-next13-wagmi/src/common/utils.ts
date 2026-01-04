@@ -2,8 +2,9 @@ import JSBI from 'jsbi'
 import { Decimal } from 'decimal.js';
 import { parseUnits, PublicClient} from 'viem'
 import { MAX_TICK, MIN_TICK, TICK_BASE, TICK_RANG_PERCENTAGE, UNISWAP_V3_FACTORY_ABI, UNISWAP_V3_FACTORY_ADDRESSES, ZERO_ADDRESS } from '@/config/constants';
-import { PoolInfo, PoolRange, TokenType } from './types';
+import { PoolRange, TokenType } from './types';
 import logger from './Logger';
+import { PoolInfo } from '@/lib/client/types';
 
 Decimal.set({
     toExpNeg: -1e15, 

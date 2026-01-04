@@ -3,6 +3,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig , Chain} from '@rainbow-me/rainbowkit';
 import {
     mainnet,
+    bsc,
     polygon,
     arbitrum,
     sepolia,
@@ -29,8 +30,8 @@ import {
       iconUrl: '/imgs/networks/ethereum.png',
     },
     {
-      ...polygon,
-      iconUrl: '/imgs/networks/polygon.png',
+      ...bsc,
+      iconUrl: '/imgs/networks/bnbsmartchain.png',
     },
     {
       ...arbitrum,
@@ -41,16 +42,10 @@ import {
                                                            : [])
   ]
 
-// export const chainUrls = { // it should be consistent with the variable chains defined above
-//   [mainnet.id]: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
-//   [polygon.id]: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
-//   [arbitrum.id]: `https://arbitrum-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
-//   [sepolia.id]: `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
-//   [hardhat.id]: 'http://127.0.0.1:8545'
-// }
+
 export const chainUrls = { // it should be consistent with the variable chains defined above
   [mainnet.id]: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
-  [polygon.id]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+  [bsc.id]: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [arbitrum.id]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [sepolia.id]: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [hardhat.id]: 'http://127.0.0.1:8545'
