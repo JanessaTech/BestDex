@@ -54,7 +54,13 @@ export class PoolClient extends EventEmitter {
                     }
                 }
             }
-        } 
+        }
+        for(let [chainId, subMap] of this.poolAddressMap) {
+            logger.debug(`chainId = ${chainId}`)
+            for(let [poolAddress, details] of subMap) {
+                logger.debug(`poolAddress = ${poolAddress}, details = ${JSON.stringify(details)}`)
+            }
+        }
 
         logger.info('Send emit: ready')
         this.emit('ready')

@@ -52,18 +52,7 @@ export type TokenType = {
     company?: string;
 }
 
-//pool
-export type PoolInfo = {
-    token0: string;
-    token1: string;
-    fee: number;
-    tickSpacing: number;
-    //slot0?: any[];
-    sqrtPriceX96: string;
-    tick: number;
-    liquidity: string;
-    timeStamp: number;
-}
+
 
 //position
 export type PositionProps = {

@@ -4,6 +4,7 @@ import logger from "../../helpers/logger";
 import { PoolClient } from "../pool/PoolClient";
 import { getTickSpacing } from "../utils/Pool";
 import { ethers } from "ethers";
+import { PoolInfo } from "../types";
 
 export type PoolDetails = {
     token0: string;
@@ -15,6 +16,7 @@ export type PoolDetails = {
     liquidity: string;
     timeStamp: number;
 }
+
 export interface MonitorConfig {
     configs: ChainConfig[]
 }
@@ -24,7 +26,7 @@ export class MultiChainMonitor extends EventEmitter {
     private monitorMap: Map<string, ChainMonitor>
     private isRunning: boolean
     private poolClient: PoolClient
-    private latestPoolInfoMap = new Map<number, Map<string, PoolDetails>>()
+    private latestPoolInfoMap = new Map<number, Map<string, PoolInfo>>()
 
     constructor(_mconfig: MonitorConfig, _poolClient: PoolClient) {
         super()
@@ -62,7 +64,7 @@ export class MultiChainMonitor extends EventEmitter {
         for (let pool of pools) {
             const {id, liquidity, tick, sqrtPriceX96, fee} = pool
             const res = this.poolClient.poolAddressMap.get(chainId)!.get(id as `0x{string}`)!
-            const poolDetails: PoolDetails = {
+            const poolInfo: PoolInfo = {
                 token0: ethers.utils.getAddress(res.token0) ,
                 token1: ethers.utils.getAddress(res.token1),
                 liquidity: liquidity,
@@ -72,7 +74,7 @@ export class MultiChainMonitor extends EventEmitter {
                 fee: fee,
                 timeStamp: timestamp
             }
-            this.latestPoolInfoMap.get(chainId)!.set(id, poolDetails)
+            this.latestPoolInfoMap.get(chainId)!.set(id, poolInfo)
         }
     }
 

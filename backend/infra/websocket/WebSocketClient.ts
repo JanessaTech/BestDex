@@ -5,8 +5,8 @@ import { calcPoolAddress } from "../utils/Pool"
 import UniswapV3PoolListener from "./UniswapV3PoolListener"
 import LocalUniswapV3PoolListener from "./LocalUniswapV3PoolListener"
 import { createBlockchainClient } from "../utils/Chain"
-import { PoolInfo, TokenType } from "../../controllers/types"
-import { PoolMetaData } from "../types"
+import { TokenType } from "../../controllers/types"
+import { PoolInfo, PoolMetaData } from "../types"
 
 interface WebsocketConfig {}
 
@@ -42,7 +42,7 @@ class WebSocketClient {
                 this.websocketsMap.set(chainId, new Map())
             }
             const metaData = {listener: listener, token0: token0, token1: token1, feeAmount: feeAmount}
-            this.websocketsMap.get(chainId)?.set(poolAddress, metaData)
+            this.websocketsMap.get(chainId)?.set(poolAddress.toLowerCase() as `0x${string}`, metaData)
             logger.info('A new listener is added!')
         } else {
             logger.info('A new listener was already added!')

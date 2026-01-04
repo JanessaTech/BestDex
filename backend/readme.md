@@ -45,3 +45,4 @@ npm test
 1. using separate logger instead of only one log file
 2. refactor hardcode.ts
 3. Unify the config files, .env , constants.ts and hardcode.ts
+4. calculate pooladdress offline

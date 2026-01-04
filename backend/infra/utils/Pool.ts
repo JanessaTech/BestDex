@@ -3,7 +3,7 @@ import { PublicClient } from 'viem'
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import logger from '../../helpers/logger';
 import { UNISWAP_V3_FACTORY_ABI, UNISWAP_V3_FACTORY_ADDRESSES, ZERO_ADDRESS } from "../../helpers/common/constants";
-import { PoolInfo } from '../../controllers/types';
+import { PoolInfo } from '../types';
 
 export const fetchPoolInfo = async (poolAddress: `0x${string}`, publicClient: PublicClient): Promise<PoolInfo> => {
     try {
