@@ -1,4 +1,4 @@
-import { mainnet, polygon, arbitrum, sepolia, hardhat} from 'viem/chains';
+import { mainnet, bsc, arbitrum, sepolia, hardhat} from 'viem/chains';
 import { Chain } from 'viem';
 import dotenv from 'dotenv';
 import { TokenListType } from '../../controllers/types';
@@ -23,12 +23,11 @@ export const tokenList: TokenListType = [
       ]
     },
     {
-      chainId: 137,  
-      network_enum: 'polygon-mainnet',
+      chainId: 56,  
+      network_enum: 'bnb-mainnet',
       tokens: [
-        {chainId: 137, name: 'Polygon Ecosystem Token', symbol: 'POL', alias: 'pol', decimal: 18, address: '0x0000000000000000000000000000000000001010'},
-        {chainId: 137, name: '(PoS) Tether USD', symbol: 'USDT ', alias: 'usdt', decimal: 6, address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'},
-        {chainId: 137, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'},
+        {chainId: 56, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 18, address: '0x55d398326f99059ff775485246999027b3197955'}, 
+        {chainId: 56, name: 'ChainLink Token', symbol: 'LINK', alias: 'link', decimal: 18, address: '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd'}
       ]
     },
     {
@@ -63,9 +62,10 @@ export const tokenList: TokenListType = [
       ]
     }
   ]
+
 export const chainUrls = new Map<number, [Chain, string, string]>([
   [Number(mainnet.id), [mainnet, `https://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
-  [Number(polygon.id), [polygon, `https://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(bsc.id), [arbitrum, `https://bnb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://bnb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
   [Number(arbitrum.id), [arbitrum, `https://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
   [Number(sepolia.id), [sepolia, `https://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
   [Number(hardhat.id), [hardhat, 'http://127.0.0.1:8545', `http://127.0.0.1:8545`]]
