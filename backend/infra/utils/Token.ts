@@ -1,4 +1,5 @@
 import { tokenList } from "../../config/data/hardcode"
+import { MAINNET_ENUM, NETWORK_CONSTANTS } from "../../controllers/types"
 import messageHelper from "../../helpers/internationalization/messageHelper"
 import logger from "../../helpers/logger"
 
@@ -17,7 +18,7 @@ export const getTokenPriceFromAlchemy = async () => {
     }
 
     const addresses: any = []
-    tokenList.filter((chain) => chain.network_enum !== 'localhost' && chain.network_enum !== 'testnet').forEach((chain) => chain.tokens.forEach((token) => addresses.push({network: chain.network_enum, address: token.address})))
+    tokenList.filter((chain) => NETWORK_CONSTANTS.MAINNET.includes(chain.network_enum as MAINNET_ENUM)).forEach((chain) => chain.tokens.forEach((token) => addresses.push({network: chain.network_enum, address: token.address})))
     const data = {addresses: addresses}
     //console.log('data=', data)
     const response = await fetch(url, {
