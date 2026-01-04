@@ -10,6 +10,7 @@ import { PoolInfo, PoolMetaData } from "../types"
 
 interface WebsocketConfig {}
 
+// This is the ws client for pulling data from blockchains
 class WebSocketClient {
     private websocketsMap: Map<number, Map<`0x${string}`, PoolMetaData>> = new Map([])
 

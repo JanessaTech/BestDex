@@ -43,7 +43,7 @@ class LiveQueryClient {
             const ethereumSepoliaChainConfig: ChainConfig = {
                 chainName: 'ethereum_sepolia',
                 chainId: 11155111,
-                enabled: true,
+                enabled: false,
                 graphClientDir:'../graphclient/ethereum_sepolia/.graphclient',
                 queryName: 'GetMultipleEthereumSepoliaPoolLiveData',
                 poolIds: ethereumSepoliaPoolIds,

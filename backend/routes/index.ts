@@ -8,6 +8,7 @@ import poolRouter from './pool'
 import positionRouter from './position'
 import transactionRouter from './transaction'
 import configRouter from './config'
+import wsRouter from './websocket'
 
 const config = getConfig()
 const apiPrefix = config.apiPrefix
@@ -21,6 +22,7 @@ const initRoutes = (app: AppType) => {
     app.use(apiPrefix + '/positions', positionRouter)
     app.use(apiPrefix + '/transactions', transactionRouter)
     app.use(apiPrefix + '/config', configRouter)
+    app.use(apiPrefix + '/ws', wsRouter)
 }
 
 export default initRoutes

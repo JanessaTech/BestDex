@@ -8,11 +8,14 @@ import banner from '../helpers/banner'
 import '../config/data/hardcode'
 import '../db/initDB'  // connected to db
 import '../infra'
+import { WebsocketServer } from '../infra/websocket/WebsocketServer';
 
 const config = getConfig()
 logger.info(`Environment type: ${config?.env}`)
 
 const server = http.createServer(app)
+const websocketServer = new WebsocketServer(server)
+app.set('websocketServer', websocketServer);
 
 const onListening = () => {
     const address = server.address()
