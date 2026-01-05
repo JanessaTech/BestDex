@@ -3,7 +3,7 @@ import { ChainId } from '@uniswap/sdk-core'
 import { getLatestPrices } from "@/lib/client/TokenPrices";
 import { LocalChainIds} from "@/common/types";
 import logger from "@/common/Logger";
-import { Network_Enum } from "@/lib/client/types";
+import { NETWORK_ENUM } from "@/lib/client/types";
 import useTokenListHook from "./useTokenListHook";
 
 
@@ -13,7 +13,7 @@ export type TokenPriceInUSDType = {
 }
 
 type ReturnPriceType = {
-    network: Network_Enum;
+    network: NETWORK_ENUM;
     address: `0x${string}`;
     prices: {
         currency: string;
@@ -51,7 +51,7 @@ const usePriceHook = () => {
         }
     }, [tokenList]) 
 
-    const updateTokenPrices = (latestPrices: ReturnPriceType[], networkChainMap: Map<Network_Enum, number>) => {
+    const updateTokenPrices = (latestPrices: ReturnPriceType[], networkChainMap: Map<NETWORK_ENUM, number>) => {
         latestPrices.forEach((item) => {
             const chainId = networkChainMap.get(item.network) as ChainId
             const address = item.address

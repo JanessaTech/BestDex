@@ -59,7 +59,16 @@ export type PoolInfo = {
 }
 
 //config
-export type Network_Enum = 'eth-mainnet' | 'arb-mainnet' | 'bnb-mainnet' | 'polygon-mainnet' | 'localhost' | 'testnet'
-export type ConfiguredTokens = {chainId: number, network_enum: Network_Enum, tokens: TokenType[]}
+export const NETWORK_CONSTANTS = {
+    MAINNET: ['eth-mainnet', 'arb-mainnet', 'bnb-mainnet', 'base-mainnet'] as const,
+    TESTNET: ['eth-sepolia', 'base-sepolia'] as const,
+    LOCAL: ['localhost'] as const
+} as const
+export type MAINNET_ENUM = typeof NETWORK_CONSTANTS.MAINNET[number]
+type TESTNET_ENUM = typeof NETWORK_CONSTANTS.TESTNET[number]
+type LOCALNET_ENUM = typeof NETWORK_CONSTANTS.LOCAL[number]
+export type NETWORK_ENUM = MAINNET_ENUM | TESTNET_ENUM | LOCALNET_ENUM;
+
+export type ConfiguredTokens = {chainId: number, network_enum: NETWORK_ENUM, tokens: TokenType[]}
 export type ConfiguredFeeTier = {value: number, description: string}
 

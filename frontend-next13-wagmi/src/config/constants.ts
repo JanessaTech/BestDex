@@ -74,3 +74,6 @@ export const UNISWAP_V3_POOL_SWAP_ABI = parseAbi([
 
 export const PAGE_SIZE = 50
 export const PAGE_LOAD_SKETETON_SPAN = 100
+export enum CHANNELS {
+  POOLINFO = 'POOLINFO'
+}

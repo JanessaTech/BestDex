@@ -2,9 +2,13 @@
 
 import usePriceHook, { TokenPriceInUSDType } from "@/hooks/usePriceHook"
 import useTokenBalanceHook from "@/hooks/useTokenBalanceHook";
-import { createContext, useContext } from "react"
+import { createContext, useContext, useEffect } from "react"
 import usePoolHook from "@/hooks/usePoolHook";
 import { useChainId} from 'wagmi'
+import useWebSocket from "@/hooks/useWebSocket";
+import { WebSocketConfig, WebSocketMessage } from "@/hooks/lib/WebSocketClient";
+import logger from "@/common/Logger";
+import { CHANNELS } from "@/config/constants";
 
 export interface IContextUtil {
     tokenPrices: TokenPriceInUSDType;
@@ -23,6 +27,32 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const {tokenPrices} = usePriceHook()
     const {getTokenBalance} = useTokenBalanceHook(chainId) 
     const {getPoolAddress} = usePoolHook(chainId)
+
+
+    const callback = (fullData: WebSocketMessage) => {
+        //TBD
+    }
+
+    const config: WebSocketConfig = {
+        url: 'ws://localhost:3100', 
+        maxReconnectAttempts: 5, 
+        reconnectInterval: 2}
+    
+    const {connect, disconnect, subscribe, unsubscribe, isConnected} = useWebSocket(config)
+    useEffect(() => {
+        if (!isConnected) {
+            connect()
+        } else {
+            const subscriptionId = subscribe(CHANNELS.POOLINFO, callback)
+            logger.info(`The new subscription id: ${subscriptionId}`)
+        }
+        
+        return () => {
+            if (isConnected) {
+                disconnect()
+            }
+        }
+    }, [isConnected])
 
     return (
         <ContextUtil.Provider value={{tokenPrices, 
