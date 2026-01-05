@@ -1,7 +1,7 @@
 import {parseAbi} from 'viem'
 
 export const TOKEN_PRICE_KEY = 'token_price'
-export const TOKEN_PRICE_FETCH_INTERVAL = 10000 // 10 seconds
+export const TOKEN_PRICE_FETCH_INTERVAL = 60000 // 10 seconds
 export const TOKEN_PRICE_REDIS_EXPIRY = 100 // 100 seconds
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';

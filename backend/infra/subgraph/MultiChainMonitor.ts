@@ -65,7 +65,7 @@ export class MultiChainMonitor extends EventEmitter {
             const {id, liquidity, tick, sqrtPriceX96, fee} = pool
             const res = this.poolClient.poolAddressMap.get(chainId)!.get(id as `0x{string}`)!
             const poolInfo: PoolInfo = {
-                token0: ethers.utils.getAddress(res.token0) ,
+                token0: ethers.utils.getAddress(res.token0),
                 token1: ethers.utils.getAddress(res.token1),
                 liquidity: liquidity,
                 tick: tick,

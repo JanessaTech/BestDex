@@ -71,6 +71,14 @@ const message: MessageType = {
     config_tokens_getList_success: 'Get the list of tokens from configuration successfully',
     config_feetiers_getList_success: 'Get the list of feetiers from configuration successfully',
 
+    //websocket
+    ws_status_get_success:'Get websocket status successfully',
+    ws_status_get_failed: 'Failed to get ws status due to {0}',
+    ws_broadcast_success: 'Broadcast message from channel {0} to frontend successfully',
+    ws_broadcast_failed: 'Failed to broadcast message from channel {0} to frontend due to {1}',
+    ws_sendto_success: 'Send message from channel {0} to the frontend with the subscriptionId {1}',
+    ws_sendto_failed: 'Failed to send message from channel {0} to the frontend with the subscriptionId {1} due to {2}',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',
