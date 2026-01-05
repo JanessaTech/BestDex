@@ -26,9 +26,10 @@ class WebSocketController {
         }
     }
 
+    // for test
     async broadcast(req: Request, res: Response, next: NextFunction) {
         const websocketServer: WebsocketServer = req.app.get('websocketServer');
-        const {channel, message} = req.query
+        const {channel, message} = req.body
         try {
             
             const sentCnt = websocketServer.broadcastToChannel(channel as string, message)
@@ -44,9 +45,10 @@ class WebSocketController {
         }
     }
 
+    // for test
     async sendTo(req: Request, res: Response, next: NextFunction) {
         const websocketServer: WebsocketServer = req.app.get('websocketServer')
-        const {channel, subscriptionId, message} = req.query
+        const {channel, subscriptionId, message} = req.body
         try {
             
             websocketServer.sendToChannel(channel as string, subscriptionId as string, message)
