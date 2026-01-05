@@ -64,3 +64,7 @@ export enum TRANSACTION_TYPE {
   Decrease = 'Decrease',
   Collect = 'Collect'
 }
+
+export enum CHANNELS {
+  POOLINFO = 'POOLINFO'
+}

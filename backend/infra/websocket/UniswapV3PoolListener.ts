@@ -3,6 +3,8 @@ import WebSocket from 'ws'
 import logger from '../../helpers/logger';
 import { fetchPoolInfo } from '../utils/Pool';
 import { PoolInfo } from '../types';
+import { AppType } from '../../helpers/types/Types';
+import { WebsocketServer } from './WebsocketServer';
 
 class UniswapV3PoolListener {
     private ws: WebSocket | null = null;
@@ -13,6 +15,9 @@ class UniswapV3PoolListener {
     private wssURL !:string;
     private publicClient !: PublicClient;
     private latestPooInfo?:PoolInfo | undefined = undefined
+    private app!: AppType
+    private websocketServer!: WebsocketServer
+
     private fetchPoolData = async () => {
         try {
             logger.info(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
@@ -23,10 +28,12 @@ class UniswapV3PoolListener {
         }
     }
 
-    constructor(poolAddress: `0x${string}`, wssURL: string, publicClient: PublicClient) {
+    constructor(poolAddress: `0x${string}`, wssURL: string, publicClient: PublicClient, _app: AppType) {
         this.poolAddress = poolAddress;
         this.wssURL = wssURL;
         this.publicClient = publicClient;
+        this.app = _app;
+        this.websocketServer = _app.get('websocketServer')
         this.initWebSocket();
         this.warmup()
     }

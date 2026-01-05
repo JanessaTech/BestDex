@@ -1,6 +1,7 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
 import logger from "../../helpers/logger";
+import { AppType } from '../../helpers/types/Types';
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ class RedisClient {
         this.client = new Redis(config)
     }
 
-    public init() {
+    public init(app: AppType) {
         this.initEventListener()
     }
 

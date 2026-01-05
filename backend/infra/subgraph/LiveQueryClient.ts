@@ -1,4 +1,5 @@
 import getConfig from "../../config/configuration";
+import { AppType } from "../../helpers/types/Types";
 import { PoolClient } from "../pool/PoolClient"
 import { ChainConfig, ChainMonitor } from "./ChainMonitor";
 import { MonitorConfig, MultiChainMonitor } from "./MultiChainMonitor";
@@ -17,7 +18,7 @@ class LiveQueryClient {
         })
     }
 
-    public init() {}
+    public init(app: AppType) {}
 
     private async startMultiChainMonitor() {
         const monitorConfig: MonitorConfig = {configs: []}

@@ -7,8 +7,10 @@ import logger from '../helpers/logger'
 import banner from '../helpers/banner'
 import '../config/data/hardcode'
 import '../db/initDB'  // connected to db
-import '../infra'
 import { WebsocketServer } from '../infra/websocket/WebsocketServer';
+import initInfra from '../infra'
+
+initInfra(app)
 
 const config = getConfig()
 logger.info(`Environment type: ${config?.env}`)

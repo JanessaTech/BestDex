@@ -7,12 +7,14 @@ import LocalUniswapV3PoolListener from "./LocalUniswapV3PoolListener"
 import { createBlockchainClient } from "../utils/Chain"
 import { TokenType } from "../../controllers/types"
 import { PoolInfo, PoolMetaData } from "../types"
+import { AppType } from "../../helpers/types/Types"
 
 interface WebsocketConfig {}
 
 // This is the ws client for pulling data from blockchains
 class WebSocketClient {
     private websocketsMap: Map<number, Map<`0x${string}`, PoolMetaData>> = new Map([])
+    private app!: AppType
 
     private addWebSocketListener = async (token0 : TokenType, token1: TokenType, feeAmount: number, publicClient: PublicClient) => {
         let poolAddress = undefined
@@ -35,9 +37,9 @@ class WebSocketClient {
         if (!this.websocketsMap.get(chainId)?.get(poolAddress)) { // add listener only when no listener
             let listener!: UniswapV3PoolListener | LocalUniswapV3PoolListener
             if (chainId === 31337) { //for test
-                listener = new LocalUniswapV3PoolListener(poolAddress, wssURL, publicClient)
+                listener = new LocalUniswapV3PoolListener(poolAddress, wssURL, publicClient, this.app)
             } else {
-                listener = new UniswapV3PoolListener(poolAddress, wssURL, publicClient)
+                listener = new UniswapV3PoolListener(poolAddress, wssURL, publicClient, this.app)
             }
             if (!this.websocketsMap.has(chainId)) {
                 this.websocketsMap.set(chainId, new Map())
@@ -84,7 +86,8 @@ class WebSocketClient {
         
     }
 
-    public init() {
+    public init(_app: AppType) {
+        this.app = _app
         this.addAllWebSocketListeners(31337).catch((e) => {
             logger.error(`Failed to add websocket listeners due to ${e}`)
             process.exit(1)
