@@ -9,6 +9,7 @@ import useWebSocket from "@/hooks/useWebSocket";
 import { WebSocketConfig, WebSocketMessage } from "@/hooks/lib/WebSocketClient";
 import logger from "@/common/Logger";
 import { CHANNELS } from "@/config/constants";
+import { PoolInfo } from "@/lib/client/types";
 
 export interface IContextUtil {
     tokenPrices: TokenPriceInUSDType;
@@ -17,6 +18,7 @@ export interface IContextUtil {
             userAddress: `0x${string}`, 
             options: { decimals?: number }) => Promise<string>;
     getPoolAddress: (tokenA:`0x${string}`, tokenB: `0x${string}`, feeAmount: number) => Promise<`0x${string}`>;
+    getLatestPoolInfo: (chainId: number, poolAddress: string) => PoolInfo | undefined 
 }
 
 const ContextUtil = createContext<IContextUtil | undefined>(undefined)
@@ -38,7 +40,8 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
         maxReconnectAttempts: 5, 
         reconnectInterval: 2}
     
-    const {connect, disconnect, subscribe, unsubscribe, isConnected} = useWebSocket(config)
+    const {connect, disconnect, subscribe, unsubscribe, getLatestPoolInfo, isConnected} = useWebSocket(config)
+
     useEffect(() => {
         if (!isConnected) {
             connect()
@@ -57,7 +60,8 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     return (
         <ContextUtil.Provider value={{tokenPrices, 
                                       getTokenBalance, 
-                                      getPoolAddress}}>
+                                      getPoolAddress, 
+                                      getLatestPoolInfo}}>
                 {children}
         </ContextUtil.Provider>
     )

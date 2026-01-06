@@ -1,4 +1,7 @@
 import logger from "@/common/Logger";
+import { CHANNELS } from "@/config/constants";
+import { PoolInfo } from "@/lib/client/types";
+import { dataTagErrorSymbol } from "@tanstack/react-query";
 
 
 enum WebSocketReadyState {
@@ -42,6 +45,8 @@ export class WebSocketClient {
     private manualStop: boolean = false;
     
     private subscriptions!: Map<string, Subscription>
+
+    private latestPoolInfoMap:Map<number, Map<string, PoolInfo>> = new Map()
 
     constructor(_config: WebSocketConfig) {
         this.config = _config
@@ -101,7 +106,7 @@ export class WebSocketClient {
             this.reconnectTimer = undefined
         }
         this.reconnectAttempts++;
-        const delay = this.config.reconnectInterval * this.reconnectAttempts
+        const delay = this.config.reconnectInterval ** this.reconnectAttempts
         logger.info(`Try to reconnect... (${this.reconnectAttempts}/${this.config.maxReconnectAttempts}). Delay: ${delay} ms`)
 
         this.reconnectTimer = setTimeout(() => {
@@ -132,8 +137,10 @@ export class WebSocketClient {
     }
 
     private handleMessage(data: WebSocketMessage): void {
-        logger.info('handleMessage:', data)
+        //logger.info('handleMessage:', data)
         if (data.type === 'DATA_UPDATE' && data.subscriptionId) {
+            this.updateLatest(data)
+            // call callback
             const subcription = this.subscriptions.get(data.subscriptionId)
             if (subcription?.callback) {
                 subcription.callback(data)
@@ -141,6 +148,19 @@ export class WebSocketClient {
             return
         }
         // deal with the rest of types - TBD
+    }
+
+    private updateLatest(data: WebSocketMessage) {
+        if (data.type === 'DATA_UPDATE' && data.channel === CHANNELS.POOLINFO) {
+            const {chainId, poolAddress, poolInfo} = data.payload as {chainId: number, poolAddress: string, poolInfo: PoolInfo}
+            if (!this.latestPoolInfoMap.get(chainId)) {
+                this.latestPoolInfoMap.set(chainId, new Map())
+            }
+            this.latestPoolInfoMap.get(chainId)?.set(poolAddress.toLowerCase(), poolInfo)
+            // logger.info('chainId =', chainId)
+            // logger.info('poolAddress =', poolAddress)
+            // logger.info('poolInfo =', poolInfo)
+        }
     }
 
     private generateId(): string {
@@ -247,5 +267,9 @@ export class WebSocketClient {
 
     getSubscriptions():Map<string, Subscription> {
         return this.subscriptions
+    }
+
+    getLatestPoolInfo(chainId: number, poolAddress: string) {
+        return this.latestPoolInfoMap.get(chainId)?.get(poolAddress.toLowerCase())
     }
 }

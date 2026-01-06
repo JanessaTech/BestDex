@@ -75,11 +75,19 @@ const useWebSocket = (config: WebSocketConfig) => {
         }
     }
 
+    const getLatestPoolInfo = (chainId: number, poolAddress: string) => {
+        if (wsRef?.current) {
+            return wsRef?.current.getLatestPoolInfo(chainId, poolAddress)
+        }
+        return undefined
+    }
+
     return {connect, 
             disconnect, 
             subscribe, 
             unsubscribe, 
             getSubscriptions, 
+            getLatestPoolInfo,
             isConnected, subscriptionCount}
 }
 
