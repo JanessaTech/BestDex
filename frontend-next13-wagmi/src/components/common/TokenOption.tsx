@@ -27,13 +27,14 @@ type TokenOptionProps = {
   tokenOpen: boolean;
   chainId: number;
   curToken: TokenType | undefined;
+  isWSConnected: boolean;
   showFull?: boolean;
   onOpenChange: (open: boolean) => void;
   closeTokenOption: () => void;
   updateToken: (from: TokenType | undefined) => void;
 }
-const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, showFull = true, onOpenChange, closeTokenOption, updateToken}) => {
-    const tokenList = useTokenListHook()
+const TokenOption:React.FC<TokenOptionProps> = ({tokenOpen, chainId, curToken, isWSConnected, showFull = true, onOpenChange, closeTokenOption, updateToken}) => {
+    const tokenList = useTokenListHook(isWSConnected)
     const tokens = tokenList.length ? tokenList.filter((l) => l.chainId === chainId)[0].tokens : []
    
     return (

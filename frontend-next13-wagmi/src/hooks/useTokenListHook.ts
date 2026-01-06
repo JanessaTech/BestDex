@@ -3,7 +3,7 @@ import { getTokenListFromConfig } from "@/lib/client/Config"
 import { ConfiguredTokens } from "@/lib/client/types"
 import { useEffect, useState } from "react"
 
-const useTokenListHook = () => {
+const useTokenListHook = (isWSConnected?: boolean) => {
     const [tokenList, setTokenList] = useState<ConfiguredTokens[]>([])
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const useTokenListHook = () => {
                 logger.error('[useTokenListHook] failed to get the token list due to ', e)
             }
         })()
-    }, [])
+    }, [isWSConnected])
 
     return tokenList
 }

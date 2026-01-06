@@ -204,6 +204,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                         tokenOpen={token0Open} 
                                         chainId={chainId} 
                                         curToken={token0}
+                                        isWSConnected={isWSConnected}
                                         onOpenChange={onToken0OpenChange} 
                                         closeTokenOption={closeToken0Option}
                                         updateToken={handleToken0Change}
@@ -212,6 +213,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                         tokenOpen={token1Open} 
                                         chainId={chainId} 
                                         curToken={token1}
+                                        isWSConnected={isWSConnected}
                                         onOpenChange={onToken1OpenChange} 
                                         closeTokenOption={closeToken1Option}
                                         updateToken={handleToken1Change}
