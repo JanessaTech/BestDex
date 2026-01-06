@@ -112,6 +112,7 @@ export class WebsocketServer {
         for (let client of clients) {
             const message = {
                 type: 'DATA_UPDATE',
+                channel: channel,
                 subscriptionId: client.subscriptionId,
                 payload: data,
                 timestamp: Date.now()
@@ -132,6 +133,7 @@ export class WebsocketServer {
         if (!targetClient) throw new Error(`No ws client found for channel ${channel} with subscriptionId ${subscriptionId}`)
         const message = {
             type: 'DATA_UPDATE',
+            channel: channel,
             subscriptionId: targetClient?.subscriptionId,
             payload: data,
             timestamp: Date.now()
