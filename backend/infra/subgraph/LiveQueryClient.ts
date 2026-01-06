@@ -1,13 +1,14 @@
 import getConfig from "../../config/configuration";
 import { AppType } from "../../helpers/types/Types";
 import { PoolClient } from "../pool/PoolClient"
-import { ChainConfig, ChainMonitor } from "./ChainMonitor";
+import { ChainConfig} from "./ChainMonitor";
 import { MonitorConfig, MultiChainMonitor } from "./MultiChainMonitor";
 
 interface LiveQueryClientConfig {}
 class LiveQueryClient {
     private config: LiveQueryClientConfig;
     private poolClient: PoolClient
+    private app!: AppType
     private multiChainMonitor!: MultiChainMonitor
 
     constructor(_config: LiveQueryClientConfig, _poolClient: PoolClient) {
@@ -18,7 +19,9 @@ class LiveQueryClient {
         })
     }
 
-    public init(app: AppType) {}
+    public init(_app: AppType) {
+        this.app = _app
+    }
 
     private async startMultiChainMonitor() {
         const monitorConfig: MonitorConfig = {configs: []}
@@ -29,7 +32,7 @@ class LiveQueryClient {
             const ethereumChainConfig: ChainConfig = {
                 chainName: 'ethereum',
                 chainId: 1,
-                enabled: true,
+                enabled: false,
                 graphClientDir:'../graphclient/ethereum/.graphclient',
                 queryName: 'GetMultipleEthereumPoolLiveData',
                 poolIds: ethereumPoolIds,
@@ -44,7 +47,7 @@ class LiveQueryClient {
             const ethereumSepoliaChainConfig: ChainConfig = {
                 chainName: 'ethereum_sepolia',
                 chainId: 11155111,
-                enabled: false,
+                enabled: true,
                 graphClientDir:'../graphclient/ethereum_sepolia/.graphclient',
                 queryName: 'GetMultipleEthereumSepoliaPoolLiveData',
                 poolIds: ethereumSepoliaPoolIds,
@@ -53,7 +56,7 @@ class LiveQueryClient {
             }
             monitorConfig.configs.push(ethereumSepoliaChainConfig)
         }
-        this.multiChainMonitor = new MultiChainMonitor(monitorConfig, this.poolClient)
+        this.multiChainMonitor = new MultiChainMonitor(monitorConfig, this.poolClient, this.app)
         await this.multiChainMonitor.start()
     }
 
