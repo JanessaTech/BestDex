@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Subscription, SubscriptionOptions, WebSocketClient, WebSocketConfig, WebSocketMessage } from "./lib/WebSocketClient"
 import logger from "@/common/Logger"
-
+import { toast } from 'sonner'
 
 const useWebSocket = (config: WebSocketConfig) => {
     const [isConnected, setIsConnected] = useState(false)
@@ -19,7 +19,12 @@ const useWebSocket = (config: WebSocketConfig) => {
             if (client) {
                 const state = client.getConnectionState()
                 logger.info('ws state:', state)
-                setIsConnected(state === 'OPEN')
+                setIsConnected(preState => {
+                    if (preState === true && state !== 'OPEN') {
+                        toast.error(`Websocket is disconnected. Please fresh the page and try again`)
+                    }
+                    return state === 'OPEN'
+                })
                 setSubscriptionCount(client.getSubscriptionCount())
             } else {
                 logger.info('waiting for the creation of the client')

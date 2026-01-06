@@ -13,6 +13,7 @@ import { fromReadableAmount2 } from "@/common/utils";
 import { TokenType } from '@/common/types';
 import logger from '@/common/Logger';
 import { PoolInfo } from '@/lib/client/types';
+import { IContextUtil, useContextUtil } from '../providers/ContextUtilProvider';
 
 type DepositProps = {
     token0: TokenType;
@@ -33,6 +34,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                                         openAddPositionModal,
                                         closeAddPositionModal,checkRefresh,
                                         handleDepositChanges}) => {
+    const {isWSConnected} = useContextUtil() as IContextUtil
     const {address} = useAccount()
     const [whoInput, setWhoInput] = useState(0) // indicate which token is as the major input: 0 for token0, 1 for token1
     const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
@@ -184,7 +186,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
             <div className='pt-4'>
                 <Button 
                     className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600'
-                    disabled={checkDisabled()}
+                    disabled={checkDisabled() || !isWSConnected}
                     onClick={checkRefresh}
                     > 
                     <span>Add position</span>

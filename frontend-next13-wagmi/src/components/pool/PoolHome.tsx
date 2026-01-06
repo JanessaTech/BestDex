@@ -38,7 +38,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [openAddPositionModal, setAddPositionModal] = useState(false)
     const [openRefreshModal, setOpenRefreshModal] = useState(false)
 
-    const {getPoolAddress} = useContextUtil() as IContextUtil
+    const {getPoolAddress, isWSConnected} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
@@ -222,7 +222,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                             <div className='pt-4'>
                                 <Button 
                                     className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 
-                                    disabled={ isConnected ? (!token0 || !token1) : false}
+                                    disabled={ isConnected ? (!token0 || !token1 || !isWSConnected) : false}
                                     onClick={isConnected ? handleNextStep : openConnectModal}>
                                         {isConnected 
                                             ? <div className='relative'>

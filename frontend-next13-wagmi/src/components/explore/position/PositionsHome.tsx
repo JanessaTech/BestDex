@@ -46,6 +46,8 @@ const ShowPositions: React.FC<ShowPositionsProps> = ({positions,
                                                     handleOpenIncreaseLiquidity, 
                                                     handleOpenDecreaseLiquidity, 
                                                     handleOpenCollectFee}) => {
+    const {isWSConnected} = useContextUtil() as IContextUtil
+
     return (
         <>
         {
@@ -77,13 +79,13 @@ const ShowPositions: React.FC<ShowPositionsProps> = ({positions,
                                 <div>
                                     <ToolTipHelper content="Increase liquidlity">
                                         <SVGPlus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                onClick={() => handleOpenIncreaseLiquidity(position)}/>
+                                                onClick={isWSConnected ? () => handleOpenIncreaseLiquidity(position): () => {}}/>
                                     </ToolTipHelper>                                                               
                                 </div>
                                 <div>
                                     <ToolTipHelper content="Decrease liquidlity">
                                         <SVGMinus className="cursor-pointer w-5 h-5 hover:text-pink-600" 
-                                                onClick={() => handleOpenDecreaseLiquidity(position)}/>
+                                                onClick={isWSConnected ? () => handleOpenDecreaseLiquidity(position): () => {}}/>
                                     </ToolTipHelper>
                                 </div>
                                 <div>

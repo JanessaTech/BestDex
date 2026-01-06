@@ -13,6 +13,7 @@ import { PoolInfo } from "@/lib/client/types";
 
 export interface IContextUtil {
     tokenPrices: TokenPriceInUSDType;
+    isWSConnected: boolean;  // indicate if the websocket is connected
     getTokenBalance: (
             tokenAddress: `0x${string}`| undefined, 
             userAddress: `0x${string}`, 
@@ -38,12 +39,12 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const config: WebSocketConfig = {
         url: 'ws://localhost:3100', 
         maxReconnectAttempts: 5, 
-        reconnectInterval: 2}
+        reconnectInterval: 10}
     
-    const {connect, disconnect, subscribe, unsubscribe, getLatestPoolInfo, isConnected} = useWebSocket(config)
+    const {connect, disconnect, subscribe, unsubscribe, getLatestPoolInfo, isConnected: isWSConnected} = useWebSocket(config)
 
     useEffect(() => {
-        if (!isConnected) {
+        if (!isWSConnected) {
             connect()
         } else {
             const subscriptionId = subscribe(CHANNELS.POOLINFO, callback)
@@ -51,14 +52,14 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
         }
         
         return () => {
-            if (isConnected) {
+            if (isWSConnected) {
                 disconnect()
             }
         }
-    }, [isConnected])
+    }, [isWSConnected])
 
     return (
-        <ContextUtil.Provider value={{tokenPrices, 
+        <ContextUtil.Provider value={{tokenPrices, isWSConnected,
                                       getTokenBalance, 
                                       getPoolAddress, 
                                       getLatestPoolInfo}}>

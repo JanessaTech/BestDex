@@ -97,16 +97,22 @@ export class WebSocketClient {
     }
 
     private handleReconnect(): void {
-        if (this.reconnectAttempts > this.config.maxReconnectAttempts) {
-            logger.error(`Reached the max reconnect attempts ${this.config.maxReconnectAttempts}, Stop!`)
-            return
-        }
+        // if (this.reconnectAttempts >= this.config.maxReconnectAttempts) {
+        //     logger.error(`Reached the max reconnect attempts ${this.config.maxReconnectAttempts}, Stop!`)
+        //     return
+        // }
         if (this.reconnectTimer) {
             clearTimeout(this.reconnectTimer)
             this.reconnectTimer = undefined
         }
         this.reconnectAttempts++;
-        const delay = this.config.reconnectInterval ** this.reconnectAttempts
+        let delay = 0
+        if (this.reconnectAttempts > this.config.maxReconnectAttempts) {
+            delay = 100000
+        } else {
+            delay  = this.config.reconnectInterval ** this.reconnectAttempts
+        }
+         
         logger.info(`Try to reconnect... (${this.reconnectAttempts}/${this.config.maxReconnectAttempts}). Delay: ${delay} ms`)
 
         this.reconnectTimer = setTimeout(() => {
