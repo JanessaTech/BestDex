@@ -19,7 +19,8 @@ export interface IContextUtil {
             userAddress: `0x${string}`, 
             options: { decimals?: number }) => Promise<string>;
     getPoolAddress: (tokenA:`0x${string}`, tokenB: `0x${string}`, feeAmount: number) => Promise<`0x${string}`>;
-    getLatestPoolInfo: (chainId: number, poolAddress: string) => PoolInfo | undefined 
+    getLatestPoolInfoByRPC: (poolAddress: `0x${string}`) => Promise<PoolInfo> //get the latest poolInfo from rpc
+    getLatestPoolInfoByWS: (chainId: number, poolAddress: string) => PoolInfo | undefined   //get the latest poolInfo by websocket
 }
 
 const ContextUtil = createContext<IContextUtil | undefined>(undefined)
@@ -29,7 +30,7 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const chainId = useChainId()
     const {tokenPrices} = usePriceHook()
     const {getTokenBalance} = useTokenBalanceHook(chainId) 
-    const {getPoolAddress} = usePoolHook(chainId)
+    const {getPoolAddress, getLatestPoolInfoByRPC} = usePoolHook(chainId)
 
 
     const callback = (fullData: WebSocketMessage) => {
@@ -41,7 +42,7 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
         maxReconnectAttempts: 5, 
         reconnectInterval: 10}
     
-    const {connect, disconnect, subscribe, unsubscribe, getLatestPoolInfo, isConnected: isWSConnected} = useWebSocket(config)
+    const {connect, disconnect, subscribe, unsubscribe, getLatestPoolInfo: getLatestPoolInfoByWS, isConnected: isWSConnected} = useWebSocket(config)
 
     useEffect(() => {
         if (!isWSConnected) {
@@ -62,7 +63,8 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
         <ContextUtil.Provider value={{tokenPrices, isWSConnected,
                                       getTokenBalance, 
                                       getPoolAddress, 
-                                      getLatestPoolInfo}}>
+                                      getLatestPoolInfoByRPC,
+                                      getLatestPoolInfoByWS}}>
                 {children}
         </ContextUtil.Provider>
     )

@@ -38,7 +38,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const [openAddPositionModal, setAddPositionModal] = useState(false)
     const [openRefreshModal, setOpenRefreshModal] = useState(false)
 
-    const {getPoolAddress, isWSConnected} = useContextUtil() as IContextUtil
+    const {getPoolAddress, isWSConnected, getLatestPoolInfoByWS, getLatestPoolInfoByRPC} = useContextUtil() as IContextUtil
     const isToken0Base = token0 && token1 ? token0.address.toLowerCase() < token1.address.toLowerCase() : undefined
 
     // in case we change network via wallet connection button
@@ -94,7 +94,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                 setState({...state, isLoading: true})
                 const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
                 logger.debug('[PoolHome] poolAddress=', poolAddress)
-                const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
+                const poolInfo = await getLatestPoolInfoByWSHttpRPC(chainId, poolAddress)
                 setState({...state, isLoading: false, step: state.step + 1, poolInfo: poolInfo})
                 logger.debug('[PoolHome] poolInfo=', poolInfo)
             } catch (error) {
@@ -103,6 +103,35 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                 toast.warning('Failed to get the pool info, Please choose the corret feeTier and token pairs, then try again')
             }  
         } 
+    }
+
+    const getLatestPoolInfoByWSHttpRPC = async (chainId: number, poolAddress: `0x${string}`) => { 
+        try {
+            let poolInfo  = getLatestPoolInfoByWS(chainId, poolAddress.toLowerCase()) // get the poolInfo by websocket
+            if (poolInfo) {
+                logger.debug('[PoolHome] Get poolInfo by ws')
+                return poolInfo
+            } 
+            poolInfo = await fetchLatestPoolInfo(poolAddress, chainId) // get the poolInfo by restful
+            if (poolInfo) {
+                logger.debug('[PoolHome] Get poolInfo by restful')
+                return poolInfo
+            }
+        } catch (error) {
+            logger.error(error)
+        }
+
+        try {
+            let poolInfo = await getLatestPoolInfoByRPC(poolAddress)  // get the poolInfo by rpc
+            if (poolInfo) {
+                logger.debug('[PoolHome] Get poolInfo by rpc')
+                return poolInfo
+            }
+        } catch (error) {
+            logger.error('[PoolHome] Failed to get the poolInfo by RPC due to:', error)
+        }
+        // throw error if we cannot get the latest pool info by all ways: ws, rest and rpc
+        throw new Error('Failed to get the latest poolInfo by trying 3 ways:websocket, restful and rpc')
     }
 
     const handlePrevStep = () => {

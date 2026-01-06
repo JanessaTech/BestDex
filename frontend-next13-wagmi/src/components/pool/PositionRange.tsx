@@ -22,7 +22,7 @@ type PositionRangeProps = {
 }
 const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount, poolInfo, 
                                                         updatePoolInfo, updateTicks}) => {
-    const {tokenPrices, getPoolAddress, getLatestPoolInfo} = useContextUtil() as IContextUtil
+    const {tokenPrices, getPoolAddress, getLatestPoolInfoByWS} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [curPoolInfo, setCurPoolInfo] = useState({...poolInfo})
     const [curPoolRange, setCurPoolRange] = useState<PoolRange | undefined>(undefined)
@@ -53,7 +53,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
         logger.debug('[PositionRange] checkNewPoolInfo...')
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
         logger.debug('[PositionRange] poolAddress = ', poolAddress)
-        const latestPoolInfo  = getLatestPoolInfo(chainId, poolAddress.toLowerCase()) // get the latest poolInfo from websocket first
+        const latestPoolInfo  = getLatestPoolInfoByWS(chainId, poolAddress.toLowerCase()) // get the latest poolInfo from websocket first
         // const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         logger.debug('[PositionRange] latestPoolInfo=', latestPoolInfo)
     }
