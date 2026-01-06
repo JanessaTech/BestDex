@@ -218,7 +218,9 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
                                     />
                                 </div>
                             </div>
-                            <FeeTier handleFeeAmountChange={handleFeeAmountChange}/>
+                            <FeeTier 
+                                handleFeeAmountChange={handleFeeAmountChange} 
+                                isWSConnected={isWSConnected}/>
                             <div className='pt-4'>
                                 <Button 
                                     className='w-full bg-pink-600 hover:bg-pink-700 disabled:bg-zinc-600' 

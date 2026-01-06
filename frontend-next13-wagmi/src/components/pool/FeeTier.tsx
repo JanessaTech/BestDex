@@ -3,11 +3,12 @@ import SVGCheck from "@/lib/svgs/svg_check"
 import { useState } from "react"
 
 type FeeTierProps = {
-    handleFeeAmountChange: (_feeAmount: number) => void
+    handleFeeAmountChange: (_feeAmount: number) => void;
+    isWSConnected: boolean
 }
-const FeeTier: React.FC<FeeTierProps> = ({handleFeeAmountChange}) => {
+const FeeTier: React.FC<FeeTierProps> = ({handleFeeAmountChange, isWSConnected}) => {
     const [select, setSelect] = useState(2)
-    const feeTiers = useFeeTiersHook()
+    const feeTiers = useFeeTiersHook(isWSConnected)
 
     const handleFeeSelect = (id: number) => {
         setSelect(id)
