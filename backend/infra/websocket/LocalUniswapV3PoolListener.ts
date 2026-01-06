@@ -24,16 +24,17 @@ class LocalUniswapV3PoolListener {
         try {
             logger.info(`Start fetching pool info from ${this.poolAddress} for chainId ${await this.publicClient.getChainId()}`)
             const poolInfo = await fetchPoolInfo(this.poolAddress, this.publicClient)
-            this.broadcastToChannel(this.poolAddress, poolInfo)
+            const chainId = await this.publicClient.getChainId()
+            this.broadcastToChannel(chainId, this.poolAddress, poolInfo)
             this.latestPooInfo = poolInfo
         } catch(error) {
             logger.error('failed to fetch pool data due to: ', error)
         }
     }
 
-    private broadcastToChannel(poolAddress: `0x${string}`, poolInfo: PoolInfo) {
+    private broadcastToChannel(chainId: number, poolAddress: `0x${string}`, poolInfo: PoolInfo) {
         try {
-            const sentCnt = this.websocketServer.broadcastToChannel(CHANNELS.POOLINFO, {poolAddress, poolInfo})
+            const sentCnt = this.websocketServer.broadcastToChannel(CHANNELS.POOLINFO, {chainId, poolAddress, poolInfo})
             logger.debug(`${sentCnt} copies of poolInfo were sent to frontend`)
         } catch(error) {
             logger.error('Failed to broadcast the latest poolInfo to frontend due to:', error)
