@@ -64,7 +64,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const [showSuccess, setShowSuccess] = useState(false)
     const [showDialog, setShowDialog] = useState(false)
     const [deposited, setDeposited] = useState<{token0: string, token1: string, liquidity: string}>({token0: '', token1: '', liquidity: '0'})
-    const {getPoolAddress} = useContextUtil() as IContextUtil
+    const {getPoolAddress, getLatestPoolInfoByWS, getLatestPoolInfoByRPC} = useContextUtil() as IContextUtil
     const [executed, setExecuted] = useState(false)
 
     useEffect(() => {
@@ -74,12 +74,15 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     }, [curPoolInfo])
 
     const updatePooInfo = async () => {
-        logger.info('[IncreaseLiquidity] updatePooInfo')
-        const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, curPoolInfo.fee)
-        const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
-        if (!latestPoolInfo) return // it shouldn't happen after we move websocket to backend
-        setCurPoolInfo(latestPoolInfo)
-        setShowDialog(false)
+        try {
+            logger.info('[IncreaseLiquidity] updatePooInfo')
+            const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, curPoolInfo.fee)
+            const latestPoolInfo = await getLatestPoolInfoByWSHttpRPC(chainId, poolAddress)
+            setCurPoolInfo(latestPoolInfo)
+            setShowDialog(false)
+        } catch(error) {
+            logger.error('[IncreaseLiquidity] Failed to update poolInfo due to:', error)
+        }
     }
 
     const updateDeposit = async () => {
@@ -230,11 +233,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const handleIncreaseLiquidity = async () => {
         try {
             const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, curPoolInfo.fee)
-            const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
-            if (!latestPoolInfo) {
-                logger.debug('[IncreaseLiquidity] no latest poolInfo found')
-                return // it shouldn't happen after we move websocket to backend
-            } 
+            const latestPoolInfo = await getLatestPoolInfoByWSHttpRPC(chainId, poolAddress)
             const isStale = isDataStale(curPoolInfo, latestPoolInfo, slipage/100)
             logger.info('[IncreaseLiquidity] isStale=', isStale)
             if (isStale) {
@@ -248,6 +247,35 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
             logger.error('Failed to add liquidity due to:', error)
         }
          
+    }
+
+    const getLatestPoolInfoByWSHttpRPC = async (chainId: number, poolAddress: `0x${string}`) => { 
+        try {
+            let poolInfo  = getLatestPoolInfoByWS(chainId, poolAddress.toLowerCase()) // get the poolInfo by websocket
+            if (poolInfo) {
+                logger.debug('Get poolInfo by ws')
+                return poolInfo
+            } 
+            poolInfo = await fetchLatestPoolInfo(poolAddress, chainId) // get the poolInfo by restful
+            if (poolInfo) {
+                logger.debug('Get poolInfo by restful')
+                return poolInfo
+            }
+        } catch (error) {
+            logger.error(error)
+        }
+
+        try {
+            let poolInfo = await getLatestPoolInfoByRPC(poolAddress)  // get the poolInfo by rpc
+            if (poolInfo) {
+                logger.debug('Get poolInfo by rpc')
+                return poolInfo
+            }
+        } catch (error) {
+            logger.error('Failed to get the poolInfo by RPC due to:', error)
+        }
+        // throw error if we cannot get the latest pool info by all ways: ws, rest and rpc
+        throw new Error('Failed to get the latest poolInfo by trying 3 ways:websocket, restful and rpc')
     }
 
     const createPoistionFromToken0 = (value: string) => {

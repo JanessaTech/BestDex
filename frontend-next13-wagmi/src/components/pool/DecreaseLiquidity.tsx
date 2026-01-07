@@ -54,7 +54,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
     const [showSuccess, setShowSuccess] = useState(false)
     const [deposited, setDeposited] = useState({token0: '0', token1: '0', removedLiquidity: ''})
     const [data, setData] = useState<{calldata: `0x${string}`, parsedCalldata: readonly `0x${string}`[]}>()
-    const {getPoolAddress} = useContextUtil() as IContextUtil
+    const {getPoolAddress, getLatestPoolInfoByRPC, getLatestPoolInfoByWS} = useContextUtil() as IContextUtil
 
     const onSettingOpenChange = (open: boolean) => {
         setSettingOpen(open)
@@ -95,7 +95,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
 
     const generateCallData = async () => {
         const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, dexPosition.fee)
-        const curPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
+        const curPoolInfo = await getLatestPoolInfoByWSHttpRPC(chainId, poolAddress)
         if (!curPoolInfo) throw new Error('Failed to get poolInfo')
         if (!address) throw new Error('Failed to get current wallet account')
         const token0 = new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name)
@@ -141,6 +141,34 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
         )
         logger.debug('[DecreaseLiquidity] calldata:', calldata)
         return calldata as `0x${string}`
+    }
+    const getLatestPoolInfoByWSHttpRPC = async (chainId: number, poolAddress: `0x${string}`) => { 
+        try {
+            let poolInfo  = getLatestPoolInfoByWS(chainId, poolAddress.toLowerCase()) // get the poolInfo by websocket
+            if (poolInfo) {
+                logger.debug('Get poolInfo by ws')
+                return poolInfo
+            } 
+            poolInfo = await fetchLatestPoolInfo(poolAddress, chainId) // get the poolInfo by restful
+            if (poolInfo) {
+                logger.debug('Get poolInfo by restful')
+                return poolInfo
+            }
+        } catch (error) {
+            logger.error(error)
+        }
+
+        try {
+            let poolInfo = await getLatestPoolInfoByRPC(poolAddress)  // get the poolInfo by rpc
+            if (poolInfo) {
+                logger.debug('Get poolInfo by rpc')
+                return poolInfo
+            }
+        } catch (error) {
+            logger.error('Failed to get the poolInfo by RPC due to:', error)
+        }
+        // throw error if we cannot get the latest pool info by all ways: ws, rest and rpc
+        throw new Error('Failed to get the latest poolInfo by trying 3 ways:websocket, restful and rpc')
     }
 
    const handleDecreaseLiquiditySuccess = useCallback((token0Deposited: string, token1Deposited: string) => {

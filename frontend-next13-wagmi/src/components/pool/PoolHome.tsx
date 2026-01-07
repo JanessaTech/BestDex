@@ -157,14 +157,10 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     const updatePoolInfo = async () => {
         try {
             const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
-            const poolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
-            if (poolInfo) {
-                setState({...state, poolInfo: poolInfo})
-                logger.info(`[PoolHome] Get the latest poolInfo from the pool address ${poolAddress}`)
-                logger.debug('[PoolHome] poolInfo =', poolInfo)
-            } else {
-                logger.warn('[PoolHome] No cached poolInfo in websocket yet, try it later on...')
-            }
+            const poolInfo = await getLatestPoolInfoByWSHttpRPC(chainId, poolAddress)
+            setState({...state, poolInfo: poolInfo})
+            logger.info(`[PoolHome] Get the latest poolInfo from the pool address ${poolAddress}`)
+            logger.debug('[PoolHome] poolInfo =', poolInfo)
         } catch (error) {
             logger.error('[PoolHome] Failed to update poolInfo due to:', error)
         }
@@ -187,8 +183,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         if (!state.poolInfo) throw new Error('No poolInfo found') //it shouldn't happen
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
         logger.debug('[PoolHome] poolAddress = ', poolAddress)
-        const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
-        if (!latestPoolInfo) return // it shouldn't happen after we move websockte to backend
+        const latestPoolInfo = await getLatestPoolInfoByWSHttpRPC(chainId, poolAddress)
         const isStale = isDataStale(state.poolInfo, latestPoolInfo, slipage/100)
         if (isStale) {
             logger.debug('[PoolHome] data is stale')

@@ -6,7 +6,6 @@ import { useChainId} from 'wagmi'
 import { ChainId } from '@uniswap/sdk-core'
 import Decimal from "decimal.js";
 import SVGRefresh from "@/lib/svgs/svg_refresh";
-import { fetchLatestPoolInfo } from "@/lib/client/Pool";
 import { LocalChainIds, PoolRange, TokenType } from "@/common/types";
 import { calPoolRange, getPoolCurrentPrice } from "@/common/utils";
 import logger from "@/common/Logger";
@@ -54,7 +53,6 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
         const poolAddress = await getPoolAddress(token0?.address!, token1?.address!, feeAmount)
         logger.debug('[PositionRange] poolAddress = ', poolAddress)
         const latestPoolInfo  = getLatestPoolInfoByWS(chainId, poolAddress.toLowerCase()) // get the latest poolInfo from websocket first
-        // const latestPoolInfo = await fetchLatestPoolInfo(poolAddress, chainId)
         logger.debug('[PositionRange] latestPoolInfo=', latestPoolInfo)
     }
 
