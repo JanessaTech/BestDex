@@ -1,5 +1,5 @@
 import { PositionProps, TokenType } from "../../controllers/types";
-import { THEGRAPH_ENDPOINTS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES } from "../../helpers/common/constants";
+import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, THEGRAPH_ENDPOINTS, UNISWAP_V3_POSITION_MANAGER_ABI } from "../../helpers/common/constants";
 import messageHelper from "../../helpers/internationalization/messageHelper";
 import { request } from 'graphql-request'
 import { positionListQuery } from "./Queries";
@@ -105,7 +105,7 @@ export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${
     logger.debug('Get position list from rpc')
     const http = getHttpByChainId(chainId)
     const provider = new ethers.providers.JsonRpcProvider(http)
-    const positionMangerAddress = UNISWAP_V3_POSITION_MANAGER_CONTRACT_ADDRESSES[chainId]
+    const positionMangerAddress = NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId]
     if (!positionMangerAddress) {
         throw new Error(messageHelper.getMessage('position_positionManager_not_found', chainId))
     }
