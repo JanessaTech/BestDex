@@ -171,20 +171,20 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
     const loadPositionList = async () => {
         logger.debug('[PositionsHome] loadPositionList. page=', page)
         const start = performance.now()
-        setIsLoading(true)
+        //setIsLoading(true)
         const positions = await getPositionsByPage(chainId, address!, page)
         if (positions) {
             setPositions(positions) 
         }
-        const end = performance.now()
-        const elapse = end - start
-        if (elapse < PAGE_LOAD_SKETETON_SPAN) {
-            setTimeout(() => {
-                setIsLoading(false) 
-            }, PAGE_LOAD_SKETETON_SPAN); 
-        } else {
-            setIsLoading(false) 
-        }
+        // const end = performance.now()
+        // const elapse = end - start
+        // if (elapse < PAGE_LOAD_SKETETON_SPAN) {
+        //     setTimeout(() => {
+        //         setIsLoading(false) 
+        //     }, PAGE_LOAD_SKETETON_SPAN); 
+        // } else {
+        //     setIsLoading(false) 
+        // }
     }
     
     const closeIncreaseLiquidityModal = () => {

@@ -128,18 +128,18 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
     const loadTransactionList = async () => {
         logger.debug('[TransactionsHome] loadTransactionList. page=', page)
         const start = performance.now()
-        setIsLoading(true)
+        //setIsLoading(true)
         const pagination = await getTransactionsByPage(chainId, address!, page)
         if (pagination) setPagination(pagination)
-        const end = performance.now()
-        const elapse = end - start
-        if (elapse < PAGE_LOAD_SKETETON_SPAN) {
-            setTimeout(() => {
-                setIsLoading(false)
-            }, PAGE_LOAD_SKETETON_SPAN);
-        } else {
-            setIsLoading(false)
-        } 
+        // const end = performance.now()
+        // const elapse = end - start
+        // if (elapse < PAGE_LOAD_SKETETON_SPAN) {
+        //     setTimeout(() => {
+        //         setIsLoading(false)
+        //     }, PAGE_LOAD_SKETETON_SPAN);
+        // } else {
+        //     setIsLoading(false)
+        // } 
     }
 
     return (
