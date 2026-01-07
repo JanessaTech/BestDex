@@ -81,7 +81,7 @@ export const V3_SWAP_ROUTER_ADDRESS: { [chainId: number]: `0x${string}`} = {
   1301: '0xd1AAE39293221B77B0C71fBD6dCb7Ea29Bb5B166', //Unichain Sepolia
   999999999: '0x6B36d761981d82B1e07cF3c4daF4cB4615c4850a', //Zora Sepolia
   //for local test
-  31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
+  31337: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
 }
 
 export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS: { [chainId: number]: `0x${string}`} = {
@@ -107,7 +107,7 @@ export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS: { [chainId: number]:
   1301: '0xB7F724d6dDDFd008eFf5cc2834edDE5F9eF0d075', //Unichain Sepolia
   999999999: '0xB8458EaAe43292e3c1F7994EFd016bd653d23c20', //Zora Sepolia
   //for local test
-  31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
+  31337: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
 }
 
 export const UNISWAP_V3_FACTORY_ABI = parseAbi([
