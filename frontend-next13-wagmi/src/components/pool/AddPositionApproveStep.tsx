@@ -7,10 +7,12 @@ import { ERC20 } from "@/config/abis"
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS } from "@/config/constants"
 import SVGLockOpen from "@/lib/svgs/svg_lock_open"
 import { fromReadableAmount3 } from "@/common/utils"
-import { TokenType } from "@/common/types"
+import { LocalChainIds, TokenType } from "@/common/types"
 import logger from "@/common/Logger"
+import {ChainId} from '@uniswap/sdk-core';
 
 type AddPositionApproveStepProps = {
+    chainId: (ChainId | LocalChainIds)
     token: TokenType;
     tokenInput:string;
     started: boolean;
@@ -18,7 +20,7 @@ type AddPositionApproveStepProps = {
     skip: boolean;
     goNext: () => void
 }
-const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, tokenInput, started, done, skip, goNext}) => {
+const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({chainId, token, tokenInput, started, done, skip, goNext}) => {
     const [localSuccess, setLocalSuccess] = useState(false);
     const { data: hash, writeContract, isSuccess: isWriteSuccess, isPending, error } = useWriteContract()
     
@@ -30,7 +32,7 @@ const AddPositionApproveStep:React.FC<AddPositionApproveStepProps> = ({token, to
             address: token.address,
             abi:ERC20,
             functionName: 'approve',
-            args: [NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, fromReadableAmount3(tokenInput, token.decimal).toString()]
+            args: [NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId], fromReadableAmount3(tokenInput, token.decimal).toString()]
         })
     }
 

@@ -20,6 +20,7 @@ import messageHelper from "@/common/internationalization/messageHelper";
 import { createTransaction } from "@/lib/client/Transaction";
 
 type IncreaseLiquidityStepProps = {
+    chainId: (ChainId | LocalChainIds)
     token0: TokenType;
     token1: TokenType;
     started: boolean;
@@ -43,12 +44,11 @@ const defaultState: StateType = {
     liquidity: BigInt(0)
 }
 
-const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, parsedCalldata, token0, token1,
+const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({chainId, started, parsedCalldata, token0, token1,
                                                                     handleIncreaseLiquiditySuccess
 }) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
-    const chainId = useChainId() as (ChainId | LocalChainIds)
     const {tokenPrices} = useContextUtil() as IContextUtil
 
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
@@ -117,7 +117,7 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({started, pa
 
     const handleIncreaseLiquidity = () => {
         writeContract({
-            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId],
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
             functionName: 'increaseLiquidity',
             args: [parsedCalldata],

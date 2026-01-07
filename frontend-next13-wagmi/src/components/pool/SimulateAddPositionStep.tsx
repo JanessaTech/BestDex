@@ -5,10 +5,12 @@ import { memo, useEffect } from "react"
 import SVGCheck from "@/lib/svgs/svg_check"
 import {useSimulateContract} from 'wagmi'
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI } from "@/config/constants"
-import { MintPositionParamsType } from "@/common/types"
+import { LocalChainIds, MintPositionParamsType } from "@/common/types"
 import logger from "@/common/Logger"
+import {ChainId} from '@uniswap/sdk-core';
 
 type SimulateAddPositionStepProps = {
+    chainId: (ChainId | LocalChainIds)
     started: boolean;
     done: boolean;
     skip: boolean; // for test
@@ -16,9 +18,9 @@ type SimulateAddPositionStepProps = {
     goNext: () => void
 }
 
-const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({started, done, skip, parsedCalldata, goNext}) => {
+const SimulateAddPositionStep:React.FC<SimulateAddPositionStepProps> = ({chainId, started, done, skip, parsedCalldata, goNext}) => {
     const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
-        address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+        address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId],
         abi: UNISWAP_V3_POSITION_MANAGER_ABI,
         functionName: 'mint',
         args: [parsedCalldata],

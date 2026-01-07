@@ -1,11 +1,8 @@
 import {parseAbi} from 'viem'
 import { Decimal } from 'decimal.js'
 
-export const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
-export const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 export const READABLE_FORM_LEN = 4
 
-export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS = '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
 export const SwapRouter02ABI = parseAbi(['function multicall(uint256,bytes[]) payable returns (bytes[])'])
 export const UNISWAP_ERRORS: Record<string, string> = {
     'TOO_LITTLE_RECEIVED': 'The received amount is less than the minimum',
@@ -83,6 +80,32 @@ export const V3_SWAP_ROUTER_ADDRESS: { [chainId: number]: `0x${string}`} = {
   11142220: '0x8C456F41A3883bA0ba99f810F7A2Da54D9Ea3EF0', //celo sepolia
   1301: '0xd1AAE39293221B77B0C71fBD6dCb7Ea29Bb5B166', //Unichain Sepolia
   999999999: '0x6B36d761981d82B1e07cF3c4daF4cB4615c4850a', //Zora Sepolia
+  //for local test
+  31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
+}
+
+export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS: { [chainId: number]: `0x${string}`} = {
+  1: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // Ethereum Mainnet
+  8453: '0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1', // Base,
+  56: '0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613', // BNB Smart Chain,
+  137: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // Polygon
+  42161: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // Arbitrum
+  10: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // Optimism
+  42220: '0x3d79EdAaBC0EaB6F08ED885C05Fc0B014290D95A', // Celo
+  43114: '0x655C406EBFa14EE2006250925e54ec43AD184f8B', //Avalanche
+  81457: '0xB218e4f7cF0533d4696fDfC419A0023D33345F28', //blast mainnet
+  143: '0x7197e214c0b767cfb76fb734ab638e2c192f4e53', //monad mainnet
+  130: '0x943e6e07a7e8e791dafc44083e54041d743c46e9',//Unichain
+  480: '0xec12a9F9a09f50550686363766Cc153D03c27b5e', //WorldChain
+  324: '0x0616e5762c1E7Dc3723c50663dF10a162D690a86',//ZKsync
+  7777777: '0xbC91e8DfA3fF18De43853372A3d7dfe585137D78', //Zora
+  // below are for testnets
+  11155111: '0x1238536071E1c677A632429e3655c799b22cDA52', // Ethereum Sepolia
+  84532: '0x27F971cb582BF9E50F397e4d29a5C7A34f11faA2', // Base Sepolia
+  421614: '0x6b2937Bde17889EDCf8fbD8dE31C3C2a70Bc4d65', //Arbitrum-sepolia
+  11142220: '0x0eC9d3C06Bc0A472A80085244d897bb604548824', //celo sepolia
+  1301: '0xB7F724d6dDDFd008eFf5cc2834edDE5F9eF0d075', //Unichain Sepolia
+  999999999: '0xB8458EaAe43292e3c1F7994EFd016bd653d23c20', //Zora Sepolia
   //for local test
   31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
 }

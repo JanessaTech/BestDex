@@ -5,19 +5,21 @@ import {useSimulateContract} from 'wagmi'
 import ToolTipHelper from "../common/ToolTipHelper";
 import SVGXCircle from "@/lib/svgs/svg_x_circle";
 import SVGSign from "@/lib/svgs/svg_sign";
-import { IncreasePositionParamsType } from "@/common/types";
+import { IncreasePositionParamsType, LocalChainIds } from "@/common/types";
 import logger from "@/common/Logger";
+import {ChainId} from '@uniswap/sdk-core'
 
 type SimulateIncreaseLiquidityStepProps = {
+    chainId: (ChainId | LocalChainIds);
     started: boolean;
     done: boolean;
     skip: boolean; // for test
     parsedCalldata: IncreasePositionParamsType,
     goNext: () => void
 }
-const SimulateIncreaseLiquidityStep:React.FC<SimulateIncreaseLiquidityStepProps> = ({started, done, skip, parsedCalldata, goNext}) => {
+const SimulateIncreaseLiquidityStep:React.FC<SimulateIncreaseLiquidityStepProps> = ({chainId, started, done, skip, parsedCalldata, goNext}) => {
     const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
-        address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+        address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId],
         abi: UNISWAP_V3_POSITION_MANAGER_ABI,
         functionName: 'increaseLiquidity',
         args: [parsedCalldata],

@@ -22,6 +22,7 @@ import { TransactionCreateInputType } from "@/lib/client/types";
 import { createTransaction } from "@/lib/client/Transaction";
 
 type CollectFeeStepProps = {
+    chainId: (ChainId | LocalChainIds)
     token0: TokenType;
     token1: TokenType;
     started: boolean;
@@ -43,9 +44,8 @@ const defaultState: StateType = {
     token1Deposited: '',
 }
 
-const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata, token0, token1,
+const CollectFeeStep: React.FC<CollectFeeStepProps> = ({chainId, started, parsedCalldata, token0, token1,
                                                         handleCollectFeeSuccess}) => {
-    const chainId = useChainId() as (ChainId | LocalChainIds)
     const {address} = useAccount()
     const {tokenPrices} = useContextUtil() as IContextUtil
     const [state, setState] = useState<StateType>(defaultState)
@@ -62,7 +62,7 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({started, parsedCalldata,
 
     const handleCollectFee = () => {
         writeContract({
-            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId],
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
             functionName: 'collect',
             args: [parsedCalldata],

@@ -1,15 +1,17 @@
 import { memo, useState } from "react";
 import CollectFeeStep from "./CollectFeeStep";
-import { CollectFeeParamsType, TokenType } from "@/common/types";
+import { CollectFeeParamsType, LocalChainIds, TokenType } from "@/common/types";
+import {ChainId} from '@uniswap/sdk-core'
 
 type CollectFeeExecutorProps = {
+    chainId: (ChainId | LocalChainIds)
     data: {calldata: `0x${string}`, parsedCalldata: CollectFeeParamsType};
     token0: TokenType;
     token1: TokenType;
     handleCollectFeeSuccess: (token0Deposited: string, token1Deposited: string) => void
 }
 
-const CollectFeeExecutor:React.FC<CollectFeeExecutorProps> = ({data, token0, token1, handleCollectFeeSuccess}) => {
+const CollectFeeExecutor:React.FC<CollectFeeExecutorProps> = ({chainId, data, token0, token1, handleCollectFeeSuccess}) => {
     const [step, setStep] = useState(1)
 
     // const goNext = useCallback(() => {
@@ -19,6 +21,7 @@ const CollectFeeExecutor:React.FC<CollectFeeExecutorProps> = ({data, token0, tok
     return (
         <div className="border-t-[1px] border-zinc-600 my-4 py-3 flex flex-col gap-y-1">
            <CollectFeeStep 
+                chainId={chainId}
                 token0={token0} token1={token1}
                 started={step === 1} parsedCalldata={data.parsedCalldata} 
                 handleCollectFeeSuccess={handleCollectFeeSuccess}/>

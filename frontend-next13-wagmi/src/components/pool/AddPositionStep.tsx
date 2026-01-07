@@ -20,6 +20,7 @@ import { createTransaction } from "@/lib/client/Transaction"
 import {ChainId} from '@uniswap/sdk-core';
 
 type AddPositionStepProps = {
+    chainId: (ChainId | LocalChainIds)
     token0: TokenType;
     token1: TokenType;
     started: boolean;
@@ -43,11 +44,10 @@ const defaultState: StateType = {
     positionId: BigInt(-1)
 }
 
-const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata, token0, token1,
+const AddPositionStep:React.FC<AddPositionStepProps> = ({chainId, started, parsedCalldata, token0, token1,
                                                         handleAddLiquiditySuccess}) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
-    const chainId = useChainId() as (ChainId | LocalChainIds)
     const {tokenPrices} = useContextUtil() as IContextUtil
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
@@ -115,7 +115,7 @@ const AddPositionStep:React.FC<AddPositionStepProps> = ({started, parsedCalldata
 
     const handleAddPosition = () => {
         writeContract({
-            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+            address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId],
             abi: UNISWAP_V3_POSITION_MANAGER_ABI,
             functionName: 'mint',
             args: [parsedCalldata],

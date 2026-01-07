@@ -40,15 +40,15 @@ const defaultState: StateType = {
 }
 
 type DecreaseLiquidityStepProps = {
+    chainId: (ChainId | LocalChainIds);
     token0: TokenType;
     token1: TokenType;
     started: boolean;
     calldata: `0x${string}`;
     handleDecreaseLiquiditySuccess:(token0Deposited: string, token1Deposited: string) => void
 }
-const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, token0, token1, calldata,
+const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({chainId, started, token0, token1, calldata,
                                                                     handleDecreaseLiquiditySuccess}) => {
-    const chainId = useChainId() as (ChainId | LocalChainIds)
     const {address} = useAccount()
     const {tokenPrices} = useContextUtil() as IContextUtil
     const [state, setState] = useState<StateType>(defaultState)
@@ -65,7 +65,7 @@ const DecreaseLiquidityStep: React.FC<DecreaseLiquidityStepProps> = ({started, t
 
     const handleSendTransation = async () => {  
         sendTransaction({
-            to: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+            to: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId],
             data: calldata,
         })
     }

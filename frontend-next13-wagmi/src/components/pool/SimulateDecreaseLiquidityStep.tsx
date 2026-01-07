@@ -8,18 +8,20 @@ import SVGXCircle from '@/lib/svgs/svg_x_circle';
 import SVGSign from '@/lib/svgs/svg_sign';
 import ToolTipHelper from '../common/ToolTipHelper';
 import logger from '@/common/Logger';
-
+import { LocalChainIds } from '@/common/types';
+import {ChainId} from '@uniswap/sdk-core'
 
 type SimulateDecreaseLiquidityStepProps = {
+    chainId: (ChainId | LocalChainIds)
     parsedCalldata: readonly `0x${string}`[];
     started: boolean;
     done: boolean;
     skip: boolean; // for test
     goNext: () => void
 }
-const SimulateDecreaseLiquidityStep:React.FC<SimulateDecreaseLiquidityStepProps> = ({parsedCalldata, started, done, skip, goNext}) => {
+const SimulateDecreaseLiquidityStep:React.FC<SimulateDecreaseLiquidityStepProps> = ({chainId, parsedCalldata, started, done, skip, goNext}) => {
     const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
-        address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS,
+        address: NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS[chainId],
         abi: UNISWAP_V3_POSITION_MANAGER_ABI,
         functionName: 'multicall',
         args: [parsedCalldata],

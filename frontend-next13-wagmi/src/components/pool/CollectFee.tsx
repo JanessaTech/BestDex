@@ -2,17 +2,18 @@ import {
     NonfungiblePositionManager,
     CollectOptions
     } from '@uniswap/v3-sdk'
-import {CurrencyAmount, Token } from '@uniswap/sdk-core'
+import {CurrencyAmount, Token, ChainId} from '@uniswap/sdk-core'
 import { maxUint128, decodeFunctionData} from 'viem'
-import { useAccount} from 'wagmi'
+import { useAccount, useChainId} from 'wagmi'
 import DexModal from "../common/DexModal"
 import { useCallback, useEffect, useState } from 'react';
 import CollectFeeSuccess from './CollectFeeSuccess';
 import CollectFeeExecutor from './CollectFeeExecutor';
 import { toast } from "sonner"
 import { UNISWAP_V3_POSITION_MANAGER_ABI } from '@/config/constants';
-import { CollectFeeParamsType, PositionProps } from '@/common/types'
+import { CollectFeeParamsType, LocalChainIds, PositionProps } from '@/common/types'
 import logger from '@/common/Logger'
+
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -41,7 +42,7 @@ const CollectFee: React.FC<CollectFeeProps> = ({dexPosition, closeDexModal}) => 
     const [showSuccess, setShowSuccess] = useState(false)
     const [deposited, setDeposited] = useState({token0: '0', token1: '0'})
     const [data, setData] = useState<{calldata: `0x${string}`, parsedCalldata: CollectFeeParamsType}>()
-
+    const chainId = useChainId() as (ChainId | LocalChainIds)
     
     useEffect(() => {
         updateCallData()
@@ -97,6 +98,7 @@ const CollectFee: React.FC<CollectFeeProps> = ({dexPosition, closeDexModal}) => 
                         <div>
                             {
                                 data && <CollectFeeExecutor
+                                        chainId={chainId}
                                         data={data}
                                         token0={dexPosition.token0} token1={dexPosition.token1}
                                         handleCollectFeeSuccess={handleCollectFeeSuccess}/>

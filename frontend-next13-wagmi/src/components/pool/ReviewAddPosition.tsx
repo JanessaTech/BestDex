@@ -199,6 +199,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
                     </div>
                     {
                         data && <AddPositionExecutor 
+                                    chainId={chainId}
                                     data={data}
                                     token0={token0}
                                     token1={token1}

@@ -364,6 +364,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                             <div>
                                 {
                                     data && <IncreaseLiquidityExecutor 
+                                            chainId={chainId}
                                             data={data}
                                             token0={dexPosition.token0} token1={dexPosition.token1}
                                             token0Input={deposit.amount0} token1Input={deposit.amount1}
