@@ -5,8 +5,7 @@ import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useSendTransaction, 
          useWaitForTransactionReceipt,
-         useAccount,
-         useChainId } from 'wagmi'
+         useAccount} from 'wagmi'
 import {WaitForTransactionReceiptErrorType} from "@wagmi/core"
 import { UNISWAP_ERRORS, UNISWAP_V3_POOL_SWAP_ABI, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider"
@@ -30,6 +29,7 @@ const getFailedReason = (simulationError: WaitForTransactionReceiptErrorType): s
 }
 
 type SwapStepProps = {
+    chainId: (ChainId | LocalChainIds);
     started: boolean;
     tokenFrom: TokenType;
     tokenTo: TokenType;
@@ -50,9 +50,8 @@ const defaultState: StateType = {
     preBalance: '',
     actualOutput: ''
 }
-const SwapStep:React.FC<SwapStepProps> = ({started, tokenFrom, tokenTo, calldata, handleSwapSuccess}) => {
+const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo, calldata, handleSwapSuccess}) => {
     const {address} = useAccount()
-    const chainId = useChainId() as (ChainId | LocalChainIds)
     const [state, setState] = useState<StateType>(defaultState)
     const {getTokenBalance, tokenPrices} = useContextUtil() as IContextUtil
     const isTokenFromToken0 = tokenFrom.address.toLowerCase() < tokenTo.address.toLowerCase()
@@ -75,7 +74,7 @@ const SwapStep:React.FC<SwapStepProps> = ({started, tokenFrom, tokenTo, calldata
         setState({...state, preBalance: balance})
         logger.debug('[SwapStep] pre balance: ',  balance, ' for ', tokenTo.address)
         sendTransaction({
-            to: V3_SWAP_ROUTER_ADDRESS,
+            to: V3_SWAP_ROUTER_ADDRESS[chainId],
             data: calldata,
         })
     }

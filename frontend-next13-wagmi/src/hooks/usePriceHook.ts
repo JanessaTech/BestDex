@@ -9,7 +9,7 @@ import useTokenListHook from "./useTokenListHook";
 
 const span = 10000
 export type TokenPriceInUSDType = {
-    [K in ChainId | LocalChainIds]?: Map<`0x${string}`, string>
+    [K in (ChainId | LocalChainIds)]?: Map<`0x${string}`, string>
 }
 
 type ReturnPriceType = {

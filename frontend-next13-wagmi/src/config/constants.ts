@@ -4,7 +4,7 @@ import { Decimal } from 'decimal.js'
 export const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
 export const POOL_FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 export const READABLE_FORM_LEN = 4
-export const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+
 export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS = '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
 export const SwapRouter02ABI = parseAbi(['function multicall(uint256,bytes[]) payable returns (bytes[])'])
 export const UNISWAP_ERRORS: Record<string, string> = {
@@ -44,10 +44,48 @@ export const UNISWAP_V3_FACTORY_ADDRESSES: { [chainId: number]: `0x${string}`} =
   42161: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Arbitrum
   10: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Optimism
   42220: '0xAfE208a311B21f13EF87E33A90049fC17A7acDEc', // Celo
+  43114: '0x740b1c1de25031C31FF4fC9A62f554A55cdC1baD', //Avalanche
+  81457: '0x792edAdE80af5fC680d96a2eD80A44247D2Cf6Fd', //blast mainnet
+  143: '0x204faca1764b154221e35c0d20abb3c525710498', //monad mainnet
+  130: '0x1f98400000000000000000000000000000000003',//Unichain
+  480: '0x7a5028BDa40e7B173C278C5342087826455ea25a', //WorldChain
+  324: '0x8FdA5a7a8dCA67BBcDd10F02Fa0649A937215422',//ZKsync
+  7777777: '0x7145F8aeef1f6510E92164038E1B6F8cB2c42Cbb', //Zora
+  // below are for testnets
   11155111: '0x0227628f3F023bb0B980b67D528571c95c6DaC1c', // Ethereum Sepolia
   84532: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24', // Base Sepolia
+  421614: '0x248AB79Bbb9bC29bB72f7Cd42F17e054Fc40188e', //Arbitrum-sepolia
+  11142220: '0x229Fd76DA9062C1a10eb4193768E192bdEA99572', //celo sepolia
+  1301: '0x1F98431c8aD98523631AE4a59f267346ea31F984', //Unichain Sepolia
+  999999999: '0x4324A677D74764f46f33ED447964252441aA8Db6', //Zora Sepolia
+  //for local test
   31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
 };
+export const V3_SWAP_ROUTER_ADDRESS: { [chainId: number]: `0x${string}`} = {
+  1: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', // Ethereum Mainnet
+  8453: '0x2626664c2603336E57B271c5C0b26F421741e481', // Base,
+  56: '0xB971eF87ede563556b2ED4b1C0b0019111Dd85d2', // BNB Smart Chain,
+  137: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', // Polygon
+  42161: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', // Arbitrum
+  10: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45', // Optimism
+  42220: '0x5615CDAb10dc425a742d643d949a7F474C01abc4', // Celo
+  43114: '0xbb00FF08d01D300023C629E8fFfFcb65A5a578cE', //Avalanche
+  81457: '0x549FEB8c9bd4c12Ad2AB27022dA12492aC452B66', //blast mainnet
+  143: '0xfe31f71c1b106eac32f1a19239c9a9a72ddfb900', //monad mainnet
+  130: '0x73855d06de49d0fe4a9c42636ba96c62da12ff9c',//Unichain
+  480: '0x091AD9e2e6e5eD44c1c66dB50e49A601F9f36cF6', //WorldChain
+  324: '0x99c56385daBCE3E81d8499d0b8d0257aBC07E8A3',//ZKsync
+  7777777: '0x7De04c96BE5159c3b5CeffC82aa176dc81281557', //Zora
+  // below are for testnets
+  11155111: '0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E', // Ethereum Sepolia
+  84532: '0x94cC0AaC535CCDB3C01d6787D6413C739ae12bc4', // Base Sepolia
+  421614: '0x101F443B4d1b059569D643917553c771E1b9663E', //Arbitrum-sepolia
+  11142220: '0x8C456F41A3883bA0ba99f810F7A2Da54D9Ea3EF0', //celo sepolia
+  1301: '0xd1AAE39293221B77B0C71fBD6dCb7Ea29Bb5B166', //Unichain Sepolia
+  999999999: '0x6B36d761981d82B1e07cF3c4daF4cB4615c4850a', //Zora Sepolia
+  //for local test
+  31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
+}
 
 export const UNISWAP_V3_FACTORY_ABI = parseAbi([
   'function getPool(address tokenA, address tokenB, uint24 fee) external view returns (address pool)'

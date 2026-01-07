@@ -27,7 +27,7 @@ type TokenOptionProps = {
   tokenOpen: boolean;
   chainId: number;
   curToken: TokenType | undefined;
-  isWSConnected: boolean;
+  isWSConnected?: boolean;
   showFull?: boolean;
   onOpenChange: (open: boolean) => void;
   closeTokenOption: () => void;

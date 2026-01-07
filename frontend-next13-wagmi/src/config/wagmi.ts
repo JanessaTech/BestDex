@@ -51,7 +51,7 @@ import {
 
 const chainUrls = { // it should be consistent with the variable chains defined above
   [mainnet.id]: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
-  [bsc.id]: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+  [bsc.id]: `https://bnb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [base.id]: `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [arbitrum.id]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [sepolia.id]: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
@@ -62,7 +62,7 @@ const myTransports = Object.fromEntries(
   Object.entries(chainUrls).map(([chainId, url]) => [chainId, http(url)])
 );
 export const config = getDefaultConfig({
-  appName: 'RainbowKit demo',
+  appName: 'Best DEX powered by JanessaTech',
   projectId: projectId,
   wallets: [{
     groupName: 'Recommended',

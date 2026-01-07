@@ -8,6 +8,8 @@ import {SimulateContractErrorType} from "@wagmi/core"
 import {decodeFunctionData} from 'viem'
 import { SwapRouter02ABI, UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 import logger from "@/common/Logger"
+import {ChainId} from '@uniswap/sdk-core';
+import { LocalChainIds } from "@/common/types"
 
 const parseCalldata = (calldata: `0x${string}`) => {
     try {
@@ -42,19 +44,20 @@ const getFailedReason = (simulationError: SimulateContractErrorType): string => 
 }
 
 type SimulateSwapStepProps = {
+    chainId: (ChainId | LocalChainIds);
     started: boolean;
     done: boolean;
     skip: boolean; // for test
     calldata: `0x${string}`;
     goNext: () => void
 }
-const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({started, skip, done, calldata, goNext}) => {
+const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({chainId, started, skip, done, calldata, goNext}) => {
     const {deadline, innerCalls} = parseCalldata(calldata)
     if (!deadline || !innerCalls) return <div>Failed to parse calldata</div>
     const [reason, setReason] = useState('')
 
     const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
-        address: V3_SWAP_ROUTER_ADDRESS,
+        address: V3_SWAP_ROUTER_ADDRESS[chainId],
         abi: SwapRouter02ABI,
         functionName: 'multicall',
         args: [deadline, innerCalls],

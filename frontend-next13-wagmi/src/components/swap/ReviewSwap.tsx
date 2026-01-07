@@ -161,6 +161,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                                 </Button>
                             </div>
                             : <SwapeExecutor 
+                                    chainId={chainId}
                                     tokenFrom={tokenFrom} 
                                     tokenTo={tokenTo}
                                     approveAmount={approveAmount}

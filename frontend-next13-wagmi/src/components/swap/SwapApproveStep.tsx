@@ -12,11 +12,12 @@ import { TokenType } from "@/common/types";
 import logger from "@/common/Logger";
 
 type SwapApproveStepProps = {
+    chainId: number
     tokenFrom: TokenType;
     approveAmount: string;
     goNext: () => void
 }
-const SwapApproveStep: React.FC<SwapApproveStepProps> = ({tokenFrom, approveAmount, goNext}) => {
+const SwapApproveStep: React.FC<SwapApproveStepProps> = ({chainId, tokenFrom, approveAmount, goNext}) => {
 
     const { data: hash, writeContract, isSuccess, isPending, error } = useWriteContract()
 
@@ -25,7 +26,7 @@ const SwapApproveStep: React.FC<SwapApproveStepProps> = ({tokenFrom, approveAmou
             address: tokenFrom.address,
             abi:ERC20,
             functionName: 'approve',
-            args: [V3_SWAP_ROUTER_ADDRESS, fromReadableAmount3(approveAmount, tokenFrom.decimal).toString()]
+            args: [V3_SWAP_ROUTER_ADDRESS[chainId], fromReadableAmount3(approveAmount, tokenFrom.decimal).toString()]
         })
     }
 
