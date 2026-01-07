@@ -37,7 +37,7 @@ export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS: { [chainId: number]:
   1301: '0xB7F724d6dDDFd008eFf5cc2834edDE5F9eF0d075', //Unichain Sepolia
   999999999: '0xB8458EaAe43292e3c1F7994EFd016bd653d23c20', //Zora Sepolia
   //for local test
-  31337: '0x1F98431c8aD98523631AE4a59f267346ea31F984'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
+  31337: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'// same as Ethereum Mainnet since we are using forking mainnet as the local for test
 }
 
 export const THEGRAPH_ENDPOINTS :  { [chainId: number]: string} = {

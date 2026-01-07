@@ -2,15 +2,16 @@ import { Server } from "http"
 import WebSocket, { WebSocketServer } from "ws";
 import logger from "../../helpers/logger";
 
-
 export class WebsocketServer {
     private subscriptions  = new Map<string, Set<{ws: WebSocket, subscriptionId: string}>>()
     private reverseSubscriptions = new Map<WebSocket, Set<string>>()
     private wsIdMap = new Map<WebSocket, string>()
 
+    private server: Server
     private wss: WebSocketServer;
-
+    
     constructor(server: Server)  {
+        this.server = server
         this.wss = new WebSocket.Server({server})
         this.setupWebSocketServer()
         logger.info('A websocket server is ready')
@@ -140,6 +141,7 @@ export class WebsocketServer {
         }
         targetClient?.ws.send(JSON.stringify(message))
     }
+
 
     getSubscriptions() {
         return this.subscriptions
