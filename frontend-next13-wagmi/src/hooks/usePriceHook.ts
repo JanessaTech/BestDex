@@ -56,7 +56,7 @@ const usePriceHook = () => {
             const chainId = networkChainMap.get(item.network) as ChainId
             const address = item.address
             const usd =  item.prices.filter((price) => price.currency === 'usd')
-            const value = usd && usd.length ? usd[0].value : ''
+            const value = usd && usd.length ? usd[0].value : '0'
             if (chainId) {
                 if(tokenPrices[chainId]) {
                     tokenPrices[chainId]?.set(address, value)

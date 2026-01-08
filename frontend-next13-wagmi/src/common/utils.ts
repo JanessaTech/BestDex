@@ -74,7 +74,7 @@ export const calcPoolAddress = async (tokenA:`0x${string}`, tokenB: `0x${string}
       }
   }
 
-const calcPriceBySqrtPriceX96 = (isToken0Base: boolean, sqrtPriceX96: string, token0Decimals: number, token1Decimals: number) => {
+const calcPriceBySqrtPriceX96 = (sqrtPriceX96: string, token0Decimals: number, token1Decimals: number) => {
     const sqrtPriceX96Decimal = new Decimal(sqrtPriceX96)
     const TWO_96 = new Decimal(2).pow(96)
     // price = (sqrtPriceX96 / 2^96)^2
@@ -82,17 +82,17 @@ const calcPriceBySqrtPriceX96 = (isToken0Base: boolean, sqrtPriceX96: string, to
     const ratio = sqrtRatio.pow(2)
 
     // adjust
-    const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) :  new Decimal(10).pow(token1Decimals - token0Decimals)
+    const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals)
     const adjustedRatio = ratio.times(decimalsAdjustment)
 
     // result
-    const res  = isToken0Base ? adjustedRatio : new Decimal(1).dividedBy(adjustedRatio)
+    const res  = adjustedRatio
     return res.toDecimalPlaces(token1Decimals, Decimal.ROUND_HALF_UP)
 }
 
 export const getPoolCurrentPrice = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType) => {
-  const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
-  const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96, token0.decimal, token1.decimal)
+  if (token0.address.toLowerCase() >= token1.address.toLowerCase()) throw new Error('token0 must be less than token1')
+  const currentPrice = calcPriceBySqrtPriceX96(poolInfo.sqrtPriceX96, token0.decimal, token1.decimal)
   return currentPrice.toString()
 }
 
@@ -105,12 +105,11 @@ const calOriginPriceBySqrtPriceX96 = (sqrtPriceX96: string) => {
   const ratio = sqrtRatio.pow(2)
   return ratio
 }
-const priceToTick = (price: Decimal, 
-  isToken0Base: boolean, 
+const priceToTick = (price: Decimal,  
   token0Decimals: number, token1Decimals: number,
   roundDirection: 'nearest' | 'up' | 'down') => {
-  const priceDecimal = isToken0Base ? new Decimal(price) : new Decimal(1).dividedBy(new Decimal(price))
-  const decimalsAdjustment = isToken0Base ? new Decimal(10).pow(token0Decimals - token1Decimals) : new Decimal(10).pow(token1Decimals - token0Decimals) 
+  const priceDecimal = new Decimal(price)
+  const decimalsAdjustment = new Decimal(10).pow(token0Decimals - token1Decimals)
   const adjustedPrice = priceDecimal.div(decimalsAdjustment);
   const tick = adjustedPrice.log().div(TICK_BASE.log());
   let roundedTick: number;
@@ -130,15 +129,15 @@ const priceToTick = (price: Decimal,
   return adjustedTick
 }
 export const calPoolRange = (poolInfo: PoolInfo, token0 : TokenType, token1: TokenType):PoolRange => {
-  const isToken0Base = token0.address.toLowerCase() < token1.address.toLowerCase()
-  const currentPrice = calcPriceBySqrtPriceX96(isToken0Base, poolInfo.sqrtPriceX96, token0.decimal, token1.decimal)
+  if (token0.address.toLowerCase() >= token1.address.toLowerCase()) throw new Error('token0 must be less than token1')
+  const currentPrice = calcPriceBySqrtPriceX96(poolInfo.sqrtPriceX96, token0.decimal, token1.decimal)
   logger.debug('[util.calPoolRange] currentPrice=', currentPrice.toString())
   const lowerPrice = currentPrice.mul(1 - TICK_RANG_PERCENTAGE)
   const upperPrice = currentPrice.mul(1 + TICK_RANG_PERCENTAGE)
   logger.debug('[util.calPoolRange] lowerPrice=', lowerPrice.toString())
   logger.debug('[util.calPoolRange] upperPrice=', upperPrice.toString())
-  const _lowerTick = isToken0Base ? priceToTick(lowerPrice, isToken0Base, token0.decimal, token1.decimal, 'down') : priceToTick(upperPrice, isToken0Base, token0.decimal, token1.decimal, 'down')
-  const _upperTick = isToken0Base ? priceToTick(upperPrice, isToken0Base, token0.decimal, token1.decimal, 'up') : priceToTick(lowerPrice, isToken0Base, token0.decimal, token1.decimal, 'up')
+  const _lowerTick = priceToTick(lowerPrice, token0.decimal, token1.decimal, 'down')
+  const _upperTick = priceToTick(upperPrice, token0.decimal, token1.decimal, 'up')
   const lowerTick =  Math.floor(_lowerTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
   const upperTick =  Math.ceil(_upperTick / poolInfo.tickSpacing) * poolInfo.tickSpacing
   logger.debug(`[util.calPoolRange] lowerTick=${lowerTick} tick=${poolInfo.tick} upperTick=${upperTick}`)

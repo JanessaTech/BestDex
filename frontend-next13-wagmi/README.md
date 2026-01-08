@@ -23,6 +23,8 @@ npx shadcn@latest add tooltip
 
 ```
 npm run dev
+npm run build
+num run start
 ```
 
 
