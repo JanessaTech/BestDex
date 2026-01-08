@@ -1,4 +1,7 @@
-import { mainnet, bsc, base, arbitrum, sepolia, baseSepolia, hardhat} from 'viem/chains';
+import { mainnet, bsc, polygon, base, arbitrum, celo, 
+  avalanche, blast, unichain, worldchain, zksync, zora,
+  sepolia, baseSepolia, arbitrumSepolia, celoSepolia,unichainSepolia, zoraSepolia,
+  hardhat} from 'viem/chains';
 import { Chain } from 'viem';
 import dotenv from 'dotenv';
 import { TokenListType } from '../../controllers/types';
@@ -75,11 +78,25 @@ export const tokenList: TokenListType = [
 
 export const chainUrls = new Map<number, [Chain, string, string]>([
   [Number(mainnet.id), [mainnet, `https://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
-  [Number(bsc.id), [bsc, `https://bnb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://bnb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
   [Number(base.id), [base, `https://base-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://base-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(bsc.id), [bsc, `https://bnb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://bnb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(polygon.id), [polygon, `https://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://polygon-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
   [Number(arbitrum.id), [arbitrum, `https://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://arb-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(celo.id), [celo, `https://celo-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://celo-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(avalanche.id), [avalanche, `https://avax-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://avax-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(blast.id), [blast, `https://blast-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://blast-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(unichain.id), [unichain, `https://unichain-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://unichain-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(worldchain.id), [worldchain, `https://worldchain-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://worldchain-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(zksync.id), [zksync, `https://zksync-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://zksync-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(zora.id), [zora, `https://zora-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://zora-mainnet.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  // below are for testnets
   [Number(sepolia.id), [sepolia, `https://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://eth-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
   [Number(baseSepolia.id), [sepolia, `https://base-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://base-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(arbitrumSepolia.id), [arbitrumSepolia, `https://arb-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://arb-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(celoSepolia.id), [celoSepolia, `https://celo-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://celo-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(unichainSepolia.id), [unichainSepolia, `https://unichain-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://unichain-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  [Number(zoraSepolia.id), [zoraSepolia, `https://zora-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`, `wss://zora-sepolia.g.alchemy.com/v2/${process.env.PUBLIC_ALCHEMY_ID}`]],
+  //for local test
   [Number(hardhat.id), [hardhat, 'http://127.0.0.1:8545', `http://127.0.0.1:8545`]]
 ])
 

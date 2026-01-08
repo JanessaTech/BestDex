@@ -20,11 +20,9 @@ export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS: { [chainId: number]:
   56: '0x7b8A01B39D58278b5DE7e48c8449c9f4F5170613', // BNB Smart Chain,
   137: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // Polygon
   42161: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // Arbitrum
-  10: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88', // Optimism
   42220: '0x3d79EdAaBC0EaB6F08ED885C05Fc0B014290D95A', // Celo
   43114: '0x655C406EBFa14EE2006250925e54ec43AD184f8B', //Avalanche
   81457: '0xB218e4f7cF0533d4696fDfC419A0023D33345F28', //blast mainnet
-  143: '0x7197e214c0b767cfb76fb734ab638e2c192f4e53', //monad mainnet
   130: '0x943e6e07a7e8e791dafc44083e54041d743c46e9',//Unichain
   480: '0xec12a9F9a09f50550686363766Cc153D03c27b5e', //WorldChain
   324: '0x0616e5762c1E7Dc3723c50663dF10a162D690a86',//ZKsync
@@ -46,7 +44,6 @@ export const THEGRAPH_ENDPOINTS :  { [chainId: number]: string} = {
   56: 'https://gateway.thegraph.com/api/subgraphs/id/G5MUbSBM7Nsrm9tH2tGQUiAF4SZDGf2qeo1xPLYjKr7K', // BNB Smart Chain,
   137: '', // Polygon
   42161: 'https://gateway.thegraph.com/api/subgraphs/id/3V7ZY6muhxaQL5qvntX1CFXJ32W7BxXZTGTwmpH5J4t3', // Arbitrum
-  10: '', // Optimism
   42220: '', // Celo
   11155111: 'https://gateway.thegraph.com/api/subgraphs/id/EDJCBpDBGBajTP1x3qLGLg3ZaVR5Q2TkNxyNHdCuryex', // Ethereum Sepolia
   84532: '', // Base Sepolia
@@ -58,11 +55,9 @@ export const UNISWAP_V3_FACTORY_ADDRESSES: { [chainId: number]: `0x${string}`} =
   56: '0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7', // BNB Smart Chain,
   137: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Polygon
   42161: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Arbitrum
-  10: '0x1F98431c8aD98523631AE4a59f267346ea31F984', // Optimism
   42220: '0xAfE208a311B21f13EF87E33A90049fC17A7acDEc', // Celo
   43114: '0x740b1c1de25031C31FF4fC9A62f554A55cdC1baD', //Avalanche
   81457: '0x792edAdE80af5fC680d96a2eD80A44247D2Cf6Fd', //blast mainnet
-  143: '0x204faca1764b154221e35c0d20abb3c525710498', //monad mainnet
   130: '0x1f98400000000000000000000000000000000003',//Unichain
   480: '0x7a5028BDa40e7B173C278C5342087826455ea25a', //WorldChain
   324: '0x8FdA5a7a8dCA67BBcDd10F02Fa0649A937215422',//ZKsync
