@@ -34,28 +34,24 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                                         openAddPositionModal,
                                         closeAddPositionModal,checkRefresh,
                                         handleDepositChanges}) => {
-    const {isWSConnected} = useContextUtil() as IContextUtil
+    const {isWSConnected, getTokenBalance} = useContextUtil() as IContextUtil
     const {address} = useAccount()
     const [whoInput, setWhoInput] = useState(0) // indicate which token is as the major input: 0 for token0, 1 for token1
-    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
+    const [tokenBalance, setTokenBalance] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
 
     useEffect(() => {
-        // (async () => {
-        //     let balance0 = '0', balance1 = '0'
-        //     if (address) {
-        //         try {
-        //             if (token0) {
-        //                 balance0 = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
-        //             }
-        //             if (token1) {
-        //                 balance1 = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
-        //             }
-        //             setTokenBalances({token0: balance0, token1: balance1})
-        //         } catch (error) {
-        //             logger.error(error)
-        //         }
-        //     }
-        // })()
+        (async () => {
+            let balance0 = '0', balance1 = '0'
+            if (address) {
+                try {
+                    balance0 = await getTokenBalance(token0.address, address!, {decimals: token0.decimal})
+                    balance1 = await getTokenBalance(token1.address, address!, {decimals: token1.decimal})
+                    setTokenBalance({token0: balance0, token1: balance1})
+                } catch (error) {
+                    logger.error(error)
+                }
+            }
+        })()
     }, [address])
 
     useEffect(() => {
@@ -157,13 +153,13 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
         const dec1 = new Decimal(amount1 ? amount1 : '0')
         if (upperTick <= curTick) { // token0 is hidden
             //we check token1 only
-            disabled = dec1.lessThanOrEqualTo(new Decimal(tokenBalances.token1)) && dec1.greaterThan(0) ? false : true
+            disabled = dec1.lessThanOrEqualTo(new Decimal(tokenBalance.token1)) && dec1.greaterThan(0) ? false : true
         } else if (lowerTick >= curTick) { // token1 is hidden
             //we check token0 only
-            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && dec0.greaterThan(0) ? false : true
+            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalance.token0)) && dec0.greaterThan(0) ? false : true
         } else { // no tokens hidden
             // we check both of tokens
-            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalances.token0)) && dec0.greaterThan(0) && dec1.lessThanOrEqualTo(new Decimal(tokenBalances.token1)) && dec1.greaterThan(0)? false : true
+            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalance.token0)) && dec0.greaterThan(0) && dec1.lessThanOrEqualTo(new Decimal(tokenBalance.token1)) && dec1.greaterThan(0)? false : true
         }
         return disabled
     }
@@ -174,12 +170,12 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
                 <div className="pb-2">Deposit tokens</div>
                 {
                     upperTick > curTick && <DepositInput 
-                                            amount={amount0} token={token0} tokenBalance={tokenBalances.token0}
+                                            amount={amount0} token={token0} tokenBalance={tokenBalance.token0}
                                             updateTokenChange={updateToken0Change}/>
                 }
                 {
                     lowerTick < curTick && <DepositInput 
-                                            amount={amount1} token={token1} tokenBalance={tokenBalances.token1}
+                                            amount={amount1} token={token1} tokenBalance={tokenBalance.token1}
                                             updateTokenChange={updateToken1Change}/>
                 }
             </div>

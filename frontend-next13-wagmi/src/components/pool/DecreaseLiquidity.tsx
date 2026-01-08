@@ -226,6 +226,7 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
                     <div>
                         {
                             data && <DecreaseLiquidityExecutor
+                                    chainId={chainId}
                                     data={data}
                                     token0={dexPosition.token0} token1={dexPosition.token1}
                                     handleDecreaseLiquiditySuccess={handleDecreaseLiquiditySuccess}

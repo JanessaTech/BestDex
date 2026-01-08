@@ -1,9 +1,7 @@
 import SVGCheck from "@/lib/svgs/svg_check";
 import QuestionMarkToolTip from "../common/QuestionMarkToolTip";
 import { default as DexToken } from "../common/Token";
-import Link from "next/link";
 import { TokenType } from "@/common/types";
-
 
 type AddPositionSuccessProps = {
     token0: TokenType;
@@ -37,7 +35,6 @@ const AddPositionSuccess:React.FC<AddPositionSuccessProps> = ({positionId, token
                     <DexToken token={token1} imageSize={20}/>
                 </div>
             </div>
-            <div><Link href="www.baidu.com" className="text-xs text-pink-600">View details</Link></div>
         </div>
         
     )

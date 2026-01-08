@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useWriteContract,
     useWaitForTransactionReceipt,
-    useAccount,
-    useChainId
+    useAccount
   } from 'wagmi'
 import { IContextUtil, useContextUtil } from "../providers/ContextUtilProvider";
 import { NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, UNISWAP_V3_POSITION_MANAGER_ABI, UNISWAP_V3_POSITION_MANAGER_INCREASE_LIQUIDITY_ABI } from "@/config/constants";

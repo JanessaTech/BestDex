@@ -11,7 +11,7 @@ import {
     NonfungiblePositionManager,
     Pool} from '@uniswap/v3-sdk';
 import {Token, Percent} from '@uniswap/sdk-core';
-import { useChainId} from 'wagmi';
+import { useChainId, useAccount} from 'wagmi';
 import { toast } from "sonner"
 import { Decimal } from 'decimal.js'
 import {decodeFunctionData} from 'viem'
@@ -45,16 +45,13 @@ const parseCalldata = (calldata: `0x${string}`) => {
 }
 
 type IncreaseLiquidityProps = {
-    token0Balance: string;
-    token1Balance: string;
     poolInfo: PoolInfo;
     dexPosition: PositionProps;
     closeDexModal: () => void
 }
-const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, token1Balance,
-                                                              poolInfo, dexPosition,
-                                                              closeDexModal}) => {
+const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({poolInfo, dexPosition, closeDexModal}) => {
     const chainId = useChainId()
+    const { address} = useAccount()
     const [settingOpen, setSettingOpen] = useState(false)
     const {slipage, deadline} = useUpdateSetting()
     const [deposit, setDeposit] = useState({amount0: '0', amount1: '0'})
@@ -64,8 +61,24 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
     const [showSuccess, setShowSuccess] = useState(false)
     const [showDialog, setShowDialog] = useState(false)
     const [deposited, setDeposited] = useState<{token0: string, token1: string, liquidity: string}>({token0: '', token1: '', liquidity: '0'})
-    const {getPoolAddress, getLatestPoolInfoByWS, getLatestPoolInfoByRPC} = useContextUtil() as IContextUtil
+    const {getPoolAddress, getLatestPoolInfoByWS, getLatestPoolInfoByRPC, getTokenBalance} = useContextUtil() as IContextUtil
     const [executed, setExecuted] = useState(false)
+    const [tokenBalance, setTokenBalance] = useState<{token0: string, token1: string}>({token0: '0', token1: '0'})
+
+    useEffect(() => {
+        (async () => {
+            let balance0 = '0', balance1 = '0'
+            if (address) {
+                try {
+                    balance0 = await getTokenBalance(dexPosition.token0.address, address!, {decimals: dexPosition.token0.decimal})
+                    balance1 = await getTokenBalance(dexPosition.token1.address, address!, {decimals: dexPosition.token1.decimal})
+                    setTokenBalance({token0: balance0, token1: balance1})
+                } catch (error) {
+                    logger.error(error)
+                }
+            }
+        })()
+    }, [address])
 
     useEffect(() => {
         logger.debug('[IncreaseLiquidity] curPoolInfo=', curPoolInfo)
@@ -219,13 +232,13 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
         const dec1 = new Decimal(deposit.amount1 ? deposit.amount1 : '0')
         if (dexPosition.tickUpper <= curPoolInfo.tick) { // token0 is hidden
             //we check token1 only
-            disabled = dec1.lessThanOrEqualTo(new Decimal(token1Balance)) && dec1.greaterThan(0) ? false : true
+            disabled = dec1.lessThanOrEqualTo(new Decimal(tokenBalance.token1)) && dec1.greaterThan(0) ? false : true
         } else if (dexPosition.tickLower >= curPoolInfo.tick) { // token1 is hidden
             //we check token0 only
-            disabled = dec0.lessThanOrEqualTo(new Decimal(token0Balance)) && dec0.greaterThan(0) ? false : true
+            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalance.token0)) && dec0.greaterThan(0) ? false : true
         } else { // no tokens hidden
             // we check both of tokens
-            disabled = dec0.lessThanOrEqualTo(new Decimal(token0Balance)) && dec0.greaterThan(0) && dec1.lessThanOrEqualTo(new Decimal(token1Balance)) && dec1.greaterThan(0)? false : true
+            disabled = dec0.lessThanOrEqualTo(new Decimal(tokenBalance.token0)) && dec0.greaterThan(0) && dec1.lessThanOrEqualTo(new Decimal(tokenBalance.token1)) && dec1.greaterThan(0)? false : true
         }
         return disabled
     }
@@ -340,7 +353,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                                 dexPosition.tickUpper > curPoolInfo.tick &&
                                 <div>  
                                     <DepositInput 
-                                        token={dexPosition.token0} tokenBalance={token0Balance} amount={deposit.amount0}
+                                        token={dexPosition.token0} tokenBalance={tokenBalance.token0} amount={deposit.amount0}
                                         updateTokenChange={updateToken0Change}/>
                                 </div>
                             }
@@ -348,7 +361,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({ token0Balance, to
                                 dexPosition.tickLower < curPoolInfo.tick &&
                                 <div>  
                                     <DepositInput 
-                                        token={dexPosition.token1} tokenBalance={token1Balance} amount={deposit.amount1}
+                                        token={dexPosition.token1} tokenBalance={tokenBalance.token1} amount={deposit.amount1}
                                         updateTokenChange={updateToken1Change}/>
                                 </div>
                             }

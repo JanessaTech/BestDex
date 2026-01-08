@@ -4,7 +4,6 @@ import SVGCheckCircle from "@/lib/svgs/svg_check_circle";
 import { memo, useEffect, useState } from "react";
 import { useSendTransaction, 
     useWaitForTransactionReceipt,
-    useChainId,
     useAccount
     } from 'wagmi'
 import ToolTipHelper from "../common/ToolTipHelper";

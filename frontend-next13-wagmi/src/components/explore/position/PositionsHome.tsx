@@ -26,10 +26,8 @@ import logger from "@/common/Logger"
 import { fetchLatestPoolInfo } from "@/lib/client/Pool"
 import { getPositionsByPage } from "@/lib/client/Position"
 import { Skeleton } from "@/components/ui/skeleton"
-import { PAGE_LOAD_SKETETON_SPAN } from "@/config/constants"
 import DexPagination from "@/components/common/DexPagination"
 import { PoolInfo } from "@/lib/client/types"
-
 
 type GlobalVariableType = {
     poolInfo?: PoolInfo;
@@ -156,8 +154,8 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
     const [openCollectFee, setOpenCollectFee] = useState(false)
 
     const [global, setGlobal] = useState<GlobalVariableType>()
-    const [tokenBalances, setTokenBalances] = useState<{token0: string, token1: string}>({token0: '999999999999999999999', token1: '999999999999999999'})
-    const {getPoolAddress, getLatestPoolInfoByRPC, getLatestPoolInfoByWS} = useContextUtil() as IContextUtil
+    
+    const {getPoolAddress, getLatestPoolInfoByRPC, getLatestPoolInfoByWS, getTokenBalance} = useContextUtil() as IContextUtil
     const [page, setPage] = useState(1)
     const [positions, setPositions] = useState<PositionProps[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -186,6 +184,8 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
         //     setIsLoading(false) 
         // }
     }
+
+    
     
     const closeIncreaseLiquidityModal = () => {
         setOpenIncreaseLiquidity(false)
@@ -296,7 +296,6 @@ const PositionsHome: React.FC<PositionsHomeProps> = ({value}) => {
                 openIncreaseLiquidity  && global && global.poolInfo && <IncreaseLiquidity
                                             poolInfo={global.poolInfo}
                                             dexPosition={global.position}
-                                            token0Balance={tokenBalances.token0} token1Balance={tokenBalances.token1}
                                             closeDexModal={closeIncreaseLiquidityModal}/>
             }
             {
