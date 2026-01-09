@@ -150,8 +150,8 @@ const TransactionsHome: React.FC<TransactionsHomeProps> = ({value}) => {
                         <TableHead className="text-white font-bold">Time</TableHead>
                         <TableHead className="text-white font-bold">Tx ID</TableHead>
                         <TableHead className="text-white font-bold text-center">Type</TableHead>
-                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token amount</TableHead>
-                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token amount</TableHead>
+                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token0 amount</TableHead>
+                        <TableHead className={`text-white font-bold text-center max-md:hidden`}>Token1 amount</TableHead>
                         <TableHead className={`text-white font-bold text-center max-md:hidden`}>USD</TableHead>
                         <TableHead className={`text-white font-bold text-center max-md:hidden`}>From</TableHead>
                     </TableRow>
