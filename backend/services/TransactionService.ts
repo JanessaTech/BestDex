@@ -32,7 +32,7 @@ class TransactionServiceImp implements TransactionService {
             this.validateToken(params.chainId, params.token0 as `0x${string}`)
             this.validateToken(params.chainId, params.token1 as `0x${string}`)
             const raw = await transactionDao.create({...params})
-            if (params.txType === TRANSACTION_TYPE.Mint) {
+            if (params.txType === TRANSACTION_TYPE.Mint || params.txType === TRANSACTION_TYPE.Increase || params.txType === TRANSACTION_TYPE.Decrease) {
                 await this.invalidateUserPositions(params.chainId, params.from as `0x${string}`)
             }
             
