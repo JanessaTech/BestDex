@@ -5,9 +5,9 @@ import { LocalChainIds} from "@/common/types";
 import logger from "@/common/Logger";
 import { NETWORK_ENUM } from "@/lib/client/types";
 import useTokenListHook from "./useTokenListHook";
+import { PRICE_INTERVAL } from "@/config/constants";
 
 
-const span = 10000
 export type TokenPriceInUSDType = {
     [K in (ChainId | LocalChainIds)]?: Map<`0x${string}`, string>
 }
@@ -42,7 +42,7 @@ const usePriceHook = () => {
 
         if (tokenList.length) {
             fetchTokenPrices()
-            interval = setInterval(fetchTokenPrices, span)
+            interval = setInterval(fetchTokenPrices, PRICE_INTERVAL)
         }
         return () => {
             if (interval) {
@@ -54,7 +54,7 @@ const usePriceHook = () => {
     const updateTokenPrices = (latestPrices: ReturnPriceType[], networkChainMap: Map<NETWORK_ENUM, number>) => {
         latestPrices.forEach((item) => {
             const chainId = networkChainMap.get(item.network) as ChainId
-            const address = item.address
+            const address = item.address.toLowerCase() as `0x${string}`
             const usd =  item.prices.filter((price) => price.currency === 'usd')
             const value = usd && usd.length ? usd[0].value : '0'
             if (chainId) {
@@ -70,7 +70,11 @@ const usePriceHook = () => {
         })
     }
 
-    return {tokenPrices}
+    const getTokenPrice = (chainId: (ChainId | LocalChainIds), address: `0x${string}`) => {
+        return tokenPrices[chainId]?.get(address.toLowerCase() as `0x${string}`)
+    }
+
+    return {getTokenPrice}
 }
 
 export default usePriceHook

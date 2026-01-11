@@ -48,7 +48,7 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({chainId, st
 }) => {
     const [state, setState] = useState<StateType>(defaultState)
     const {address} = useAccount()
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenPrice} = useContextUtil() as IContextUtil
 
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
@@ -186,8 +186,8 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({chainId, st
 
     const calcUSD = (amount0: string, amount1: string) => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price0 = tokenPrices[targetChainId]?.get(token0.address)
-        const price1 = tokenPrices[targetChainId]?.get(token1.address)
+        const price0 = getTokenPrice(targetChainId, token0.address)
+        const price1 = getTokenPrice(targetChainId, token1.address)
         if (!price0) throw new Error(`Failed to get price for token0 ${token0.address}`)
         if (!price1) throw new Error(`Failed to get price for token1 ${token1.address}`)
         let token0USD = new Decimal(price0).times(new Decimal(amount0))

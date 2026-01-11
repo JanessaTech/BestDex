@@ -55,7 +55,7 @@ const defaultState: StateType = {
 const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo, calldata, handleSwapSuccess}) => {
     const {address} = useAccount()
     const [state, setState] = useState<StateType>(defaultState)
-    const {getTokenBalance, tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenBalance, getTokenPrice} = useContextUtil() as IContextUtil
     const isTokenFromToken0 = tokenFrom.address.toLowerCase() < tokenTo.address.toLowerCase()
 
     logger.debug('[SwapStep] isTokenFromToken0=', isTokenFromToken0)
@@ -210,8 +210,8 @@ const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo,
 
     const calcUSD = (amount0: string, amount1: string) => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price0 = tokenPrices[targetChainId]?.get(isTokenFromToken0 ? tokenFrom.address: tokenTo.address)
-        const price1 = tokenPrices[targetChainId]?.get(isTokenFromToken0 ? tokenTo.address: tokenFrom.address)
+        const price0 = getTokenPrice(targetChainId, isTokenFromToken0 ? tokenFrom.address: tokenTo.address)
+        const price1 = getTokenPrice(targetChainId, isTokenFromToken0 ? tokenTo.address: tokenFrom.address)
         if (!price0) throw new Error(`Failed to get price for token0 ${tokenFrom.address}`)
         if (!price1) throw new Error(`Failed to get price for token1 ${tokenTo.address}`)
         let token0USD = new Decimal(price0).times(new Decimal(amount0))

@@ -13,7 +13,7 @@ type SwapInputProps = {
 }
 const SwapInput: React.FC<SwapInputProps> = ({tokenFrom, amount, hidden, onChange}) => {
     const [usd, setUsd] = useState('')
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenPrice} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value)
@@ -22,7 +22,7 @@ const SwapInput: React.FC<SwapInputProps> = ({tokenFrom, amount, hidden, onChang
     useEffect(() => {
         if (tokenFrom && tokenFrom?.address && amount) {
             const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId  // for test
-            const price = tokenPrices[targetChainId]?.get(tokenFrom?.address)
+            const price = getTokenPrice(targetChainId, tokenFrom?.address)
             const estimatedUSD = new Decimal(price ? price : '0').times(new Decimal(amount)).toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toString()
             setUsd(estimatedUSD)
         } else {

@@ -3,7 +3,6 @@ import SVGPlusCircle from "@/lib/svgs/svg_plus_circle";
 import { memo, useEffect, useState } from "react";
 import { useWriteContract,
     useWaitForTransactionReceipt,
-    useChainId,
     useAccount
   } from 'wagmi'
 import ToolTipHelper from "../common/ToolTipHelper";
@@ -47,7 +46,7 @@ const defaultState: StateType = {
 const CollectFeeStep: React.FC<CollectFeeStepProps> = ({chainId, started, parsedCalldata, token0, token1,
                                                         handleCollectFeeSuccess}) => {
     const {address} = useAccount()
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenPrice} = useContextUtil() as IContextUtil
     const [state, setState] = useState<StateType>(defaultState)
     const {data: hash, writeContract, isSuccess:isWriteSuccess, isPending:isWritePending, error:writeError } = useWriteContract()
     const {data: receipt, isError, error: receiptError, status: receiptStatus, refetch: refetchReceipt} = useWaitForTransactionReceipt({
@@ -187,8 +186,8 @@ const CollectFeeStep: React.FC<CollectFeeStepProps> = ({chainId, started, parsed
 
     const calcUSD = (amount0: string, amount1: string) => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price0 = tokenPrices[targetChainId]?.get(token0.address)
-        const price1 = tokenPrices[targetChainId]?.get(token1.address)
+        const price0 = getTokenPrice(targetChainId, token0.address)
+        const price1 = getTokenPrice(targetChainId, token1.address)
         if (!price0) throw new Error(`Failed to get price for token0 ${token0.address}`)
         if (!price1) throw new Error(`Failed to get price for token1 ${token1.address}`)
         let token0USD = new Decimal(price0).times(new Decimal(amount0))

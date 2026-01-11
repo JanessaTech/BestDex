@@ -21,7 +21,7 @@ type PositionRangeProps = {
 }
 const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount, poolInfo, 
                                                         updatePoolInfo, updateTicks}) => {
-    const {tokenPrices, getPoolAddress, getLatestPoolInfoByWS} = useContextUtil() as IContextUtil
+    const {getTokenPrice, getPoolAddress, getLatestPoolInfoByWS} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
     const [curPoolInfo, setCurPoolInfo] = useState({...poolInfo})
     const [curPoolRange, setCurPoolRange] = useState<PoolRange | undefined>(undefined)
@@ -37,7 +37,7 @@ const PositionRange: React.FC<PositionRangeProps> = ({token0, token1, feeAmount,
 
     const updateUSD = () => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price = tokenPrices[targetChainId]?.get(token0.address)
+        const price = getTokenPrice(targetChainId, token0.address)
         if (price) {
             const usdcValue = new Decimal(price).times(1)
             setToken0InUSDC(usdcValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())

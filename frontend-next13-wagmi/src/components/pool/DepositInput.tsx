@@ -18,7 +18,7 @@ const DepositInput: React.FC<DepositInputProps> = ({amount, token, tokenBalance,
     const [tokenUSD, setTokenUSD] = useState('0')
 
     const chainId = useChainId() as (ChainId | LocalChainIds)
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenPrice} = useContextUtil() as IContextUtil
 
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const DepositInput: React.FC<DepositInputProps> = ({amount, token, tokenBalance,
 
     const updateUSD = () => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price = tokenPrices[targetChainId]?.get(token.address)
+        const price = getTokenPrice(targetChainId, token.address)
         let tokenUSD = '0'
         logger.debug('price=', price?.toString(), '  amount=', amount)
         if (price) {

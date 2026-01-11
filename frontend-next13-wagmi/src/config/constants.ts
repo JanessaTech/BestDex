@@ -135,3 +135,4 @@ export const PAGE_LOAD_SKETETON_SPAN = 100
 export enum CHANNELS {
   POOLINFO = 'POOLINFO'
 }
+export const PRICE_INTERVAL = 10000

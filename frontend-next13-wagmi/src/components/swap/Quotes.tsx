@@ -42,7 +42,7 @@ type QuotesProps = {
   handlePrevStep: () => void
 }
 const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, handlePrevStep}) => {
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenPrice} = useContextUtil() as IContextUtil
     const { isConnected, address} = useAccount()
     const { openConnectModal } = useConnectModal()
     const [loading, setLoading] = useState<boolean>(false) // loading flag is set only when we first load the page
@@ -72,8 +72,8 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
     const updateUSD = (quote: string) => {
       const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
 
-      const inPrice = tokenPrices[targetChainId]?.get(tokenFrom?.address)
-      const outPrice = tokenPrices[targetChainId]?.get(tokenTo?.address)
+      const inPrice = getTokenPrice(targetChainId, tokenFrom?.address)
+      const outPrice = getTokenPrice(targetChainId, tokenTo?.address)
       if (inPrice && outPrice) {
         const poolValue = new Decimal(outPrice).times(new Decimal(quote))
         const heldValue = new Decimal(inPrice).times(new Decimal(swapAmount))

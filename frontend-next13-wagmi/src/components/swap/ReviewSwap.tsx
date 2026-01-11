@@ -58,7 +58,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
     const [approved, setApproved] = useState(false)
     const [calldataSnapshot, setCalldataSnapshot] = useState(calldata)
     const [showSwapSuccess, setShowSwapSuccess] = useState(false)
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenPrice} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
 
     const handleClose = () => {
@@ -92,7 +92,7 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
 
     const calcUSD = (input: string) => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId  // for test
-        const inPrice = tokenPrices[targetChainId]?.get(tokenFrom?.address)
+        const inPrice = getTokenPrice(targetChainId, tokenFrom?.address)
         if (inPrice && input) {
             const heldValue = new Decimal(inPrice).times(new Decimal(input))
             setInputUSD(heldValue.toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString())

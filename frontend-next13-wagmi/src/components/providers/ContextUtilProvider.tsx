@@ -10,10 +10,12 @@ import { WebSocketConfig, WebSocketMessage } from "@/hooks/lib/WebSocketClient";
 import logger from "@/common/Logger";
 import { CHANNELS } from "@/config/constants";
 import { PoolInfo } from "@/lib/client/types";
+import { ChainId } from '@uniswap/sdk-core'
+import { LocalChainIds } from "@/common/types";
 
 export interface IContextUtil {
-    tokenPrices: TokenPriceInUSDType;
     isWSConnected: boolean;  // indicate if the websocket is connected
+    getTokenPrice: (chainId: (ChainId | LocalChainIds), address: `0x${string}`) => string | undefined
     getTokenBalance: (
             tokenAddress: `0x${string}`| undefined, 
             userAddress: `0x${string}`, 
@@ -28,7 +30,7 @@ const ContextUtil = createContext<IContextUtil | undefined>(undefined)
 type ContextUtilProviderProps = {children: React.ReactNode}
 const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     const chainId = useChainId()
-    const {tokenPrices} = usePriceHook()
+    const {getTokenPrice} = usePriceHook()
     const {getTokenBalance} = useTokenBalanceHook(chainId) 
     const {getPoolAddress, getLatestPoolInfoByRPC} = usePoolHook(chainId)
 
@@ -60,7 +62,8 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     }, [isWSConnected])
 
     return (
-        <ContextUtil.Provider value={{tokenPrices, isWSConnected,
+        <ContextUtil.Provider value={{isWSConnected,
+                                      getTokenPrice,
                                       getTokenBalance, 
                                       getPoolAddress, 
                                       getLatestPoolInfoByRPC,

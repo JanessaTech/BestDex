@@ -63,7 +63,7 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
     const [data, setData] = useState<{calldata: string, parsedCalldata: MintPositionParamsType}>()
     const {slipage, deadline} = useUpdateSetting()
     const { address} = useAccount()
-    const {tokenPrices} = useContextUtil() as IContextUtil
+    const {getTokenPrice} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
 
     logger.debug('[ReviewAddPosition] token0Input=', token0Input, '  token1Input=', token1Input)
@@ -90,8 +90,8 @@ const ReviewAddPosition: React.FC<ReviewAddPositionProps> = ({token0, token1, to
 
     const updateUSD = () => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price0 = tokenPrices[targetChainId]?.get(token0.address)
-        const price1 = tokenPrices[targetChainId]?.get(token1.address)
+        const price0 = getTokenPrice(targetChainId, token0.address)
+        const price1 = getTokenPrice(targetChainId, token1.address)
         let token0USD = '0'
         let token1USD = '0'
         
