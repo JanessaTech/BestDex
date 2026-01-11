@@ -59,13 +59,13 @@ const ShowTransactions: React.FC<ShowTransactionsProps> = ({pagination}) => {
                         </TableCell>
                         <TableCell className={`max-md:hidden`}>
                             <div className="flex flex-col items-center">
-                                <div>${transaction.amount0}</div>
+                                <div>{transaction.amount0}</div>
                                 <Token token={transaction.token0} imageSize={20}/>
                             </div>
                         </TableCell>
                         <TableCell className={`max-md:hidden`}>
                             <div className="flex flex-col items-center">
-                                <div>${transaction.amount1}</div>
+                                <div>{transaction.amount1}</div>
                                 <Token token={transaction.token1} imageSize={20}/>
                             </div>
                         </TableCell>

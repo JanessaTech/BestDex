@@ -96,7 +96,6 @@ const DecreaseLiquidity: React.FC<DEcreaseLiquidityProps> = ({dexPosition,
     const generateCallData = async () => {
         const poolAddress = await getPoolAddress(dexPosition.token0.address, dexPosition.token1.address, dexPosition.fee)
         const curPoolInfo = await getLatestPoolInfoByWSHttpRPC(chainId, poolAddress)
-        if (!curPoolInfo) throw new Error('Failed to get poolInfo')
         if (!address) throw new Error('Failed to get current wallet account')
         const token0 = new Token(dexPosition.token0.chainId, dexPosition.token0.address, dexPosition.token0.decimal, dexPosition.token0.symbol, dexPosition.token0.name)
         const token1 = new Token(dexPosition.token1.chainId, dexPosition.token1.address, dexPosition.token1.decimal, dexPosition.token1.symbol, dexPosition.token1.name)

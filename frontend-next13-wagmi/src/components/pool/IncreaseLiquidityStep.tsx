@@ -172,9 +172,9 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({chainId, st
                 token0: token0.address,
                 token1: token1.address,
                 txType: txType,
-                amount0: amount0,
-                amount1: amount1,
-                usd: usd,
+                amount0: '-' + amount0,
+                amount1: '-' + amount1,
+                usd: '-' + usd,
                 from: address
             }
         const createdTx = await createTransaction(params)

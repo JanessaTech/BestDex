@@ -23,7 +23,7 @@ const DecreaseLiquiditySuccess:React.FC<DecreaseLiquiditySuccessProps> = ({posit
             <div className="text-sm">PositionId: <span className="text-pink-600">{positionId}</span></div>
             <div className="border-t-[1px] border-zinc-600 my-1 text-sm">
                 <div className="py-2 flex items-center">
-                    <span>You deposited:</span>
+                    <span>You collected:</span>
                     <QuestionMarkToolTip>
                         <div className="w-48">The actual amounts are determined by the live data in the UniswapV3Pool</div>
                     </QuestionMarkToolTip>

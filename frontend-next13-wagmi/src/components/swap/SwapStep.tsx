@@ -40,15 +40,17 @@ type StateType = {
     reason: string;
     isSuccess: boolean;
     isPending: boolean;
-    preBalance: string;
-    actualOutput: string
+    tokenFromBlanceBefore: string,
+    tokenToBlanceBefore: string,
+    tokenToActualOutput: string
 }
 const defaultState: StateType = {
     reason: '',
     isSuccess: false,
     isPending: true,
-    preBalance: '',
-    actualOutput: ''
+    tokenFromBlanceBefore: '',
+    tokenToBlanceBefore: '',
+    tokenToActualOutput: ''
 }
 const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo, calldata, handleSwapSuccess}) => {
     const {address} = useAccount()
@@ -70,9 +72,11 @@ const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo,
     })
 
     const handleSendTransation = async () => {
-        const balance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
-        setState({...state, preBalance: balance})
-        logger.debug('[SwapStep] pre balance: ',  balance, ' for ', tokenTo.address)
+        const tokenFrombalance = await getTokenBalance(tokenFrom.address, address!, {decimals: tokenFrom.decimal})
+        const tokenTobalance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
+        setState({...state, tokenFromBlanceBefore: tokenFrombalance, tokenToBlanceBefore: tokenTobalance})
+        logger.debug('[SwapStep] tokenFrombalance: ',  tokenFrombalance, ' for ', tokenFrom.address)
+        logger.debug('[SwapStep] tokenTobalance: ',  tokenTobalance, ' for ', tokenTo.address)
         sendTransaction({
             to: V3_SWAP_ROUTER_ADDRESS[chainId],
             data: calldata,
@@ -102,17 +106,21 @@ const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo,
             if (!hash || !receipt) return
             if (receipt.status === 'success') {
                 logger.info('[SwapStep] swap is successful')
-                const balance = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
-                const inc = new Decimal(balance).minus(new Decimal(state.preBalance)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
-                setState({...state, isPending: false, isSuccess: true, actualOutput: inc})
-                const parsed = parseReceipt()
-                if (parsed) {
-                    const {sender, recipient, amount0, amount1, sqrtPriceX96, liquidity, tick} = parsed
-                    logger.info('[SwapStep] parsed=', parsed)
-                    await logTransaction(hash, TRANSACTION_TYPE.Swap, isTokenFromToken0 ? tokenFrom: tokenTo, isTokenFromToken0 ? tokenTo: tokenFrom, amount0, amount1, undefined)
-                } else {
-                    logger.error('[SwapStep] Failed to parse receipt')
-                }
+                const tokenFrombalanceAfter = await getTokenBalance(tokenFrom.address, address!, {decimals: tokenFrom.decimal})
+                const tokenTobalanceAfter = await getTokenBalance(tokenTo.address, address!, {decimals: tokenTo.decimal})
+                const tokenFromAmount = new Decimal(tokenFrombalanceAfter).minus(new Decimal(state.tokenFromBlanceBefore)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
+                const tokenToAmount = new Decimal(tokenTobalanceAfter).minus(new Decimal(state.tokenToBlanceBefore)).toDecimalPlaces(4, Decimal.ROUND_HALF_UP).toString()
+                setState({...state, isPending: false, isSuccess: true, tokenToActualOutput: tokenToAmount})
+                const [amount0, amount1] = isTokenFromToken0 ? [tokenFromAmount, tokenToAmount] : [tokenToAmount, tokenFromAmount]
+                await logTransaction(hash, TRANSACTION_TYPE.Swap, isTokenFromToken0 ? tokenFrom: tokenTo, isTokenFromToken0 ? tokenTo: tokenFrom, amount0, amount1, undefined)
+                // const parsed = parseReceipt()
+                // if (parsed) {
+                //     const {sender, recipient, amount0, amount1, sqrtPriceX96, liquidity, tick} = parsed
+                //     logger.info('[SwapStep] parsed=', parsed)
+                //     await logTransaction(hash, TRANSACTION_TYPE.Swap, isTokenFromToken0 ? tokenFrom: tokenTo, isTokenFromToken0 ? tokenTo: tokenFrom, amount0, amount1, undefined)
+                // } else {
+                //     logger.error('[SwapStep] Failed to parse receipt')
+                // }
             }
         })() 
     }, [receipt, hash])
@@ -120,7 +128,7 @@ const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo,
     useEffect(() => {
         let timer = undefined
         if (state.isSuccess) {
-            timer = setTimeout(() => {handleSwapSuccess(state.actualOutput)}, 1000)
+            timer = setTimeout(() => {handleSwapSuccess(state.tokenToActualOutput)}, 1000)
         }
         return () => {
             if (timer) clearTimeout(timer)
@@ -135,6 +143,7 @@ const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo,
         }
     }, [sendError, receiptError])
 
+    // TBD - remove?
     const parseReceipt = () => {
         if (!receipt) return undefined
         const parsedOKLogs = (receipt.logs || []).map((log, index) => {
@@ -201,8 +210,8 @@ const SwapStep:React.FC<SwapStepProps> = ({chainId, started, tokenFrom, tokenTo,
 
     const calcUSD = (amount0: string, amount1: string) => {
         const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price0 = tokenPrices[targetChainId]?.get(tokenFrom.address)
-        const price1 = tokenPrices[targetChainId]?.get(tokenTo.address)
+        const price0 = tokenPrices[targetChainId]?.get(isTokenFromToken0 ? tokenFrom.address: tokenTo.address)
+        const price1 = tokenPrices[targetChainId]?.get(isTokenFromToken0 ? tokenTo.address: tokenFrom.address)
         if (!price0) throw new Error(`Failed to get price for token0 ${tokenFrom.address}`)
         if (!price1) throw new Error(`Failed to get price for token1 ${tokenTo.address}`)
         let token0USD = new Decimal(price0).times(new Decimal(amount0))
