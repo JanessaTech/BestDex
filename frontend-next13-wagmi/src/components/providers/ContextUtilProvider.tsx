@@ -1,6 +1,6 @@
 'use client'
 
-import usePriceHook, { TokenPriceInUSDType } from "@/hooks/usePriceHook"
+import usePriceHook from "@/hooks/usePriceHook"
 import useTokenBalanceHook from "@/hooks/useTokenBalanceHook";
 import { createContext, useContext, useEffect } from "react"
 import usePoolHook from "@/hooks/usePoolHook";

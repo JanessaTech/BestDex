@@ -113,6 +113,7 @@ const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({children
           statement,
           uri: origin,
           version: '1',
+          nonce: nonce,
           chainId: Number(chainId)
         })
         return siweMessage.prepareMessage()

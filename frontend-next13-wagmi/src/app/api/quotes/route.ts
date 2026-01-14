@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         const params = await parseDataFromRequest(request)
         const router = new AlphaRouter({
           chainId: params.chainId,
-          provider: params.provider
+          provider: params.provider,
       })
   
       const options: SwapOptionsSwapRouter02 = {
@@ -52,7 +52,13 @@ export async function POST(request: Request) {
           ),
           params.tokenOut,
           TradeType.EXACT_INPUT,
-          options
+          options,
+          // TBD: optimize router with the configration below
+          // {
+          //   maxSwapsPerPath:2,
+          //   maxSplits:2,
+          //   distributionPercent: 10
+          // }
         )
       if (!route) return NextResponse.json({ success: false, message: 'failed to get route'})
       const cost  = new Decimal(route?.estimatedGasUsed.toString()).times(new Decimal((await params.provider.getGasPrice()).toString())).div('1000000000000000000').toDecimalPlaces(18, Decimal.ROUND_HALF_UP).toString()

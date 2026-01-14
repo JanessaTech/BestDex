@@ -56,6 +56,7 @@ const Deposit: React.FC<DepositProps> = ({amount0, amount1, token0, token1,
 
     useEffect(() => {
         logger.info('[Deposit] lowerTick=', lowerTick, 'curTick=', curTick, 'upperTick=', upperTick)
+        logger.debug('[Deposit] amount0=', amount0, ', amount1=', amount1)
         if (!poolInfo) return
         if (upperTick <= curTick) {
             logger.info('[Deposit] token0 is hidden')

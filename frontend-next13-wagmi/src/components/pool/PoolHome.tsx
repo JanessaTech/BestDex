@@ -19,6 +19,7 @@ import { TokenType } from '@/common/types'
 import { isDataStale } from '@/common/utils'
 import logger from '@/common/Logger'
 import { PoolInfo } from '@/lib/client/types'
+import { concat } from 'viem'
 
 type PoolHomeProps = {}
 const PoolHome: React.FC<PoolHomeProps> = () => {
@@ -46,7 +47,13 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
         setToken0(undefined)
         setToken1(undefined)
         setState({...state, step: 1})
+        initTicksDeposit()
     }, [chainId, isConnected])
+
+    const initTicksDeposit = () => {
+        setTicks({lower:0, cur: 0, upper: 0})
+        setDeposit({amount0: '', amount1: ''})
+    }
 
     const onSettingOpenChange = (open: boolean) => {
         setSettingOpen(open)
@@ -65,6 +72,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
     }
 
     const handleDepositChanges = (amount0: string, amount1: string) => {
+        logger.debug(`handleDepositChanges. amount0=${amount0}, amount1=${amount1}`)
         setDeposit({amount0: amount0, amount1: amount1})
     }
     
@@ -136,6 +144,7 @@ const PoolHome: React.FC<PoolHomeProps> = () => {
 
     const handlePrevStep = () => {
         setState({...state, step: state.step - 1})
+        initTicksDeposit()
     }
 
     const handleFeeAmountChange = (_feeAmount: number) => {
