@@ -86,9 +86,10 @@ const poolClient = new PoolClient()
 const liveConfig: LiveQueryClientConfig = {}
 const liveQueryClient = new LiveQueryClient(liveConfig, poolClient)
 
-const config = getConfig()
-if (config.env !== 'local') {
-    poolClient.init()
-}
+// const config = getConfig()
+// if (config.env !== 'local') {
+//     poolClient.init()
+// }
+poolClient.init()
 
 export default liveQueryClient

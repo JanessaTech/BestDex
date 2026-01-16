@@ -109,9 +109,17 @@ export function isZeroAddress(address: `0x${string}`) {
  */
 export function getTickSpacing(feeTier: number) {
     switch (feeTier) {
-        case 100: return 1
-        case 500: return 10
-        case 3000: return 60
-        default: return 200
+        case 100: {
+            return 1
+        }
+        case 500: {
+            return 10
+        }
+        case 3000: {
+            return 60
+        }
+        default: {
+            return 200
+        }
     }
 }

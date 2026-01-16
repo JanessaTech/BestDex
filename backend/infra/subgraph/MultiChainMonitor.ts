@@ -77,7 +77,7 @@ export class MultiChainMonitor extends EventEmitter {
                 liquidity: liquidity,
                 tick: tick,
                 sqrtPriceX96: sqrtPriceX96,
-                tickSpacing: getTickSpacing(tick),
+                tickSpacing: getTickSpacing(fee),
                 fee: fee,
                 timeStamp: timestamp
             }

@@ -22,7 +22,8 @@ export const tokenList: TokenListType = [
         {chainId: 1, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}, 
         {chainId: 1, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
         {chainId: 1, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
-        {chainId: 1, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'}
+        {chainId: 1, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'},
+        {chainId: 1, name: 'ChainLink Token', symbol: 'LINK', alias: 'link', decimal: 18, address: '0x514910771AF9Ca656af840dff83E8264EcF986CA'}
       ]
     },
     {
@@ -61,7 +62,8 @@ export const tokenList: TokenListType = [
         {chainId: 11155111, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'}, 
         {chainId: 11155111, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'},
         {chainId: 11155111, name: 'USDZ', symbol: 'USDZ ', alias: 'usdz', decimal: 6, address: '0x3eDF60dd017aCe33A0220F78741b5581C385A1BA'},
-        {chainId: 11155111, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0x5ab10C716716f6F1a2a0848BB6B36B89d7F5A24d'}
+        {chainId: 11155111, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0x5ab10C716716f6F1a2a0848BB6B36B89d7F5A24d'},
+        {chainId: 11155111, name: 'ChainLink Token', symbol: 'LINK ', alias: 'link', decimal: 18, address: '0x779877A7B0D9E8603169DdbD7836e478b4624789'},
       ]
     },
     {
@@ -71,7 +73,8 @@ export const tokenList: TokenListType = [
         {chainId: 31337, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}, 
         {chainId: 31337, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'},
         {chainId: 31337, name: 'Aave Token', symbol: 'AAVE ', alias: 'aave', decimal: 18, address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'},
-        {chainId: 31337, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'}
+        {chainId: 31337, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'},
+        {chainId: 31337, name: 'ChainLink Token', symbol: 'LINK', alias: 'link', decimal: 18, address: '0x514910771AF9Ca656af840dff83E8264EcF986CA'}
       ]
     }
   ]

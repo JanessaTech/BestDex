@@ -16,10 +16,17 @@ class PoolController {
         const config = getConfig()
         try {
             let poolInfo:any = undefined
-            if (config.env === 'local') {
+            // if (config.env === 'local') {
+            //     poolInfo = webSocketClient.getLatestPoolInfo(chainId, poolAddress)
+            // } else {
+            //     poolInfo = liveQueryClient.getLatestPoolInfo(chainId, poolAddress)
+            // }
+            if (chainId === 31337) {
+                if (!webSocketClient) throw new PoolError({key: 'pool_info_getByws_failed', params: [poolAddress, chainId]})
                 poolInfo = webSocketClient.getLatestPoolInfo(chainId, poolAddress)
             } else {
-                poolInfo = liveQueryClient.getLatestPoolInfo(chainId, poolAddress)
+                if (!liveQueryClient) throw new PoolError({key: 'pool_info_getByLive_failed', params: [poolAddress, chainId]})
+                poolInfo = liveQueryClient?.getLatestPoolInfo(chainId, poolAddress)
             }
             
             if (poolInfo) {

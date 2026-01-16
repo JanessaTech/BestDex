@@ -126,7 +126,14 @@ export const fetchPositionListInPageByRPC = async (chainId: number, owner: `0x${
 
 export const fetchPositionListInPage = async (chainId: number, owner: `0x${string}`, first: number, skip: number) => {
     if (chainId === 31337) {
-        return fetchPositionListInPageByRPC(chainId, owner, first, skip)
+        return await fetchPositionListInPageByRPC(chainId, owner, first, skip)
     }
-    return fetchPositionListInPageByGraph(chainId, owner, first, skip)
+    try {
+        return await fetchPositionListInPageByGraph(chainId, owner, first, skip)
+    } catch(error: any) {
+        const errorMsg = messageHelper.getMessage('position_positionManager_not_found', error?.message)
+        logger.debug(errorMsg)
+        return await fetchPositionListInPageByRPC(chainId, owner, first, skip)
+    }
+    
 }
