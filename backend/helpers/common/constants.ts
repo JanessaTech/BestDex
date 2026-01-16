@@ -90,3 +90,8 @@ export enum TRANSACTION_TYPE {
 export enum CHANNELS {
   POOLINFO = 'POOLINFO'
 }
+
+export enum CHAINNAME {
+  ethereum = 'ethereum',
+  ethereum_sepolia = 'ethereum_sepolia'
+}

@@ -9,6 +9,7 @@ import positionRouter from './position'
 import transactionRouter from './transaction'
 import configRouter from './config'
 import wsRouter from './websocket'
+import subgraphRouter from './subgraph'
 
 const config = getConfig()
 const apiPrefix = config.apiPrefix
@@ -23,6 +24,7 @@ const initRoutes = (app: AppType) => {
     app.use(apiPrefix + '/transactions', transactionRouter)
     app.use(apiPrefix + '/config', configRouter)
     app.use(apiPrefix + '/ws', wsRouter)
+    app.use(apiPrefix + '/subgraph', subgraphRouter)
 }
 
 export default initRoutes

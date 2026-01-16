@@ -30,8 +30,10 @@ export const tokenList: TokenListType = [
       chainId: 56,  
       network_enum: 'bnb-mainnet',
       tokens: [
-        {chainId: 56, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 18, address: '0x55d398326f99059ff775485246999027b3197955'}, 
-        {chainId: 56, name: 'ChainLink Token', symbol: 'LINK', alias: 'link', decimal: 18, address: '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd'}
+        {chainId: 56, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 18, address: '0x55d398326f99059ff775485246999027b3197955'},
+        {chainId: 56, name: 'Ethereum Token', symbol: 'ETH', alias: 'eth', decimal: 18, address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8'}, 
+        {chainId: 56, name: 'Wrapped BNB', symbol: 'WBNB', alias: 'bnb', decimal: 18, address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'},
+        {chainId: 56, name: 'PancakeSwap Token', symbol: 'Cake', alias: 'cake', decimal: 18, address: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82'},  
       ]
     },
     {

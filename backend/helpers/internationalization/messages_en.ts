@@ -81,6 +81,12 @@ const message: MessageType = {
     ws_sendto_success: 'Send message from channel {0} to the frontend with the subscriptionId {1}',
     ws_sendto_failed: 'Failed to send message from channel {0} to the frontend with the subscriptionId {1} due to {2}',
 
+    //subgraph @live monitor
+    subgraph_monitor_live_client_not_found: 'subgraph @live monitor is not found',
+    subgraph_monitor_live_status_missing: 'For subgraph @live monitor for chain {0}, health status is not ready, try later on',
+    subgraph_monitor_live_status_get_success: 'Get the health status for chain {0} successfully',
+    subgraph_monitor_live_statuses_get_success: 'Get the health statuses successfully',
+
     // global
     UnSupportedAuthError : 'We only support Bearer token in Authorization',
     UnauthorizedError : 'You do not have enough permission(s) to visit {0}',

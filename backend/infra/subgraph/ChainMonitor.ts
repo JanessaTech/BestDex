@@ -81,7 +81,7 @@ export class ChainMonitor extends EventEmitter {
                 throw new Error(`[Monitor<${this.config.chainName}>] Query method ${this.config.queryName} is not found`)
             }
             this.stream = await queryMethod({poolIds: this.config.poolIds}) as AsyncIterable<any>
-            this.processStream()
+            await this.processStream()
         } catch (error) {
             await this.handleError(error as Error)
         }
@@ -94,6 +94,8 @@ export class ChainMonitor extends EventEmitter {
             throw new Error('The monitor is not running or no stream is found')
         }
         try {
+            throw Error('test ........')
+            /*
             for await (const result of this.stream) {
                 if (!this.isRunning) {
                     logger.info(`[Monitor<${this.config.chainName}>] Exit stream loop`)
@@ -117,7 +119,7 @@ export class ChainMonitor extends EventEmitter {
                 this.emit('data', poolUpdate)
                 this.lastUpdateTime = timeNow
                 this.retryCount = 0
-            }
+            } */
         } catch (error) {
             logger.error(`[Monitor<${this.config.chainName}>] Failed to process stream: ${error}`)
             throw new Error('Failed to process stream')
