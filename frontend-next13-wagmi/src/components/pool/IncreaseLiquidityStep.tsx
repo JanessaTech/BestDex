@@ -185,17 +185,22 @@ const IncreaseLiquidityStep:React.FC<IncreaseLiquidityStepProps> = ({chainId, st
     }
 
     const calcUSD = (amount0: string, amount1: string) => {
-        const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
-        const price0 = getTokenPrice(targetChainId, token0.address)
-        const price1 = getTokenPrice(targetChainId, token1.address)
-        if (!price0) throw new Error(`Failed to get price for token0 ${token0.address}`)
-        if (!price1) throw new Error(`Failed to get price for token1 ${token1.address}`)
-        let token0USD = new Decimal(price0).times(new Decimal(amount0))
-        let token1USD = new Decimal(price1).times(new Decimal(amount1))
-        logger.debug(`${amount0} amount of token0 = ${token0USD.toString()} usd`)
-        logger.debug(`${amount1} amount of token1 = ${token1USD.toString()} usd`)
-        const sum = new Decimal(0).add(token0USD).add(token1USD).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
-        return sum
+        try {
+            const targetChainId = chainId === 31337 ? ChainId.MAINNET : chainId   // for test
+            const price0 = getTokenPrice(targetChainId, token0.address)
+            const price1 = getTokenPrice(targetChainId, token1.address)
+            if (!price0) throw new Error(`Failed to get price for token0 ${token0.address}`)
+            if (!price1) throw new Error(`Failed to get price for token1 ${token1.address}`)
+            let token0USD = new Decimal(price0).times(new Decimal(amount0))
+            let token1USD = new Decimal(price1).times(new Decimal(amount1))
+            logger.debug(`${amount0} amount of token0 = ${token0USD.toString()} usd`)
+            logger.debug(`${amount1} amount of token1 = ${token1USD.toString()} usd`)
+            const sum = new Decimal(0).add(token0USD).add(token1USD).toDecimalPlaces(3, Decimal.ROUND_HALF_UP).toString()
+            return sum
+        } catch(error) {
+            logger.debug('Failed to calculate USD due to:', error)
+        }
+        return '0'
     }
 
     

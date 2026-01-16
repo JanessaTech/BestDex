@@ -47,3 +47,4 @@ num run start
 13. Add authentication and authorization
 14. config channels in backend instead of hardcode
 15. merge configuration(UNISWAP_V3_FACTORY_ADDRESSES, V3_SWAP_ROUTER_ADDRESS, NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS, chainUrls) with backend and put them into backend
+16. Support the native token both for swap and position ops
