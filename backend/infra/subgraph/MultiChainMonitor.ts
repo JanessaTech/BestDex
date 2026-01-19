@@ -141,7 +141,7 @@ export class MultiChainMonitor extends EventEmitter {
         return this.monitorMap.get(chainName)?.getHealth()
     }
 
-    public getAllStatuses() {
+    public getStatuses() {
         const statuses: {[P in any]: unknown}  = {}
         for (let [chainName, monitor] of this.monitorMap) {
             const health = monitor.getHealth()

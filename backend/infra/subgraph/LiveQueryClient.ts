@@ -76,8 +76,8 @@ class LiveQueryClient {
         return this.multiChainMonitor.getStatus(chainName)
     }
 
-    public getAllStatuses() {
-        return this.multiChainMonitor.getAllStatuses()
+    public getStatuses() {
+        return this.multiChainMonitor.getStatuses()
     } 
 
 }

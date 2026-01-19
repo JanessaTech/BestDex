@@ -22,7 +22,7 @@ class GraphLiveController {
     async getStatuses(req: Request, res: Response, next: NextFunction) {
         try {
             if (!liveQueryClient) throw new SubgraphError({key: 'subgraph_monitor_live_client_not_found'})
-            const payload = liveQueryClient.getAllStatuses()
+            const payload = liveQueryClient.getStatuses()
             const message = messageHelper.getMessage('subgraph_monitor_live_statuses_get_success')
             sendSuccess(res, message, payload)
         } catch(error) {
