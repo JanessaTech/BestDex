@@ -5,6 +5,7 @@ import getConfig from '../config/configuration'
 const config = getConfig()
 //const dbURI = `mongodb://${config.database.host}:${config.database.port}/${config.database.dataBaseName}`
 const dbURI = `mongodb://${config.database.username}:${config.database.password}@127.0.0.1:${config.database.port}/${config.database.dataBaseName}?authSource=${config.database.dataBaseName}`
+logger.debug('dbURI =', dbURI)
 const options = {
     autoIndex: true,
     minPoolSize: config.database.minPoolSize, 
