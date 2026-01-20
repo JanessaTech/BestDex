@@ -17,6 +17,8 @@ type ConfigType = {
     database: {
         host: string,
         port: number,
+        username: string,
+        password: string,
         dataBaseName: string,
         minPoolSize: number,
         maxPoolSize: number,

@@ -94,8 +94,7 @@ export class ChainMonitor extends EventEmitter {
             throw new Error('The monitor is not running or no stream is found')
         }
         try {
-            throw Error('test ........')
-            /*
+            //throw Error('test ........')
             for await (const result of this.stream) {
                 if (!this.isRunning) {
                     logger.info(`[Monitor<${this.config.chainName}>] Exit stream loop`)
@@ -119,7 +118,7 @@ export class ChainMonitor extends EventEmitter {
                 this.emit('data', poolUpdate)
                 this.lastUpdateTime = timeNow
                 this.retryCount = 0
-            } */
+            }
         } catch (error) {
             logger.error(`[Monitor<${this.config.chainName}>] Failed to process stream: ${error}`)
             throw new Error('Failed to process stream')

@@ -18,6 +18,8 @@ const defautConfig: ConfigType = {
     database: {
         host: '127.0.0.1',
         port: 27017,
+        username: 'dexapp',
+        password: 'YourVeryStrongPassword123!',
         dataBaseName: 'mainnet',
         minPoolSize: 2, // Maintain up to x socket connections
         maxPoolSize: 5, // Maintain up to x socket connections
