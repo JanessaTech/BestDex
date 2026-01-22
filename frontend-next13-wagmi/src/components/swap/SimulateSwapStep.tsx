@@ -5,33 +5,10 @@ import ToolTipHelper from "../common/ToolTipHelper"
 import SVGXCircle from "@/lib/svgs/svg_x_circle"
 import { useSimulateContract,} from "wagmi"
 import {SimulateContractErrorType} from "@wagmi/core"
-import {decodeFunctionData} from 'viem'
 import { SwapRouter02ABI, UNISWAP_ERRORS, V3_SWAP_ROUTER_ADDRESS } from "@/config/constants"
 import logger from "@/common/Logger"
 import {ChainId} from '@uniswap/sdk-core';
-import { LocalChainIds } from "@/common/types"
-
-const parseCalldata = (calldata: `0x${string}`) => {
-    try {
-        logger.debug('[SimulateSwapStep] calldata=', calldata)
-        const decoded = decodeFunctionData({
-            abi: SwapRouter02ABI,
-            data: calldata
-        })
-        let deadline = undefined
-        let innerCalls = undefined
-        if (decoded && decoded.args &&  decoded.args.length >= 2) {
-            deadline = decoded.args[0]
-            innerCalls = decoded?.args[1]
-        }
-        logger.debug('[SimulateSwapStep] deadline=', deadline)
-        logger.debug('[SimulateSwapStep] innerCalls=', innerCalls)
-        return {deadline, innerCalls}
-    } catch(err) {
-        logger.error('[SimulateSwapStep] failed to parse calldata due to:', err)
-    }
-    return {deadline: undefined, innerCalls: undefined}
-}
+import { LocalChainIds, SwapParamsType } from "@/common/types"
 
 const getFailedReason = (simulationError: SimulateContractErrorType): string => {
     const defaultReason = 'Unknown reason'
@@ -48,19 +25,17 @@ type SimulateSwapStepProps = {
     started: boolean;
     done: boolean;
     skip: boolean; // for test
-    calldata: `0x${string}`;
+    parsedCalldata: SwapParamsType;
     goNext: () => void
 }
-const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({chainId, started, skip, done, calldata, goNext}) => {
-    const {deadline, innerCalls} = parseCalldata(calldata)
-    if (!deadline || !innerCalls) return <div>Failed to parse calldata</div>
+const SimulateSwapStep:React.FC<SimulateSwapStepProps> = ({chainId, started, skip, done,  parsedCalldata, goNext}) => {
     const [reason, setReason] = useState('')
 
     const { data: simulation, error: simulationError, isPending, isFetching, isSuccess, refetch:refetchSimulation} = useSimulateContract({
         address: V3_SWAP_ROUTER_ADDRESS[chainId],
         abi: SwapRouter02ABI,
         functionName: 'multicall',
-        args: [deadline, innerCalls],
+        args: [parsedCalldata.deadline, parsedCalldata.innerCalls],
         query: {
             enabled: false,  // run refetchSimulation manually
             gcTime: 0,  // disable cache

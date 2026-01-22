@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react"
+import { memo, useCallback, useEffect } from "react"
 import { Dispatch, SetStateAction, useState } from "react"
 import Token from "../common/Token";
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,10 @@ import SVGCheck from "@/lib/svgs/svg_check";
 import ArrowRight from "@/lib/svgs/svg_arrow_right";
 import Link from "next/link";
 import DexModal from "../common/DexModal";
-import { LocalChainIds, TokenType } from "@/common/types";
+import { LocalChainIds, SwapParamsType, TokenType } from "@/common/types";
+import logger from "@/common/Logger";
+import {decodeFunctionData} from 'viem';
+import { SwapRouter02ABI } from "@/config/constants"
 
 type SwapSuccessProps = {
     tokenFrom: TokenType;
@@ -51,15 +54,53 @@ type ReviewSwapProps = {
     calldata: `0x${string}`;
     setOpenModal: Dispatch<SetStateAction<boolean>>
 }
+
+const parseCalldata = (calldata: `0x${string}`) => {
+    try {
+        logger.debug('[ReviewSwap] calldata=', calldata)
+        const decoded = decodeFunctionData({
+            abi: SwapRouter02ABI,
+            data: calldata
+        })
+        let deadline = undefined
+        let innerCalls = undefined
+        if (decoded && decoded.args &&  decoded.args.length >= 2) {
+            deadline = decoded.args[0]
+            innerCalls = decoded?.args[1]
+        }
+        logger.debug('[ReviewSwap] deadline=', deadline)
+        logger.debug('[ReviewSwap] innerCalls=', innerCalls)
+        return {deadline, innerCalls}
+    } catch(err) {
+        logger.error('[ReviewSwap] failed to parse calldata due to:', err)
+    }
+    return {deadline: undefined, innerCalls: undefined}
+}
+
 const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, quote, tokenInUSD, tokenOutUSD, calldata, setOpenModal}) => {
     const [approveAmount, setApproveAmount] = useState(swapAmount)
     const [swapOut, setSwapOut] = useState('')
     const [inputUSD, setInputUSD] = useState(tokenInUSD)
     const [approved, setApproved] = useState(false)
-    const [calldataSnapshot, setCalldataSnapshot] = useState(calldata)
+    const [data, setData] = useState<{calldata: `0x${string}`, parsedCalldata?: SwapParamsType}>({calldata: calldata})
     const [showSwapSuccess, setShowSwapSuccess] = useState(false)
     const {getTokenPrice} = useContextUtil() as IContextUtil
     const chainId = useChainId() as (ChainId | LocalChainIds)
+
+    useEffect(() => {
+        toParseCallData()
+    }, [])
+
+    const toParseCallData = () => {
+        try {
+            const {deadline, innerCalls} = parseCalldata(data.calldata)
+            if (deadline && innerCalls) {
+                setData({calldata: data.calldata, parsedCalldata: {deadline: deadline, innerCalls: innerCalls}})
+            }
+        } catch(error) {
+            logger.error('[ReviewSwap] We failed to parse calldata:', error)
+        }
+    }
 
     const handleClose = () => {
         setOpenModal(false)
@@ -160,14 +201,14 @@ const ReviewSwap: React.FC<ReviewSwapProps> = ({tokenFrom, tokenTo, swapAmount, 
                                 onClick={handleApprove}>Approve and swap
                                 </Button>
                             </div>
-                            : <SwapeExecutor 
-                                    chainId={chainId}
-                                    tokenFrom={tokenFrom} 
-                                    tokenTo={tokenTo}
-                                    approveAmount={approveAmount}
-                                    calldata={calldataSnapshot}
-                                    handleSwapSuccess={handleSwapSuccess}
-                                    />
+                            : data.parsedCalldata && <SwapeExecutor 
+                            chainId={chainId}
+                            tokenFrom={tokenFrom} 
+                            tokenTo={tokenTo}
+                            approveAmount={approveAmount}
+                            data={data}
+                            handleSwapSuccess={handleSwapSuccess}
+                            />
                         }
                     </div>
             }

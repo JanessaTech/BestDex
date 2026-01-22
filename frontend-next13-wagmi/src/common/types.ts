@@ -41,6 +41,11 @@ export type QuotesParameterType = {
 
 export type LocalChainIds = 31337
 
+export type SwapParamsType = {
+    deadline: bigint;
+    innerCalls: readonly `0x${string}`[]
+}
+
 export type MintPositionParamsType = {
     token0: `0x${string}`, 
     token1: `0x${string}`, 
