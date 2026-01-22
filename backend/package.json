@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "npm run build && node .\\dist\\bin\\boostrap.js",
-    "ts-start-testnet": "set PLATFORM=testnet&&npx ts-node bin/boostrap.ts",
+    "run-testnet": "npx ts-node bin/boostrap.ts",
     "codegen": "graphclient build",
     "dev": "graphclient serve-dev",
     "test": "jest"
