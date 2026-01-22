@@ -40,7 +40,7 @@ num run start
 7. Add curd for postions - [Done]
 8. Refactor tokenList - [Done]
 9. fix bugs:
-    6.1 exception when create a new position
+    6.1 exception when create a new position - [Done]
 10. Add UTs for frontend and backend
 11. using Todo as the keyword to search the places which we should do the enhancements on
 12. Move logTransaction to backend (In future, must make sure the websocket service is robust)
