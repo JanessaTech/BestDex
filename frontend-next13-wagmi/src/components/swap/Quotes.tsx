@@ -180,7 +180,7 @@ const Quotes:React.FC<QuotesProps> = ({tokenFrom, tokenTo, swapAmount, setting, 
                         <div className="flex items-center">
                             <span>Estimated Gas Fee</span>
                             <QuestionMarkToolTip>
-                              <div className="w-[200px] text-xs">BEST dex doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is</div>
+                              <div className="w-[200px] text-xs">BEST dex does not make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is</div>
                             </QuestionMarkToolTip>
                         </div>
                         <div>{estimatedGasUsed} {chain?.nativeCurrency.symbol}</div>
