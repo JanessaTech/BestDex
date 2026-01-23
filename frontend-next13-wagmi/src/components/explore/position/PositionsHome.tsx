@@ -23,7 +23,7 @@ import { toast } from 'sonner'
 import { useChainId, useAccount} from 'wagmi'
 import { PositionProps } from "@/common/types"
 import logger from "@/common/Logger"
-import { fetchLatestPoolInfo } from "@/lib/client/Pool"
+import { fetchLatestPoolInfo } from "../../../lib/client/Pool"
 import { getPositionsByPage } from "@/lib/client/Position"
 import { Skeleton } from "@/components/ui/skeleton"
 import DexPagination from "@/components/common/DexPagination"

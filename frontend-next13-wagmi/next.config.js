@@ -21,7 +21,9 @@ const nextConfig = {
         config.resolve.alias = {
             ...config.resolve.alias,
             '@': path.resolve(__dirname, 'src'),
-        };
+            '@components': path.resolve(__dirname, 'src/components'),
+            '@lib': path.resolve(__dirname, 'src/lib'),
+          };
         return config;
     }
 }
