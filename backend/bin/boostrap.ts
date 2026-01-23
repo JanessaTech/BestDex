@@ -16,6 +16,7 @@ initInfra(app)
 const corsOptions = {
     origin: [
       'https://best-dex-yiiv.vercel.app/',
+      'https://45.77.144.33:3100',
       'http://localhost:3000'
     ],
     credentials: true, 
