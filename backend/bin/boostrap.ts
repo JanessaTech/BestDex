@@ -9,8 +9,20 @@ import '../config/data/hardcode'
 import '../db/initDB'  // connected to db
 import { WebsocketServer } from '../infra/websocket/WebsocketServer';
 import initInfra from '../infra'
+import cors from 'cors'
 
 initInfra(app)
+
+const corsOptions = {
+    origin: [
+      'https://best-dex-yiiv.vercel.app/',
+      'http://localhost:3000'
+    ],
+    credentials: true, 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions))
 
 const config = getConfig()
 logger.info(`Environment type: ${config?.env}`)
