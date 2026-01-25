@@ -40,7 +40,7 @@ const ContextUtilProvider:React.FC<ContextUtilProviderProps> = ({children}) => {
     }
 
     const config: WebSocketConfig = {
-        url: 'ws://localhost:3100', 
+        url: `${process.env.NEXT_PUBLIC_BACKEND_WS_ADDR}`, 
         maxReconnectAttempts: 5, 
         reconnectInterval: 10}
     
