@@ -56,7 +56,7 @@ const chainUrls = { // it should be consistent with the variable chains defined 
   [arbitrum.id]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [sepolia.id]: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [baseSepolia.id]: `https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
-  [hardhat.id]: 'http://127.0.0.1:8545'
+  [hardhat.id]: `${process.env.NEXT_PUBLIC_BACKEND_HARDHAT_ADDR}`
 }
 const myTransports = Object.fromEntries(
   Object.entries(chainUrls).map(([chainId, url]) => [chainId, http(url)])
