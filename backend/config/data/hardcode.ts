@@ -46,8 +46,7 @@ export const tokenList: TokenListType = [
       network_enum: 'arb-mainnet',
       tokens: [
         {chainId: 42161, name: 'Dai Stablecoin', symbol: 'DAI', alias: 'dai', decimal: 18, address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'},
-        {chainId: 42161, name: 'Wrapped BTC', symbol: 'WBTC', alias: 'wbtc', decimal: 8, address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f'},
-        {chainId: 42161, name: '1INCH Token', symbol: '1INCH', alias: '1inch', decimal: 18, address: '0x6314c31a7a1652ce482cffe247e9cb7c3f4bb9af'},
+        {chainId: 42161, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9'},
         {chainId: 42161, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1'},
         {chainId: 42161, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'},
       ]
@@ -65,6 +64,15 @@ export const tokenList: TokenListType = [
         {chainId: 11155111, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'},
         {chainId: 11155111, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0x5ab10C716716f6F1a2a0848BB6B36B89d7F5A24d'},
         {chainId: 11155111, name: 'ChainLink Token', symbol: 'LINK ', alias: 'link', decimal: 18, address: '0x779877A7B0D9E8603169DdbD7836e478b4624789'},
+      ]
+    },
+    {
+      chainId: 421614,
+      network_enum: 'arb-sepolia',
+      tokens: [
+        {chainId: 421614, name: 'USD Coin', symbol: 'USDC', alias: 'usdc', decimal: 6, address: '0xf3C3351D6Bd0098EEb33ca8f830FAf2a141Ea2E1'},
+        {chainId: 421614, name: 'Wrapped Ether', symbol: 'WETH', alias: 'weth', decimal: 18, address: '0x2836ae2eA2c013acD38028fD0C77B92cccFa2EE4'},
+        {chainId: 421614, name: 'Tether USD', symbol: 'USDT', alias: 'usdt', decimal: 6, address: '0x30fA2FbE15c1EaDfbEF28C188b7B8dbd3c1Ff2eB'},
       ]
     },
     {

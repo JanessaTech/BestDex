@@ -98,7 +98,7 @@ export type TransactionInfoType = {
 //config
 export const NETWORK_CONSTANTS = {
     MAINNET: ['eth-mainnet', 'arb-mainnet', 'bnb-mainnet', 'base-mainnet'] as const,
-    TESTNET: ['eth-sepolia', 'base-sepolia'] as const,
+    TESTNET: ['eth-sepolia', 'base-sepolia', 'arb-sepolia'] as const,
     LOCAL: ['localhost'] as const
 } as const
 
