@@ -8,6 +8,7 @@ import {
     arbitrum,
     sepolia,
     baseSepolia,
+    arbitrumSepolia,
     hardhat
   } from 'wagmi/chains';
   import {http } from "wagmi";
@@ -31,16 +32,16 @@ import {
       iconUrl: '/imgs/networks/ethereum.png',
     },
     {
+      ...arbitrum,
+      iconUrl: '/imgs/networks/arbitrumone.png',
+    },
+    {
       ...bsc,
       iconUrl: '/imgs/networks/bnbsmartchain.png',
     },
     {
       ...base,
       iconUrl: '/imgs/networks/base.png',
-    },
-    {
-      ...arbitrum,
-      iconUrl: '/imgs/networks/arbitrumone.png',
     },
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [{...sepolia, iconUrl: '/imgs/networks/sepolia.png'},
                                                               {...baseSepolia, iconUrl: '/imgs/networks/bnbsmartchaintestnet.png'}
@@ -51,13 +52,14 @@ import {
 
 const chainUrls = { // it should be consistent with the variable chains defined above
   [mainnet.id]: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+  [arbitrum.id]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [bsc.id]: `https://bnb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [base.id]: `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
-  [arbitrum.id]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [sepolia.id]: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [baseSepolia.id]: `https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [hardhat.id]: `${process.env.NEXT_PUBLIC_BACKEND_HARDHAT_ADDR}`
 }
+
 const myTransports = Object.fromEntries(
   Object.entries(chainUrls).map(([chainId, url]) => [chainId, http(url)])
 );

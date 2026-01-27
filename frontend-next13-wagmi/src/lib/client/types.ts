@@ -61,7 +61,7 @@ export type PoolInfo = {
 //config
 export const NETWORK_CONSTANTS = {
     MAINNET: ['eth-mainnet', 'arb-mainnet', 'bnb-mainnet', 'base-mainnet'] as const,
-    TESTNET: ['eth-sepolia', 'base-sepolia'] as const,
+    TESTNET: ['eth-sepolia', 'base-sepolia', 'arb-sepolia'] as const,
     LOCAL: ['localhost'] as const
 } as const
 export type MAINNET_ENUM = typeof NETWORK_CONSTANTS.MAINNET[number]
