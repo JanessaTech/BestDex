@@ -44,4 +44,5 @@ npm test
 2. refactor hardcode.ts
 3. Combine the config files, .env , constants.ts and hardcode.ts
 4. calculate pooladdress offline - remove PoolClient after that
-5. enhance of getting price which only supports at the most 3 types of chains for now
+5. enhance of getting price which only supports at the most 3 types of chains for now - [done]
+6. For different chain, we use different the subgraph query to get the list of positions
