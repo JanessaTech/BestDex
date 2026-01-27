@@ -1,15 +1,27 @@
-import { ethers} from 'ethers'
+import { Decimal } from 'decimal.js';
 
-async function test1() {
-    const provider = new ethers.providers.JsonRpcProvider('https://eth.llamarpc.com')
-    const tx = await provider.getTransaction('0xbacbe1ca67147f6b718d4f7464e11fea502f202033bce6281796dc6cb5544318')
-    console.log(tx)
+function getTickSpacing(feeTier: number) {
+    console.debug('getTickSpacing:', feeTier)
+    switch (feeTier) {
+        case 100: {
+            return 1
+        }
+        case 500: {
+            return 10
+        }
+        case 3000: {
+            return 60
+        }
+        default: {
+            return 200
+        }
+    }
+}
+function main() {
+    const res = getTickSpacing(Number(3000))
+    console.log('res=', res)
 }
 
-async function main() {
-    await test1()
-}
-
-main().catch((e) => console.log(e))
+main()
 
 //npx hardhat run scripts\tmp1.ts

@@ -2,7 +2,8 @@
 
 ```
 npx hardhat node  # run local
-npx hardhat node --network virtualMainnet
+npx hardhat node --network virtualMainnet  # for tenderly
+npx hardhat node --hostname 0.0.0.0 --fork https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am --fork-block-number 24229566  # for being accessed remotely
 
 ```
 

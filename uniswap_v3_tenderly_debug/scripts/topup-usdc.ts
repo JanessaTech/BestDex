@@ -5,8 +5,10 @@ const usdc_ABI = [
     "function transfer(address to, uint256 amount) returns (bool)",
 ];
 const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-const USDC_WHALE = "0xf977814e90da44bfa03b6295a0616a897441acec"
-const MY_ACCOUNT = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
+// const USDC_WHALE = "0xf977814e90da44bfa03b6295a0616a897441acec"  //block 23043400
+const USDC_WHALE = "0x37305B1cD40574E4C5Ce33f8e8306Be057fD7341"
+//const MY_ACCOUNT = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
+const MY_ACCOUNT = "0xcde08ac365b886225bc6a4c2f0a8b295755aa6c7";
 
 async function main() {
     const provider = ethers.provider;

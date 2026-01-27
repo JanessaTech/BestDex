@@ -2,12 +2,13 @@ import { ethers, providers, BigNumber} from 'ethers'
 import JSBI from 'jsbi'
 import {
     AlphaRouter,
+    NATIVE_CURRENCY,
     SwapOptionsSwapRouter02,
     SwapRoute,
     SwapType,
     
   } from '@uniswap/smart-order-router'
-import { CurrencyAmount, Percent, Rounding, Token, TradeType} from '@uniswap/sdk-core';
+import { CurrencyAmount, Currency, Percent, Rounding, Token, TradeType} from '@uniswap/sdk-core';
 import { Decimal } from 'decimal.js';
 
 const mainnetProvider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/QLyqy7ll-NxAiFILvr2Am")
