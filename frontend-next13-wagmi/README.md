@@ -18,7 +18,7 @@ Click the **Collect Wallet** button on the right top page. A page will pop up wi
 
 ![Login with MetaMask](./demo/login_1.jpg)
 
-A new dialog will pop up after you clicked **MetaMask**, asking you to connect MetaMask
+A new dialog will pop up after you clicked **MetaMask**, asking you to connect to MetaMask
 ![Connect to MetaMask](./demo/login_2.jpg)
 
 Click **Connect** button, you will be asked to verify your account. Click **Confirm** to sign in.
@@ -35,7 +35,7 @@ You need to wait for a few seconds for the **Quotes** to be ready
 
 ![Quotes is ready](./demo/swap_2.jpg)
 
-Click **Swap** button. Input the amount of tokens you need to approve for the swapping. The default value provided by default is usually enough. Then click **Approve and swap**
+Click **Swap** button. Input the amount of tokens you need to approve for the swapping. The default value provided is usually enough. Then click **Approve and swap**
 
 ![Inputs for swapping](./demo/swap_3.jpg)
 
@@ -76,7 +76,7 @@ Click **Confirm** for the second approval
 
 ![Add position: the second approval](./demo/add_4.jpg)
 
-Once the simuation is passed, it starts adding position. You need to click **Confirm** to make the process move on.
+Once the simuation is passed, it starts the process of adding position. You need to click **Confirm** to make the process move on.
 
 ![Add position: add position](./demo/add_5.jpg)
 
@@ -136,7 +136,7 @@ In this page, input how much percentage of existing liquidity you want to remove
 
 ![Decrease liquidity](./demo/dec_2.jpg)
 
-The process of decreasing liquidity includes: 1 simuation and 1 decreasing liquidity operation
+The process of decreasing liquidity includes: 1 simuation and 1 decreasing liquidity operation.
 Once the simulation is passed, click **Confirm** to make proccess move on.
 
 ![Decrease liquidity](./demo/dec_3.jpg)
@@ -150,12 +150,12 @@ Go to **Explore -> Transactions** page, you will see a record of the decreasing 
 ![Decrease liquidity](./demo/dec_5.jpg)
 
 ### Collect fee
-Suppose you want collect fee for your posistions you've created. Here is how you go.
-Go to Explore -> Positions page, click **Collect fee** action for the position you want to collect fee from.
+Suppose you want to collect fee for your posistions you've created. Here is how you go.
+Go to **Explore -> Positions** page, click **Collect fee** action for the position you want to collect fee from.
 
 ![Collect fee](./demo/collect_1.jpg)
 
-Click **Confirm** to make collecting move on
+Click **Confirm** to make the process of collecting fee move on
 
 ![Collect fee](./demo/collect_2.jpg)
 
