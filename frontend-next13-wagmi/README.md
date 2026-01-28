@@ -25,7 +25,7 @@ Click **Connect** button, you will be asked to verify your account. Click **Conf
 
 ![Sign-in request](./demo/login_3.jpg)
 
-### Swap two token pairs
+### Swap two-token pair
 Once you logined successfully, choose **Swap** on the menu.
 Choose **Sepolia**.  Choose **WETH** for the first token and **USDC** for the second token, input the amount of the first token you want to swap and click **Get Quotes**
 
@@ -62,7 +62,7 @@ Go to **Pool** menu, choose a pair of token you want to invest. In this example,
 
 ![Add position: choose token pairs and fee tier](./demo/add_1.jpg)
 
-This page looks complicated. No worries. This page is to let you choose the lower&upper range of your position you will create. You could use two vertical lines to move left/right to adjust lower&upper boundary. Then click **Add position**
+This page looks complicated. No worries. This page is to let you choose the lower&upper boundary of the range for the position you will create. You could use two vertical lines to move left/right to adjust lower&upper boundary. Then click **Add position**
 
 ![Add position: deposit](./demo/add_2.jpg)
 
