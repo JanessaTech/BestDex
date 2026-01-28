@@ -33,7 +33,7 @@ The approval. Please click **Confirm**.After that, a simuation is executed for t
 ![First approval](./demo/swap_4.jpg)
 If the simulation is passed, it will start swapping. Click **Confirm** to make the swapping finish
 ![Swapping](./demo/swap_5.jpg)
-Once the swapping is successful, it shows us how much target token we will get
+Once the swapping is successful, it goes to the page showing you how much target token you received
 ![Swapping is ok](./demo/swap_6.jpg)
 Go to **Explore -> Transactions** page, you will see a record of the swapping you just finished
 ![Swap history](./demo/swap_7.jpg)
@@ -50,7 +50,7 @@ Click **Confirm** for the second approval
 ![Add position: the second approval](./demo/add_4.jpg)
 Once the simuation is passed, it starts adding position. You need to click **Confirm** to make the process move on
 ![Add position: add position](./demo/add_5.jpg)
-This page shows us how much tokens are deposited
+Once the new position is added successfully, it goes to the page showing you how much tokens are deposited
 ![Add position: adding position is done](./demo/add_6.jpg)
 Go to **Explore -> Transactions** page, you will see a record of the adding position you just finished
 ![Add position: adding position history](./demo/add_7.jpg)
@@ -69,7 +69,7 @@ Click **Confirm** for the second approval
 ![Increase liquidity](./demo/inc_4.jpg)
 If the simuation is passed, it will start the process of increasing liquidity operation. Click **Confirm** to make the process move on
 ![Increase liquidity](./demo/inc_5.jpg)
-Once the liquidity is added successfully, it goes to the page showing you how much tokens you have deposited and how much liquidity is added
+Once the liquidity is added successful, it goes to the page showing you how much tokens you have deposited and how much liquidity is added
 ![Increase liquidity](./demo/inc_6.jpg)
 Go to **Explore -> Transactions** page, you will see a record of increasing the liquidity you just added
 ![Increase liquidity](./demo/inc_7.jpg)
@@ -80,13 +80,21 @@ Go to **Explore -> Positions** page, click **-** action for the position you wan
 In this page, input how much percentage of existing liquidity you want to remove. In this case, I input 100, meaning that I want to remove all liquidity for the chosen position. Then click **Decrease Liquidity**
 ![Decrease liquidity](./demo/dec_2.jpg)
 The process of decreasing liquidity includes: 1 simuation and 1 decreasing liquidity operation
+Once the simulation is passed, click **Confirm** to make proccess move on
 ![Decrease liquidity](./demo/dec_3.jpg)
+Once the liquidity is removed successfully, it goes to the page showing you how much tokens you've collected and how much liquidity is removed 
 ![Decrease liquidity](./demo/dec_4.jpg)
+Go to **Explore -> Transactions** page, you will see a record of the decreasing liquidity you just removed
 ![Decrease liquidity](./demo/dec_5.jpg)
 ### Collect fee
+Suppose you want collect fee for your posistions you've created. Here is how you go.
+Go to Explore -> Positions page, click **Collect fee** action for the position you want to collect fee from.
 ![Collect fee](./demo/collect_1.jpg)
+Click **Confirm** to make collecting move on
 ![Collect fee](./demo/collect_2.jpg)
+Once the collection is successful, it goes to the page showing you how much tokens are collected
 ![Collect fee](./demo/collect_3.jpg)
+Go to **Explore -> Transactions** page, you will see a record of the collecting fee
 ![Collect fee](./demo/collect_4.jpg)
 
 ## How to start
