@@ -28,10 +28,36 @@ You need to wait for a few seconds for the **Quotes** to be ready
 Click **Swap** button.
 Input the amount of tokens you need to approve for the swapping. The default value provided by default is usually enough. Then click **Approve and swap**
 ![Inputs for swapping](./demo/swap_3.jpg)
-
-
+In the proccess of swapping, you will have 1 approval, 1 simulation and 1 real swapping.
+The approval. Please click **Confirm**.After that, a simuation is executed for the safety of the swapping.
+![First approval](./demo/swap_4.jpg)
+If the simulation is passed, it will start swapping. Click **Confirm** to make the swapping finish
+![Swapping](./demo/swap_5.jpg)
+Once the swapping is successful, it shows us how much target token we will get
+![Swapping is ok](./demo/swap_6.jpg)
+Go to **Explore -> Transactions** page, you will a record of the swapping you just finished
+![Swap history](./demo/swap_7.jpg)
 ### Add positions(Create liquidity)
+Adding position is the most complex operation.
+Go to **Pool** menu, choose a pair of token you want to invest. In this example, I choose **USDC** and **WETH** as the token pair and the fee tier is **0.3%**. Then click **Next**
+![Add position: choose token pairs and fee tier](./demo/add_1.jpg)
+This page looks complicated. No worries. This page is to let you choose the lower&upper range of your position you will create. You could use two vertical lines to move left/right to adjust lower&upper boundary. Then click **Add position**
+![Add position: deposit](./demo/add_2.jpg)
+In this page, it will start the process of adding position. Typically, the process will include 1-2 approvals, 1 simuation and 1 adding operation. Except the simuation, you need to interact with wallet to make the process move on. In this case, it has 2 approvals.
+Click **Confirm** for the first approval
+![Add position: the first approval](./demo/add_3.jpg)
+Click **Confirm** for the second approval
+![Add position: the second approval](./demo/add_4.jpg)
+Once the simuation is passed, it starts adding position. You need to click **Confirm** to make the process move on
+![Add position: add position](./demo/add_5.jpg)
+This page shows us how much tokens are deposited
+![Add position: adding position is done](./demo/add_6.jpg)
+Go to **Explore -> Transactions** page, you will a record of the adding position you just finished
+![Add position: adding position history](./demo/add_7.jpg)
+Go to **Explore -> Positions** page, you will a record of position you just created
+![Add position: positions list history](./demo/add_8.jpg)
 ### Increase liquidity
+
 ### Decrease liquidity
 ### Collect fee
 
