@@ -44,7 +44,8 @@ import {
       iconUrl: '/imgs/networks/base.png',
     },
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [{...sepolia, iconUrl: '/imgs/networks/sepolia.png'},
-                                                              {...baseSepolia, iconUrl: '/imgs/networks/bnbsmartchaintestnet.png'}
+                                                              {...baseSepolia, iconUrl: '/imgs/networks/basesepolia.png'},
+                                                              {...arbitrumSepolia, iconUrl: '/imgs/networks/arbitrumsepolia.png'}
                                                               ] 
                                                            : []),
     ...(process.env.NEXT_PUBLIC_ENABLE_LOCALS === 'true' ? [{...hardhat, iconUrl: '/imgs/networks/hardhat.png', contracts: {multicall3: {address: '0xca11bde05977b3631167028862be2a173976ca11' as `0x${string}`, blockCreated: 14353601}}}] : [])
@@ -57,6 +58,7 @@ const chainUrls = { // it should be consistent with the variable chains defined 
   [base.id]: `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [sepolia.id]: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [baseSepolia.id]: `https://base-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+  [arbitrumSepolia.id]: `https://arb-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
   [hardhat.id]: `${process.env.NEXT_PUBLIC_BACKEND_HARDHAT_ADDR}`
 }
 
