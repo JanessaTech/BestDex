@@ -13,7 +13,7 @@ TBD
 Before doing any operations below, make sure that you've had enough tokens in charge
 I'll use the testnet **Ethereum Sepolia** as the example to show you how it works
 ### Login
-Click the **Collect Wallet** button on the right top page. A page will pop up with serveral wallets options you can choose from. Here I will use **MetaMask** to login
+Click the **Collect Wallet** button on the right top page. A page will pop up with serveral wallet options you can choose from. Here I will use **MetaMask** to login
  ![Login with MetaMask](./demo/login_1.jpg)
 A new dialog will pop up after you clicked **MetaMask**, asking you to connect MetaMask
  ![Connect to MetaMask](./demo/login_2.jpg)
@@ -35,7 +35,7 @@ If the simulation is passed, it will start swapping. Click **Confirm** to make t
 ![Swapping](./demo/swap_5.jpg)
 Once the swapping is successful, it shows us how much target token we will get
 ![Swapping is ok](./demo/swap_6.jpg)
-Go to **Explore -> Transactions** page, you will a record of the swapping you just finished
+Go to **Explore -> Transactions** page, you will see a record of the swapping you just finished
 ![Swap history](./demo/swap_7.jpg)
 ### Add positions(Create liquidity)
 Adding position is the most complex operation.
@@ -52,17 +52,50 @@ Once the simuation is passed, it starts adding position. You need to click **Con
 ![Add position: add position](./demo/add_5.jpg)
 This page shows us how much tokens are deposited
 ![Add position: adding position is done](./demo/add_6.jpg)
-Go to **Explore -> Transactions** page, you will a record of the adding position you just finished
+Go to **Explore -> Transactions** page, you will see a record of the adding position you just finished
 ![Add position: adding position history](./demo/add_7.jpg)
-Go to **Explore -> Positions** page, you will a record of position you just created
+Go to **Explore -> Positions** page, you will see a record of position you just created
 ![Add position: positions list history](./demo/add_8.jpg)
 ### Increase liquidity
-
+Suppose you want to add liquidity for the position you just created. Here is how you go.
+Go to **Explore -> Positions** page, click **+** action for the position.
+![Increase liquidity](./demo/inc_1.jpg)
+In this page, input the amount of tokens you need to add to. Then click **Increase Liquidity**
+![Increase liquidity](./demo/inc_2.jpg)
+In the process of increasing liquidity, it will include : 1-2 approvals, 1 simuation and 1 increasing liquidity operation. In this case, it has 2 approvals.
+Click **Confirm** for the first approval
+![Increase liquidity](./demo/inc_3.jpg)
+Click **Confirm** for the second approval
+![Increase liquidity](./demo/inc_4.jpg)
+If the simuation is passed, it will start the process of increasing liquidity operation. Click **Confirm** to make the process move on
+![Increase liquidity](./demo/inc_5.jpg)
+Once the liquidity is added successfully, it goes to the page showing you how much tokens you have deposited and how much liquidity is added
+![Increase liquidity](./demo/inc_6.jpg)
+Go to **Explore -> Transactions** page, you will see a record of increasing the liquidity you just added
+![Increase liquidity](./demo/inc_7.jpg)
 ### Decrease liquidity
+Suppose you want to withdraw tokens you've added to a position. Here is how it goes.
+Go to **Explore -> Positions** page, click **-** action for the position you want to withdraw tokens from.
+![Decrease liquidity](./demo/dec_1.jpg)
+In this page, input how much percentage of existing liquidity you want to remove. In this case, I input 100, meaning that I want to remove all liquidity for the chosen position. Then click **Decrease Liquidity**
+![Decrease liquidity](./demo/dec_2.jpg)
+The process of decreasing liquidity includes: 1 simuation and 1 decreasing liquidity operation
+![Decrease liquidity](./demo/dec_3.jpg)
+![Decrease liquidity](./demo/dec_4.jpg)
+![Decrease liquidity](./demo/dec_5.jpg)
 ### Collect fee
+![Collect fee](./demo/collect_1.jpg)
+![Collect fee](./demo/collect_2.jpg)
+![Collect fee](./demo/collect_3.jpg)
+![Collect fee](./demo/collect_4.jpg)
 
+## How to start
 
-
+```
+npm run dev
+npm run build
+npm run start
+```
 
 ## Installed dependences
 
@@ -80,17 +113,7 @@ npx shadcn@latest add sonner
 npx shadcn@latest add table
 npx shadcn@latest add tabs
 npx shadcn@latest add tooltip
-
 ```
-
-## How to start
-
-```
-npm run dev
-npm run build
-npm run start
-```
-
 
 ## Follwing-up: enhancements
 1. Integrate Uniswap Permit2 to enhance user experience
