@@ -14,12 +14,15 @@ Before doing any operations below, make sure that you've had enough tokens in ch
 I'll use the testnet **Ethereum Sepolia** as the example to show you how it works
 ### Login
 Click the **Collect Wallet** button on the right top page. A page will pop up with serveral wallet options you can choose from. Here I will use **MetaMask** to login
+
 ![Login with MetaMask](./demo/login_1.jpg)
 
 A new dialog will pop up after you clicked **MetaMask**, asking you to connect MetaMask
 ![Connect to MetaMask](./demo/login_2.jpg)
-Click **Connect** button, you will be asked to verify your account. Click **Confirm** to sign in
- ![Sign-in request](./demo/login_3.jpg)
+
+Click **Connect** button, you will be asked to verify your account. Click **Confirm** to sign in.
+
+![Sign-in request](./demo/login_3.jpg)
 ### Swap two token pairs
 Once you logined successfully, choose **Swap** on the menu.
 Choose **Sepolia**.  Choose **WETH** for the first token and **USDC** for the second token, input the amount of the first token you want to swap and click **Get Quotes**
