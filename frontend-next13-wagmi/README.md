@@ -12,6 +12,7 @@ TBD
 ## How does the Dapp work
 Before doing any operations below, make sure that you've had enough tokens in charge
 I'll use the testnet **Ethereum Sepolia** as the example to show you how it works
+
 ### Login
 Click the **Collect Wallet** button on the right top page. A page will pop up with serveral wallet options you can choose from. Here I will use **MetaMask** to login
 
@@ -23,24 +24,38 @@ A new dialog will pop up after you clicked **MetaMask**, asking you to connect M
 Click **Connect** button, you will be asked to verify your account. Click **Confirm** to sign in.
 
 ![Sign-in request](./demo/login_3.jpg)
+
 ### Swap two token pairs
 Once you logined successfully, choose **Swap** on the menu.
 Choose **Sepolia**.  Choose **WETH** for the first token and **USDC** for the second token, input the amount of the first token you want to swap and click **Get Quotes**
+
 ![Get Quotes](./demo/swap_1.jpg)
+
 You need to wait for a few seconds for the **Quotes** to be ready
+
 ![Quotes is ready](./demo/swap_2.jpg)
-Click **Swap** button.
-Input the amount of tokens you need to approve for the swapping. The default value provided by default is usually enough. Then click **Approve and swap**
+
+Click **Swap** button. Input the amount of tokens you need to approve for the swapping. The default value provided by default is usually enough. Then click **Approve and swap**
+
 ![Inputs for swapping](./demo/swap_3.jpg)
+
 In the proccess of swapping, you will have 1 approval, 1 simulation and 1 real swapping.
 The approval. Please click **Confirm**.After that, a simuation is executed for the safety of the swapping.
+
 ![First approval](./demo/swap_4.jpg)
-If the simulation is passed, it will start swapping. Click **Confirm** to make the swapping finish
+
+If the simulation is passed, it will start swapping. Click **Confirm** to make the swapping finish.
+
 ![Swapping](./demo/swap_5.jpg)
+
 Once the swapping is successful, it goes to the page showing you how much target token you received
+
 ![Swapping is ok](./demo/swap_6.jpg)
+
 Go to **Explore -> Transactions** page, you will see a record of the swapping you just finished
+
 ![Swap history](./demo/swap_7.jpg)
+
 ### Add positions(Create liquidity)
 Adding position is the most complex operation.
 Go to **Pool** menu, choose a pair of token you want to invest. In this example, I choose **USDC** and **WETH** as the token pair and the fee tier is **0.3%**. Then click **Next**
