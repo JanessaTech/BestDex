@@ -1,8 +1,8 @@
 sources:
-  - name: uniswapv3_arbitrum
+  - name: uniswapv3_ethereum
     handler:
       graphql:
-        endpoint: https://gateway-arbitrum.network.thegraph.com/api/eada99c8eee80663db1e909b89c14a3f/subgraphs/id/HyW7A86UEdYVt5b9Lrw8W2F98yKecerHKutZTRbSCX27
+        endpoint: https://gateway.thegraph.com/api/c9120e0b9f742de8319a02d764df9601/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV
 plugins:
   - pollingLive:
       defaultInterval: 10000

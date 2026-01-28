@@ -4313,7 +4313,7 @@ const uniswapv3EthereumSepoliaTransforms = [];
 const additionalTypeDefs = [] as any[];
 const uniswapv3EthereumSepoliaHandler = new GraphqlHandler({
               name: "uniswapv3_ethereum_sepolia",
-              config: {"endpoint":"https://gateway.thegraph.com/api/eada99c8eee80663db1e909b89c14a3f/subgraphs/id/EDJCBpDBGBajTP1x3qLGLg3ZaVR5Q2TkNxyNHdCuryex"},
+              config: {"endpoint":"https://gateway.thegraph.com/api/c9120e0b9f742de8319a02d764df9601/subgraphs/id/EDJCBpDBGBajTP1x3qLGLg3ZaVR5Q2TkNxyNHdCuryex"},
               baseDir,
               cache,
               pubsub,

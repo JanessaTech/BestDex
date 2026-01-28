@@ -6,8 +6,8 @@ fragment PoolLiveDataFields on Pool {
   id
 }
 
-query GetMultipleArbitrumPoolLiveData($poolIds: [ID!]!) @live(interval: 5000) {
-  uniswapv3_arbitrum: pools(where: { id_in: $poolIds }) {
+query GetMultipleEthereumPoolLiveData($poolIds: [ID!]!) @live(interval: 5000) {
+  uniswapv3_ethereum: pools(where: { id_in: $poolIds }) {
     ...PoolLiveDataFields
   }
 }

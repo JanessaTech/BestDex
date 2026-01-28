@@ -5715,7 +5715,7 @@ const uniswapv3EthereumTransforms = [];
 const additionalTypeDefs = [] as any[];
 const uniswapv3EthereumHandler = new GraphqlHandler({
               name: "uniswapv3_ethereum",
-              config: {"endpoint":"https://gateway.thegraph.com/api/eada99c8eee80663db1e909b89c14a3f/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"},
+              config: {"endpoint":"https://gateway.thegraph.com/api/c9120e0b9f742de8319a02d764df9601/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"},
               baseDir,
               cache,
               pubsub,
