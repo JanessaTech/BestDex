@@ -88,9 +88,9 @@ Go to **Explore -> Transactions** page, you will see a record of the adding posi
 
 ![Add position: adding position history](./demo/add_7.jpg)
 
-Go to **Explore -> Positions** page, you will see a record of position you just created.
+Go to **Explore -> Positions** page, you will see a record of the position you just created.
 
-![Add position: positions list history](./demo/add_8.jpg)
+![Add position: position list history](./demo/add_8.jpg)
 
 ### Increase liquidity
 Suppose you want to add liquidity for the position you just created. Here is how you go.
