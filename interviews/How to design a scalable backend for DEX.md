@@ -45,7 +45,17 @@ To make the issue worse, each request needs to call AlphaRouter running in backe
     WETH-USDC:29412517:900-1000 (we assume the time window is 1 min. 1764751061/60 is rounded down to 29412517)
 - How do you balance the hit rate and the accucary of cache?
     I have a simuation operation before the swapping. we can use the failure rate of this operation to adjust the final balance
--
 
+**Service discovery and load balance**
+**[Me]**
+- How do you evenly distribute requests across microservices? k8s + load balance ? API gateway ? simple round-robin？
+    We can use API gateway with the algorithm saying polling or minimum connection number configured to get even distribution
+- When a new service instance used for quotes becomes on/off, how do you detect it timely?
+   At the early stage, you can use the static configuration. At the advanced stage, consider the dynamic service discovery using 3-party solutions saying consul, etcd , Kubernetes etc
 
+**Summary about the design**
+The design above resolved 4 key potential bottlenecks:
+- The computation/backend capabilty: with the horizontal expansion, the computation is evenly distributed across different microservices  
+- The network: with the caching techniques, the majority of repetitive quotes queries are reduced, which significantly reduce the pressure of AlphaRouter and RPC calling
+- The database: The database issue is not serious in the design compared to the issues above. You can use message queue to decouple IO request and IO writing when necessary
 
