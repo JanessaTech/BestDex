@@ -10,8 +10,8 @@ My first question is: you mentioned you update pool states when one of events sw
 
 **[Me]** I will design a distributed, message queue-based stream processing architecture. I will explain it from 3 aspects: event monitor, processing and health monitor& fault recovery :
 - **event monitor**:
-    Design a monitor cluster with multiple monitor instances. Each instance is connected to a connection pool which manages multiple rpc providers or self-built nodes
-    each monitor instance is partitioned according to the pool address, which could make sure all events belonging to the same pool are processed sequentially
+    Design a monitor cluster with multiple monitor instances. Each instance is connected to a connection pool which manages multiple rpc providers or self-built nodes.
+    each monitor instance is partitioned by the pool address, which could make sure all events belonging to the same pool are processed sequentially
     Once a new event is received by one monitor instance, it is sent to the message queue in the downstream.
     To make sure no missing events, implement ***Exactly-Once processing semantics***: on the event monitor side, use ***block number + transaction index + log index*** as the cursor and save it to database periodically 
 
