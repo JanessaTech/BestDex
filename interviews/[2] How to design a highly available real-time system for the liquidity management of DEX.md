@@ -8,18 +8,25 @@
 **[Interviewer]** Good. You hit the core of DeFi integration: monitor the events on the chain and synchronzie the states from the on-chain to the off-chain. Let's start the design. Our aim is to evolve the design into a "highly available real-time data service"
 My first question is: you mentioned you update pool states when one of events swap, Mint, Burn and DecreaseLiquidity is detected. The swap event is the most frequent one. Suppose there are thousands of swaps per second from different pools, how do design your monitor so that there is no event missing, no delay and it can quickly recover from faults?
 
-**[Me]** I will design a distributed, message queue-based stream processing architecture. I will explain it from 3 aspects: event monitor, processing and health monitor& fault recovery :
-- **event monitor**:
+**[Me]** I will design a distributed, message queue-based stream processing architecture. I will explain it from 4 aspects: event monitor, message queue, event processing and health monitor& fault recovery :
+- **Event monitor**:
     Design a monitor cluster with multiple monitor instances. Each instance is connected to a connection pool which manages multiple rpc providers or self-built nodes.
-    each monitor instance is partitioned by the pool address, which could make sure all events belonging to the same pool are processed sequentially
+    each monitor instance is partitioned by the pool address
     Once a new event is received by one monitor instance, it is sent to the message queue in the downstream.
-    To make sure no missing events, implement ***Exactly-Once processing semantics***: on the event monitor side, use ***block number + transaction index + log index*** as the cursor and save it to database periodically 
+    
+    To make sure no missing events, use ***block number + transaction index + log index*** as the cursor and save it to database periodically 
+- **Message queue**:
+    The partition key of the message queue MUST BE CONSISTENT WITH the strategy used to partition monitor instances to make sure all events belonging to the same pool are processed sequentially: they all use the pool address as the parition key
+    The number of partition should be more than the number of monitor instances for the future scalability
+- **Event processing**:
+    There are multiple processing consumers to process messages from the message queue. one partition is consumed by one consumer.
 
-- **processing**:
-    There are multiple processing consumers to process messages from the message queue. The processed results are saved to redis to check the latest pool data and database for the history records.
-    To finish Exactly-Once processing semantics, on the processing side, send the confirmation after one message is proccessed, combined with database transaction. For the recovery, we save the message offset to database.
+    The processed results are saved to redis to check the latest pool data and database for the history records.
+    To make sure no duplicated data to be stored, we need to make sure:
+    - Idempotent saving using ***block number + transaction index + log index*** as the unique key
+    - Disable auto commit. Implement transactional confirmation by yourself: data insertion and message confirmation to the message queue are done in an atomic way. Save the message offset only when the data insertion and message confirmation are successful
 
-- **health monitor& fault recovery**:
+- **Health monitor& fault recovery**:
     - **health monitor**:
         - **delay monitoring**: Set up delay metrics across different processing stage of an event: on chain -> being detected, being in queue, being processed
         - **backlog monitoring**: Monitor the lag situation of each message
