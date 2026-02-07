@@ -98,8 +98,25 @@ The main process of the reorganization:
 - Restore
     The coordinator sends the restoring command to all modules, telling them to start with target block number + 1
 
+In the process of sending commands(suspend, roll back and restore) between coordinator and all modules, we use the mixture strategy of active reporting(from modules to coordinator) and passive query/timeout(from coordinator to modules) to prevent the split-brain.
+
 **[Interviewer]** Excellent! The core strength of your solution lies in its strong consistence and control. The centralized coordinator can make sure that all modules are in step during the organizaiton process, making it suitable for finanal senarios which require the high accuracy for the data consistency. However. in a distributed system, a classic challenge is that the centralized coordinator itself can become a single point of failure or a performance bottleneck. How does your reorganization coordinator ensure its high availability. Eg, it crashes after broadcasting suspending, how can you prevent the entire system from indefinitly suspending?
 
-**[Me]** 
+**[Me]** To prevent the coordinator from becoming the single point of failure, the design can be enhanced like this: I will implement the coordinator as a small cluster based on the Raft consensus algorithm with all critical states persisted to external storage. If the leader crushes, the cluster can automatically elect a new leader from the persisted states without causing the system suspending indefinitely.
+
+Here is the key implemenations:
+- Clustered Coordinator:
+    - The cluster consists 3 - 5 nodes, one leader, the others as followers
+    - All of reorganization commands or state changes are replicated within the cluster as the Raft logs, Only the leader can broadcast the commands&changes, ensuring the consistency
+    - Once the leader crushes, the new leader can be elected in a few seconds
+- External persistence of coordinator states: 
+    - **Reorg context** is written to the external strongly consistent storage(eg: etcd、ZooKeeper) before the coordinator starts any critical operations.
+    - The **Reorg context** must inlcude:
+        - targetBlockNumber: the target block to roll back to
+        - newBlockHash: the hash of the newly received block
+        - phase: current stage(SUSPENDING, ROLLING_BACK, RESTORING)
+        - moduleStatuses: a map, recording the latest status of each module(monitoring, parsing, processing and persistence)(eg: suspended, rolled back to block X etc)
+        - coordinatorCheckPoint: the coordinator itself's check point
+        - rollBackSteps: The steps needed to execute rolling back
 
 
