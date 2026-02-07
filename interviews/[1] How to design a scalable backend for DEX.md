@@ -39,7 +39,7 @@ To make the issue worse, each request needs to call AlphaRouter running in backe
 
 **Cache invalidation and data consitency**
 
-**[Me]** The strategy is we should have a solid data infrasture layer which we call indexer/ event stream system or whatever you like. For simplicity, let's call it the indexer. The indexer can monitor all swap events in chain. It synchronizes the critical states in UniswapV3Pool saying tick and liquidity to local when a swap event arrives. When it detects that the liquidity of a certain pool is dried up, it actively invalidates the corresponding cached data
+**[Me]** The strategy is we should have a solid data infrasture layer which we call data indexer/ event stream system or whatever you like. For simplicity, let's call it the data indexer. The data indexer can monitor all swap events in chain. It synchronizes the critical states in UniswapV3Pool saying tick and liquidity to local when a swap event arrives. When it detects that the liquidity of a certain pool is dried up, it actively invalidates the corresponding cached data
 
 **Cache granularity and hit rate**
 
