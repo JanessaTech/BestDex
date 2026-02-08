@@ -29,4 +29,4 @@ Let me explain them in details.
     - **Data indexer monitoring**: Monitor events and receipts on chain in stream pipeline. Create a transaction final event for each receipt after parsing. The transaction final event includes: txHash, status(0 / 1), blockNumber and gasUsed etc. This event is sent to the message queue waiting for the transaction service to consume it 
     - **Transaction service as the consumer**: The transaction service consumes the message, get txHash, status etc from the message and find the trackingId by txHash in the mapping between txHash and trackingId
     - **Websocket synchronize the state to frontend**:
-        The websocket synchronize the status to the frontend
+        The websocket synchronizes the status by trackingId to the frontend
