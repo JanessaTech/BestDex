@@ -42,7 +42,8 @@ Back to your requirements:
 - **Efficiency**: 
     To make the reorganization work effiently, we have a dedicated service to synchronize on-chain data to off-chain data. The service is working separately from the data indexer
 - **Scalability**: 
-    All modules are deployed in a micro-service way except the database which is distributed working in a master-slavery mode
+    All modules are deployed in a micro-service way except the database which is distributed working in a master-slavery mode.
+    The message queue is introduced to adapt to new contract addresses
 - **Availability**: 
     Guaranteed by ***Fault tolerance*** and ***Monitoring***:
     - Fault tolerance: 
@@ -74,7 +75,7 @@ Once we know the target block we need to roll back to, the data indexer enters t
 My question is: In a high-concurrency system, we need to guarantee the atomicity and eventual consistency of operations. Assume your data indexer is running at a high speed: chain events monitoring module is processing the block N, data processing module is processing the block N-2, 
 reorganization detection module suddenly notifies us: A reorganization is detected, we need to roll back to block N-1. Please enhance the design to ensure that all modules can smoothly and consitently roll back to the target block without the dirty data and chaos 
 
-**[Me]** we have a centralized coordinator to manager all modules: suspend, roll back and restore.
+**[Me]** we have a centralized coordinator to manage all modules: suspend, roll back and restore.
 The main process of the reorganization:
 - Reorganization detection
     Once the reorganization is detected, send the coordinator a reorgnization event which includes: target block number to roll back, the newly received block
@@ -98,7 +99,10 @@ The main process of the reorganization:
 - Restore
     The coordinator sends the restoring command to all modules, telling them to start with target block number + 1
 
-In the process of sending commands(suspend, roll back and restore) between coordinator and all modules, we use the mixture strategy of active reporting(from modules to coordinator) and passive query/timeout(from coordinator to modules) to prevent the split-brain.
+There are 2 issues we need to pay attention to in the process of the reorganization:
+- **split-brain**: In the process of sending commands(suspend, roll back and restore) between coordinator and all modules, we use the mixed communicating strateges of active reporting(from modules to coordinator) and passive query/timeout(from coordinator to modules) to prevent the split-brain: Once the coodinator find no active reporting or timeout when passive query for a module, the coordinator thinks that this module died and enables the backup of this module
+- **atomicity and idempotence**: In the roll back of each module, we should ensure operations within each module are atomic and idempotent to prevent inconsistence
+
 
 **[Interviewer]** Excellent! The core strength of your solution lies in its strong consistence and control. The centralized coordinator can make sure that all modules are in step during the organizaiton process, making it suitable for finanal senarios which require the high accuracy for the data consistency. However. in a distributed system, a classic challenge is that the centralized coordinator itself can become a single point of failure or a performance bottleneck. How does your reorganization coordinator ensure its high availability. Eg, it crashes after broadcasting suspending, how can you prevent the entire system from indefinitly suspending?
 
@@ -120,3 +124,9 @@ Here is the key implemenations:
         - rollBackSteps: The steps needed to execute rolling back
 
 
+**Summary about the design**
+- Raft-based coodinator cluster: This is the brain of chain reorganization
+- 6 modules working in stream pipeline: monitoring, parsing, organization detection, processing, persistence and the united data query
+
+**Introduction of this design:**
+To support DEX, I designed a data indexer to solve a core pain: it needs to provide the low-latency real-time data while ensuring the absolute correctness of data after blockchain reorganization. My design is a processing pipeline based on event streams. The key of the design is a Raft-based centralized coordinator cluster to ensure the strong correctness in the reorganization
