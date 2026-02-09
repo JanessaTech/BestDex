@@ -11,7 +11,7 @@ Let me explain them in details.
     - **API gateway**: Perform request merging / degradation / circuit-breaking process. Check if the cache in gateway is hit, if not, transfer the api call to ***Swap quotes service***
     - **Swap quotes service**: 
         - **Precheck**: Call the united API service to check if the target pool is valid. eg: check if the liquidity is depleted. If it is invalid, return directly
-        - **Cache**: Check the cache to see if there exists the result which is pre-comuptated for the inputs. Return result if it hits
+        - **Cache**: Check the cache to see if there exists the result which is pre-computed for the inputs. Return result if it hits
         - **Short-circuit calculation**: For the most frequent token pairs, use the off-chain pool data to calculate the target amount without running AlphaRouter calling
         - **Core computation**: If the pool is valid, the cache doesn't hit, no need the short-circuit calculation, we call AlphaRouter which will cost 2-10 seconds on average to calculate the quotes based on the inputs via rpc
         - **Slippage prediction**: Meanwhile, we could use the historic pool data to predict the slippage to improve the user experience in UI
