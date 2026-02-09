@@ -19,14 +19,14 @@ Let me explain them in details.
 
 - ***Simulation and transaction sumbmition*** 
     - **Frontend**: Once the frontend receives the quotes, it constructs a simulation and runs it to check if the swapping transaction constructed by the result returned by 'Get quotes' has potential to fail
-    - **SDK**: If the simulation is successful, the frontend calls the SDK to submit the signed swapping transaction to the transaction service
-    - **API gateway**: API gateway intercepts the request above, perform the request merging / degradation / circuit-breaking process and transfer the request to the transaction service
-    - **Transaction service**:
+    - **SDK**: If the simulation is successful, the frontend calls the SDK to submit the signed swapping transaction to the Transaction Submission Service
+    - **API gateway**: API gateway intercepts the request above, perform the request merging / degradation / circuit-breaking process and transfer the request to the Transaction Submission Service
+    - **Transaction Submission Service**:
         - **Asynchronous submition**: Generate a trackingId immediately and return it to the frontend. Put a message(trackingId, the signed swapping transaction) into a message queue
         - **Broadcast transaction**: Consume the message, broadcast the signed swapping transaction, get txHash and set up a mapping between txHash and trackingId
          
 - ***Synchronization of state and data archiving*** 
-    - **Data indexer monitoring**: Monitor events and receipts on chain in stream pipeline. Create a transaction final event for each receipt after parsing. The transaction final event includes: txHash, status(0 / 1), blockNumber and gasUsed etc. This event is sent to the message queue waiting for the transaction service to consume it 
-    - **Transaction service as the consumer**: The transaction service consumes the message, get txHash, status etc from the message and find the trackingId by txHash in the mapping between txHash and trackingId
+    - **Data indexer monitoring**: Monitor events and receipts on chain in stream pipeline. Create a transaction final event for each receipt after parsing. The transaction final event includes: txHash, status(0 / 1), blockNumber and gasUsed etc. This event is sent to the message queue waiting for the Transaction Submission Service to consume it 
+    - **Transaction Submission Service as the consumer**: The Transaction Submission Service consumes the message, get txHash, status etc from the message and find the trackingId by txHash in the mapping between txHash and trackingId
     - **Websocket synchronize the state to frontend**:
         The websocket synchronizes the status by trackingId to the frontend

@@ -3,9 +3,9 @@
 2. Provide users with the best exchange rates
 
 **[Me]** Let me share my solution one by one. First, try to avoid front-running.
-We need to enhance the exsiting ***Transaction service*** to make it:
+We need to enhance the exsiting ***Transaction Submission Service*** to make it:
 1. Broadcast the signed transaction to ***Flashbots Protect RPC*** or similar private transaction relay service which fundamentally eliminates most of sandwich attacks
-2. Doubly confirm simulation. Besides the simulation running in the frontend before calling the transaction service, do a simulation again using the latest block states. If the simulation shows that the final result exceeds the threshold, return a warning to users
+2. Doubly confirm simulation. Besides the simulation running in the frontend before calling the Transaction Submission Service, do a simulation again using the latest block states. If the simulation shows that the final result exceeds the threshold, return a warning to users
 
 **[Me]** Provide users with the best exchange rates.
 We need to enhance the exsiting ***Swap quotes service*** to make it:
@@ -17,5 +17,5 @@ Let me summarize the checkpoints where we should do the enhancements to meet you
 | ------------ | ------------ |             
 |  SDK  | 1. Integrate dynamic slippage and the recommendations from the Risk Control & Price Calculation algorithm<br> 2. Append params used to instruct how to execute the private transaction |
 |  Swap quotes service  | 1. Integrate multiple DEX aggregators<br>2.Introduce the Risk Control & Price Calculation algorithm to predict the slippage and the best price|
-|  Transaction service  | 1. Integrate the private transaction relay function <br> 2. Double confirmations for simulation running both in the frontend and the time when the signed transaction is broadcasted |
+|  Transaction Submission Service  | 1. Integrate the private transaction relay function <br> 2. Double confirmations for simulation running both in the frontend and the time when the signed transaction is broadcasted |
 |  Data indexer  | Provide more abundant market data to support the Risk Control & Price Calculation algorithm|
