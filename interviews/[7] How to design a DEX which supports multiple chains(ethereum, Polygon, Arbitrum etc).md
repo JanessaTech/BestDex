@@ -34,8 +34,26 @@
 **[Interviewer]** Excellent! excellent! I almost see how you write the codes.You mentioned Smart route service, can you tell more about it? How do you design it in details?
 
 **[Me]** The Smart route service aims to smartly make decision about which chain the swap quotes request will go for. On the high level, the design consists 3 parts:
-1. Collect the real time data used to make decision
-2. Run the decision algorithm 
-3. Ensure the performance of reliability
+1. Real time data used to make decision
+2. Run the decision-making algorithm 
+3. Ensure the performance and reliability
+
+Here is the low level design:
+- **The real time data used to make decision**
+    - Ihe initial quotes for each chain 
+    - The estimation of Base fee, priority fee and total fee in USD
+    - The cost of cross-bridge: The estimation of the time needed and the cost for the cross-bridge when neccessary
+- **Run the decision-making algorithm**
+    - Get the real data above in parallel
+    - Calculate the net cost for each chain
+        net cost = initial cost - gas used - cost of cross-bridge
+    - Apply the filter rules for the purpose of security and user experience:
+        - Rules for security: Exclude the chains that suffer from the network congestion and RPC failures
+        - Rules for user experiences: If the time needed to finish a transaction exceeds a thredhold, reduce the rank of the specific chain
+        - Rules for functionalities: If the amount of target token exceeds a thredhold - the percentage of the depth of pool, reduce the rank of the specific chain
+    - Return 1-3 options recommended with the critical 
+
+- **Ensure the performance and reliability**
+
 
 
