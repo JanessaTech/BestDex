@@ -1,13 +1,15 @@
-**[Interviewer]** We have discussed about the DEX under a single chain.Suppose the bussiness needs to expand to Ethereum, Arbitrum and Polygon etc. Please enhance your design to support multiple chains. I'd like to know how you design it on the high level.
+**[Interviewer]** We have discussed about the DEX under a single chain. Suppose the bussiness needs to expand to Ethereum, Arbitrum and Polygon etc. Please enhance your design to support multiple chains. I'd like to know how you design it on the high level.
 
 **[Me]** Here is the list of key points we need to enhance to:
 1. Horizontal expansion: multi-chain data indexer layer
 2. Vertical insertion: Abstraction layer
 3. Reform exsiting services: united services layer
-4. Smart route service: The brain deciding which chain the request should go for
+4. Smart route service: The service deciding which chain the swap quotes request should go for
 5. United user experience
 
-More details seen as following:
+**[Interviewer]** Tell me more about the high level design above
+
+**[Me]**: Here is the low level design:
 1. **Horizontal expansion: multi-chain data indexer layer**
     - **Individual data pipeline**: 
     For each chain, we maintain a separate data indexer: monitoring, message queue, processing etc. It is to ensure the isolation and stability of data synchronization among all chains
@@ -27,4 +29,13 @@ More details seen as following:
         - ***Assets overview page***: show the user's total assets by calling the united API service
         - ***Recommended chain***: On the swap page, the chain recommended by the Smart route service is set by defaut
     - **Cross-chain bridge integration**: When the user's assets are not matched with the target chain, the frontend can provide 'swap + cross-chain' experience by integrating 3-party cross-chain bridge solutions like Socket、LiFi
+
+
+**[Interviewer]** Excellent! excellent! I almost see how you write the codes.You mentioned Smart route service, can you tell more about it? How do you design it in details?
+
+**[Me]** The Smart route service aims to smartly make decision about which chain the swap quotes request will go for. On the high level, the design consists 3 parts:
+1. Collect the real time data used to make decision
+2. Run the decision algorithm 
+3. Ensure the performance of reliability
+
 
