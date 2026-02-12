@@ -90,4 +90,4 @@ For simplicty, we can set the strategy globally and decide if we need the endpoi
 **Summary about the design**
 1. **Clear architecture and smooth evolution**: Through horizontal expansion of data indexer and vertical insertion of abstract layer, the core bussiness logic of exisiting single-chain architecture is maxically reused
 2. **Decouple the bussiness with chains**: The united services layer no longer concerns a specific chain. All heterogeneous details are encapsulated in chain-oriented adapter, which makes the cost of the expansion to a new chain in the future extremely low
-3. United user experience: Users can manage all assets using one portal while enjoying the covenience brought by the **Smart route service** - the best chain recommended
+3. United user experience: Users can manage all assets using one portal while enjoying the covenience of the best chain recommended by the **Smart route service** - 
