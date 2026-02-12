@@ -51,9 +51,12 @@ Here is the low level design:
         - Rules for security: Exclude the chains that suffer from the network congestion and RPC failures
         - Rules for user experiences: If the time needed to finish a transaction exceeds a thredhold, reduce the rank of the specific chain
         - Rules for functionalities: If the amount of target token exceeds a thredhold - the percentage of the depth of pool, reduce the rank of the specific chain
-    - Return 1-3 options recommended with the critical 
+    - Return 1-3 options recommended along with the comparison of critical metrix such as the estimated arrival time of funds/cost/gas fee etc
 
 - **Ensure the performance and reliability**
+    - performance: 
+    - reliability:
+        - 
 
 
 
