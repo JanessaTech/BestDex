@@ -33,7 +33,7 @@
 
 **[Interviewer]** Excellent! excellent! I almost see how you write the codes.You mentioned Smart route service, can you tell more about it? How do you design it in details?
 
-**[Me]** The Smart route service aims to smartly make decision about which chain the swap quotes request will go for. On the high level, the design consists 3 parts:
+**[Me]** The Smart route service aims to smartly make decision about which chain the swap quotes request will go for. On the high level, the design consists of 3 parts:
 1. Real time data used to make decision
 2. Run the decision-making algorithm 
 3. Ensure the performance and reliability
@@ -51,12 +51,49 @@ Here is the low level design:
         - Rules for security: Exclude the chains that suffer from the network congestion and RPC failures
         - Rules for user experiences: If the time needed to finish a transaction exceeds a thredhold, reduce the rank of the specific chain
         - Rules for functionalities: If the amount of target token exceeds a thredhold - the percentage of the depth of pool, reduce the rank of the specific chain
-    - Return 1-3 options recommended along with the comparison of critical metrix such as the estimated arrival time of funds/cost/gas fee etc
+    - Return 1-3 options recommended along with the comparison of critical metrics such as the estimated arrival time of funds/cost/gas fee etc
 
 - **Ensure the performance and reliability**
-    - performance: 
+    - performance: use cache to improve the performance of accessing to data
     - reliability:
-        - 
+        - Set timeout deadline for all external requests. For the data sources which suffer from constant failures, use circuit breaker to temporarily execlude them from the decision-making pool
+        - Monitor and asynchrous updates: Monitor the critical metrics such as the deviation rate of quotations, the success rate of chain recommendations and these metrics are adjusted by the admin portal
+
+**[Interviewer]** You mentioned 'If the amount of target token exceeds a thredhold - the percentage of the depth of pool, reduce the rank of the specific chain'. It is a critical risk control strategy. What's the thredhold? Is it set for global or chain-specific?
+
+**[Me]** It is a empirical value we got after several rounds of integration tests and feedback from  users, which is finally decided by the rates of user complaints and success rate of chain recommendations
+This value is a chain-specific value, which is saved in backend database which can be updated/maintained by administor or **Smart route service**
+
+**[Interviewer]** Tell me more about the implementation of circuit breaker, especially the implementation about what you mentioned 'For the data sources which suffer from constant failures, use circuit breaker to temporarily exclude them from the decision-making pool'. It mentioned the classical mode used in circuit breaker. Please explain it from the following aspects:
+1. which states are used in your implementation? what are the conditions which trigger the switching among different states
+2. Where is this circuit breaker strategy used? On the RPC level across all chains or on the finer granularity level saying an specific endpoint?
+
+**[Me]** we have 3 states: On, Off, Half-On. Here is configuration for the circuit breaker:
+```
+const circuitBreakerConfig = {
+  failureThreshold: 3, 
+  slidingWindowSize: '10s',
+  resetTimeout: '15s' 
+};
+```
+The configuration tells us:
+- Turn on the ciruit break when it fails 3 times within 10s. Switch On to Half-On after 15s
+- Only 1 request is allowed to make a test. If the test is successful, switch the state from Half-On to Off, otherwise from Half-On to On
+
+For simplicty, we can set the strategy globally and decide if we need the endpoint-oriented strategy based on situations in the future
+
+
+**[Interviewer]** How to deal with degradation and extreme cases? eg: In the extreme senarios, all of RPCs suddenly crush, you cannot the real data to do the decision making, how does your **Smart route service** behave in this case? 
+
+**[Me]** I will use the latest cached data plus an stale data thredhold instead as the degradation plicy. If the latest cached data exceeds the thredhold, report error directly.
+
+**Summary about the design**
+1. **Clear architecture and smooth evolution**: Through horizontal expansion of data indexer and vertical insertion of abstract layer, the core bussiness logic of exisiting single-chain architecture is maxically reused
+2. **Decouple the bussiness with chains**: The united services layer no longer concerns a specific chain. All heterogeneous details are encapsulated in chain-oriented adapter, which makes the cost of the expansion to a new chain in the future extremely low
+3. United user experience: Users can manage all assets using one portal while enjoying the covenience brought by the **Smart route service** - the best chain recommended
+
+
+
 
 
 
