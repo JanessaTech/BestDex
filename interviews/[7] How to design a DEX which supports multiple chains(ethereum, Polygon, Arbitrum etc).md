@@ -68,7 +68,7 @@ This value is a chain-specific value, which is saved in backend database which c
 1. which states are used in your implementation? what are the conditions which trigger the switching among different states
 2. Where is this circuit breaker strategy used? On the RPC level across all chains or on the finer granularity level saying an specific endpoint?
 
-**[Me]** we have 3 states: On, Off, Half-On. Here is configuration for the circuit breaker:
+**[Me]** we have 3 states: Closed/Open/Half-Open. Here is configuration for the circuit breaker:
 ```
 const circuitBreakerConfig = {
   failureThreshold: 3, 
@@ -77,8 +77,8 @@ const circuitBreakerConfig = {
 };
 ```
 The configuration tells us:
-- Turn on the ciruit break when it fails 3 times within 10s. Switch On to Half-On after 15s
-- Only 1 request is allowed to make a test. If the test is successful, switch the state from Half-On to Off, otherwise from Half-On to On
+- Turn on the ciruit break when it fails 3 times within 10s. Switch Open to Half-Open after 15s
+- Only 1 request is allowed to make a test. If the test is successful, switch the state from Half-Open to Closed, otherwise from Half-Openn to Open
 
 For simplicty, we can set the strategy globally and decide if we need the endpoint-oriented strategy based on situations in the future
 
@@ -91,9 +91,3 @@ For simplicty, we can set the strategy globally and decide if we need the endpoi
 1. **Clear architecture and smooth evolution**: Through horizontal expansion of data indexer and vertical insertion of abstract layer, the core bussiness logic of exisiting single-chain architecture is maxically reused
 2. **Decouple the bussiness with chains**: The united services layer no longer concerns a specific chain. All heterogeneous details are encapsulated in chain-oriented adapter, which makes the cost of the expansion to a new chain in the future extremely low
 3. United user experience: Users can manage all assets using one portal while enjoying the covenience brought by the **Smart route service** - the best chain recommended
-
-
-
-
-
-
