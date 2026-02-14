@@ -1,5 +1,5 @@
 # About the project
-This is a production‑ready decentralized exchange developed from scratch and deployed independently. Core features include:
+This is a production‑ready decentralized exchange developed from scratch and deployed independently. Core features include:  
     - **Swaps**: Integrated with Uniswap V3 Router, supporting exact input/output swaps.
     - **Liquidity Management**: Add/remove liquidity, collect fees, query positions. The liquidity addition process involves real‑time pool data fetching and rendering of price range selectors, with dynamic calculations for position ticks and liquidity amounts.
     - **Real‑Time Data**: Backend polls pool data via The Graph and pushes updates to the frontend through WebSocket, avoiding RPC overload.
