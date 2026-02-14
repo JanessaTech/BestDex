@@ -16,7 +16,7 @@ This project is divied into 4 stages:
 | Stage   |  Timeline  | Focus | Owner | Status |
 | -------|------------| ------| ------| -------|
 |**Stage0**|July 1st, 2025 - Jan 1st, 2026| Implement MVP core functionalities| JanessaTech| Done |
-|**Stage1**|March 1st, 2025 - Dec 31st, 2026| Deploy the production as miroservices, enhance RPC performance, user experiences and security|JanessaTech| In progress |
+|**Stage1**|March 1st, 2026 - Dec 31st, 2026| Deploy the production as miroservices, enhance RPC performance, user experiences and security|JanessaTech| In progress |
 |**Stage2**|TBD|Support abstract chain| TBD| TDB|
 |**Stage3**|TBD|Implement a self-developed data indexing pipeline to handle chain reorganization.| TBD| TDB|
 
