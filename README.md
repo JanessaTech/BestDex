@@ -12,15 +12,15 @@ This is a production‑ready decentralized exchange developed from scratch and d
 
 # 1 min demo:
 # Architecture Evolution Roadmap
-This project is divied into 4 stages:
-**Stage0**: Implement MVP core functionalities
-**Stage1**: Deploy the production as miroservices, enhance RPC performance, user experiences and security
-**Stage2**: Introduce chain abstract to support the easy expansion to new chain
-**Stage3**: Build a self-developed data indexing data pipeline to handle chain reorganization.
+This project is divied into 4 stages:  
+**Stage0**: Implement MVP core functionalities  
+**Stage1**: Deploy the production as miroservices, enhance RPC performance, user experiences and security  
+**Stage2**: Introduce chain abstract to support the easy expansion to new chain  
+**Stage3**: Build a self-developed data indexing data pipeline to handle chain reorganization.  
 
 ## Stage0: MVP
 ![Architecture for stage0](./architecture-evolution/version-0.jpg)
-For the detais of the design, please check the following documents:
+For the detais of the design, please check the following documents:  
 - [How to design a scalable backend for DEX](./interviews/[1]%20How%20to%20design%20a%20scalable%20backend%20for%20DEX.md)
 - [How to design a highly available real-time system for the liquidity management of DEX](./interviews/[2]%20How%20to%20design%20a%20highly%20available%20real-time%20system%20for%20the%20liquidity%20management%20of%20DEX.md)
 
