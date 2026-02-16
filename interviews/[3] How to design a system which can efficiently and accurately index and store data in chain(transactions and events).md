@@ -81,14 +81,14 @@ The main process of the reorganization:
     Once the reorganization is detected, send the coordinator a reorgnization event which includes: target block number to roll back, the newly received block
 - Broadcast suspending
     Once the coordinator receives the reorgnization event, it broadcasts the suspending command to all modules(event monitoring, event parsing, data processing, data persistence) by message bus or rpc.
-    Once each module recieves the suspending command, it finishes the task it working on without accepting new ones. Once it is done, send the status to the coordinator.
-    When all of module are ready, the coordinator starts the roll back command. It records the reorganization status before roll back: the target block number, current new block number, the status of each module(especially the block number each module is working on), roll-back steps
+    Once each module recieves the suspending command, it finishes the task it working on without accepting new ones. Once it is done, send the suspended status to the coordinator.
+    When all of module are suspended, the coordinator sends the roll back command. It records the reorganization status before roll back: the target block number, current new block number, the status of each module(especially the block number each module is working on), roll-back steps
 - Roll back
     The roll-back steps are in the reversible order of how an event is processed.
     For example, an event is proccessed in the order of event monitoring -> event parsing -> data processing -> data persistence, the roll-back steps will be data persistence -> data processing -> event parsing -> event monitoring.
     All of steps are executed sequentially to prevent dirty data and chaos
     During the execution of roll back in each step, the corresponding module should save check points periodically and report the status(where it is) to the coordinator. The coordinator itself also needs to save checkpoints for the recovery
-    The equential execution and checkpoints make sure the correct recovery when one of modules even the coordinator itselft suddenly crushes
+    The sequential execution and checkpoints make sure the correct recovery when one of modules even the coordinator itself suddenly crushes
     The above is about the roll back on the high level. Actually, for different module, the operations in the execution of roll back are a lot different:
     - For the data persistence module(database): roll back data including derivative data (not deletion but mark them as 'deleted') under the transaction
     - For the data processing module and events parsing module(message queue consumer): discard messages/memeory data belonging to the roll-back blocks or simply reset the offset if this operation is supported
