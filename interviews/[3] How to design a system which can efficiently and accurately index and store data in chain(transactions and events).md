@@ -106,7 +106,7 @@ There are 2 issues we need to pay attention to in the process of the reorganizat
 
 **[Interviewer]** Excellent! The core strength of your solution lies in its strong consistence and control. The centralized coordinator can make sure that all modules are in step during the organizaiton process, making it suitable for finanal senarios which require the high accuracy for the data consistency. However. in a distributed system, a classic challenge is that the centralized coordinator itself can become a single point of failure or a performance bottleneck. How does your reorganization coordinator ensure its high availability. Eg, it crashes after broadcasting suspending, how can you prevent the entire system from indefinitly suspending?
 
-**[Me]** To prevent the coordinator from becoming the single point of failure, the design can be enhanced like this: I will implement the coordinator as a small cluster based on the Raft consensus algorithm with all critical states persisted to external storage. If the leader crushes, the cluster can automatically elect a new leader from the persisted states without causing the system suspending indefinitely.
+**[Me]** To prevent the coordinator from becoming the single point of failure, I will implement the coordinator as a small cluster based on the Raft consensus algorithm with all critical check points saved to external storage. If the leader crushes, the cluster can automatically elect a new leader from the persisted states without causing the system suspending indefinitely.
 
 Here is the key implemenations:
 - Clustered Coordinator:
