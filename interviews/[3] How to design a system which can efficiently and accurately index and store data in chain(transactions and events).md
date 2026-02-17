@@ -87,7 +87,7 @@ The main process of the reorganization:
     The roll-back steps are in the reversible order of how an event is processed.
     For example, an event is proccessed in the order of event monitoring -> event parsing -> data processing -> data persistence, the roll-back steps will be data persistence -> data processing -> event parsing -> event monitoring.
     All of steps are executed sequentially to prevent dirty data and chaos
-    During the execution of roll back in each step, the corresponding module should save check points periodically and report the status(where it is) to the coordinator. The coordinator itself also needs to save checkpoints for the recovery
+    During the execution of roll back in each step, the corresponding module should save check points periodically and report the status to the coordinator about where it is. The coordinator itself also needs to save checkpoints for the recovery
     The sequential execution and checkpoints make sure the correct recovery when one of modules even the coordinator itself suddenly crushes
     The above is about the roll back on the high level. Actually, for different module, the operations in the execution of roll back are a lot different:
     - For the data persistence module(database): roll back data including derivative data (not deletion but mark them as 'deleted') under the transaction
