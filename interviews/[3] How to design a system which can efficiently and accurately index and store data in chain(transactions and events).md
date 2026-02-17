@@ -82,7 +82,7 @@ The main process of the reorganization:
 - Broadcast suspending
     Once the coordinator receives the reorgnization event, it broadcasts the suspending command to all modules(event monitoring, event parsing, data processing, data persistence) by message bus or rpc.
     Once each module recieves the suspending command, it finishes all of tasks it has beeing working on without accepting new ones from the upstream. Once it is done, it reports the suspended status to the coordinator telling that it is ready for the roll-back.
-    When all of module are suspended, the coordinator saves the reorganization status before rolling back. The reorganization status includes: the target block number, current new block number, the status of each module(especially the block number each module is working on), roll-back steps
+    When all of module are suspended, the coordinator saves a checkpoint before rolling back. The checkpoint includes: the target block number, current new block number, the status of each module(especially the block number each module is working on), roll-back steps
 - Roll back
     The roll-back steps are in the reversible order of how an event is processed.
     For example, an event is proccessed in the order of event monitoring -> event parsing -> data processing -> data persistence, the roll-back steps will be data persistence -> data processing -> event parsing -> event monitoring.
@@ -120,7 +120,6 @@ Here is the key implemenations:
         - newBlockHash: the hash of the newly received block
         - phase: current stage(SUSPENDING, ROLLING_BACK, RESTORING)
         - moduleStatuses: a map, recording the latest status of each module(monitoring, parsing, processing and persistence)(eg: suspended, rolled back to block X etc)
-        - coordinatorCheckPoint: the coordinator itself's check point
         - rollBackSteps: The steps needed to execute rolling back
 
 
