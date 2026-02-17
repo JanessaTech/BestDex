@@ -111,14 +111,14 @@ There are 2 issues we need to pay attention to in the process of the reorganizat
 Here is the key implemenations:
 - Clustered Coordinator:
     - The cluster consists 3 - 5 nodes, one leader, the others as followers
-    - All of reorganization commands or state changes are replicated within the cluster as the Raft logs, Only the leader can broadcast the commands&changes, ensuring the consistency
+    - All of reorganization commands and state changes are replicated within the cluster as the Raft logs, Only the leader can broadcast the commands&changes, ensuring the consistency
     - Once the leader crushes, the new leader can be elected in a few seconds
-- External persistence of coordinator states: 
-    - **Reorg context** is written to the external strongly consistent storage(eg: etcd、ZooKeeper) before the coordinator starts any critical operations.
-    - The **Reorg context** must inlcude:
+- External persistence of coordinator check points: 
+    - **Check point** is written to the external strongly consistent storage(eg: etcd、ZooKeeper) before the coordinator starts any critical operations.
+    - The **Check point** must inlcude:
         - targetBlockNumber: the target block to roll back to
         - newBlockHash: the hash of the newly received block
-        - phase: current stage(SUSPENDING, ROLLING_BACK, RESTORING)
+        - status: current status(SUSPENDING, ROLLING_BACK, RESTORING)
         - moduleStatuses: a map, recording the latest status of each module(monitoring, parsing, processing and persistence)(eg: suspended, rolled back to block X etc)
         - rollBackSteps: The steps needed to execute rolling back
 
