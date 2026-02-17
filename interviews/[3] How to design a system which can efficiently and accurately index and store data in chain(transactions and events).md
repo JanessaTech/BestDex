@@ -78,7 +78,7 @@ reorganization detection module suddenly notifies us: A reorganization is detect
 **[Me]** we have a centralized coordinator to manage all modules: suspend, roll back and restore.
 The main process of the reorganization:
 - Reorganization detection
-    Once the reorganization is detected, send the coordinator a reorgnization event which includes: target block number to roll back, the newly received block
+    Once the reorganization is detected and the common parent block is found, send the coordinator a reorgnization event which includes: target block number to roll back, the newly received block number
 - Broadcast suspending
     Once the coordinator receives the reorgnization event, it broadcasts the suspending command to all modules(event monitoring, event parsing, data processing, data persistence) by message bus or rpc.
     Once each module recieves the suspending command, it finishes the task it working on without accepting new ones from the upstream. Once it is done, it reports the suspended status to the coordinator telling that it is ready for the roll-back.
