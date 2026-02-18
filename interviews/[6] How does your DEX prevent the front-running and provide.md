@@ -9,8 +9,8 @@ We need to enhance the exsiting ***Transaction Submission Service*** to make it:
 
 **[Me]** Provide users with the best exchange rates.
 We need to enhance the exsiting ***Swap quotes service*** to make it:
-1. Provide a recommended slippage which is not a fixed value anymore the user chooses in the frontend, but a value calculated by a Risk Control & Price Calculation algorithm based on the real time data on chain saying the liquidity depth of the pool, the recent volatility and the level of network congestion 
-2. ***Swap quotes service*** doesn't depend on **AlphaRouter**  anymore.Integrate multiple DEX aggregators like 1inch, ParaSwap, 0x API etc. Run these sources in parallel and compare the results to get the best one by a running the Risk Control & Price Calculation algorithm. For the following execution of swapping, the source chosen decides where the calldata goes
+1. Provide a recommended slippage which is not a fixed value anymore the user chooses in the frontend, but a value calculated by a Risk Control & Price Calculation algorithm based on the real time data on chain saying the liquidity depth of the pool, the recent price volatility and the level of network congestion 
+2. ***Swap quotes service*** doesn't depend on **AlphaRouter**  anymore.Integrate multiple DEX aggregators like 1inch, ParaSwap, 0x API etc. Run these aggregators in parallel and compare the results to get the best one by a running the Risk Control & Price Calculation algorithm. For the following execution of swapping, the source chosen decides where the calldata goes
 
 Let me summarize the checkpoints where we should do the enhancements to meet your requirements: 1. avoiding front running 2. provide the best exchange rate
 | Module Name | Enhancements |
