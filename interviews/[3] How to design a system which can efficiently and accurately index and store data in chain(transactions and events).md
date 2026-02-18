@@ -9,31 +9,29 @@ The requirements for the indexer:
 - **Availability:** The system should have ability to monitor and recover from failures. 
 
 **[Me]** An event in chain from being detected to being saved into database, generally goes through the following process:
-1. **Chain events monitoring**
+1. **Enhanced chain events monitoring**
 2. **Events parsing**
-3. **Chain reorganization detection**
-4. **Data processing**
-5. **Data persistence**
-6. **Data query**
+3. **Data processing**
+4. **Data persistence**
+5. **Data query**
 
 Therefore, the system can be divdied into 6 modules:
-1. **Chain events monitoring module:**
-    It is responsible for monitoring events on chain. Send the message to the message queue once a new event is detected.
-    Use block number + transaction index + log index as the cursor and save it to the database periodically for the purpose of recovery and no missing events
+1. **Enhanced chain events monitoring module:**
+   Besides the existing functionalities, we maintained two data structures used to detect the reorganization:
+    - Chain mapping
+        The mapping between the block height and hash, which is used to check if there are more than 1 blocks at the same height
+    - Confirmed chain
+        A double linked list to stand for the blocks processed. The tail of the list is the lastest block
+  We save the two data structures into check points for the recovery
+
 2. **Events parsing module:**
     Consume and parse the message from the message queue. one consumer for one parition
-3. **Chain reorganization detection module:**
-    Detect the possiblity of the reorganization based on the parsed message. This is a centralized coordinator to manage the reorganization process: broadcast reorganization commands -  suspend, roll back and restore, synchronize statuses etc
-4. **Data processing module:**
+3. **Data processing module:**
     Process the parsed message, generate the derivative data by the business requirements
-5. **Data persistence module:**
-    - Unconfirmed data:
-        For the data which has not reached the expected depth(6 confirm or 12 confirm), mark them as 'unconfirmed'. The data includes: orginal event data, parsed data and derivative data. The data are stored in database
-    - Confirmed data:
-        There is a separate timed task running periodically to scan unconfirmed data and change 'unconfirmed' to 'confirmed' for those  data which have reached the expected depth
-    
+4. **Data persistence module:**
+    After the event parsing and derivative gneration, the results are saved to database.
     For the light query to get the latest data/updates, store them in redis
-6. **An united data query module:**
+5. **An united data query module:**
     Provide an united API interface for all services to index the data on chain
 
 Back to your requirements:
@@ -55,9 +53,19 @@ Back to your requirements:
         - Collect logs for analysis. Collect ctritical metrics
         - Set up warning system. Send alarms or email when the ctritical metrics exceed the threshold, and perform or manual intervention after that
 
-**[Interviewer]** Great!. You described the overall proccess of the data indexer which includes 6 modules and 4 requirements (accuracy, efficiency, scalability and availability) are met. Let's focus on the proccess of reorganization which is the key of the data indexer. Can you describe how do you detect the reorganzation?
+**[Interviewer]** Great!. You described the overall proccess of the data indexer which includes 5 modules and 4 requirements (accuracy, efficiency, scalability and availability) are met. Let's focus on the proccess of reorganization which is the key of the data indexer. Can you describe how do you detect the reorganzation?
 
-**[Me]** We've already had a local chain which is maintained by a dedicated service I just mentioned. When the data indexer receives a new block whose parent hash is not equal to the hash of the latest block in the local, a reorganization happened.
+**[Me]** In the chain events monitoring module, when a new block arrives, it checks:
+1. If the height of the new block in the chain mapping exists. If yes, the reorganization happened
+2. If the parentHash of the new block is equal to the hash of the latest block in the confirmed chain, If not, the reorganization happened
+
+
+**[Interviewer]** OK. You mentioned check points which saved the two new data structures. What if the data indexer crushes and restores it from the check point to be block N, the new block it receives it N + 5, 4 blocks are missing, how do you deal with it?
+**[Me]**  Everytime we save the check point, the ***expected_height*** should be saved at the same time, this variable is the block number the data indexer expects to receive after the recovery. There are 3 cases we need to deal with:
+- The new block number === expected_height: process the new block as usual
+- The new block number < expected_height: ignore the new block
+- The new block number > expected_height: sychronize the missing blocks using the RPC inteface like eth_getBlockByNumber before processing the new block
+
 
 **[Interviewer]** When you detected that the reorganization happened, what will you do?
 
@@ -65,9 +73,9 @@ Back to your requirements:
     1. Find the common parent block we need to roll back to. 
     2. The data indexer enters the reorganization mode and starts the reorganization process.
 ***Find the common parent block:***
-Scan the local chain from the latest block backforward, find the block whose hash is equal to the parent hash of the block the data indexer just received.
+Scan the confirmed chain from the latest block backforward, find the block whose hash is equal to the parent hash of the newly received block
 If such block exists, it is the common parent block
-If not, it means the local chain may crush, we should suspend the data indexer and fix this issue first. To make the design more focused, let's assume the local chain is always consistent with the chain.
+If not, it means the confirmed chain may crush, we should suspend the data indexer and fix this issue first. To make the design more focused, let's assume the confirmed chain is always well rounded.
 ***Enter the reorganization mode:***
 Once we know the target block we need to roll back to, the data indexer enters the reorganization mode - The data indexer starts the reorganization process.
 
@@ -100,7 +108,7 @@ The main process of the reorganization:
     The coordinator sends the restoring command to all modules, telling them to start with target block number + 1
 
 There are 2 issues we need to pay attention to in the process of the reorganization:
-- **split-brain**: In the process of sending commands(suspend, roll back and restore) between coordinator and all modules, we use the mixed communicating strateges of active reporting(from modules to coordinator) and passive query/timeout(from coordinator to modules) to prevent the split-brain: Once the coodinator find no active reporting or timeout when passive query for a module, the coordinator thinks that this module died and enables the backup of this module
+- **split-brain**: In the process of sending commands(suspend, roll back and restore) between coordinator and all modules, to make sure these commands are sent succesfully, we use the mixed communicating strateges of active reporting(from modules to coordinator) and passive query/timeout(from coordinator to modules) to prevent the split-brain: Once the coodinator find no active reporting or timeout when passive query for a module, the coordinator thinks that this module died and enables the backup of this module
 - **atomicity and idempotence**: In the roll back of each module, we should ensure operations within each module are atomic and idempotent to prevent inconsistence
 
 
