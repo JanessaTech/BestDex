@@ -73,7 +73,7 @@ Back to your requirements:
     1. Find the common parent block we need to roll back to. 
     2. Kick off the reorganization process.
 ***Find the common parent block:***
-Scan the confirmed chain from the latest block backforward until the block whose hash is equal to the parent hash of the newly received block number
+The event monitoring scans the confirmed chain from the latest block backforward until the block whose hash is equal to the parent hash of the newly received block number
 If such block exists, it is the common parent block
 If not, it means the confirmed chain may crush, we should suspend the data indexer and fix this issue first. To make the design more focused, let's assume the confirmed chain is always well rounded.
 ***Enter the reorganization mode:***
@@ -86,7 +86,7 @@ reorganization detection module suddenly notifies us: A reorganization is detect
 **[Me]** we have a centralized coordinator to manage all modules: suspend, roll back and restore.
 The main process of the reorganization:
 - Reorganization detection
-    Once the reorganization is detected and the common parent block is found, send the coordinator a reorgnization event which includes: target block number to roll back to, the newly received block number
+    Once the reorganization is detected and the common parent block is found, the event monitoring sends the coordinator a reorgnization event which includes: target block number to roll back to, the newly received block number
 - Broadcast suspending
     Once the coordinator receives the reorgnization event, it broadcasts the suspending command to all modules(event monitoring, event parsing, data processing, data persistence) by message bus or rpc.
     Once each module recieves the suspending command, it finishes all of tasks it has beeing working on without accepting new ones from the upstream. Once it is done, it reports the suspended status to the coordinator telling that it is ready for the roll-back.

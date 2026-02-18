@@ -4,7 +4,7 @@
 
 **[Me]** Let me share my solution one by one. First, try to avoid front-running.
 We need to enhance the exsiting ***Transaction Submission Service*** to make it:
-1. Broadcast the signed transaction to ***Flashbots Protect RPC*** or similar private transaction relay service which fundamentally eliminates most of sandwich attacks
+1. Broadcast the signed transaction to ***Flashbots Protect RPC*** or similar private relay service which fundamentally eliminates most of sandwich attacks
 2. Doubly confirm simulation. Besides the simulation running in the frontend before calling the Transaction Submission Service, do a simulation again using the latest block states. If the simulation shows that the final result exceeds the threshold, return a warning to users
 
 **[Me]** Provide users with the best exchange rates.
