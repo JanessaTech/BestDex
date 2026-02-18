@@ -71,9 +71,9 @@ Back to your requirements:
 
 **[Me]** Two steps we will do. 
     1. Find the common parent block we need to roll back to. 
-    2. The data indexer enters the reorganization mode and starts the reorganization process.
+    2. Kick off the reorganization process.
 ***Find the common parent block:***
-Scan the confirmed chain from the latest block backforward, find the block whose hash is equal to the parent hash of the newly received block number
+Scan the confirmed chain from the latest block backforward until the block whose hash is equal to the parent hash of the newly received block number
 If such block exists, it is the common parent block
 If not, it means the confirmed chain may crush, we should suspend the data indexer and fix this issue first. To make the design more focused, let's assume the confirmed chain is always well rounded.
 ***Enter the reorganization mode:***
@@ -108,7 +108,7 @@ The main process of the reorganization:
     The coordinator sends the restoring command to all modules, telling them to start with target block number + 1
 
 There are 2 issues we need to pay attention to in the process of the reorganization:
-- **split-brain**: In the process of sending commands(suspend, roll back and restore) between coordinator and all modules, to make sure these commands are sent succesfully, we use the mixed communicating strateges of active reporting(from modules to coordinator) and passive query/timeout(from coordinator to modules) to prevent the split-brain: Once the coodinator find no active reporting or timeout when passive query for a module, the coordinator thinks that this module died and enables the backup of this module
+- **split-brain**: In the process of sending commands(suspend, roll back and restore) we don't know if the communication between coordinator and all modules goes well, we use the mixed communicating strateges of active reporting(from modules to coordinator) and passive query/timeout(from coordinator to modules) to prevent the split-brain: Once the coodinator finds no active reporting or timeout when passive query for a module, the coordinator thinks that this module died and enables the backup of this module
 - **atomicity and idempotence**: In the roll back of each module, we should ensure operations within each module are atomic and idempotent to prevent inconsistence
 
 
