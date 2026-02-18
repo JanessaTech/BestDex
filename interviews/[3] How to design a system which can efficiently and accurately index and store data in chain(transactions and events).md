@@ -60,7 +60,7 @@ Back to your requirements:
 2. If the parentHash of the new block is equal to the hash of the latest block in the confirmed chain, If not, the reorganization happened
 
 
-**[Interviewer]** OK. You mentioned check points which saved the two new data structures. What if the data indexer crushes and restores it from the check point to be block N, the new block it receives it N + 5, 4 blocks are missing, how do you deal with it?
+**[Interviewer]** OK. You mentioned check points which saved the two new data structures. What if the data indexer crushes and restores it from the check point to be block N, the new block it receives is N + 5, 4 blocks are missing, how do you deal with it?
 **[Me]**  Everytime we save the check point, the ***expected_height*** should be saved at the same time, this variable is the block number the data indexer expects to receive after the recovery. There are 3 cases we need to deal with:
 - The new block number === expected_height: process the new block as usual
 - The new block number < expected_height: ignore the new block
@@ -73,7 +73,7 @@ Back to your requirements:
     1. Find the common parent block we need to roll back to. 
     2. The data indexer enters the reorganization mode and starts the reorganization process.
 ***Find the common parent block:***
-Scan the confirmed chain from the latest block backforward, find the block whose hash is equal to the parent hash of the newly received block
+Scan the confirmed chain from the latest block backforward, find the block whose hash is equal to the parent hash of the newly received block number
 If such block exists, it is the common parent block
 If not, it means the confirmed chain may crush, we should suspend the data indexer and fix this issue first. To make the design more focused, let's assume the confirmed chain is always well rounded.
 ***Enter the reorganization mode:***
