@@ -3,6 +3,10 @@
 ```
 npm install
 ```
+## Dependences
+```
+npm install --save-dev jest @types/jest supertest @types/supertest ts-jest @types/node
+```
 
 ## How to start app
 
@@ -12,6 +16,11 @@ npm run run-testnet
 npm run start
 npm run codegen // if you just need to generate the graphclient
 npm run dev // if you need to run/debug graphclient query locally
+```
+
+## How to run tests
+```
+
 ```
 
 ## How to install libs & config for test and run tests

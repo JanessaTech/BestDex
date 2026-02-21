@@ -8,4 +8,10 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testMatch: ['**/?(*.)+(spec|test).ts'],
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov'],
 };
