@@ -16,7 +16,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors())
 
-//app.use('/', routes);
 initRoutes(app);
 initGlobalErrorHandlers(app)
 
