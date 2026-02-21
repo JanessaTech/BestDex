@@ -20,7 +20,7 @@ npm run dev // if you need to run/debug graphclient query locally
 
 ## How to run tests
 ```
-
+npm run test
 ```
 
 ## How to install libs & config for test and run tests
