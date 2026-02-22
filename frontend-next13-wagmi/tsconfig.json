@@ -11,8 +11,10 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
     "incremental": true,
+    "types": ["jest", "@testing-library/jest-dom", "node"],
     "plugins": [
       {
         "name": "next"

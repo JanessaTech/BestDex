@@ -175,6 +175,23 @@ npm run build
 npm run start
 ```
 
+# How to run test
+```
+npx jest --clearCache
+npm test          # run all test cases
+npm test:watch    # watch mode
+npm test:coverage # check coverage
+```
+
+## Install dependences for testing
+```
+npm install --save-dev jest @types/jest @testing-library/react @testing-library/jest-dom @testing-library/user-event
+npm install --save-dev ts-jest @types/react @types/react-dom
+npm install --save-dev jest-environment-jsdom
+npm install --save-dev @wagmi/cli
+npm install --save-dev @testing-library/react @types/testing-library__react
+```
+
 ## Installed dependences
 
 ```
