@@ -11,6 +11,7 @@ This is a production‑ready decentralized exchange developed from scratch and d
 **Website**: https://app.bestdex-by-janessatech.com
 
 # 1 min demo:
+[![Best DEX by JanessaTech](https://img.youtube.com/vi/=gzZp0TNLECo/0.jpg)](https://youtu.be/=gzZp0TNLECo)
 # Architecture Evolution Roadmap& Product Timeline
 This project is divided into 4 stages:  
 | Stage   |  Timeline  | Focus | Owner | Status |
