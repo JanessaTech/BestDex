@@ -7,8 +7,8 @@ This is a production‑ready decentralized exchange developed from scratch and d
 **Tech Stack**: Next.js, TypeScript, Tailwind, Wagmi, Express, MongoDB, Hardhat, Solidity  
 **Deployment**: Independent domain, fully tested on testnet, stable operation  
 **Code**: 100% hand‑written, no template forks  
-**Frontend code source**： [here](./frontend-next13-wagmi/)  
-**Backend code source**：  [here](./backend/)   
+**Frontend source code**： [here](./frontend-next13-wagmi/)  
+**Backend source code**：  [here](./backend/)   
 
 **Website**: https://app.bestdex-by-janessatech.com
 
