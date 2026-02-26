@@ -2,7 +2,7 @@ sources:
   - name: uniswapv3_ethereum
     handler:
       graphql:
-        endpoint: https://gateway.thegraph.com/api/c9120e0b9f742de8319a02d764df9601/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV
+        endpoint: https://gateway.thegraph.com/api/c9120e0b9f742de8319a02d764df9601/subgraphs/id/2vXTcbEvA3TGTufatwRVUXQjJZDKCHmzZmZKYYXxaeeR
 plugins:
   - pollingLive:
       defaultInterval: 10000

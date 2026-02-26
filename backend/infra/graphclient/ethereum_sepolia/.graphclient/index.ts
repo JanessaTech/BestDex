@@ -22,8 +22,8 @@ import { getMesh, ExecuteMeshFn, SubscribeMeshFn, MeshContext as BaseMeshContext
 import { MeshStore, FsStoreStorageAdapter } from '@graphql-mesh/store';
 import { path as pathModule } from '@graphql-mesh/cross-helpers';
 import { ImportFn } from '@graphql-mesh/types';
-import type { Uniswapv3EthereumSepoliaTypes } from './sources/uniswapv3_ethereum_sepolia/types';
-import * as importedModule$0 from "./sources/uniswapv3_ethereum_sepolia/introspectionSchema";
+import type { Uniswapv3EthereumTypes } from './sources/uniswapv3_ethereum/types';
+import * as importedModule$0 from "./sources/uniswapv3_ethereum/introspectionSchema";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -4268,7 +4268,7 @@ export type DirectiveResolvers<ContextType = MeshContext> = ResolversObject<{
   derivedFrom?: derivedFromDirectiveResolver<any, any, ContextType>;
 }>;
 
-export type MeshContext = Uniswapv3EthereumSepoliaTypes.Context & BaseMeshContext;
+export type MeshContext = Uniswapv3EthereumTypes.Context & BaseMeshContext;
 
 
 const baseDir = pathModule.join(typeof __dirname === 'string' ? __dirname : '/', '..');
@@ -4276,7 +4276,7 @@ const baseDir = pathModule.join(typeof __dirname === 'string' ? __dirname : '/',
 const importFn: ImportFn = <T>(moduleId: string) => {
   const relativeModuleId = (pathModule.isAbsolute(moduleId) ? pathModule.relative(baseDir, moduleId) : moduleId).split('\\').join('/').replace(baseDir + '/', '');
   switch(relativeModuleId) {
-    case ".graphclient/sources/uniswapv3_ethereum_sepolia/introspectionSchema":
+    case ".graphclient/sources/uniswapv3_ethereum/introspectionSchema":
       return Promise.resolve(importedModule$0) as T;
     
     default:
@@ -4309,22 +4309,22 @@ const cache = new (MeshCache as any)({
 const sources: MeshResolvedSource[] = [];
 const transforms: MeshTransform[] = [];
 const additionalEnvelopPlugins: MeshPlugin<any>[] = [];
-const uniswapv3EthereumSepoliaTransforms = [];
+const uniswapv3EthereumTransforms = [];
 const additionalTypeDefs = [] as any[];
-const uniswapv3EthereumSepoliaHandler = new GraphqlHandler({
-              name: "uniswapv3_ethereum_sepolia",
-              config: {"endpoint":"https://gateway.thegraph.com/api/c9120e0b9f742de8319a02d764df9601/subgraphs/id/EDJCBpDBGBajTP1x3qLGLg3ZaVR5Q2TkNxyNHdCuryex"},
+const uniswapv3EthereumHandler = new GraphqlHandler({
+              name: "uniswapv3_ethereum",
+              config: {"endpoint":"https://gateway.thegraph.com/api/c9120e0b9f742de8319a02d764df9601/subgraphs/id/2vXTcbEvA3TGTufatwRVUXQjJZDKCHmzZmZKYYXxaeeR"},
               baseDir,
               cache,
               pubsub,
-              store: sourcesStore.child("uniswapv3_ethereum_sepolia"),
-              logger: logger.child("uniswapv3_ethereum_sepolia"),
+              store: sourcesStore.child("uniswapv3_ethereum"),
+              logger: logger.child("uniswapv3_ethereum"),
               importFn,
             });
 sources[0] = {
-          name: 'uniswapv3_ethereum_sepolia',
-          handler: uniswapv3EthereumSepoliaHandler,
-          transforms: uniswapv3EthereumSepoliaTransforms
+          name: 'uniswapv3_ethereum',
+          handler: uniswapv3EthereumHandler,
+          transforms: uniswapv3EthereumTransforms
         }
 additionalEnvelopPlugins[0] = await UsePollingLive({
           ...({
