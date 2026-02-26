@@ -89,7 +89,7 @@ export class MultiChainMonitor extends EventEmitter {
     private broadcastToChannel(chainId: number, poolAddress: `0x${string}`, poolInfo: PoolInfo) {
         try {
             const sentCnt = this.websocketServer.broadcastToChannel(CHANNELS.POOLINFO, {chainId, poolAddress, poolInfo})
-            logger.debug(`${sentCnt} copies of poolInfo were sent to frontend`)
+            //logger.debug(`${sentCnt} copies of poolInfo were sent to frontend`)
         } catch(error) {
             logger.error('Failed to broadcast the latest poolInfo to frontend due to:', error)
         }
