@@ -6,14 +6,15 @@ This is a production‑ready decentralized exchange developed from scratch and d
 
 **Tech Stack**: Next.js, TypeScript, Tailwind, Wagmi, Express, MongoDB, Hardhat, Solidity  
 **Deployment**: Independent domain, fully tested on testnet, stable operation  
-**Code**: 100% hand‑written, no template forks
-**Frontend code source**： [here](./frontend-next13-wagmi/)
-**Backend code source**：  [here](./backend/)
+**Code**: 100% hand‑written, no template forks  
+**Frontend code source**： [here](./frontend-next13-wagmi/)  
+**Backend code source**：  [here](./backend/)   
 
 **Website**: https://app.bestdex-by-janessatech.com
 
 # 1 min demo: 
 [![Best DEX by JanessaTech](./architecture-evolution/cover1.jpg)](https://www.youtube.com/watch?v=gzZp0TNLECo)
+For more operations, check [doc here](./frontend-next13-wagmi/README.md)
 
 # Architecture Evolution Roadmap& Product Timeline
 This project is divided into 4 stages:  
