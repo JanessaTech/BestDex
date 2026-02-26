@@ -4,7 +4,7 @@ This is a production‑ready decentralized exchange developed from scratch and d
     - **Liquidity Management**: Add/remove liquidity, collect fees, query positions. The liquidity addition process involves real‑time pool data fetching and rendering of price range selectors, with dynamic calculations for position ticks and liquidity amounts.  
     - **Real‑Time Data**: Backend polls pool data via The Graph and pushes updates to the frontend through WebSocket, avoiding RPC overload.  
 
-**Tech Stack**: Next.js, TypeScript, Tailwind, Wagmi, Express, MongoDB, Hardhat, Solidity  
+**Tech Stack**: Uniswap V3, Next.js, TypeScript, TailwindCSS, Wagmi, WebSocket, RainbowKit, Ethers.js, Express, MongoDB, Hardhat, Solidity  
 **Deployment**: Independent domain, fully tested on testnet, stable operation  
 **Code**: 100% hand‑written, no template forks  
 **Frontend source code**： [here](./frontend-next13-wagmi/)  
