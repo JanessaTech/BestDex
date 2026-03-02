@@ -5,8 +5,7 @@ This is a production‑ready decentralized exchange developed from scratch and d
     - **Real‑Time Data**: Backend polls pool data via The Graph and pushes updates to the frontend through WebSocket, avoiding RPC overload.  
 
 **Tech Stack**: Uniswap V3, Next.js, TypeScript, TailwindCSS, Wagmi, WebSocket, RainbowKit, Ethers.js, Express, MongoDB, Hardhat, Solidity  
-**Deployment**: Independent domain, fully tested on testnet, stable operation  
-**Code**: 100% hand‑written, no template forks  
+**Deployment**: Independent domain, fully tested on testnet, stable operation   
 **Frontend source code**： [here](./frontend-next13-wagmi/)  
 **Backend source code**：  [here](./backend/)   
 
@@ -46,3 +45,4 @@ For the details of the design, please check the following documents:
 ![Architecture for stage3](./architecture-evolution/version-3.jpg)
 For the details of the design, please check the following documents:
 - [How to design a system which can efficiently and accurately index and store data in chain(transactions and events)](./interviews/[3]%20How%20to%20design%20a%20system%20which%20can%20efficiently%20and%20accurately%20index%20and%20store%20data%20in%20chain(transactions%20and%20events).md)
+
